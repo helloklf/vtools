@@ -7,8 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.TimingTaskManager
@@ -19,25 +17,14 @@ import kotlinx.android.synthetic.main.activity_timing_task.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ActivityTimingTask : AppCompatActivity() {
+class ActivityTimingTask : ActivityBase() {
     private lateinit var timingTaskInfo: TimingTaskInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeSwitch.switchTheme(this)
 
         setContentView(R.layout.activity_timing_task)
-
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // setTitle(R.string.app_name)
-
-        // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        setBackArrow()
 
         // 读取或初始化任务模型
         var taskId: String = "SCENE_TASK_" + UUID.randomUUID().toString()

@@ -16,7 +16,6 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
@@ -34,7 +33,7 @@ import java.net.URL
 import java.nio.charset.Charset
 import java.util.zip.ZipInputStream
 
-class ActivityAddinOnline : AppCompatActivity() {
+class ActivityAddinOnline : ActivityBase() {
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
@@ -42,7 +41,6 @@ class ActivityAddinOnline : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_addin_online)

@@ -13,11 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.config.PageConfigReader
@@ -33,30 +30,17 @@ import com.omarea.vtools.R
 import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.activity_action_page.*
 
-class ActionPage : AppCompatActivity() {
+class ActionPage : ActivityBase() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
     private var handler = Handler()
     private lateinit var currentPageConfig: PageNode
     private var autoRunItemId = ""
-    private lateinit var themeMode: ThemeMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        this.themeMode = ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page)
-
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // setTitle(R.string.app_name)
-
-        // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        setBackArrow()
 
         /*
         // 设置个漂亮的白色顶栏

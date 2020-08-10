@@ -9,11 +9,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.CheckBox
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -25,7 +22,7 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_hidden_apps.*
 import java.lang.ref.WeakReference
 
-class ActivityHiddenApps : AppCompatActivity() {
+class ActivityHiddenApps : ActivityBase() {
     private lateinit var progressBarDialog: ProgressBarDialog
     private var adapter: WeakReference<AppListAdapter>? = null
     private val handler = Handler()
@@ -40,26 +37,14 @@ class ActivityHiddenApps : AppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
-
     }
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hidden_apps)
+        setBackArrow()
 
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // setTitle(R.string.app_name)
-
-        // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
         pm = packageManager
         progressBarDialog = ProgressBarDialog(this)
         hidden_app.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))

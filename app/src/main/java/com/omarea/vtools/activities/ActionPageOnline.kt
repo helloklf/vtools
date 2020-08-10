@@ -20,12 +20,10 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.WebViewInjector
 import com.omarea.krscript.downloader.Downloader
 import com.omarea.krscript.ui.ParamsFileChooserRender
@@ -33,14 +31,10 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_action_page_online.*
 import java.util.*
 
-class ActionPageOnline : AppCompatActivity() {
+class ActionPageOnline : ActivityBase() {
     private val progressBarDialog = ProgressBarDialog(this)
 
-    private lateinit var themeMode: ThemeMode
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        themeMode = ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page_online)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.AdapterFileSelector
@@ -15,7 +14,7 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_file_selector.*
 import java.io.File
 
-class ActivityFileSelector : AppCompatActivity() {
+class ActivityFileSelector : ActivityBase() {
     companion object {
         val MODE_FILE = 0
         val MODE_FOLDER = 1
@@ -27,8 +26,6 @@ class ActivityFileSelector : AppCompatActivity() {
     var start = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_selector)
 
@@ -78,14 +75,25 @@ class ActivityFileSelector : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val startDir = if (start.isNotEmpty()) File(start) else File(CommonCmds.SDCardDir)
+        val startDir = if (start.isNotEmpty()) File(start) else {
+            try {
+                val file = File(CommonCmds.SDCardDir)
+                if (file.exists() && file.canRead()) {
+                    file
+                } else {
+                    File("/sdcard")
+                }
+            } catch (ex: Exception) {
+                File("/sdcard")
+            }
+        }
         if (startDir.exists() && startDir.isDirectory) {
             val list = startDir.listFiles()
             if (list == null) {
                 Toast.makeText(applicationContext, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
             }
-            val onSelected =  Runnable {
+            val onSelected = Runnable {
                 val file: File? = adapterFileSelector!!.selectedFile
                 if (file != null) {
                     this.setResult(Activity.RESULT_OK, Intent().putExtra("file", file.absolutePath))

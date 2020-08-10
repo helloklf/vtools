@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
-    android:keepScreenOn="false"
-    tools:context=".activities.ActivityFileSelector"
-    tools:openDrawer="start">
-
-    <com.omarea.common.ui.OverScrollListView
-        android:id="@+id/file_selector_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="56dp">
-
-    </com.omarea.common.ui.OverScrollListView>
+    android:layout_height="match_parent">
 
     <include
+        android:id="@+id/layout_app_bar"
         layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</androidx.drawerlayout.widget.DrawerLayout>
+        android:layout_height="wrap_content" />
+
+    <com.omarea.common.ui.OverScrollListView
+        android:layout_below="@id/layout_app_bar"
+        android:id="@+id/file_selector_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.omarea.common.ui.OverScrollListView>
+</RelativeLayout>

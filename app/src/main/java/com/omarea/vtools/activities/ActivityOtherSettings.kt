@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.Switch
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -20,7 +18,7 @@ import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
 
-class ActivityOtherSettings : AppCompatActivity() {
+class ActivityOtherSettings : ActivityBase() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler()
 
@@ -36,21 +34,10 @@ class ActivityOtherSettings : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_settings)
 
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // setTitle(R.string.app_name)
-
-        // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        setBackArrow()
 
         home_hide_in_recents.setOnCheckedChangeListener { _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).apply()

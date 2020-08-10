@@ -15,7 +15,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -37,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_app_details.*
 import org.json.JSONObject
 import java.io.File
 
-class ActivityAppDetails : AppCompatActivity() {
+class ActivityAppDetails : ActivityBase() {
     var app = ""
     lateinit var immersivePolicyControl: ImmersivePolicyControl
     lateinit var sceneConfigInfo: SceneConfigInfo
@@ -238,8 +237,6 @@ class ActivityAppDetails : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_details)
 

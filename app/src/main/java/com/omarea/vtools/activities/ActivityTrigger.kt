@@ -8,8 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Checkable
 import android.widget.CompoundButton
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.omarea.data_collection.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
@@ -21,25 +19,14 @@ import kotlinx.android.synthetic.main.activity_trigger.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ActivityTrigger : AppCompatActivity() {
+class ActivityTrigger : ActivityBase() {
     private lateinit var triggerInfo: TriggerInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeSwitch.switchTheme(this)
 
         setContentView(R.layout.activity_trigger)
-
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        // setTitle(R.string.app_name)
-
-        // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        setBackArrow()
 
         // 读取或初始化任务模型
         var id: String = "SCENE_TRIGGER_" + UUID.randomUUID().toString()
