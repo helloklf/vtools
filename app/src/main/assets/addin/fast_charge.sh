@@ -38,4 +38,4 @@ if [[ `getprop vtools.fastcharge` = "" ]]; then
 fi
 
 change_limit $limit_value
-echo `date "+%Y-%m-%d %H:%M:%S.%MS"` " -> $limit_value" >> /cache/scene_charge.log
+# echo `date "+%Y-%m-%d %H:%M:%S.%MS"` " -> $limit_value" >> /cache/scene_charge.log

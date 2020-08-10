@@ -211,6 +211,7 @@ class ActivityBattery:  ActivityBase() {
                 it.isChecked = false
             } else {
                 spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, checked).apply()
+                notifyConfigChanged()
             }
         }
     }
