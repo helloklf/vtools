@@ -29,19 +29,6 @@ function change_limit() {
             echo $limit > $path
         fi
     done
-
-    restricted="/sys/class/qcom-battery/restricted_current"
-    if [[ -f $restricted ]]; then
-        chmod 0664 $restricted
-        if [[ "$only_taller" = 1 ]]; then
-            local current_limit=`cat $restricted`
-            if [[ "$current_limit" -lt "$limit" ]]; then
-                echo $limit > $restricted
-            fi
-        else
-            echo $limit > $restricted
-        fi
-    fi
 }
 
 if [[ `getprop vtools.fastcharge` = "" ]]; then
@@ -51,3 +38,4 @@ if [[ `getprop vtools.fastcharge` = "" ]]; then
 fi
 
 change_limit $limit_value
+echo `date "+%Y-%m-%d %H:%M:%S.%MS"` " -> $limit_value" >> /cache/scene_charge.log
