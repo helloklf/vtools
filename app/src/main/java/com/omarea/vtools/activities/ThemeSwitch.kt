@@ -50,6 +50,12 @@ object ThemeSwitch {
 
         val theme = globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, -1)
 
+        // 设置壁纸作为背景需要读取外置存储权限（如果没权限，就恢复默认主题）
+        if (theme == 10 && !(checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+            globalSPF!!.edit().remove(SpfConfig.GLOBAL_SPF_THEME).apply()
+            return switchTheme(activity)
+        }
+
         if (theme < themeMap.size) {
             val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
             themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
@@ -96,51 +102,46 @@ object ThemeSwitch {
                 }
             }
         } else if (theme == 10) {
-            // 设置壁纸作为背景需要读取外置存储权限
-            if (checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                val wallpaper = WallpaperManager.getInstance(activity)
-                val wallpaperInfo = wallpaper.wallpaperInfo
-                activity.setTheme(R.style.AppThemeWallpaper)
+            val wallpaper = WallpaperManager.getInstance(activity)
+            val wallpaperInfo = wallpaper.wallpaperInfo
+            activity.setTheme(R.style.AppThemeWallpaper)
 
-                // 动态壁纸
-                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                    // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
-                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
+            // 动态壁纸
+            if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+                // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
+                activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
 
+                themeMode.isDarkMode = true
+            } else {
+                val wallpaperDrawable = wallpaper.drawable
+
+                // 深色的静态壁纸
+                if (isDarkColor(wallpaperDrawable)) {
                     themeMode.isDarkMode = true
                 } else {
-                    val wallpaperDrawable = wallpaper.drawable
-
-                    // 深色的静态壁纸
-                    if (isDarkColor(wallpaperDrawable)) {
-                        themeMode.isDarkMode = true
-                    } else {
-                        // 浅色的静态壁纸
-                        themeMode.isDarkMode = false
-                        themeMode.isLightStatusBar = true
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                        }
-
-                        if (!(activity is ActivityMain)) {
-                            activity.window.navigationBarColor = Color.TRANSPARENT
-                        }
+                    // 浅色的静态壁纸
+                    themeMode.isDarkMode = false
+                    themeMode.isLightStatusBar = true
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     }
 
-                    activity.window.setBackgroundDrawable(wallpaperDrawable)
-                    // 使用壁纸高斯模糊作为窗口背景
-                    // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+                    if (!(activity is ActivityMain)) {
+                        activity.window.navigationBarColor = Color.TRANSPARENT
+                    }
                 }
 
-                if (themeMode.isDarkMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+                activity.window.setBackgroundDrawable(wallpaperDrawable)
+                // 使用壁纸高斯模糊作为窗口背景
+                // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+            }
+
+            if (themeMode.isDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
-                DialogHelper.helpInfo(activity, "", activity.getString(R.string.wallpaper_rw_permission))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
         return themeMode

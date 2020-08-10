@@ -101,8 +101,8 @@ class PageLayoutRender(private val mContext: Context,
                     uiRender = if (parent.isRootGroup) createTextItem(it) else createTextItemWhite(it)
                 } else if (it is GroupNode) {
                     val subGroup = createItemGroup(it)
-                    parent.addView(subGroup)
                     if (it.children.size > 0) {
+                        parent.addView(subGroup)
                         mapConfigList(subGroup, it.children)
                     }
                 }

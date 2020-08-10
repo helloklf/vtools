@@ -7,16 +7,16 @@
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Light</item>
-        <item name="android:colorForegroundInverse">#ffffff</item>
+        <item name="cardBg">@color/cardBgLight</item>
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeNight">
-        <item name="android:navigationBarColor">#a0000000</item>
-        <item name="android:statusBarColor">#a0000000</item>
+        <item name="android:navigationBarColor">@color/cardBgDarkTransparent</item>
+        <item name="android:statusBarColor">@color/cardBgDarkTransparent</item>
         <item name="colorPrimary">@color/lightPink</item>
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
-        <item name="android:colorForegroundInverse">#a0000000</item>
+        <item name="cardBg">@color/cardBgDarkTransparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
@@ -33,8 +33,8 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:statusBarColor">#151515</item>
-        <item name="android:navigationBarColor">#151515</item>
+        <item name="android:statusBarColor">@color/cardBgDark</item>
+        <item name="android:navigationBarColor">@color/cardBgDark</item>
         <item name="colorPrimary">@android:color/background_dark</item>
         <item name="colorPrimaryDark">@android:color/background_dark</item>
         <item name="android:windowBackground">@color/window_background_dark</item>
@@ -43,7 +43,7 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:colorForegroundInverse">#151515</item>
+        <item name="cardBg">@color/cardBgDark</item>
     </style>
 
     <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />
@@ -89,8 +89,8 @@
     </style>
 
     <style name="AppThemeColor" parent="AppThemeNight">
-        <item name="android:statusBarColor">#151515</item>
-        <item name="android:navigationBarColor">#151515</item>
+        <item name="android:statusBarColor">@color/cardBgDark</item>
+        <item name="android:navigationBarColor">@color/cardBgDark</item>
         <item name="colorPrimary">?colorAccent</item>
         <item name="colorPrimaryDark">?colorAccent</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>

@@ -99,7 +99,7 @@
     <string name="menu_gesture">手势导航</string>
     <string name="menu_filter">屏幕滤镜</string>
     <string name="menu_img">备份还原</string>
-    <string name="menu_qq">交流讨论</string>
+    <string name="menu_qq">吹牛扯淡</string>
     <string name="menu_menu_title">反馈交流</string>
     <string name="menu_share">分享应用</string>
     <string name="menu_miui_thermal">MIUI温控</string>
@@ -376,9 +376,9 @@
     <string name="low_memory_killer">Low Memory Killer</string>
     <string name="busybox_install_classical">经典</string>
     <string name="busybox_install_module">Magisk模块</string>
-    <string name="busybox_install_private">私有(试验)</string>
+    <string name="busybox_install_private">私有(推荐)</string>
     <string name="busybox_install_mode">请选择安装方式</string>
-    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n私有：在Scene内部安装，兼容性较差可能导致Scene功能异常\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
+    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n私有：在Scene内部安装，如果不出意外这是最好的方式\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
     <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
     <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>

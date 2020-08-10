@@ -23,6 +23,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="cardBg">@color/cardBgLight</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">
@@ -32,13 +33,14 @@
         <item name="colorPrimary">@android:color/background_dark</item>
         <item name="colorPrimaryDark">@android:color/background_dark</item>
         <item name="android:windowBackground">@color/window_background_dark</item>
-        <item name="android:statusBarColor">?android:windowBackground</item>
+        <item name="android:statusBarColor">@color/cardBgDark</item>
         <item name="android:navigationBarColor">?android:windowBackground</item>
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="cardBg">@color/cardBgDark</item>
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">

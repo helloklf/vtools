@@ -207,9 +207,7 @@ class FloatPowercfgSelector(context: Context) {
             appConfig.aloneLight = isChecked
             store.setAppConfig(appConfig)
 
-            val intent = Intent(context.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", packageName)
-            context.sendBroadcast(intent)
+            notifyAppConfigChanged(context, packageName)
         }
         val fw_app_dis_notice = view.findViewById<CheckBox>(R.id.fw_app_dis_notice)
         fw_app_dis_notice.isChecked = appConfig.disNotice
@@ -227,9 +225,7 @@ class FloatPowercfgSelector(context: Context) {
             appConfig.disNotice = isChecked
             store.setAppConfig(appConfig)
 
-            val intent = Intent(context.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", packageName)
-            context.sendBroadcast(intent)
+            notifyAppConfigChanged(context, packageName)
         }
 
         // 点击禁用按键
@@ -244,9 +240,7 @@ class FloatPowercfgSelector(context: Context) {
                 needKeyCapture = true
             }
 
-            val intent = Intent(context.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", packageName)
-            context.sendBroadcast(intent)
+            notifyAppConfigChanged(context, packageName)
         }
 
         // GPS开关
@@ -261,6 +255,7 @@ class FloatPowercfgSelector(context: Context) {
                 } else {
                     LocationHelper().disableGPS()
                 }
+                notifyAppConfigChanged(context, packageName)
             }
         }
 
@@ -334,6 +329,12 @@ class FloatPowercfgSelector(context: Context) {
 
         updateUI.run()
         return view
+    }
+
+    private fun notifyAppConfigChanged(context: Context, packageName: String) {
+        val intent = Intent(context.getString(R.string.scene_appchange_action))
+        intent.putExtra("app", packageName)
+        context.sendBroadcast(intent)
     }
 
     /**
