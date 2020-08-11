@@ -14,7 +14,7 @@ function get_next_loop() {
 
     if [[ "$current_loop" != "" ]]
     then
-        return "$current_loop"
+        next_loop_path="$current_loop"
     fi
 
     local loop_index=0
@@ -37,8 +37,6 @@ function get_next_loop() {
     else
         next_loop_path=""
     fi
-
-    return $loop_index
 }
 
 if [[ $loop == "1" ]]; then
@@ -83,7 +81,7 @@ function enable_swap() {
             losetup -d $swap_mount      # 删除loop设备
         fi
         losetup $swap_mount $swapfile   # 挂载为loop设备
-        setprop $loop_save $next_loop_index
+        setprop $loop_save $next_loop_path
     fi
 
 	mkswap $swap_mount >/dev/null 2>&1 # 初始化

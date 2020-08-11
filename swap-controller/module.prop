@@ -1,6 +1,0 @@
-id=scene_swap_controller
-name=ZRAM/SWAP控制器
-version=1.0.5
-versionCode=6
-author=嘟嘟Ski
-description=Scene的附加模块之二，在开机时调整虚拟内存
