@@ -19,6 +19,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/swap_module_state"
+                android:textColor="?android:colorAccent"
+                android:visibility="gone"
+                android:text="@string/swap_outside_module_installed"
+                android:textAlignment="center"
+                style="@style/ListCardItem" />
+
             <LinearLayout
                 android:id="@+id/zram_stat"
                 style="@style/ListCardItem">

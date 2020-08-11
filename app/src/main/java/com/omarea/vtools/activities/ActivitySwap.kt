@@ -15,6 +15,7 @@ import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shell_utils.LMKUtils
+import com.omarea.shell_utils.SwapModuleUtils
 import com.omarea.shell_utils.SwapUtils
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
@@ -29,14 +30,13 @@ class ActivitySwap : ActivityBase() {
     private val myHandler = Handler()
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
-    private lateinit var swapUtils: SwapUtils
+    private val swapUtils = SwapUtils(Scene.context)
+    private val swapModuleUtils = SwapModuleUtils(Scene.context)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_swap)
         setBackArrow()
-
-        swapUtils = SwapUtils(this)
 
         swapConfig = getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
@@ -45,6 +45,9 @@ class ActivitySwap : ActivityBase() {
         activityManager.getMemoryInfo(info)
 
         totalMem = (info.totalMem / 1024 / 1024f).toInt()
+
+        // 进入界面时 加载Magisk模块的配置
+        swapModuleUtils.loadModuleConfig(swapConfig)
 
         setView()
     }
@@ -65,6 +68,7 @@ class ActivitySwap : ActivityBase() {
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
         chk_swap_use_loop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
+        swap_module_state.visibility = if (swapModuleUtils.magiskModuleInstalled) View.VISIBLE else View.GONE
 
         var swapSize = 0
         if (swapUtils.swapExists) {
@@ -102,6 +106,7 @@ class ActivitySwap : ActivityBase() {
             swap_swappiness_display.text = "/proc/sys/vm/swappiness :  " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
+        // 额外空余内存设置
         seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
             txt_extra_free_kbytes.text = value.toString() + "\n(" + (value / 1024) + "MB)"
@@ -119,6 +124,7 @@ class ActivitySwap : ActivityBase() {
             Thread(run).start()
         }, swapConfig, SpfConfig.SWAP_MIN_FREE_KBYTES))
 
+        // 关闭swap
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
@@ -130,6 +136,8 @@ class ActivitySwap : ActivityBase() {
             }
             Thread(run).start()
         }
+
+        // swap删除
         btn_swap_delete.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
@@ -142,6 +150,8 @@ class ActivitySwap : ActivityBase() {
             }
             Thread(run).start()
         }
+
+        // 自动lmk调节
         swap_auto_lmk.setOnClickListener {
             val checked = (it as Switch).isChecked
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, checked).apply()
@@ -157,6 +167,7 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
+        // 压缩算法
         zram_compact_algorithm.setOnClickListener {
             val current = swapUtils.compAlgorithm
             val options = swapUtils.compAlgorithmOptions
@@ -176,9 +187,7 @@ class ActivitySwap : ActivityBase() {
 
                         if (swapUtils.zramEnabled) {
                             DialogHelper.helpInfo(
-                                    context!!,
-                                    R.string.swap_zram_comp_algorithm_wran,
-                                    R.string.swap_zram_comp_algorithm_wran_desc)
+                                    context, R.string.swap_zram_comp_algorithm_wran, R.string.swap_zram_comp_algorithm_wran_desc)
                             (it as TextView).text = algorithm
                         } else {
                             (it as TextView).text = swapUtils.compAlgorithm
@@ -187,12 +196,13 @@ class ActivitySwap : ActivityBase() {
                     })
         }
 
-
+        // 是否支持zram
         if (!swapUtils.zramSupport) {
             swap_config_zram.visibility = View.GONE
             zram_stat.visibility = View.GONE
         }
 
+        // swap启动
         btn_swap_create.setOnClickListener {
             val size = seekbar_swap_size.progress * 128
 
@@ -212,6 +222,7 @@ class ActivitySwap : ActivityBase() {
             Thread(run).start()
         }
 
+        // swap启动
         btn_swap_start.setOnClickListener {
             val autostart = chk_swap_autostart.isChecked
             val priority = if (swap_swap_preferred.isChecked) {
@@ -221,12 +232,11 @@ class ActivitySwap : ActivityBase() {
             } else {
                 -2
             }
-            swapConfig.edit().putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority).apply()
-
-            val edit = swapConfig.edit()
-            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
-            edit.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
-            edit.apply()
+            swapConfig.edit()
+                    .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
+                    .putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
+                    .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
+                    .apply()
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
@@ -240,6 +250,8 @@ class ActivitySwap : ActivityBase() {
                 processBarDialog.hideDialog()
             }).start()
         }
+
+        // 调整zram大小操作
         btn_zram_resize.setOnClickListener {
             val sizeVal = seekbar_zram_size.progress * 128
 
@@ -258,21 +270,29 @@ class ActivitySwap : ActivityBase() {
             swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).apply()
         }
 
+        // zram 自启动开关
         chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+            if (swapModuleUtils.magiskModuleInstalled) {
+                // TODO
+            } else if (isChecked) {
+                Toast.makeText(context, R.string.swap_auto_start_desc, Toast.LENGTH_SHORT).show()
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).apply()
         }
+        // swap 自启动开关
         chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+            if (swapModuleUtils.magiskModuleInstalled) {
+                // TODO
+            } else if (isChecked) {
+                Toast.makeText(context, R.string.swap_auto_start_desc, Toast.LENGTH_SHORT).show()
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).apply()
         }
+
+        // 挂载回环设备开关
         chk_swap_use_loop.setOnClickListener {
             if ((it as CheckBox).isChecked) {
-                DialogHelper.animDialog(AlertDialog.Builder(context!!)
+                DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle(R.string.swap_use_loop)
                         .setMessage(R.string.swap_use_loop_desc)
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -370,8 +390,9 @@ class ActivitySwap : ActivityBase() {
 
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmkUtils = LMKUtils()
-        if (lmkUtils.supported()) {
+        if (lmkUtils.supported() && !swapModuleUtils.magiskModuleInstalled) {
             swap_lmk_current.text = lmkUtils.getCurrent()
+            swap_auto_lmk_wrap.visibility = View.VISIBLE
         } else {
             swap_auto_lmk_wrap.visibility = View.GONE
         }
@@ -478,6 +499,12 @@ class ActivitySwap : ActivityBase() {
             spf.edit().putInt(spfProp, value).commit()
             onValueChange?.run()
         }
+    }
+
+    // 离开界面时保存配置
+    override fun onPause() {
+        swapModuleUtils.saveModuleConfig(swapConfig)
+        super.onPause()
     }
 
     override fun onDestroy() {
