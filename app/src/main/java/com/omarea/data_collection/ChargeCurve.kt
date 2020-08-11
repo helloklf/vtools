@@ -46,6 +46,9 @@ class ChargeCurve(private val context: Context) : EventReceiver {
         }
     }
 
+    override val isAsync: Boolean
+        get() = true
+
     private fun startUpdate() {
         if (timer == null) {
             timer = Timer().apply {

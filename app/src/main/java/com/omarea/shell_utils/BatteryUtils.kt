@@ -1,6 +1,7 @@
 package com.omarea.shell_utils
 
 import android.content.Context
+import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
@@ -21,10 +22,6 @@ class BatteryUtils {
         private var changeLimitRunning = false
         private var isFirstRun = true
     }
-
-    //是否兼容此设备
-    val isSupport: Boolean
-        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSupport() || bpSettingSupport() || pdSupported()
 
     //获取电池信息
     /*else if (info.startsWith("POWER_SUPPLY_TIME_TO_EMPTY_AVG=")) {
@@ -272,72 +269,6 @@ class BatteryUtils {
             }
         }
 
-    //获取电池容量
-    /*
-        POWER_SUPPLY_NAME=bms
-        POWER_SUPPLY_CAPACITY=30
-        POWER_SUPPLY_CAPACITY_RAW=77
-        POWER_SUPPLY_TEMP=320
-        POWER_SUPPLY_VOLTAGE_NOW=3697500
-        POWER_SUPPLY_VOLTAGE_OCV=3777837
-        POWER_SUPPLY_CURRENT_NOW=440917
-        POWER_SUPPLY_RESISTANCE_ID=58000
-        POWER_SUPPLY_RESISTANCE=200195
-        POWER_SUPPLY_BATTERY_TYPE=sagit_atl
-        POWER_SUPPLY_CHARGE_FULL_DESIGN=3349000
-        POWER_SUPPLY_VOLTAGE_MAX_DESIGN=4400000
-        POWER_SUPPLY_CYCLE_COUNT=69
-        POWER_SUPPLY_CYCLE_COUNT_ID=1
-        POWER_SUPPLY_CHARGE_NOW_RAW=1244723
-        POWER_SUPPLY_CHARGE_NOW=0
-        POWER_SUPPLY_CHARGE_FULL=3272000
-        POWER_SUPPLY_CHARGE_COUNTER=1036650
-        POWER_SUPPLY_TIME_TO_FULL_AVG=26438
-        POWER_SUPPLY_TIME_TO_EMPTY_AVG=30561
-        POWER_SUPPLY_SOC_REPORTING_READY=1
-        POWER_SUPPLY_DEBUG_BATTERY=0
-        POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=4389899
-        POWER_SUPPLY_CC_STEP=0
-        POWER_SUPPLY_CC_STEP_SEL=0
-    */
-    val batteryMAH: String
-        get() {
-            var path = ""
-            if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
-                val batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent")
-
-                val arr = batteryInfos.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                val keywords = arrayOf("POWER_SUPPLY_CHARGE_FULL=", "POWER_SUPPLY_CHARGE_FULL_DESIGN=")
-                for (k in keywords.indices) {
-                    val keyword = keywords[k]
-                    for (i in arr.indices) {
-                        if (arr[i].startsWith(keyword)) {
-                            var chargeFull = arr[i]
-                            chargeFull = chargeFull.substring(keyword.length)
-                            if (chargeFull.length > 4)
-                                chargeFull = chargeFull.substring(0, 4)
-                            return chargeFull + "mAh"
-                        }
-                    }
-                }
-            } else {
-                if (File("/sys/class/power_supply/battery/charge_full").exists()) {
-                    path = "/sys/class/power_supply/battery/charge_full"
-                } else if (File("/sys/class/power_supply/battery/charge_full_design").exists()) {
-                    path = "/sys/class/power_supply/battery/charge_full_design"
-                } else if (File("/sys/class/power_supply/battery/full_bat").exists()) {
-                    path = "/sys/class/power_supply/battery/full_bat"
-                } else {
-                    return "? mAh"
-                }
-                val txt = KernelProrp.getProp(path)
-                if (txt.trim { it <= ' ' }.isEmpty())
-                    return "? mAh"
-                return if (txt.length > 4) txt.substring(0, 4) + " mAh" else "$txt mAh"
-            }
-            return "? mAh"
-        }
-
     //快充是否支持修改充电速度设置
     fun qcSettingSupport(): Boolean {
         return RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max")
@@ -349,21 +280,6 @@ class BatteryUtils {
 
     fun getStepCharge(): Boolean {
         return KernelProrp.getProp("/sys/class/power_supply/battery/step_charging_enabled").equals("1")
-    }
-
-    // 判断bq2597x激活状态
-    fun getBq2597xMasterActivated(): Boolean {
-        return KernelProrp.getProp("/sys/class/power_supply/bq2597x-master/charging_enabled").equals("1")
-    }
-
-    // 判断bq2597x电荷泵激活状态
-    fun getBq2597xSlaveActivated(): Boolean {
-        return KernelProrp.getProp("/sys/class/power_supply/bq2597x-slave/charging_enabled").equals("1")
-    }
-
-    // 判断是否使用了bq2597x电荷泵
-    fun getBq2597xUsed(): Boolean {
-        return RootFile.fileExists("/sys/class/power_supply/bq2597x-master/charging_enabled");
     }
 
     fun setStepCharge(stepCharge: Boolean) {
@@ -408,7 +324,7 @@ class BatteryUtils {
         if (changeLimitRunning) {
             return false
         } else {
-            synchronized(changeLimitRunning) {
+            synchronized(Scene.context) {
                 changeLimitRunning = true
 
                 if (fastChargeScript.isEmpty()) {
@@ -416,7 +332,7 @@ class BatteryUtils {
                     val output2 = FileWrite.writePrivateShellFile("addin/fast_charge_run_once.sh", "addin/fast_charge_run_once.sh", context)
                     if (output != null && output2 != null) {
                         if (isFirstRun) {
-                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd("sh " + output2)
+                            KeepShellPublic.getInstance("setChargeInputLimit", true).doCmdSync("sh " + output2)
                             isFirstRun = false
                         }
 
@@ -428,11 +344,11 @@ class BatteryUtils {
                     if (limit > 3000) {
                         var current = 3000
                         while (current < (limit - 300) && current < 5000) {
-                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current + " 1")
+                            KeepShellPublic.getInstance("setChargeInputLimit", true).doCmdSync(fastChargeScript + current + " 1")
                             current += 300
                         }
                     }
-                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + limit + " 0")
+                    KeepShellPublic.getInstance("setChargeInputLimit", true).doCmdSync(fastChargeScript + limit + " 0")
                     changeLimitRunning = false
                     true
                 } else {
@@ -655,7 +571,7 @@ class BatteryUtils {
                 val capacity_raw = KernelProrp.getProp("/sys/class/power_supply/bms/capacity_raw")
                 val capacityValue = (capacity_raw).toInt()
 
-                val valueMA = if (capacity_raw.length > 2 || capacityValue > 100) {
+                val valueMA = if (Math.abs(capacityValue - approximate) > Math.abs((capacityValue / 100f) - approximate)) {
                     capacityValue / 100f
                 } else {
                     capacity_raw.toFloat()

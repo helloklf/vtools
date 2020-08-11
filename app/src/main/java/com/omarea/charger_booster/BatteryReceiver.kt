@@ -17,7 +17,8 @@ import com.omarea.store.SpfConfig
 import com.omarea.utils.GetUpTime
 import java.util.*
 
-class BatteryReceiver(private var service: Context) : EventReceiver {
+class BatteryReceiver(private var service: Context, override val isAsync: Boolean = true) : EventReceiver {
+
     override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
             EventType.BATTERY_CAPACITY_CHANGED, // 电量百分比变化
@@ -204,13 +205,13 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
     }
 
     internal fun disableCharge() {
-        Toast.makeText(Scene.context, "充电保护策略已为您暂停充电！", Toast.LENGTH_SHORT).show()
+        Scene.toast("充电保护策略已为您暂停充电！", Toast.LENGTH_SHORT)
         keepShellAsync?.doCmd(DisableCharge)
         chargeDisabled = true
     }
 
     internal fun resumeCharge() {
-        Toast.makeText(Scene.context, "充电保护策略已为您恢复充电！", Toast.LENGTH_SHORT).show()
+        Scene.toast("充电保护策略已为您恢复充电！", Toast.LENGTH_SHORT)
         keepShellAsync!!.doCmd(ResumeCharge)
         chargeDisabled = false
     }

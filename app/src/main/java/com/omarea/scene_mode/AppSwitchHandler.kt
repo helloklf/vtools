@@ -24,7 +24,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventReceiver {
+class AppSwitchHandler(private var context: Context, override val isAsync: Boolean = false) : ModeSwitcher(), EventReceiver {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"

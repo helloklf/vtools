@@ -17,12 +17,31 @@ public class EventBus {
             for (EventReceiver eventReceiver : eventReceivers) {
                 try {
                     if (eventReceiver.eventFilter(eventType)) {
-                        eventReceiver.onReceive(eventType);
+                        if (eventReceiver.isAsync()) {
+                            new HandlerThread(eventReceiver, eventType).start();
+                        } else {
+                            eventReceiver.onReceive(eventType);
+                        }
                     }
                 } catch (Exception ex) {
                     Log.e("SceneEventBus", "" + ex.getMessage());
                 }
             }
+        }
+    }
+
+    static class HandlerThread extends Thread {
+        private EventReceiver eventReceiver;
+        private EventType eventType;
+
+        HandlerThread(EventReceiver eventReceiver, EventType eventType) {
+            this.eventReceiver = eventReceiver;
+            this.eventType = eventType;
+        }
+
+        @Override
+        public void run() {
+            eventReceiver.onReceive(eventType);
         }
     }
 

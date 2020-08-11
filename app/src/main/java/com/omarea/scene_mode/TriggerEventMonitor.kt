@@ -7,7 +7,7 @@ import com.omarea.data_collection.EventType
 import com.omarea.store.TriggerStorage
 import com.omarea.utils.GetUpTime
 
-class TriggerEventMonitor(private val context: Context) : EventReceiver {
+class TriggerEventMonitor(private val context: Context, override val isAsync: Boolean = false) : EventReceiver {
     private val triggerListConfig = context.getSharedPreferences("scene_trigger_list", Context.MODE_PRIVATE)
 
     override fun onReceive(eventType: EventType) {
