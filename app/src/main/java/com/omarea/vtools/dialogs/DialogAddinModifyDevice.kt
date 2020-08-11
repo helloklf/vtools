@@ -22,7 +22,7 @@ import com.omarea.vtools.R
  * Created by Hello on 2017/12/03.
  */
 
-class DialogAddinModifydevice(var context: Context) {
+class DialogAddinModifyDevice(var context: Context) {
 
     val BACKUP_SUCCESS = "persist.vtools.device.backuped"
     val BACKUP_BRAND = "persist.vtools.brand"

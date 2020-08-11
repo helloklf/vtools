@@ -12,7 +12,7 @@ import com.omarea.vtools.R
 import com.omarea.vtools.addin.DexCompileAddin
 import com.omarea.vtools.addin.FullScreenAddin
 import com.omarea.vtools.dialogs.DialogAddinModifyDPI
-import com.omarea.vtools.dialogs.DialogAddinModifydevice
+import com.omarea.vtools.dialogs.DialogAddinModifyDevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
 import com.omarea.vtools.dialogs.DialogCustomMAC
 import kotlinx.android.synthetic.main.activity_addin.*
@@ -52,7 +52,7 @@ class ActivityAddin : ActivityBase() {
             add(createItem(getString(R.string.addin_deviceinfo), getString(
                     R.string.addin_deviceinfo_desc),
                     Runnable {
-                        DialogAddinModifydevice(context).modifyDeviceInfo()
+                        DialogAddinModifyDevice(context).modifyDeviceInfo()
                     },
                     false))
             add(createItem(getString(R.string.addin_mac),

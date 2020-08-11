@@ -62,11 +62,21 @@ class SwapModuleUtils(private var context: Context) {
     }
 
     private fun setProp(prop: String, value: Any) {
-
+        KeepShellPublic.doCmdSync("busybox sed -i 's/^$prop=.*/$prop=$value/' /data/swap_config.conf")
     }
 
     fun saveModuleConfig(spf:SharedPreferences) {
-        val xx = 
+        setProp(swapEnable, spf.getBoolean(SpfConfig.SWAP_SPF_SWAP, false))
+        setProp(swapSize, spf.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0))
+        setProp(swapPriority, spf.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, 0))
+        setProp(swapUseLoop, spf.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
+
+        setProp(zramEnable, spf.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false))
+        setProp(zramSize, spf.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0))
+        setProp(zramCompAlgorithm, "" + spf.getString(SpfConfig.SWAP_SPF_ALGORITHM, "lzo"))
+
+        setProp(swappiness, spf.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0))
+        setProp(extraFreeKbytes, spf.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 0))
     }
 
     fun loadModuleConfig(spf:SharedPreferences) {
