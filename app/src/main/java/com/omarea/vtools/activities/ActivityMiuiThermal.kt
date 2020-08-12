@@ -44,17 +44,17 @@ class ActivityMiuiThermal : ActivityBase() {
             var currentIndex = 0
             DialogHelper.animDialog(
                     AlertDialog.Builder(this)
-                    .setTitle("选择配置来源目录")
-                    .setSingleChoiceItems(options, currentIndex) { dialog, index ->
-                currentIndex = index
-            }.setPositiveButton("浏览选定目录") { _, _ ->
-                if (currentIndex > -1) {
-                    val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
-                    intent.putExtra("extension", "conf")
-                    intent.putExtra("start", options.get(currentIndex))
-                    startActivityForResult(intent, REQUEST_CFG_FILE)
-                }
-            })
+                            .setTitle("选择配置来源目录")
+                            .setSingleChoiceItems(options, currentIndex) { dialog, index ->
+                                currentIndex = index
+                            }.setPositiveButton("浏览选定目录") { _, _ ->
+                                if (currentIndex > -1) {
+                                    val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
+                                    intent.putExtra("extension", "conf")
+                                    intent.putExtra("start", options.get(currentIndex))
+                                    startActivityForResult(intent, REQUEST_CFG_FILE)
+                                }
+                            })
         } catch (ex: Exception) {
             Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
         }
@@ -75,13 +75,8 @@ class ActivityMiuiThermal : ActivityBase() {
                     encrypted = true
                 } catch (ex: Exception) {
                     val content = String(File(currentFile).readBytes(), Charset.forName("UTF-8")).trim()
-                    if (content.trim().startsWith("[")) {
-                        thermal_config.setText(content)
-                        encrypted = false
-                    } else {
-                        thermal_config.setText("")
-                        Toast.makeText(this, "无法解析这个文件，似乎不是有效温控配置~~", Toast.LENGTH_SHORT).show()
-                    }
+                    thermal_config.setText(content)
+                    encrypted = false
                     return
                 }
             } else {
@@ -119,7 +114,11 @@ class ActivityMiuiThermal : ActivityBase() {
         if (result == "error") {
             Toast.makeText(this, "保存失败，请检查是否已授予ROOT权限，以及文件是否被锁定！", Toast.LENGTH_LONG).show()
         } else {
-            val output = AESUtil.decrypt(File(currentFile).readBytes())
+            val output = (try {
+                AESUtil.decrypt(File(currentFile).readBytes())
+            } catch (ex: Exception) {
+                File(currentFile).readBytes()
+            })
             val savedContent = String(output, Charset.forName("UTF-8"))
             if (savedContent.equals(currentContent)) {
                 Toast.makeText(this, "保存成功~", Toast.LENGTH_LONG).show()
