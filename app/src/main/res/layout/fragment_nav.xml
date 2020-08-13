@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:src="@drawable/nav_icon_warn"
-                    android:tint="?colorAccent"
+                    android:tint="?android:colorAccent"
                     android:layout_width="22dp"
                     android:layout_height="22dp" />
                 <TextView

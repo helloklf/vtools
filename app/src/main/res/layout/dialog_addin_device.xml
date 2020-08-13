@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/dialog_addin_device_warn"
-        android:textColor="?colorAccent"
+        android:textColor="?android:colorAccent"
         android:textSize="11dp" />
 
     <EditText

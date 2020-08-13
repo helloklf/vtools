@@ -40,6 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="@string/btn_confirm"
-            android:textColor="?colorAccent" />
+            android:textColor="?android:colorAccent" />
     </RelativeLayout>
 </LinearLayout>

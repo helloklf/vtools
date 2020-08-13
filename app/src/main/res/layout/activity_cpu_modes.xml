@@ -34,7 +34,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="性能配置 - 模式管理"
-                        android:textColor="?colorAccent" />
+                        android:textColor="?android:colorAccent" />
 
                     <TextView
                         style="@style/textSmall"
@@ -116,7 +116,7 @@
                             android:layout_gravity="center"
                             android:background="@android:color/transparent"
                             android:text="偏向省电"
-                            android:textColor="?colorAccent" />
+                            android:textColor="?android:colorAccent" />
 
                         <Button
                             android:id="@+id/config_cfg_select_1"
@@ -125,7 +125,7 @@
                             android:layout_gravity="center"
                             android:background="@android:color/transparent"
                             android:text="偏向性能"
-                            android:textColor="?colorAccent" />
+                            android:textColor="?android:colorAccent" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -174,7 +174,7 @@
                             android:layout_gravity="center"
                             android:background="@android:color/transparent"
                             android:text="本地导入"
-                            android:textColor="?colorAccent" />
+                            android:textColor="?android:colorAccent" />
 
                         <Button
                             android:id="@+id/config_customer_powercfg_online"
@@ -183,7 +183,7 @@
                             android:layout_gravity="center"
                             android:background="@android:color/transparent"
                             android:text="在线下载"
-                            android:textColor="?colorAccent" />
+                            android:textColor="?android:colorAccent" />
                     </LinearLayout>
                 </LinearLayout>
 

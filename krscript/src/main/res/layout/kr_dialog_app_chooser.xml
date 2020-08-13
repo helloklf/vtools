@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="?android:actionBarSize"
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
@@ -73,7 +73,7 @@
                 android:padding="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/kr_copy"
-                android:tint="?colorAccent" />
+                android:tint="?android:colorAccent" />
 
             <TextView
                 android:layout_width="0dp"
@@ -81,7 +81,7 @@
                 android:layout_weight="1"
                 android:paddingEnd="10dp"
                 android:text="@string/btn_copy_output"
-                android:textColor="?colorAccent"
+                android:textColor="?android:colorAccent"
                 android:textSize="13dp"
                 android:textStyle="bold" />
         </LinearLayout>

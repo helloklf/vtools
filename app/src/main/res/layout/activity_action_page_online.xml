@@ -12,7 +12,7 @@
 
     <WebView
         android:id="@+id/kr_online_webview"
-        android:layout_marginTop="?actionBarSize"
+        android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
@@ -21,7 +21,7 @@
         android:id="@+id/kr_download_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize"
+        android:layout_marginTop="?android:actionBarSize"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin"
         android:visibility="gone">

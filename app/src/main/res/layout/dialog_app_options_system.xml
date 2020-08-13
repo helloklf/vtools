@@ -160,7 +160,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -185,7 +185,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -209,7 +209,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_hide"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -244,7 +244,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -268,7 +268,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -308,7 +308,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_copy"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -333,7 +333,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_copy"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -366,7 +366,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_details"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -392,7 +392,7 @@
                     android:layout_height="25dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_appstore"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -419,7 +419,7 @@
             android:layout_height="25dp"
             android:layout_marginRight="6dp"
             android:src="@drawable/app_options_dex2oat"
-            android:tint="?colorAccent" />
+            android:tint="?android:colorAccent" />
 
         <TextView
             android:layout_width="0dp"

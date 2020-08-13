@@ -230,7 +230,7 @@
                                 android:layout_height="30dp"
                                 android:alpha="0.8"
                                 android:padding="5dp"
-                                android:tint="?colorAccent" />
+                                android:tint="?android:colorAccent" />
                         </LinearLayout>
                         <TextView
                             android:layout_width="match_parent"

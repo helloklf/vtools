@@ -20,7 +20,7 @@
             android:maxHeight="25dp"
             android:minWidth="25dp"
             android:minHeight="25dp"
-            android:tint="?colorAccent" />
+            android:tint="?android:colorAccent" />
 
         <TextView
             android:id="@+id/ItemTitle"

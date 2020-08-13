@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="场景模式统计的耗电记录"
-                    android:textColor="?colorAccent" />
+                    android:textColor="?android:colorAccent" />
 
                 <TextView
                     style="@style/textSmall"

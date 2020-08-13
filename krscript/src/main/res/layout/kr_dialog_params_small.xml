@@ -95,7 +95,7 @@
                     android:padding="5dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/btn_confirm"
-                    android:tint="?colorAccent" />
+                    android:tint="?android:colorAccent" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -103,7 +103,7 @@
                     android:layout_weight="1"
                     android:paddingEnd="10dp"
                     android:text="@string/btn_confirm"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp"
                     android:textStyle="bold" />
             </LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <!--<TextView
-        android:textColor="?colorAccent"
+        android:textColor="?android:colorAccent"
         android:text="需要你输入以下参数才能继续执行"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

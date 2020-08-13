@@ -11,7 +11,7 @@
         android:id="@+id/hidden_app"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize" />
+        android:layout_marginTop="?android:actionBarSize" />
 
     <include
         layout="@layout/layout_app_bar"

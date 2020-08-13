@@ -91,8 +91,8 @@
     <style name="AppThemeColor" parent="AppThemeNight">
         <item name="android:statusBarColor">@color/cardBgDark</item>
         <item name="android:navigationBarColor">@color/cardBgDark</item>
-        <item name="colorPrimary">?colorAccent</item>
-        <item name="colorPrimaryDark">?colorAccent</item>
+        <item name="colorPrimary">?android:colorAccent</item>
+        <item name="colorPrimaryDark">?android:colorAccent</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 

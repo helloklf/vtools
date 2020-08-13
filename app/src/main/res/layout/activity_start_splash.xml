@@ -50,7 +50,7 @@
                     android:layout_marginEnd="6dp"
                     android:background="@drawable/btn_bg"
                     android:text="退出"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="14dp" />
 
                 <Button
@@ -60,7 +60,7 @@
                     android:layout_marginEnd="6dp"
                     android:background="@drawable/btn_bg"
                     android:text="继续使用"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="14dp" />
             </LinearLayout>
         </LinearLayout>
@@ -76,7 +76,7 @@
         android:visibility="gone">
 
         <ImageView
-            android:tint="?colorAccent"
+            android:tint="?android:colorAccent"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@drawable/ic_settings" />
@@ -90,7 +90,7 @@
             android:keepScreenOn="true"
             android:text="TOOLBOX·SCENE"
             android:alpha="0.3"
-            android:textColor="?colorAccent"
+            android:textColor="?android:colorAccent"
             android:textSize="35sp"
             android:textStyle="bold" />
 
@@ -103,7 +103,7 @@
             android:layout_marginBottom="40sp"
             android:text="现在，先校验一些权限设置..."
             android:textAlignment="center"
-            android:textColor="?colorAccent"
+            android:textColor="?android:colorAccent"
             android:textSize="12sp" />
     </LinearLayout>
 

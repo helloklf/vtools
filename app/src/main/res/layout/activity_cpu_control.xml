@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:text="@string/help"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_gravity="fill_horizontal"
                     android:layout_marginBottom="10dp"
                     android:text="Cpuset"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -185,7 +185,7 @@
                     android:layout_gravity="fill_horizontal"
                     android:layout_marginBottom="10dp"
                     android:text="GPU Governor"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -253,7 +253,7 @@
                     android:layout_gravity="fill_horizontal"
                     android:layout_marginBottom="10dp"
                     android:text="GPU Power"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -329,7 +329,7 @@
                     android:layout_gravity="fill"
                     android:layout_marginBottom="10dp"
                     android:text="Qualcomm温控"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -381,7 +381,7 @@
                     android:layout_gravity="fill"
                     android:layout_marginBottom="10dp"
                     android:text="Exynos"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -489,7 +489,7 @@
                     android:layout_gravity="fill"
                     android:layout_marginBottom="10dp"
                     android:text="Booster"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <TextView
@@ -552,7 +552,7 @@
                     android:layout_gravity="fill"
                     android:layout_marginBottom="10dp"
                     android:text="Core Online"
-                    android:textColor="?colorAccent"
+                    android:textColor="?android:colorAccent"
                     android:textSize="16dp" />
 
                 <GridLayout

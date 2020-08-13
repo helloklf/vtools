@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Paypal"
-                android:textColor="?colorAccent" />
+                android:textColor="?android:colorAccent" />
         </LinearLayout>
 
         <LinearLayout
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="支付宝"
-                android:textColor="?colorAccent" />
+                android:textColor="?android:colorAccent" />
         </LinearLayout>
 
         <LinearLayout
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="微信"
-                android:textColor="?colorAccent" />
+                android:textColor="?android:colorAccent" />
         </LinearLayout>
 
         <LinearLayout style="@style/ListCardItemClickable">
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="免费捐赠（支付宝红包）"
-                android:textColor="?colorAccent" />
+                android:textColor="?android:colorAccent" />
 
             <TextView
                 android:id="@+id/pay_alipay_code"
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="捐赠说明：\n"
-                android:textColor="?colorAccent" />
+                android:textColor="?android:colorAccent" />
 
             <TextView
                 style="@style/textSmall"

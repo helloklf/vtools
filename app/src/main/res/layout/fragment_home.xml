@@ -318,7 +318,7 @@
                         android:padding="5dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/edit"
-                        android:tint="?colorAccent" />
+                        android:tint="?android:colorAccent" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -386,7 +386,7 @@
                 android:padding="10dp"
                 android:layout_margin="4dp"
                 android:background="@drawable/krscript_item_ripple_inactive"
-                android:tint="?colorAccent"
+                android:tint="?android:colorAccent"
                 android:textAlignment="center"
                 android:id="@+id/home_message"
                 android:visibility="gone"
