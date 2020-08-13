@@ -17,7 +17,7 @@ class TabIconHelper(private var tabHost: TabHost, private var activity: Activity
     }
 
     fun newTabSpec(text: String, drawable: Drawable, content: Int): String {
-        val layout = View.inflate(activity.baseContext, layout, null)
+        val layout = View.inflate(activity, layout, null)
         val imageView = layout.findViewById<ImageView>(R.id.ItemIcon)
         val textView = layout.findViewById<TextView>(R.id.ItemTitle)
         val tabId = "tab_" + views.size
