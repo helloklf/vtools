@@ -40,8 +40,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private var displayHeight = 2340
 
     companion object {
-        const val useXposed = false
-
         private var lastParsingThread: Long = 0
     }
 
@@ -113,35 +111,20 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private fun updateConfig() {
-        // TODO:去掉
-        if (useXposed && XposedCheck.xposedIsRunning()) {
-            flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
+        flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
-            val info = serviceInfo
-            if (flagRequestKeyEvent) {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-            } else {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
-            }
+        val info = serviceInfo // AccessibilityServiceInfo()
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
+        info.notificationTimeout = 0
+        info.packageNames = null
 
-            setServiceInfo(info);
-            GlobalStatus.homeMessage = "正在通过Xposed运行场景模式";
+        if (flagRequestKeyEvent) {
+            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
         } else {
-            flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
-
-            val info = serviceInfo // AccessibilityServiceInfo()
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
-            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
-            info.notificationTimeout = 0
-            info.packageNames = null
-
-            if (flagRequestKeyEvent) {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-            } else {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
-            }
-            setServiceInfo(info);
+            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
         }
+        setServiceInfo(info);
     }
 
     public override fun onServiceConnected() {
