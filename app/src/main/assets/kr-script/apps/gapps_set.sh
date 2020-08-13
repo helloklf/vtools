@@ -12,7 +12,6 @@ fi
 echo ''
 echo ''
 
-
 pm $pm_cmd com.google.android.gsf 2> /dev/null
 pm $pm_cmd com.google.android.gsf.login 2> /dev/null
 pm $pm_cmd com.google.android.gms 2> /dev/null

@@ -1,7 +1,6 @@
 package com.omarea.krscript.ui
 
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +16,8 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
-import com.omarea.krscript.ScriptTaskThread
+import com.omarea.krscript.BgTaskThread
+import com.omarea.krscript.HiddenTaskThread
 import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.executor.ScriptEnvironmen
@@ -430,14 +430,28 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript, nodeInfoBase)
     }
 
+
+    // 标识是否有隐藏任务在运行中
+    var hiddenTaskRunning = false
     private fun actionExecute(nodeInfo: RunnableNode, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val context = context!!
 
-        if (nodeInfo.backgroundTask) {
+        if (nodeInfo.shell == RunnableNode.shellModeBgTask) {
             val onDismiss = Runnable {
                 krScriptActionHandler?.onActionCompleted(nodeInfo)
             }
-            ScriptTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
+            BgTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
+        } else if (nodeInfo.shell == RunnableNode.shellModeHidden) {
+            if (hiddenTaskRunning) {
+                Toast.makeText(context, getString(R.string.kr_hidden_task_running), Toast.LENGTH_SHORT).show()
+            } else {
+                hiddenTaskRunning = true
+                val onDismiss = Runnable {
+                    hiddenTaskRunning = false
+                    krScriptActionHandler?.onActionCompleted(nodeInfo)
+                }
+                HiddenTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
+            }
         } else {
             val onDismiss = Runnable {
                 krScriptActionHandler?.onActionCompleted(nodeInfo)

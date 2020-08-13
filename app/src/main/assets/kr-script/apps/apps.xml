@@ -58,8 +58,9 @@
             <title>打开Google设置</title>
             <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
         </page>
-        <switch auto-off="true" id="google_service"
+        <switch id="google_service"
             logo-path="kr-script/apps/google.png"
+            shell="hidden"
             visible=". ./kr-script/common/gapps_support.sh">
             <title>启用Google服务</title>
             <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>

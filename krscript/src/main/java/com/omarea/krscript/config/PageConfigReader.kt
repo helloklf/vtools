@@ -38,8 +38,6 @@ class PageConfigReader {
         this.pageConfigStream = pageConfigStream;
     }
 
-    private val ASSETS_FILE = "file:///android_asset/"
-
     fun readConfigXml(): ArrayList<NodeInfoBase>? {
         if (pageConfigStream != null) {
             return readConfigXml(pageConfigStream!!)
@@ -399,7 +397,7 @@ class PageConfigReader {
                 when (parser.getAttributeName(i)) {
                     "icon", "icon-path" -> runnableNode.iconPath = attrValue.trim()
                     "logo", "logo-path" -> runnableNode.logoPath = attrValue.trim()
-                    "allow-shortcut" -> runnableNode.allowShortcut = attrValue.equals("allow") || attrValue.equals("allow-shortcut") || attrValue.equals("true") || attrValue.equals("1")
+                    "allow-shortcut" -> runnableNode.allowShortcut = attrValue == "allow" || attrValue == "allow-shortcut" || attrValue == "true" || attrValue == "1"
                 }
             }
         }
@@ -435,9 +433,12 @@ class PageConfigReader {
                             clickableNode.updateBlocks = attrValue.split(",").map { it.trim() }.dropLastWhile { it.isEmpty() }.toTypedArray()
                         }
                     }
+                    "shell" -> {
+                        clickableNode.shell = attrValue
+                    }
                     "bg-task", "background-task", "async-task" -> {
                         if (attrValue == "async-task" || attrValue == "async" || attrValue == "bg-task" || attrValue == "background" || attrValue == "background-task" || attrValue == "true" || attrValue == "1") {
-                            clickableNode.backgroundTask = true
+                            clickableNode.shell = RunnableNode.shellModeBgTask
                         }
                     }
                 }
@@ -556,12 +557,8 @@ class PageConfigReader {
 
     private fun tagEndInSwitch(switchNode: SwitchNode?, parser: XmlPullParser) {
         if (switchNode != null) {
-            if (switchNode.getState == null) {
-                switchNode.getState = ""
-            } else {
-                val shellResult = executeResultRoot(context, switchNode.getState)
-                switchNode.checked = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
-            }
+            val shellResult = executeResultRoot(context, switchNode.getState)
+            switchNode.checked = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
             if (switchNode.setState == null) {
                 switchNode.setState = ""
             }

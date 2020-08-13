@@ -19,7 +19,7 @@ import com.omarea.krscript.executor.ShellExecutor
 import com.omarea.krscript.model.RunnableNode
 import com.omarea.krscript.model.ShellHandlerBase
 
-class ScriptTaskThread(private var process: Process) : Thread() {
+class BgTaskThread(private var process: Process) : Thread() {
     override fun run() {
         try {
             process.waitFor()

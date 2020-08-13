@@ -15,8 +15,14 @@ open class RunnableNode(currentConfigXml: String) : ClickableNode(currentConfigX
     // 执行完成后是否自动关闭页面
     var autoFinish = false
 
-    // 是否是后台运行的任务
-    var backgroundTask: Boolean = false
+    // 交互界面（default、bg-task、hidden）
+    var shell = shellModeDefault
+
+    companion object {
+        val shellModeDefault = "default"
+        val shellModeBgTask = "bg-task"
+        val shellModeHidden = "hidden"
+    }
 
     //
     var setState: String? = null
