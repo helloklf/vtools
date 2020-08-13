@@ -2,15 +2,9 @@ package com.omarea.shell_utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.store.SpfConfig
-import java.io.File
-import java.lang.Exception
-import java.lang.StringBuilder
 
 /*
 # 配置示例

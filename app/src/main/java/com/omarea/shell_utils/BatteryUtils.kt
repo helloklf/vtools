@@ -3,12 +3,10 @@ package com.omarea.shell_utils
 import android.content.Context
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.model.BatteryStatus
-import java.io.File
 
 /**
  * Created by Hello on 2017/11/01.
