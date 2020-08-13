@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
@@ -173,10 +174,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         if (packageName != null && packageName != lastModePackage) {
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(packageName, firstMode)!!
-                if (mode == IGONED) {
-                    return
-                }
-                if (lastMode != mode) {
+                if (mode != IGONED && lastMode != mode) {
                     toggleConfig(mode)
                 }
             }
@@ -269,7 +267,6 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
                 initPowercfg()
             } else {
                 spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
-                // Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
                 dyamicCore = false
             }
             spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
@@ -295,7 +292,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         sceneConfigChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 updateConfig()
-                Toast.makeText(context, "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+                Scene.toast( "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
             }
         }
 

@@ -167,6 +167,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     var screenBrightness = -1;
     var currentSceneConfig: SceneConfigInfo? = null
 
+    // 备份亮度设置
     private fun backupBrightnessState(): Int {
         if (brightnessMode == -1) {
             try {
@@ -179,6 +180,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         return brightnessMode
     }
 
+    // 恢复亮度设置
     private fun resumeBrightnessState() {
         try {
             val modeBackup = brightnessMode;
@@ -197,6 +199,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         }
     }
 
+    // 关闭自动亮度
     private fun autoLightOff(lightValue: Int = -1): Boolean {
         try {
             if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)) {
@@ -246,12 +249,14 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     private var locationMode = "none"
+    // 备份定位设置
     private fun backupLocationModeState() {
         if (locationMode == "none") {
             locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
         }
     }
 
+    // 还原定位设置
     private fun restoreLocationModeState() {
         if (locationMode != "none") {
             if (!locationMode.contains("gps")) {
@@ -266,6 +271,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     private var headsup = -1
+    // 备份悬浮通知
     private fun backupHeadUp() {
         if (headsup < 0) {
             try {
@@ -275,6 +281,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         }
     }
 
+    // 还原悬浮通知
     private fun restoreHeaddUp() {
         try {
             if (headsup > -1) {
