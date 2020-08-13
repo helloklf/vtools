@@ -153,7 +153,8 @@ class DialogAddinModifyDPI(var context: Context) {
             if (dialogInstance.isShowing == true) {
                 try {
                     dialogInstance.dismiss()
-                } catch (ex: java.lang.Exception) {}
+                } catch (ex: java.lang.Exception) {
+                }
             }
         }
     }
@@ -172,11 +173,14 @@ class DialogAddinModifyDPI(var context: Context) {
                     if (timeOut < 1) {
                         cancel()
                         if (dialog.isShowing) {
+                            handler.post {
+                                try {
+                                    dialog.dismiss()
+                                } catch (ex: Exception) {
+                                }
+                            }
                             resetDisplay()
                             pointerLocationOff()
-                            handler.post {
-                                dialog.dismiss()
-                            }
                         }
                     } else {
                         handler.post {
