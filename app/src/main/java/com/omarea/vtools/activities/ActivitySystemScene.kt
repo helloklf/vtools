@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
@@ -34,7 +35,7 @@ class ActivitySystemScene : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var globalSPF: SharedPreferences
     private lateinit var chargeConfig: SharedPreferences
-    internal val myHandler: Handler = Handler()
+    internal val myHandler: Handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

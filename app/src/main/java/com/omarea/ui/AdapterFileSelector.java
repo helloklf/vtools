@@ -3,6 +3,7 @@ package com.omarea.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -22,7 +23,7 @@ public class AdapterFileSelector extends BaseAdapter {
     private Runnable fileSelected;
     private File currentDir;
     private File selectedFile;
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private ProgressBarDialog progressBarDialog;
     private String extension;
     private boolean hasParent = false; // 是否还有父级

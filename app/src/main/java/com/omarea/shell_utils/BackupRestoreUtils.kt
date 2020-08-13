@@ -2,6 +2,7 @@ package com.omarea.shell_utils
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
@@ -14,7 +15,7 @@ import com.omarea.utils.CommonCmds
 
 class BackupRestoreUtils(var context: Context) {
     val dialog: ProgressBarDialog = ProgressBarDialog(context)
-    internal var myHandler: Handler = Handler()
+    internal var myHandler: Handler = Handler(Looper.getMainLooper())
 
     companion object {
         private var bootPartPath = "/dev/block/bootdevice/by-name/boot"

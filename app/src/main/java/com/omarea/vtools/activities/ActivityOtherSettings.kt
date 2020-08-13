@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Switch
 import androidx.core.content.PermissionChecker
@@ -20,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_other_settings.*
 
 class ActivityOtherSettings : ActivityBase() {
     private lateinit var spf: SharedPreferences
-    private var myHandler = Handler()
+    private var myHandler = Handler(Looper.getMainLooper())
 
     override fun onPostResume() {
         super.onPostResume()

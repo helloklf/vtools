@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
@@ -30,7 +31,7 @@ class ActivityCpuControl : ActivityBase() {
     private var cpuModeName: String? = null
 
     private var clusterCount = 0
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
     private var coreCount = 0
     private var cores = arrayListOf<CheckBox>()
     private var exynosHMP = false

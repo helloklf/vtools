@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
@@ -25,7 +26,7 @@ import java.lang.ref.WeakReference
 class ActivityHiddenApps : ActivityBase() {
     private lateinit var progressBarDialog: ProgressBarDialog
     private var adapter: WeakReference<AppListAdapter>? = null
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private lateinit var pm: PackageManager
     private val keepShell = KeepShell()
 

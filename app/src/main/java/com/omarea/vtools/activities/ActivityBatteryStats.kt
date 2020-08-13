@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
@@ -53,7 +54,7 @@ class ActivityBatteryStats : ActivityBase() {
         super.onPause()
     }
 
-    private val hander = Handler()
+    private val hander = Handler(Looper.getMainLooper())
     private fun updateMaxState() {
         // 峰值设置
         val maxInput = abs(storage.getMaxIO(BatteryManager.BATTERY_STATUS_CHARGING))

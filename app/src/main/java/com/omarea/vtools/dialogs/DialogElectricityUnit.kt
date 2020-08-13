@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageButton
@@ -85,7 +86,7 @@ class DialogElectricityUnit {
             alertDialog?.dismiss()
         }
         electricity_adj_unit.setText(unit.toString())
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         val timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {

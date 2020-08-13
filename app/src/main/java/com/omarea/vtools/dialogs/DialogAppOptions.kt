@@ -4,10 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.os.Build
-import android.os.Handler
-import android.os.Message
-import android.os.UserManager
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
@@ -206,7 +203,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         DialogHelper.animDialog(alert)
     }
 
-    open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
+    open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
         private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
         private var error = java.lang.StringBuilder()

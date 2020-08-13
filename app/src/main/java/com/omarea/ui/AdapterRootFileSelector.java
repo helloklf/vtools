@@ -3,6 +3,7 @@ package com.omarea.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -23,7 +24,7 @@ public class AdapterRootFileSelector extends BaseAdapter {
     private Runnable fileDelete;
     private RootFileInfo currentDir;
     private RootFileInfo selectedFile;
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private ProgressBarDialog progressBarDialog;
     private String extension;
     private boolean clickSelected = true; // 点击选中

@@ -7,6 +7,7 @@ import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
@@ -216,7 +217,7 @@ class ActivityBattery:  ActivityBase() {
         }
     }
 
-    private var myHandler: Handler = Handler()
+    private var myHandler: Handler = Handler(Looper.getMainLooper())
     private var timer: Timer? = null
     private lateinit var batteryMAH: String
     private var temp = 0.0

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
 
@@ -15,7 +16,7 @@ import com.omarea.data_collection.EventType
  * Created by Hello on 2018/01/23.
  */
 class ScreenState(private var context: Context) : BroadcastReceiver() {
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
     private var lastChange = 0L
     override fun onReceive(p0: Context?, p1: Intent?) {
         if (p1 == null) {

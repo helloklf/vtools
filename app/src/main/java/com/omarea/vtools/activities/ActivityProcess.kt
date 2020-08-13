@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -31,7 +32,7 @@ class ActivityProcess : ActivityBase() {
 
     private val processUtils = ProcessUtils()
     private var supported: Boolean = false
-    private val handle = Handler()
+    private val handle = Handler(Looper.getMainLooper())
 
     private fun onViewCreated(context: Context) {
         supported = processUtils.supported(context)

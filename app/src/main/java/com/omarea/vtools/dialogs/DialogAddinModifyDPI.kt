@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.LayoutInflater
@@ -160,7 +161,7 @@ class DialogAddinModifyDPI(var context: Context) {
     }
 
     private fun autoResetConfirm() {
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_addin_dpi_confirm, null)
             val timeoutView = view.findViewById<TextView>(R.id.dpi_modify_timeout)

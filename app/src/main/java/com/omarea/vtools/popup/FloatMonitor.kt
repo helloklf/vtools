@@ -10,6 +10,7 @@ import android.graphics.Typeface
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.Spannable
 import android.text.SpannableString
@@ -192,7 +193,7 @@ class FloatMonitor(private val mContext: Context) {
     private var otherInfo: TextView? = null
 
     private var activityManager: ActivityManager? = null
-    private var myHandler = Handler()
+    private var myHandler = Handler(Looper.getMainLooper())
     private var batteryUnit = BatteryUtils()
     private val info = ActivityManager.MemoryInfo()
 

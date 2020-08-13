@@ -51,7 +51,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private lateinit var spf: SharedPreferences
     private var modeList = ModeSwitcher()
-    private var myHandler = Handler()
+    private var myHandler = Handler(Looper.getMainLooper())
     private var cpuLoadUtils = CpuLoadUtils()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

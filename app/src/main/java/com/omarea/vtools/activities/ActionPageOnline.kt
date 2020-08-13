@@ -15,6 +15,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -310,7 +311,7 @@ class ActionPageOnline : ActivityBase() {
             Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
         }
 
-        val handler = Handler()
+        val handler = Handler(Looper.getMainLooper())
         val downloader = Downloader(this)
         progressPolling = Timer()
         progressPolling?.schedule(object : TimerTask() {

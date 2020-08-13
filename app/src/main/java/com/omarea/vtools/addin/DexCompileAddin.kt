@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +36,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    open class ProgressHandler(context: Context, total: Int) : Handler() {
+    open class ProgressHandler(context: Context, total: Int) : Handler(Looper.getMainLooper()) {
         protected var dialog: View
         protected var alert: android.app.AlertDialog
         protected var textView: TextView

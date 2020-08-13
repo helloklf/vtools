@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.*
 import com.omarea.Scene
@@ -27,7 +28,7 @@ import kotlin.collections.LinkedHashMap
 
 class ActivitySwap : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
-    private val myHandler = Handler()
+    private val myHandler = Handler(Looper.getMainLooper())
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
     private val swapUtils = SwapUtils(Scene.context)

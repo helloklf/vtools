@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -148,7 +149,7 @@ class ActivityStartSplash : Activity() {
             if (installer2.privateBusyboxInstalled()) {
                 BusyboxInstalled(context.get()!!).run()
             } else {
-                val handler = Handler()
+                val handler = Handler(Looper.getMainLooper())
                 Thread(Runnable {
                     if (installer2.installPrivateBusybox()) {
                         handler.post {
@@ -219,7 +220,7 @@ class ActivityStartSplash : Activity() {
     }
 
     private var hasRoot = false
-    private var myHandler = Handler()
+    private var myHandler = Handler(Looper.getMainLooper())
 
     private fun checkRoot(next: Runnable, skip: Runnable) {
         val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

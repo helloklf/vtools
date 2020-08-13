@@ -3,6 +3,7 @@ package com.omarea.vtools.activities
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.vtools.R
@@ -43,7 +44,7 @@ class ActivityCharge : ActivityBase() {
         super.onPause()
     }
 
-    private val hander = Handler()
+    private val hander = Handler(Looper.getMainLooper())
     private fun updateUI() {
         hander.post {
             view_speed.invalidate()

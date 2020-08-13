@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -40,7 +41,7 @@ class ActivityApplistions : ActivityBase() {
         setList()
     })
 
-    class UpdateHandler(private var updateList: Runnable?) : Handler() {
+    class UpdateHandler(private var updateList: Runnable?) : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.what == 2) {

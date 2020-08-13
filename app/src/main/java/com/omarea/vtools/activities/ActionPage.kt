@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,7 +34,7 @@ import kotlinx.android.synthetic.main.activity_action_page.*
 class ActionPage : ActivityBase() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
     private lateinit var currentPageConfig: PageNode
     private var autoRunItemId = ""
 

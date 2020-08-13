@@ -8,10 +8,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.UserManager
+import android.os.*
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
@@ -37,12 +34,12 @@ import com.omarea.ui.FreezeAppAdapter
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.fragment_freeze.*
+import kotlinx.android.synthetic.main.activity_freeze_apps.*
 
 class ActivityFreezeApps : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private var freezeApps = java.util.ArrayList<String>()
-    private var handler: Handler = Handler()
+    private var handler: Handler = Handler(Looper.getMainLooper())
     private lateinit var config: SharedPreferences
     private var useSuspendMode = false
 

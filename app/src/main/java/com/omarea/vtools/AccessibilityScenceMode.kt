@@ -11,6 +11,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -469,7 +470,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
     private var downTime: Long = -1
     private var longClickTime: Long = 500;
     private var serviceIsConnected = false

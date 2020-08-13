@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.ImageButton
 import android.widget.ListView
@@ -145,7 +146,7 @@ class FloatTaskManager(private val context: Context) {
         }
     }
 
-    private val handle = Handler()
+    private val handle = Handler(Looper.getMainLooper())
     private val processUtils = ProcessUtils()
 
     // 更新任务列表

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -36,7 +37,7 @@ class Update {
     }
 
     fun checkUpdate(context: Context) {
-        val handler = Handler();
+        val handler = Handler(Looper.getMainLooper());
         Thread(Runnable {
             //http://47.106.224.127/
             try {
