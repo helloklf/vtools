@@ -85,8 +85,6 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         }
     }
 
-
-
     private fun stopTimer() {
         try {
             if (timer != null) {
@@ -245,6 +243,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
             context.unregisterReceiver(sceneAppChanged)
             sceneAppChanged = null
         }
+        EventBus.subscibe(notifyHelper)
         EventBus.unsubscibe(this)
     }
 
@@ -314,5 +313,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
 
         context.registerReceiver(sceneConfigChanged, IntentFilter(context.getString(R.string.scene_change_action)))
         context.registerReceiver(sceneAppChanged, IntentFilter(context.getString(R.string.scene_appchange_action)))
+
+        EventBus.subscibe(notifyHelper)
     }
 }

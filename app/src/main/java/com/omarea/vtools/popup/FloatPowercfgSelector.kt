@@ -11,8 +11,9 @@ import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
 import com.omarea.Scene
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventType
 import com.omarea.permissions.NotificationListener
-import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.ProcessUtils
@@ -176,8 +177,7 @@ class FloatPowercfgSelector(context: Context) {
                     }
                     reStartService(packageName, selectedMode)
                 }
-
-                AlwaysNotification(context, true).notify()
+                EventBus.publish(EventType.SCENE_MODE_ACTION)
             }
         }
 

@@ -10,6 +10,7 @@ public enum EventType {
     SCREEN_ON,                  // 屏幕打开
     SCREEN_OFF,                 // 屏幕关闭
     APP_SWITCH,                 // 应用切换
+    SCENE_MODE_ACTION,          // 场景模式 常驻通知动作触发
     BOOT_COMPLETED,             // 启动完成
     TIMER;                      // 定时器
 }

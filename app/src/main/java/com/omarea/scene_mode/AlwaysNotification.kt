@@ -9,6 +9,8 @@ import android.os.BatteryManager
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import com.omarea.data_collection.EventReceiver
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
@@ -18,7 +20,15 @@ import com.omarea.vtools.R
 /**
  * 常驻通知
  */
-internal class AlwaysNotification(private var context: Context, notify: Boolean = false) : ModeSwitcher() {
+internal class AlwaysNotification(private var context: Context, notify: Boolean = false, override val isAsync: Boolean = false) : ModeSwitcher(), EventReceiver {
+    override fun eventFilter(eventType: EventType): Boolean {
+        return eventType == EventType.SCENE_MODE_ACTION
+    }
+
+    override fun onReceive(eventType: EventType) {
+        notify(false)
+    }
+
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null

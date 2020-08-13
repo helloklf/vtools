@@ -1,9 +1,7 @@
 package com.omarea.utils
 
-import android.app.ActivityManager
 import android.content.Context
 import android.os.Environment
-import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.shell_utils.AppErrorLogcatUtils
@@ -41,14 +39,13 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
             }
         }
         AppErrorLogcatUtils().catLogInfo2File(android.os.Process.myPid())
-        try {
-            if (mContext != null) {
-                AlwaysNotification(mContext!!, true).hideNotify()
-            }
-        } catch (ex: Exception) {
-
-        }
         mContext?.run {
+            try {
+                if (mContext != null) {
+                    AlwaysNotification(mContext!!, true).hideNotify()
+                }
+            } catch (ex: Exception) {
+            }
             if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, true)) {
                 val serviceHelper = AccessibleServiceHelper()
                 if (serviceHelper.serviceRunning(mContext!!)) {
