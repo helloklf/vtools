@@ -25,7 +25,8 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
             EventType.BATTERY_CHANGED,              // 这个执行频率可能有点太高了，耗电
             EventType.BATTERY_LOW,
             EventType.POWER_CONNECTED,
-            EventType.POWER_DISCONNECTED -> true
+            EventType.POWER_DISCONNECTED,
+            EventType.CHARGE_CONFIG_CHANGED -> true
             else -> false
         }
     }
@@ -278,35 +279,39 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
     private fun setChargerLimitToValue(speedMa: Int, eventType: EventType, protectedMode: Boolean) {
         val execMode = chargeConfig.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
         try {
-            val required = when (execMode) {
-                // 如果目标是降低充电速度，则不比频繁尝试调节速度，只需要在电量变化或者插拔充电器时执行即可
-                SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN -> {
-                    if (eventType != EventType.BATTERY_CHANGED) {
-                        Log.d("@Scene", "CHARGE_SPF_EXEC_MODE_SPEED_DOWN > " + eventType.name)
-                    }
-                    eventType == EventType.BATTERY_CAPACITY_CHANGED || eventType == EventType.POWER_CONNECTED || eventType == EventType.POWER_DISCONNECTED
-                }
-                // 如果是暴力充电加速，则要尽可能高频率的执行速度调节，并且开启定时任务不断执行（除非已经进入动态调速保护阶段）
-                SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE -> {
-                    if (!protectedMode) {
-                        if (eventType != EventType.TIMER) {
-                            startGovernorTimer()
-                        } else {
-                            Log.d("@Scene", "Exec ForceQuickChargeTimer")
+            val required = if (eventType == EventType.CHARGE_CONFIG_CHANGED) {
+                true
+            } else {
+                when (execMode) {
+                    // 如果目标是降低充电速度，则不比频繁尝试调节速度，只需要在电量变化或者插拔充电器时执行即可
+                    SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN -> {
+                        if (eventType != EventType.BATTERY_CHANGED) {
+                            Log.d("@Scene", "CHARGE_SPF_EXEC_MODE_SPEED_DOWN > " + eventType.name)
                         }
-                        true
-                    } else {
-                        stopGovernorTimer()
+                        eventType == EventType.BATTERY_CAPACITY_CHANGED || eventType == EventType.POWER_CONNECTED || eventType == EventType.POWER_DISCONNECTED
+                    }
+                    // 如果是暴力充电加速，则要尽可能高频率的执行速度调节，并且开启定时任务不断执行（除非已经进入动态调速保护阶段）
+                    SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE -> {
+                        if (!protectedMode) {
+                            if (eventType != EventType.TIMER) {
+                                startGovernorTimer()
+                            } else {
+                                Log.d("@Scene", "Exec ForceQuickChargeTimer")
+                            }
+                            true
+                        } else {
+                            stopGovernorTimer()
+                            // 如果已经进入充电保护阶段，还是要限制一下执行频率
+                            !(protectedMode && (System.currentTimeMillis() - lastSetChargeLimit < 5000))
+                        }
+                    }
+                    // 如果是常规加速，则在每次电池状态发生辩护时都执行（除非已经进入动态调速保护阶段）
+                    SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP -> {
                         // 如果已经进入充电保护阶段，还是要限制一下执行频率
                         !(protectedMode && (System.currentTimeMillis() - lastSetChargeLimit < 5000))
                     }
+                    else -> false
                 }
-                // 如果是常规加速，则在每次电池状态发生辩护时都执行（除非已经进入动态调速保护阶段）
-                SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP -> {
-                    // 如果已经进入充电保护阶段，还是要限制一下执行频率
-                    !(protectedMode && (System.currentTimeMillis() - lastSetChargeLimit < 5000))
-                }
-                else -> false
             }
 
             if (required) {
