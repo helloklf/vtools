@@ -67,7 +67,7 @@
             <get>run gapps_get.sh</get>
             <set>run gapps_set.sh</set>
         </switch>
-        <switch auto-off="true" id="google_hal_eis">
+        <switch auto-off="true" id="google_hal_eis" shell="hidden">
             <title>Camera2 HAL、EIS</title>
             <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退。可能导致相机无法开启或切换缓慢</desc>
             <summary>谷歌相机需要自行下载适合自己机型的版本</summary>

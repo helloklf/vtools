@@ -4,7 +4,7 @@
     <resource dir="file:///android_asset/kr-script/general" />
 
     <group>
-        <switch visible=". ./kr-script/common/android_n.sh">
+        <switch visible=". ./kr-script/common/android_n.sh" shell="hidden">
             <title>强制分屏</title>
             <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
             <get>. ./kr-script/general/force_resize_get.sh</get>

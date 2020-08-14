@@ -1,5 +1,3 @@
-#!/system/bin/sh
-
 source ./kr-script/common/props.sh
 
 if [[ $state = 1 ]]

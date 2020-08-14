@@ -1,5 +1,3 @@
-#!/system/bin/sh
-
 mode=`settings get global hide_error_dialogs`
 if [[ "$mode" = "1" ]];
 then

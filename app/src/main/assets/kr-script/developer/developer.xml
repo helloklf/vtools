@@ -10,19 +10,19 @@
             <get>run adb_remote_get.sh</get>
             <set>run adb_remote_set.sh</set>
         </switch>
-        <switch id="developer_error_dialog">
+        <switch id="developer_error_dialog" shell="hidden">
             <title>隐藏错误弹窗</title>
             <desc>不要显示应用崩溃和未响应弹窗</desc>
             <get>run hide_errordialog_get.sh</get>
             <set>run hide_errordialog_set.sh</set>
         </switch>
-        <switch id="developer_anr">
+        <switch id="developer_anr" shell="hidden">
             <title>一律显示崩溃对话框</title>
             <desc>在每次应用崩溃时显示对话框</desc>
             <get>settings get secure show_first_crash_dialog_dev_option</get>
             <set>settings put secure show_first_crash_dialog_dev_option $state</set>
         </switch>
-        <switch id="developer_anr">
+        <switch id="developer_anr" shell="hidden">
             <title>显示后台应用未响应</title>
             <desc>为后台应用程序显示“应用程序未响应（ANR）”对话框</desc>
             <get>run anr_get.sh</get>
