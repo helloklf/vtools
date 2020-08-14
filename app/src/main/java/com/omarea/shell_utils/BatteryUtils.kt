@@ -33,6 +33,19 @@ class BatteryUtils {
                         stringBuilder.append(((val / 3600.0) + "    ").substring(0, 4));
                         stringBuilder.append("小时");
                     }*/
+
+    private fun str2voltage(str:String): String {
+        return (if (str.length >= 4) {
+            str.substring(0, 4).toInt() / 1000f
+        } else if (str.length >= 3) {
+            str.substring(0, 3).toInt() / 100f
+        } else if (str.length >= 2) {
+            str.substring(0, 2).toInt() / 10f
+        } else {
+            return str
+        }).toString() + "v"
+    }
+
     val batteryInfo: String
         get() {
             if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
@@ -62,7 +75,15 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_TEMP=")) {
                             val keyrowd = "POWER_SUPPLY_TEMP="
                             stringBuilder.append("电池温度 = ")
-                            stringBuilder.append(info.substring(keyrowd.length, keyrowd.length + 2))
+                            val temp = info.substring(keyrowd.length, info.length)
+                            val prefix = if (temp.contains("-")) "-" else ""
+                            val tempStr = temp.replace("-", "")
+                            stringBuilder.append(prefix)
+                            stringBuilder.append(if (tempStr.length >= 3) {
+                                tempStr.substring(0, 3).toInt() / 10f
+                            } else {
+                                tempStr.substring(0, 2).toInt()
+                            })
                             stringBuilder.append("°C")
                         } else if (info.startsWith("POWER_SUPPLY_TEMP_WARM=")) {
                             val keyrowd = "POWER_SUPPLY_TEMP_WARM="
@@ -79,27 +100,19 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_NOW="
                             stringBuilder.append("当前电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
-                            stringBuilder.append(v / 10.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX_DESIGN=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX_DESIGN="
                             stringBuilder.append("设计电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
-                            stringBuilder.append(v / 10.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MIN=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_MIN="
                             stringBuilder.append("最小电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
-                            stringBuilder.append(v / 10.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX="
                             stringBuilder.append("最大电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
-                            stringBuilder.append(v / 10.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_BATTERY_TYPE=")) {
                             val keyrowd = "POWER_SUPPLY_BATTERY_TYPE="
                             stringBuilder.append("电池类型 = ")
@@ -111,15 +124,25 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=")) {
                             val keyrowd = "POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE="
                             stringBuilder.append("充电电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
-                            stringBuilder.append(v / 10.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_CAPACITY=")) {
                             val keyrowd = "POWER_SUPPLY_CAPACITY="
                             stringBuilder.append("电池电量 = ")
                             stringBuilder.append(info.substring(keyrowd.length, info.length))
                             stringBuilder.append("%")
-                        } else if (info.startsWith("POWER_SUPPLY_CURRENT_NOW=")) {
+                        } else if (info.startsWith("POWER_SUPPLY_MODEL_NAME=")) {
+                            val keyrowd = "POWER_SUPPLY_MODEL_NAME="
+                            stringBuilder.append("监测模块 = ")
+                            stringBuilder.append(info.substring(keyrowd.length, info.length))
+                        } else if (info.startsWith("POWER_SUPPLY_RESISTANCE_NOW=")) {
+                            val keyrowd = "POWER_SUPPLY_RESISTANCE_NOW="
+                            stringBuilder.append("电阻/阻值 = ")
+                            stringBuilder.append(info.substring(keyrowd.length, info.length))
+                        } /* else if (info.startsWith("POWER_SUPPLY_VOLTAGE_AVG=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_AVG="
+                            stringBuilder.append("平均电压 = ")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
+                        } */ else if (info.startsWith("POWER_SUPPLY_CURRENT_NOW=")) {
                             val keyrowd = "POWER_SUPPLY_CURRENT_NOW="
                             io = info.substring(keyrowd.length, info.length)
                             continue
@@ -164,17 +187,18 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_NOW="
                             stringBuilder.append("当前电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
-                            voltage = v / 1000 / 1000.0f
-                            stringBuilder.append(voltage)
-                            stringBuilder.append("v")
-                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX=")) {
+                            val v = str2voltage(info.substring(keyrowd.length, info.length))
+                            voltage = v.replace("v", "").toFloat()
+                            stringBuilder.append(v)
+                        } /* else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX="
                             stringBuilder.append("最大电压 = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
-                            stringBuilder.append((v / 1000 / 1000.0f))
-                            stringBuilder.append("v")
-                        } else if (info.startsWith("POWER_SUPPLY_CURRENT_MAX=")) {
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX_DESIGN=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX_DESIGN="
+                            stringBuilder.append("最大电压(设计) = ")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
+                        } */ else if (info.startsWith("POWER_SUPPLY_CURRENT_MAX=")) {
                             val keyrowd = "POWER_SUPPLY_CURRENT_MAX="
                             val v = Integer.parseInt(info.substring(keyrowd.length, info.length)) / 1000 / 1000.0f
                             if (v > 0) {
@@ -187,21 +211,17 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_PD_VOLTAGE_MAX=")) {
                             val keyrowd = "POWER_SUPPLY_PD_VOLTAGE_MAX="
                             stringBuilder.append("最大电压(PD) = ")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
+                        } else if (info.startsWith("POWER_SUPPLY_CONNECTOR_TEMP=")) {
+                            val keyrowd = "POWER_SUPPLY_CONNECTOR_TEMP="
+                            stringBuilder.append("接口温度 = ")
                             val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
-                            stringBuilder.append((v / 1000 / 1000.0f))
-                            stringBuilder.append("v")
-                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX_DESIGN=")) {
-                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX_DESIGN="
-                            stringBuilder.append("最大电压(设计) = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
-                            stringBuilder.append((v / 1000 / 1000.0f))
-                            stringBuilder.append("v")
+                            stringBuilder.append((v / 10.0f))
+                            stringBuilder.append("°C")
                         } else if (info.startsWith("POWER_SUPPLY_PD_VOLTAGE_MIN=")) {
                             val keyrowd = "POWER_SUPPLY_PD_VOLTAGE_MIN="
                             stringBuilder.append("最小电压(PD) = ")
-                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
-                            stringBuilder.append(v / 1000 / 1000.0f)
-                            stringBuilder.append("v")
+                            stringBuilder.append(str2voltage(info.substring(keyrowd.length, info.length)))
                         } else if (info.startsWith("POWER_SUPPLY_PD_CURRENT_MAX=")) {
                             val keyrowd = "POWER_SUPPLY_PD_CURRENT_MAX="
                             val v = Integer.parseInt(info.substring(keyrowd.length, info.length)) / 1000 / 1000.0f
