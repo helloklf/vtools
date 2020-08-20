@@ -219,36 +219,26 @@ class ActivityFreezeApps : ActivityBase() {
                 val store = SceneConfigStore(context)
                 // 数据库中记录的已添加的偏见应用
                 freezeApps = store.freezeAppList
+                val checkShortcuts = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)
                 // 已添加到桌面的快捷方式
-                val pinnedShortcuts = FreezeAppShortcutHelper().getPinnedShortcuts(context);
+                val pinnedShortcuts = if(checkShortcuts) FreezeAppShortcutHelper().getPinnedShortcuts(context) else arrayListOf()
 
                 val lostedShortcuts = ArrayList<Appinfo>()
                 val lostedShortcutsName = StringBuilder()
 
-                val allApp = AppListHelper(context).getAll()
-
-                // 遍历应用 检测已添加快捷方式并冻结的应用（如果不在数据库中，自动添加到数据，通常由于Scene数据被清理导致）
-                allApp.forEach {
-                    if (pinnedShortcuts.contains(it.packageName) && ((!it.enabled) || it.suspended)) {
-                        if (!freezeApps.contains(it.packageName)) {
-                            val config = store.getAppConfig(it.packageName.toString())
-                            config.freeze = true
-                            store.setAppConfig(config)
-                            freezeApps.add(it.packageName.toString())
-                        }
-                    }
-                }
+                // val allApp = AppListHelper(context).getAll()
+                val appListHelper = AppListHelper(context)
 
                 val freezeAppsInfo = ArrayList<Appinfo>()
                 // 遍历偏见应用列表 获取应用详情
                 for (it in freezeApps) {
                     val packageName = it
-                    val result = allApp.find { it.packageName == packageName }
+                    val result = appListHelper.getApp(packageName)
                     if (result != null) {
                         freezeAppsInfo.add(result)
 
                         // 检查是否添加了快捷方式，如果没有则记录下来
-                        if (!pinnedShortcuts.contains(it)) {
+                        if (checkShortcuts && !pinnedShortcuts.contains(it)) {
                             lostedShortcuts.add(result)
                             lostedShortcutsName.append(result.appName).append("\n")
                         }

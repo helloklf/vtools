@@ -88,59 +88,64 @@ class AppListHelper(context: Context) {
         val list = ArrayList<Appinfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val applicationInfo = packageInfos[i]
-            val appPath = applicationInfo.sourceDir
-            if (appPath == null) {
-                continue
+
+            val appInfo = getApplicationInfo(applicationInfo, systemApp, removeIgnore)
+            if (appInfo != null) {
+                list.add(appInfo)
             }
-            if (removeIgnore && exclude(applicationInfo.packageName)) {
-                continue
-            }
-
-            if (
-                    // appPath.startsWith("/vendor") ||
-                    (systemApp == false && !(appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) ||
-                    (systemApp == true && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0))
-            ) {
-                continue
-            }
-
-            // ApplicationInfo.FLAG_SYSTEM
-
-            val file = File(applicationInfo.publicSourceDir)
-            if (!file.exists())
-                continue
-
-            val item = Appinfo.getItem()
-            //val d = packageInfo.loadIcon(packageManager)
-            item.appName = applicationInfo.loadLabel(packageManager)
-            item.packageName = applicationInfo.packageName
-            //item.icon = d
-            item.dir = file.parent
-            item.enabled = applicationInfo.enabled
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
-            }
-            item.enabledState = getTags(applicationInfo)
-            item.path = appPath
-            item.updated = isSystemApp(applicationInfo) && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)
-            item.appType = (if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
-                Appinfo.AppType.SYSTEM
-            } else if ((appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) {
-                Appinfo.AppType.USER
-            } else  {
-                Appinfo.AppType.SYSTEM
-            })
-
-            try {
-                val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
-                item.versionName = packageInfo.versionName
-                item.versionCode = packageInfo.versionCode
-            } catch (ex: Exception) {
-            }
-
-            list.add(item)
         }
         return (list)
+    }
+
+    private fun getApplicationInfo(applicationInfo: ApplicationInfo, systemApp: Boolean? = null, removeIgnore: Boolean = true): Appinfo? {
+        val appPath = applicationInfo.sourceDir
+        if (appPath == null || (removeIgnore && exclude(applicationInfo.packageName))) {
+            return null
+        }
+
+        if (
+        // appPath.startsWith("/vendor") ||
+                (systemApp == false && !(appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) ||
+                (systemApp == true && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0))
+        ) {
+            return null
+        }
+
+        // ApplicationInfo.FLAG_SYSTEM
+
+        val file = File(applicationInfo.publicSourceDir)
+        if (!file.exists())
+            return null
+
+        val item = Appinfo.getItem()
+        //val d = packageInfo.loadIcon(packageManager)
+        item.appName = applicationInfo.loadLabel(packageManager)
+        item.packageName = applicationInfo.packageName
+        //item.icon = d
+        item.dir = file.parent
+        item.enabled = applicationInfo.enabled
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
+        }
+        item.enabledState = getTags(applicationInfo)
+        item.path = appPath
+        item.updated = isSystemApp(applicationInfo) && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)
+        item.appType = (if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
+            Appinfo.AppType.SYSTEM
+        } else if ((appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) {
+            Appinfo.AppType.USER
+        } else  {
+            Appinfo.AppType.SYSTEM
+        })
+
+        try {
+            val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
+            item.versionName = packageInfo.versionName
+            item.versionCode = packageInfo.versionCode
+        } catch (ex: Exception) {
+        }
+
+        return item
     }
 
     fun getUserAppList(): ArrayList<Appinfo> {
@@ -254,6 +259,15 @@ class AppListHelper(context: Context) {
         }
 
         return list
+    }
+
+    fun getApp(packageName: String): Appinfo? {
+        try {
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            return getApplicationInfo(applicationInfo, null, false)
+        } catch (ex: java.lang.Exception) {
+        }
+        return null
     }
 
     init {

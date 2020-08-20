@@ -63,5 +63,23 @@
             <get>run miui_security_keyboard_get.sh</get>
             <set>run miui_security_keyboard_set.sh</set>
         </switch>
+        <switch shell="hidden">
+            <title>【MIUI11】相机实验室功能</title>
+            <desc>开启相机设置界面里的实验室功能设置</desc>
+            <get>
+                if [[ -e /sdcard/DCIM/Camera/Lab_options_visible ]]; then
+                    echo 1
+                fi
+            </get>
+            <set>
+                if [[ "$state" == "1" ]]; then
+                    mkdir -p /sdcard/DCIM/Camera/Lab_options_visible
+                else
+                    rm -rf /sdcard/DCIM/Camera/Lab_options_visible
+                fi
+                am force-stop com.android.camera 2>/dev/null
+                killall -9 com.android.camera 2>/dev/null
+            </set>
+        </switch>
     </group>
 </items>
