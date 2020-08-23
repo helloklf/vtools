@@ -29,6 +29,14 @@ public class CpuFrequencyUtil {
     private static ArrayList<String[]> cpuClusterInfo;
     private static String lastCpuState = "";
 
+    private static String platform;
+    private static boolean isMTK() {
+        if (platform == null) {
+            platform = new PlatformUtils().getCPUName();
+        }
+        return platform.startsWith("mt");
+    }
+
     private static SceneJNI JNI = new SceneJNI();
 
     private static String getCpuFreqValue(String path) {
@@ -134,14 +142,23 @@ public class CpuFrequencyUtil {
             return;
         }
 
-        String[] cores = getClusterInfo().get(cluster);
-        ArrayList<String> commands = new ArrayList<>();
-        if (minFrequency != null) {
-            for (String core : cores) {
-                commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
-                commands.add("echo " + minFrequency + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
+        if (isMTK()) {
+            StringBuilder stringBuilder = new StringBuilder("echo ");
+            stringBuilder.append(cluster);
+            stringBuilder.append(" ");
+            stringBuilder.append(minFrequency);
+            stringBuilder.append(" > /proc/ppm/policy/hard_userlimit_min_cpu_freq");
+            KeepShellPublic.INSTANCE.doCmdSync(stringBuilder.toString());
+        } else {
+            String[] cores = getClusterInfo().get(cluster);
+            ArrayList<String> commands = new ArrayList<>();
+            if (minFrequency != null) {
+                for (String core : cores) {
+                    commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
+                    commands.add("echo " + minFrequency + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
+                }
+                KeepShellPublic.INSTANCE.doCmdSync(commands);
             }
-            KeepShellPublic.INSTANCE.doCmdSync(commands);
         }
     }
 
@@ -150,21 +167,30 @@ public class CpuFrequencyUtil {
             return;
         }
 
-        String[] cores = getClusterInfo().get(cluster);
-        ArrayList<String> commands = new ArrayList<>();
-        if (maxFrequency != null) {
-            commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
-            StringBuilder stringBuilder = new StringBuilder();
-            for (String core : cores) {
-                commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                commands.add("echo " + maxFrequency + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                stringBuilder.append(core);
-                stringBuilder.append(":");
-                stringBuilder.append(maxFrequency);
-                stringBuilder.append(" ");
+        if (isMTK()) {
+            StringBuilder stringBuilder = new StringBuilder("echo ");
+            stringBuilder.append(cluster);
+            stringBuilder.append(" ");
+            stringBuilder.append(maxFrequency);
+            stringBuilder.append(" > /proc/ppm/policy/hard_userlimit_max_cpu_freq");
+            KeepShellPublic.INSTANCE.doCmdSync(stringBuilder.toString());
+        } else {
+            String[] cores = getClusterInfo().get(cluster);
+            ArrayList<String> commands = new ArrayList<>();
+            if (maxFrequency != null) {
+                commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String core : cores) {
+                    commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
+                    commands.add("echo " + maxFrequency + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
+                    stringBuilder.append(core);
+                    stringBuilder.append(":");
+                    stringBuilder.append(maxFrequency);
+                    stringBuilder.append(" ");
+                }
+                commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
+                KeepShellPublic.INSTANCE.doCmdSync(commands);
             }
-            commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
-            KeepShellPublic.INSTANCE.doCmdSync(commands);
         }
     }
 
@@ -383,41 +409,47 @@ public class CpuFrequencyUtil {
             if (cpuStatus.cpuClusterStatuses != null && cpuStatus.cpuClusterStatuses.size() > 0) {
                 ArrayList<CpuClusterStatus> params = cpuStatus.cpuClusterStatuses;
                 if (params.size() <= getClusterInfo().size()) {
+                    if (isMTK()) {
+                        for (int cluster = 0; cluster < params.size(); cluster++) {
+                            CpuClusterStatus config = params.get(cluster);
+                            commands.add(String.format("echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.min_freq));
+                            commands.add(String.format("echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.max_freq));
+                        }
+                    } else {
+                        for (int cluster = 0; cluster < params.size(); cluster++) {
+                            CpuClusterStatus config = params.get(cluster);
 
-                    for (int cluster = 0; cluster < params.size(); cluster++) {
-                        CpuClusterStatus config = params.get(cluster);
-
-                        String[] cores = getClusterInfo().get(cluster);
-                        if (cores.length < 1) {
-                            continue;
+                            String[] cores = getClusterInfo().get(cluster);
+                            if (cores.length < 1) {
+                                continue;
+                            }
+                            String core = cores[0];
+                            // for (String core : cores) {
+                            if (config.governor != null && !config.governor.isEmpty()) {
+                                commands.add("chmod 0755 " + scaling_governor.replace("cpu0", "cpu" + core));
+                                commands.add("echo " + config.governor + " > " + scaling_governor.replace("cpu0", "cpu" + core));
+                            }
+                            commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
+                            StringBuilder stringBuilder = new StringBuilder();
+                            if (config.max_freq != null && !config.max_freq.isEmpty()) {
+                                commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
+                                commands.add("echo " + config.max_freq + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
+                                stringBuilder.append(core);
+                                stringBuilder.append(":");
+                                stringBuilder.append(config.max_freq);
+                                stringBuilder.append(" ");
+                            }
+                            commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
+                            if (config.min_freq != null && !config.min_freq.isEmpty()) {
+                                commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
+                                commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
+                            }
+                            // }
+                            KeepShellPublic.INSTANCE.doCmdSync(commands);
                         }
-                        String core = cores[0];
-                        // for (String core : cores) {
-                        if (config.governor != null && !config.governor.isEmpty()) {
-                            commands.add("chmod 0755 " + scaling_governor.replace("cpu0", "cpu" + core));
-                            commands.add("echo " + config.governor + " > " + scaling_governor.replace("cpu0", "cpu" + core));
-                        }
-                        commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
-                        StringBuilder stringBuilder = new StringBuilder();
-                        if (config.max_freq != null && !config.max_freq.isEmpty()) {
-                            commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                            commands.add("echo " + config.max_freq + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                            stringBuilder.append(core);
-                            stringBuilder.append(":");
-                            stringBuilder.append(config.max_freq);
-                            stringBuilder.append(" ");
-                        }
-                        commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
-                        if (config.min_freq != null && !config.min_freq.isEmpty()) {
-                            commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
-                            commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
-                        }
-                        // }
-                        KeepShellPublic.INSTANCE.doCmdSync(commands);
                     }
                 }
             }
-
             // Boost
             if (!(cpuStatus.boost == null || cpuStatus.boost.isEmpty())) {
                 commands.add("chmod 0664 " + sched_boost);

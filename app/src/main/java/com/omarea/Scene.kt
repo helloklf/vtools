@@ -17,6 +17,7 @@ import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerEventMonitor
 import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
+import kotlin.system.exitProcess
 
 class Scene : Application() {
     companion object {
