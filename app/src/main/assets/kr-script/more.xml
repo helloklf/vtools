@@ -51,6 +51,11 @@
             config="flyme/flyme.xml"
             desc="适用于Flyme系统的选项" title="Flyme专属"
             visible="run common/flyme_support.sh" />
+        <page
+            id="page-mtk"
+            config-sh="file:///android_asset/kr-script/mtk/mtk.sh"
+            desc="MTK/天玑专属选项" title="MTK/天玑专属"
+            visible="run common/mtk_ppm.sh" />
     </group>
 
     <group>

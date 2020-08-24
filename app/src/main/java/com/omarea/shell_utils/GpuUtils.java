@@ -40,7 +40,6 @@ public class GpuUtils {
         }
     }
 
-    // Adreno Only
     public static int getGpuLoad() {
         if (GPU_LOAD_PATH == null) {
             String[] paths = new String[]{
