@@ -10,6 +10,7 @@ class FstrimUtils(private val keepShell: KeepShell) {
                 "fstrim /system\n" +
                 "fstrim /system\n" +
                 "fstrim /cache\n" +
-                "fstrim /cache\n")
+                "fstrim /cache\n" +
+                "sm fstrim\n")
     }
 }

@@ -19,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 11275
-        versionName "3.4.0 Inside Preview2"
+        versionName "3.4.0"
         externalNativeBuild {
             cmake {
                 cppFlags ""
