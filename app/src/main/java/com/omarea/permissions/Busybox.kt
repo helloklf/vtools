@@ -31,7 +31,7 @@ class Busybox(private var context: Context) {
                 return true
             }
             return try {
-                Runtime.getRuntime().exec("busybox").destroy()
+                Runtime.getRuntime().exec("busybox --help").destroy()
                 true
             } catch (ex: Exception) {
                 false
