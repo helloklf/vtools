@@ -18,7 +18,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.FileOwner
 import com.omarea.model.Appinfo
 import com.omarea.ui.AppListAdapter
-import com.omarea.utils.AppListHelper2
+import com.omarea.library.basic.UninstalledApp
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_hidden_apps.*
 import java.lang.ref.WeakReference
@@ -82,7 +82,7 @@ class ActivityHiddenApps : ActivityBase() {
 
         Thread {
             // 获得已卸载的应用（包括：隐藏的、卸载的）
-            val uninstalledApp = AppListHelper2().getUninstalledApp(this)
+            val uninstalledApp = UninstalledApp().getUninstalledApp(this)
             val appList = ArrayList<Appinfo>()
             uninstalledApp.forEach {
                 // spf.edit().putString(it.packageName, it.loadLabel(pm).toString())
@@ -144,7 +144,7 @@ class ActivityHiddenApps : ActivityBase() {
                         keepShell.doCmdSync(cmds.toString())
                         val hasConfigChange = reInstallAppShell(items)
 
-                        val uninstalledApp = AppListHelper2().getUninstalledApp(this)
+                        val uninstalledApp = UninstalledApp().getUninstalledApp(this)
                         val fail: ArrayList<Appinfo> = ArrayList()
                         for (app in uninstalledApp) {
                             val result = items.filter { it.packageName == app.packageName }

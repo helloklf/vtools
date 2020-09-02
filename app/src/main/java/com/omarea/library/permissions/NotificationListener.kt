@@ -1,8 +1,10 @@
-package com.omarea.permissions
+package com.omarea.library.permissions
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 
 /**
@@ -17,6 +19,7 @@ class NotificationListener {
         return false;
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     fun setPermission(context: Context) {
         try {
             val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)

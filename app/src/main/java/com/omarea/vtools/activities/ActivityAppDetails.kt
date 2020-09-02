@@ -20,7 +20,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.SceneConfigInfo
-import com.omarea.permissions.NotificationListener
+import com.omarea.library.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
 import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.ModeSwitcher

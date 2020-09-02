@@ -16,18 +16,9 @@ class AccessibleServiceHelper {
         return serviceRunning(context, "AccessibilityScenceMode")
     }
 
-    // 启动场景模式服务
-    fun startSceneModeService(context: Context): Boolean {
-        return AccessibilityServiceUtils().strartService(
-                "${context.packageName}/${AccessibilityScenceMode::class.java.name}"
-        )
-    }
-
     // 停止场景模式服务
     fun stopSceneModeService(context: Context): Boolean {
-        return AccessibilityServiceUtils().stopService(
-                "${context.packageName}/${AccessibilityScenceMode::class.java.name}"
-        )
+        return AccessibilityServiceUtils().stopService("${context.packageName}/${AccessibilityScenceMode::class.java.name}")
     }
 
     fun serviceRunning(context: Context, serviceName: String): Boolean {

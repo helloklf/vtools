@@ -5,12 +5,13 @@ import android.os.BatteryManager
 import android.os.Build
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.SpfConfig
+import java.util.*
 
 class ElectricityUnit {
     public fun getDefaultElectricityUnit(context: Context):Int {
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         val currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
-        return if (Build.MANUFACTURER.toUpperCase() == "XIAOMI") {
+        return if (Build.MANUFACTURER.toUpperCase(Locale.getDefault()) == "XIAOMI") {
             SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT
         } else {
             if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {

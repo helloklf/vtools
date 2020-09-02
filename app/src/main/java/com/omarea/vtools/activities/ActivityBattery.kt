@@ -14,7 +14,7 @@ import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import android.widget.*
 import com.omarea.Scene
-import com.omarea.charger_booster.BatteryInfo
+import com.omarea.library.device.BatteryCapacity
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -277,7 +277,7 @@ class ActivityBattery:  ActivityBase() {
         }
 
         val battrystatus = findViewById(R.id.battrystatus) as TextView
-        batteryMAH = BatteryInfo().getBatteryCapacity(this).toString() + "mAh" + "   "
+        batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
 
         timer = Timer()
 

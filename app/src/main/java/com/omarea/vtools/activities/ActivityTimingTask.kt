@@ -11,7 +11,7 @@ import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.store.TimingTaskStorage
-import com.omarea.utils.GetUpTime
+import com.omarea.library.calculator.GetUpTime
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_timing_task.*
 import java.util.*

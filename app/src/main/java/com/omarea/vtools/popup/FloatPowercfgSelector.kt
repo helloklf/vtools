@@ -13,7 +13,7 @@ import android.widget.*
 import com.omarea.Scene
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
-import com.omarea.permissions.NotificationListener
+import com.omarea.library.permissions.NotificationListener
 import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.ProcessUtils

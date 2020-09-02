@@ -10,7 +10,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.miui_thermal.AESUtil
+import com.omarea.library.device.MiuiThermalAESUtil
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_miui_thermal.*
 import java.io.File
@@ -87,7 +87,7 @@ class ActivityMiuiThermal : ActivityBase() {
 
     private fun readConfig() {
         val file = File(currentFile)
-        val output = AESUtil.decrypt(file.readBytes())
+        val output = MiuiThermalAESUtil.decrypt(file.readBytes())
         thermal_config.setText(String(output, Charset.forName("UTF-8")))
         setTitle(file.name)
     }
@@ -96,7 +96,7 @@ class ActivityMiuiThermal : ActivityBase() {
     private fun saveConfig() {
         val currentContent = thermal_config.text.toString().trim()
         val bytes = currentContent.toByteArray(Charset.forName("UTF-8"))
-        val data = if (encrypted) AESUtil.encrypt(bytes) else bytes
+        val data = if (encrypted) MiuiThermalAESUtil.encrypt(bytes) else bytes
         val file_path = filesDir.path + File.separator + "temp.conf"
         File(file_path).writeBytes(data)
         // TODO:
@@ -115,7 +115,7 @@ class ActivityMiuiThermal : ActivityBase() {
             Toast.makeText(this, "保存失败，请检查是否已授予ROOT权限，以及文件是否被锁定！", Toast.LENGTH_LONG).show()
         } else {
             val output = (try {
-                AESUtil.decrypt(File(currentFile).readBytes())
+                MiuiThermalAESUtil.decrypt(File(currentFile).readBytes())
             } catch (ex: Exception) {
                 File(currentFile).readBytes()
             })

@@ -1,4 +1,4 @@
-package com.omarea.utils;
+package com.omarea.library.device;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,8 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-// MIUI系统温控配置文件 解密和加密
-public class ThermalUtil {
+public class MiuiThermalAESUtil {
     private static final String KEY = "thermalopenssl.h";
     private static final String OFFSET = "thermalopenssl.h";
     private static final String ENCODING = "UTF-8";

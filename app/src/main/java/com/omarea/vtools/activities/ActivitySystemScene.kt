@@ -27,7 +27,7 @@ import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.SceneTriggerItem
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.utils.GetUpTime
+import com.omarea.library.calculator.GetUpTime
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_system_scene.*
 

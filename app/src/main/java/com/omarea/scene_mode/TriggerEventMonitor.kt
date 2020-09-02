@@ -5,7 +5,7 @@ import android.content.Intent
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.store.TriggerStorage
-import com.omarea.utils.GetUpTime
+import com.omarea.library.calculator.GetUpTime
 
 class TriggerEventMonitor(private val context: Context, override val isAsync: Boolean = false) : EventReceiver {
     private val triggerListConfig = context.getSharedPreferences("scene_trigger_list", Context.MODE_PRIVATE)

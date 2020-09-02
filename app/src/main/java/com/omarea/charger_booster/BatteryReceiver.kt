@@ -11,10 +11,11 @@ import com.omarea.common.shell.KeepShellAsync
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
+import com.omarea.library.device.BatteryCapacity
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.SpfConfig
-import com.omarea.utils.GetUpTime
+import com.omarea.library.calculator.GetUpTime
 import java.util.*
 
 class BatteryReceiver(private var service: Context, override val isAsync: Boolean = true) : EventReceiver {
@@ -92,7 +93,7 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
     private var chargeConfig: SharedPreferences
 
     // 电池总容量（mAh）
-    private val batteryCapacity = BatteryInfo().getBatteryCapacity(service)
+    private val batteryCapacity = BatteryCapacity().getBatteryCapacity(service)
 
     private var batteryUnits = BatteryUtils()
     private var ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)

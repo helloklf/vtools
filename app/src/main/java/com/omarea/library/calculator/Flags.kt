@@ -1,4 +1,4 @@
-package com.omarea.utils
+package com.omarea.library.calculator
 
 /*
 // JAVA
@@ -30,5 +30,4 @@ class Flags(private var flags: Int) {
         flags = flags and flag.inv()
         return flags
     }
-
 }
