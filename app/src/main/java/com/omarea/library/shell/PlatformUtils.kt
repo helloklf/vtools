@@ -1,7 +1,7 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 /**
- * 读取CPU信息
+ * 读取处理器平台
  * Created by helloklf on 2017/6/3.
  */
 

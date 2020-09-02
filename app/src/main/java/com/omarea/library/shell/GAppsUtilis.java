@@ -1,8 +1,8 @@
-package com.omarea.shell_utils;
+package com.omarea.library.shell;
 
 import com.omarea.common.shell.KeepShell;
 
-public class GApps {
+public class GAppsUtilis {
     public void enable(KeepShell keepShell) {
         keepShell.doCmdSync(
                 "pm enable com.google.android.gsf 2> /dev/null\n" +

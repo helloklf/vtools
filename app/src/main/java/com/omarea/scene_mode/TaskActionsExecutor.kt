@@ -12,9 +12,9 @@ import androidx.core.app.NotificationCompat
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.TaskAction
-import com.omarea.shell_utils.FstrimUtils
-import com.omarea.shell_utils.NetworkUtils
-import com.omarea.shell_utils.ZenModeUtils
+import com.omarea.library.shell.FstrimUtils
+import com.omarea.library.shell.NetworkUtils
+import com.omarea.library.shell.ZenModeUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*

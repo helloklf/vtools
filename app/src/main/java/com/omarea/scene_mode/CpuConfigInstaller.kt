@@ -5,7 +5,7 @@ import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
-import com.omarea.shell_utils.PlatformUtils
+import com.omarea.library.shell.PlatformUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R

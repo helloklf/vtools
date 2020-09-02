@@ -12,7 +12,7 @@ import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.SceneMode
-import com.omarea.shell_utils.GApps
+import com.omarea.library.shell.GAppsUtilis
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_quick_start.*
@@ -66,7 +66,7 @@ class ActivityQuickStart : Activity() {
             context.get()!!.hasRoot = true
 
             if (appPackageName.equals("com.android.vending")) {
-                GApps().enable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
             } else {
                 KeepShellPublic.doCmdSync("pm unsuspend ${appPackageName}\npm unhide ${appPackageName}\npm enable ${appPackageName}\n")
             }

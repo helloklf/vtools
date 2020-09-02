@@ -27,7 +27,7 @@ import com.omarea.model.Appinfo
 import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.scene_mode.LogoCacheManager
 import com.omarea.scene_mode.SceneMode
-import com.omarea.shell_utils.GApps
+import com.omarea.library.shell.GAppsUtilis
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FreezeAppAdapter
@@ -630,7 +630,7 @@ class ActivityFreezeApps : ActivityBase() {
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
                 if (it.equals("com.android.vending")) {
-                    GApps().enable(KeepShellPublic.getDefaultInstance());
+                    GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
                 } else {
                     KeepShellPublic.doCmdSync("pm unsuspend ${it}\n pm unhide ${it}\n" + "pm enable ${it}")
                 }

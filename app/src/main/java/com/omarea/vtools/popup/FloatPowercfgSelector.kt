@@ -16,7 +16,7 @@ import com.omarea.data_collection.EventType
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.shell_utils.ProcessUtils
+import com.omarea.library.shell.ProcessUtils
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper

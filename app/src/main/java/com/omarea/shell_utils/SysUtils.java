@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class SysUtils {
     public static String executeCommandWithOutput(boolean root, String command) {
@@ -19,7 +20,7 @@ public class SysUtils {
             process = root ? ShellExecutor.getSuperUserRuntime() : ShellExecutor.getRuntime();
             if (process == null) return "";
             dos = new DataOutputStream(process.getOutputStream());
-            dos.write(command.getBytes("UTF-8"));
+            dos.write(command.getBytes(StandardCharsets.UTF_8));
             dos.writeBytes("\n");
             dos.writeBytes("exit\n");
             dos.writeBytes("exit\n");

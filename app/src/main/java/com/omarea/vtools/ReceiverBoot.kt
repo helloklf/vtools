@@ -19,7 +19,6 @@ class ReceiverBoot : BroadcastReceiver() {
 
         try {
             val service = Intent(context, BootService::class.java)
-            //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(service)
         } catch (ex: Exception) {
         }

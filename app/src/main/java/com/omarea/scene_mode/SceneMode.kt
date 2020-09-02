@@ -8,7 +8,7 @@ import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.SceneConfigInfo
-import com.omarea.shell_utils.GApps
+import com.omarea.library.shell.GAppsUtilis
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatScreenRotation
@@ -61,7 +61,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
         fun suspendApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GApps().disable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
             } else {
                 KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
             }
@@ -69,7 +69,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
         fun freezeApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GApps().disable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
             } else {
                 KeepShellPublic.doCmdSync("pm disable ${app}")
             }
@@ -77,7 +77,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
         fun unfreezeApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GApps().enable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
             } else {
                 KeepShellPublic.doCmdSync("pm unsuspend ${app}\npm enable ${app}")
             }

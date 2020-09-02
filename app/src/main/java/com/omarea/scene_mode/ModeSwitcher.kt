@@ -3,7 +3,7 @@ package com.omarea.scene_mode
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shell_utils.PropsUtils
+import com.omarea.library.shell.PropsUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.vtools.R
 

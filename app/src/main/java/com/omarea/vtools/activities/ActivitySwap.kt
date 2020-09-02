@@ -15,9 +15,9 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shell_utils.LMKUtils
-import com.omarea.shell_utils.SwapModuleUtils
-import com.omarea.shell_utils.SwapUtils
+import com.omarea.library.shell.LMKUtils
+import com.omarea.library.shell.SwapModuleUtils
+import com.omarea.library.shell.SwapUtils
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
@@ -32,7 +32,7 @@ class ActivitySwap : ActivityBase() {
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
     private val swapUtils = SwapUtils(Scene.context)
-    private val swapModuleUtils = SwapModuleUtils(Scene.context)
+    private val swapModuleUtils = SwapModuleUtils()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

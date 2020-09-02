@@ -1,4 +1,4 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 import android.content.Context
 import android.provider.Settings
@@ -14,16 +14,16 @@ class ZenModeUtils(private val context: Context) {
 
     // 从 Settings.Global 复制的
     val ZEN_MODE_OFF = 0
-    val ZEN_MODE_IMPORTANT_INTERRUPTIONS = 1
+    // val ZEN_MODE_IMPORTANT_INTERRUPTIONS = 1
     val ZEN_MODE_NO_INTERRUPTIONS = 2
-    val ZEN_MODE_ALARMS = 3
+    // val ZEN_MODE_ALARMS = 3
 
     fun on() {
         val contentResolver = context.contentResolver
         if (Settings.Global.putInt(contentResolver, "zen_mode", ZEN_MODE_NO_INTERRUPTIONS)) {
             return
         } else {
-            KeepShellPublic.doCmdSync("settings put globa zen_mode ${ZEN_MODE_NO_INTERRUPTIONS}")
+            KeepShellPublic.doCmdSync("settings put globa zen_mode $ZEN_MODE_NO_INTERRUPTIONS")
         }
     }
 
@@ -32,7 +32,7 @@ class ZenModeUtils(private val context: Context) {
         if (Settings.Global.putInt(contentResolver, "zen_mode", ZEN_MODE_OFF)) {
             return
         } else {
-            KeepShellPublic.doCmdSync("settings put globa zen_mode ${ZEN_MODE_OFF}")
+            KeepShellPublic.doCmdSync("settings put globa zen_mode $ZEN_MODE_OFF")
         }
     }
 }

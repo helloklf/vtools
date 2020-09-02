@@ -13,9 +13,9 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.model.CpuClusterStatus
 import com.omarea.model.CpuStatus
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.shell_utils.CpuFrequencyUtil
-import com.omarea.shell_utils.GpuUtils
-import com.omarea.shell_utils.ThermalControlUtils
+import com.omarea.library.shell.CpuFrequencyUtil
+import com.omarea.library.shell.GpuUtils
+import com.omarea.library.shell.ThermalControlUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
@@ -46,6 +46,9 @@ class ActivityCpuControl : ActivityBase() {
     val cluterFreqs: HashMap<Int, Array<String>> = HashMap()
     val cluterGovernors: HashMap<Int, Array<String>> = HashMap()
 
+    private val thermalControlUtils = ThermalControlUtils()
+    var qualcommThermalSupported: Boolean = false
+
     private fun initData() {
         clusterCount = CpuFrequencyUtil.getClusterInfo().size
         for (cluster in 0 until clusterCount) {
@@ -60,6 +63,7 @@ class ActivityCpuControl : ActivityBase() {
 
         supportedGPU = GpuUtils.supported()
         adrenoGPU = GpuUtils.isAdrenoGPU()
+        qualcommThermalSupported = thermalControlUtils.isSupported()
 
         if (supportedGPU) {
             adrenoGovernors = GpuUtils.getGovernors()
@@ -137,16 +141,13 @@ class ActivityCpuControl : ActivityBase() {
     private fun bindEvent() {
         try {
             thermal_core_control.setOnClickListener {
-                ThermalControlUtils.setCoreControlState((it as CheckBox).isChecked)
+                thermalControlUtils.setCoreControlState((it as CheckBox).isChecked)
             }
             thermal_vdd.setOnClickListener {
-                ThermalControlUtils.setVDDRestrictionState((it as CheckBox).isChecked)
+                thermalControlUtils.setVDDRestrictionState((it as CheckBox).isChecked)
             }
             thermal_paramters.setOnClickListener {
-                ThermalControlUtils.setTheramlState((it as CheckBox).isChecked)
-            }
-            cpu_sched_boost.setOnClickListener {
-                CpuFrequencyUtil.setSechedBoostState((it as CheckBox).isChecked, context)
+                thermalControlUtils.setTheramlState((it as CheckBox).isChecked)
             }
 
             for (cluster in 0 until clusterCount) {
@@ -207,7 +208,7 @@ class ActivityCpuControl : ActivityBase() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择GPU最大频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
+                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { _, which ->
                             index = which
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -611,13 +612,11 @@ class ActivityCpuControl : ActivityBase() {
                 // TODO: 要不要加载 config.governor_params = CpuFrequencyUtil.getCurrentScalingGovernorParams(cluster)
             }
 
-            status.coreControl = ThermalControlUtils.getCoreControlState()
-            status.vdd = ThermalControlUtils.getVDDRestrictionState()
-            status.msmThermal = ThermalControlUtils.getTheramlState()
-
-            status.boost = CpuFrequencyUtil.getSechedBoostState()
-            status.boostFreq = CpuFrequencyUtil.getInputBoosterFreq()
-            status.boostTime = CpuFrequencyUtil.getInputBoosterTime()
+            if (qualcommThermalSupported) {
+                status.coreControl = thermalControlUtils.getCoreControlState()
+                status.vdd = thermalControlUtils.getVDDRestrictionState()
+                status.msmThermal = thermalControlUtils.getTheramlState()
+            }
 
             status.exynosHmpUP = CpuFrequencyUtil.getExynosHmpUP()
             status.exynosHmpDown = CpuFrequencyUtil.getExynosHmpDown()
@@ -716,29 +715,23 @@ class ActivityCpuControl : ActivityBase() {
                 }
             }
 
-            if (status.coreControl.isEmpty()) {
-                thermal_core_control.isEnabled = false
-            }
-            thermal_core_control.isChecked = status.coreControl == "1"
-
-            if (status.vdd.isEmpty()) {
-                thermal_vdd.isEnabled = false
-            }
-            thermal_vdd.isChecked = status.vdd == "1"
-
-
-            if (status.msmThermal.isEmpty()) {
-                thermal_paramters.isEnabled = false
-            }
-            thermal_paramters.isChecked = status.msmThermal == "Y"
-
-            if (status.boost.isEmpty()) {
-                cpu_sched_boost.isEnabled = false
-            }
-            cpu_sched_boost.isChecked = status.boost == "1"
-
-            if (thermal_core_control.isEnabled || thermal_vdd.isEnabled || thermal_paramters.isEnabled) {
+            if (qualcommThermalSupported) {
                 qualcomm_thermal.visibility = View.VISIBLE
+                if (status.coreControl.isEmpty()) {
+                    thermal_core_control.isEnabled = false
+                }
+                thermal_core_control.isChecked = status.coreControl == "1"
+
+                if (status.vdd.isEmpty()) {
+                    thermal_vdd.isEnabled = false
+                }
+                thermal_vdd.isChecked = status.vdd == "1"
+
+
+                if (status.msmThermal.isEmpty()) {
+                    thermal_paramters.isEnabled = false
+                }
+                thermal_paramters.isChecked = status.msmThermal == "Y"
             } else {
                 qualcomm_thermal.visibility = View.GONE
             }
@@ -760,17 +753,6 @@ class ActivityCpuControl : ActivityBase() {
                 gpu_max_freq.text = subGPUFreqStr(status.adrenoMaxFreq)
                 gpu_governor.text = status.adrenoGovernor
             }
-
-            if (status.boostFreq.isEmpty()) {
-                cpu_inputboost_freq.isEnabled = false
-            }
-            cpu_inputboost_freq.setText(status.boostFreq)
-
-            if (status.boostTime.isEmpty()) {
-                cpu_inputboost_time.isEnabled = false
-            }
-            if (!cpu_inputboost_time.isFocused)
-                cpu_inputboost_time.setText(status.boostTime)
 
             for (i in 0 until coreCount) {
                 cores[i].isChecked = status.coreOnline.get(i)

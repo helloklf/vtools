@@ -18,9 +18,9 @@ import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
-import com.omarea.shell_utils.BatteryUtils
-import com.omarea.shell_utils.LMKUtils
-import com.omarea.shell_utils.PropsUtils
+import com.omarea.library.shell.BatteryUtils
+import com.omarea.library.shell.LMKUtils
+import com.omarea.library.shell.PropsUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig

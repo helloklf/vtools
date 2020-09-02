@@ -1,4 +1,4 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 import android.content.Context
 import android.content.Intent

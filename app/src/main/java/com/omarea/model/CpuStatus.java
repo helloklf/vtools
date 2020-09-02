@@ -13,9 +13,6 @@ public class CpuStatus implements Serializable {
     public String coreControl = "";
     public String vdd = "";
     public String msmThermal = "";
-    public String boost = "";
-    public String boostFreq = "";
-    public String boostTime = "";
     public ArrayList<Boolean> coreOnline = null;
 
     public int exynosHmpUP = 0;

@@ -1,10 +1,9 @@
-package com.omarea.shell_utils;
+package com.omarea.library.shell;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
 import com.omarea.model.CpuStatus;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -93,7 +92,7 @@ public class GpuUtils {
 
     private static Boolean $isMaliGPU = null;
 
-    public static boolean isMaliGPU() {
+    private static boolean isMaliGPU() {
         if ($isMaliGPU == null) {
             $isMaliGPU = new File(gpuParamsDirMali).exists() || RootFile.INSTANCE.dirExists(gpuParamsDirMali);
         }
@@ -197,7 +196,7 @@ public class GpuUtils {
             for (int i = 0; i < max; i++) {
                 arr.add("" + i);
             }
-            return arr.toArray(new String[arr.size()]);
+            return arr.toArray(new String[0]);
         } catch (Exception ignored) {
         }
         return new String[]{};

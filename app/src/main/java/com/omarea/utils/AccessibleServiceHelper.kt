@@ -1,9 +1,8 @@
 package com.omarea.utils
 
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
-import android.view.accessibility.AccessibilityManager
-import com.omarea.shell_utils.AccessibilityServiceUtils
+import com.omarea.library.basic.AccessibleServiceState
+import com.omarea.library.shell.AccessibilityServiceUtils
 import com.omarea.vtools.AccessibilityScenceMode
 
 /**
@@ -13,7 +12,7 @@ import com.omarea.vtools.AccessibilityScenceMode
 class AccessibleServiceHelper {
     // 场景模式服务是否正在运行
     fun serviceRunning(context: Context): Boolean {
-        return serviceRunning(context, "AccessibilityScenceMode")
+        return AccessibleServiceState().serviceRunning(context, "AccessibilityScenceMode")
     }
 
     // 停止场景模式服务
@@ -22,13 +21,6 @@ class AccessibleServiceHelper {
     }
 
     fun serviceRunning(context: Context, serviceName: String): Boolean {
-        val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-        val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
-        for (serviceInfo in serviceInfos) {
-            if (serviceInfo.id.endsWith(serviceName)) {
-                return true
-            }
-        }
-        return false
+        return AccessibleServiceState().serviceRunning(context, serviceName)
     }
 }

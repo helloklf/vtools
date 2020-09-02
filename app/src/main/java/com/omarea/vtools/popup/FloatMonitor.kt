@@ -22,7 +22,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shell_utils.*
+import com.omarea.library.shell.*
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView

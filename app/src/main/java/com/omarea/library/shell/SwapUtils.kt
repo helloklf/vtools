@@ -1,4 +1,4 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 import android.content.Context
 import com.omarea.common.shared.FileWrite
@@ -12,11 +12,11 @@ import java.io.File
  * Created by Hello on 2017/11/01.
  */
 
-class SwapUtils(private var context: Context) {
+class SwapUtils(context: Context) {
     private var swapfilePath: String = "/data/swapfile"
     private var swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
     private var swapForceKswapdScript = FileWrite.writePrivateShellFile("addin/force_compact.sh", "addin/force_compact.sh", context)
-    private var zramControlScript = FileWrite.writePrivateShellFile("addin/zram_control.sh", "addin/zram_control.sh", context)
+    // private var zramControlScript = FileWrite.writePrivateShellFile("addin/zram_control.sh", "addin/zram_control.sh", context)
 
     // 是否已创建swapfile文件
     val swapExists: Boolean
@@ -34,8 +34,8 @@ class SwapUtils(private var context: Context) {
                     return "/data/swapfile"
                 } else {
                     val loopNumber = PropsUtils.getProp("vtools.swap.loop")
-                    if (loopNumber.isNotEmpty() && loopNumber != "error" && txt.contains("loop" + loopNumber)) {
-                        return "/dev/block/loop" + loopNumber
+                    if (loopNumber.isNotEmpty() && loopNumber != "error" && txt.contains("loop$loopNumber")) {
+                        return "/dev/block/loop$loopNumber"
                     }
                 }
             }
@@ -136,7 +136,7 @@ class SwapUtils(private var context: Context) {
     // 是否支持zram
     val zramSupport: Boolean
         get() {
-            return KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")
+            return KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;") == "1"
         }
 
     // 是否已启用zram
@@ -206,7 +206,7 @@ class SwapUtils(private var context: Context) {
     fun forceKswapd(): String {
         if (swapForceKswapdScript != null) {
             val keepShell = KeepShell()
-            val result = keepShell.doCmdSync("sh " + swapForceKswapdScript)
+            val result = keepShell.doCmdSync("sh $swapForceKswapdScript")
             keepShell.tryExit()
             return result
         }

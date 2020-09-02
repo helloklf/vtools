@@ -1,6 +1,5 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
@@ -35,9 +34,9 @@ extra_free_kbytes=98304
  * Created by Hello on 2017/11/01.
  */
 
-class SwapModuleUtils(private var context: Context) {
+class SwapModuleUtils {
     // 是否已经安装用于处理自启动的magisk模块
-    val magiskModuleInstalled = RootFile.fileExists("/data/swap_config.conf") && PropsUtils.getProp("vtools.swap.controller").equals("magisk")
+    val magiskModuleInstalled = RootFile.fileExists("/data/swap_config.conf") && PropsUtils.getProp("vtools.swap.controller") == "magisk"
 
     private val swapEnable = "swap"
     private val swapSize = "swap_size"
@@ -77,15 +76,15 @@ class SwapModuleUtils(private var context: Context) {
         val editor = spf.edit()
 
         try {
-            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP, getProp(swapEnable).equals("true"))
+            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP, getProp(swapEnable) == "true")
             editor.putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, getProp(swapSize).toInt())
             editor.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, getProp(swapPriority).toInt())
-            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, getProp(swapUseLoop).equals("true"))
+            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, getProp(swapUseLoop) == "true")
         } catch (ex: Exception){
         }
 
         try {
-            editor.putBoolean(SpfConfig.SWAP_SPF_ZRAM, getProp(zramEnable).equals("true"))
+            editor.putBoolean(SpfConfig.SWAP_SPF_ZRAM, getProp(zramEnable) == "true")
             editor.putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, getProp(zramSize).toInt())
             editor.putString(SpfConfig.SWAP_SPF_ALGORITHM, getProp(zramCompAlgorithm))
         } catch (ex: Exception){

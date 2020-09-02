@@ -1,9 +1,9 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 import com.omarea.common.shell.KeepShell
 
 class FstrimUtils(private val keepShell: KeepShell) {
-    public fun run() {
+    fun run() {
         keepShell.doCmdSync("" +
                 "fstrim /data\n" +
                 "fstrim /data\n" +

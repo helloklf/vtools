@@ -14,7 +14,7 @@ import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shell_utils.PropsUtils
+import com.omarea.library.shell.PropsUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 

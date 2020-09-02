@@ -20,7 +20,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
-import com.omarea.shell_utils.BatteryUtils
+import com.omarea.library.shell.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogNumberInput

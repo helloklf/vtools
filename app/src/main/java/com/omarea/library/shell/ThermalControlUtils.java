@@ -1,4 +1,4 @@
-package com.omarea.shell_utils;
+package com.omarea.library.shell;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
@@ -9,21 +9,21 @@ import java.util.ArrayList;
 
 public class ThermalControlUtils {
     //Thermal
-    private final static String thermal_core_control = "/sys/module/msm_thermal/core_control/enabled";//1 0
-    private final static String thermal_vdd_restriction = "/sys/module/msm_thermal/vdd_restriction/enabled"; //1 0
-    private final static String thermal_parameters = "/sys/module/msm_thermal/parameters/enabled"; //Y N
+    private final String thermal_core_control = "/sys/module/msm_thermal/core_control/enabled";//1 0
+    private final String thermal_vdd_restriction = "/sys/module/msm_thermal/vdd_restriction/enabled"; //1 0
+    private final String thermal_parameters = "/sys/module/msm_thermal/parameters/enabled"; //Y N
 
-    public static Boolean isSupported() {
+    public Boolean isSupported() {
         return RootFile.INSTANCE.itemExists(thermal_core_control) ||
                 RootFile.INSTANCE.itemExists(thermal_vdd_restriction) ||
                 RootFile.INSTANCE.itemExists(thermal_parameters);
     }
 
-    public static String getCoreControlState() {
+    public String getCoreControlState() {
         return KernelProrp.INSTANCE.getProp(thermal_core_control).trim();
     }
 
-    public static void setCoreControlState(Boolean online) {
+    public void setCoreControlState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_core_control);
@@ -31,11 +31,11 @@ public class ThermalControlUtils {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String getVDDRestrictionState() {
+    public String getVDDRestrictionState() {
         return KernelProrp.INSTANCE.getProp(thermal_vdd_restriction).trim();
     }
 
-    public static void setVDDRestrictionState(Boolean online) {
+    public void setVDDRestrictionState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_vdd_restriction);
@@ -43,11 +43,11 @@ public class ThermalControlUtils {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String getTheramlState() {
+    public String getTheramlState() {
         return KernelProrp.INSTANCE.getProp(thermal_parameters).trim();
     }
 
-    public static void setTheramlState(Boolean online) {
+    public void setTheramlState(Boolean online) {
         String val = online ? "Y" : "N";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_parameters);
@@ -56,7 +56,7 @@ public class ThermalControlUtils {
     }
 
 
-    public static ArrayList<String> buildSetThermalParams(CpuStatus cpuStatus, ArrayList<String> commands) {
+    public ArrayList<String> buildSetThermalParams(CpuStatus cpuStatus, ArrayList<String> commands) {
         if (!(cpuStatus.coreControl == null || cpuStatus.coreControl.isEmpty())) {
             commands.add("chmod 0664 " + thermal_core_control);
             commands.add("echo " + cpuStatus.coreControl + " > " + thermal_core_control);
@@ -70,9 +70,5 @@ public class ThermalControlUtils {
             commands.add("echo " + cpuStatus.msmThermal + " > " + thermal_parameters);
         }
         return commands;
-    }
-
-    public static void setThermalParams(CpuStatus cpuStatus) {
-        KeepShellPublic.INSTANCE.doCmdSync(buildSetThermalParams(cpuStatus, new ArrayList<String>()));
     }
 }

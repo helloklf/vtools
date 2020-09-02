@@ -1,4 +1,4 @@
-package com.omarea.shell_utils
+package com.omarea.library.shell
 
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
@@ -7,6 +7,7 @@ import com.omarea.common.shell.RootFile
 
 /**
  * Created by Hello on 2018/08/05.
+ * LMK设置
  */
 
 class LMKUtils {
@@ -24,39 +25,22 @@ class LMKUtils {
         //echo "14746,18432,22118,25805,40000,55000" > /sys/module/lowmemorykiller/parameters/minfree
         //echo "18432,23040,27648,32256,56250,81250" > /sys/module/lowmemorykiller/parameters/minfree
 
-        var ratio = 1f
-
-        // 8GB+
-        if (totalRamBytes > (8192 * 1024 * 1024L)) {
-            ratio = 2f
-        }
-        // 8GB
-        if (totalRamBytes > (6144 * 1024 * 1024L)) {
-            ratio = 1.5f
-        }
-        // 6GB
-        else if (totalRamBytes > (4096 * 1024 * 1024L)) {
-            ratio = 1f
-        }
-        // 4GB
-        else if (totalRamBytes > (3072 * 1024 * 1024L)) {
-            ratio = 1f
-        }
-        // 3GB
-        else if (totalRamBytes > (2048 * 1024 * 1024L)) {
-            ratio = 0.7f
-        }
-        // 2GB
-        else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.5f
-        }
-        // 1GB
-        else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.25f
-        }
-        // < 1GB (这破手机还用毛啊！！！)
-        else {
-            ratio = 0.2f
+        val ratio = when {
+            totalRamBytes > (8192 * 1024 * 1024L) -> 2f
+            // 8GB
+            totalRamBytes > (6144 * 1024 * 1024L) -> 1.5f
+            // 6GB
+            totalRamBytes > (4096 * 1024 * 1024L) -> 1f
+            // 4GB
+            totalRamBytes > (3072 * 1024 * 1024L) -> 1f
+            // 3GB
+            totalRamBytes > (2048 * 1024 * 1024L) -> 0.7f
+            // 2GB
+            totalRamBytes > 1024 * 1024 * 1024 -> 0.5f
+            // 1GB
+            totalRamBytes > 1024 * 1024 * 1024 -> 0.25f
+            // < 1GB (这破手机还用毛啊！！！)
+            else -> 0.2f
         }
 
         val foregroundApp = (40 * 1024 / 4 * ratio).toInt()

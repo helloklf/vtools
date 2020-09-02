@@ -5,7 +5,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.ObjectStorage
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.CpuStatus
-import com.omarea.shell_utils.CpuFrequencyUtil
+import com.omarea.library.shell.CpuFrequencyUtil
 import java.io.File
 
 /**

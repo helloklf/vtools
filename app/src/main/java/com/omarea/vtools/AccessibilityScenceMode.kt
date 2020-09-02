@@ -44,40 +44,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var floatLogView: FloatLogView? = null
 
-    /*
-    override fun onCreate() {
-        super.onCreate()
-
-        Notification.Builder builder = new Notification.Builder(this);
-        //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
-        Intent mIntent = new Intent(getApplicationContext(),AccessibilitySettingsActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
-        builder.setContentIntent(pendingIntent);
-        builder.setSmallIcon(R.drawable.linux);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.linux));
-        builder.setAutoCancel(true);
-        //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notxxx_layout);
-        //builder.setContent(remoteViews);
-        //builder.setContentTitle("Scene");
-        //builder.setContentInfo("增强服务正在运行，点此进入设置");
-        //Notification.Action action = new Notification.Action(R.drawable.p3,"性能",pendingIntent);
-        //Notification.Action action1 = new Notification.Action(R.drawable.p2,"均衡",pendingIntent);
-        //Notification.Action action2 = new Notification.Action(R.drawable.p1,"省电",pendingIntent);
-        //builder.addAction(action);
-        //builder.addAction(action1);
-        //builder.addAction(action2);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //notificationManager.notify(74545342, builder.build());
-
-        startForeground(74545342, builder.build());//该方法已创建通知管理器，设置为前台优先级后，点击通知不再自动取消
-    }
-    */
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
-    }
-
     internal var appSwitchHandler: AppSwitchHandler? = null
 
 
