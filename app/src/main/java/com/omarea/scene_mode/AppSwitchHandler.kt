@@ -14,6 +14,8 @@ import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
+import com.omarea.library.basic.InputMethodApp
+import com.omarea.library.basic.ScreenState
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -253,7 +255,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         // 添加强制忽略列表
         ignoredList.addAll(context.resources.getStringArray(R.array.powercfg_force_igoned))
         // 添加输入法到忽略列表
-        ignoredList.addAll(InputMethodHelper(context).getInputMethods())
+        ignoredList.addAll(InputMethodApp(context).getInputMethods())
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             // 是否已经完成性能调节配置安装或自定义

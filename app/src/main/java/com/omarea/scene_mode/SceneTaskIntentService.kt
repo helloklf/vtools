@@ -9,6 +9,7 @@ import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
+import com.omarea.library.basic.ScreenState
 import com.omarea.store.TimingTaskStorage
 
 class SceneTaskIntentService : IntentService("SceneTaskIntentService") {

@@ -1,4 +1,4 @@
-package com.omarea.scene_mode
+package com.omarea.library.basic
 
 import android.app.KeyguardManager
 import android.content.Context

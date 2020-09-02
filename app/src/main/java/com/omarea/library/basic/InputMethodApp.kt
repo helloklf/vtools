@@ -1,4 +1,4 @@
-package com.omarea.scene_mode
+package com.omarea.library.basic
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
@@ -8,20 +8,21 @@ import android.view.inputmethod.InputMethodManager
  * Created by Hello on 2018/01/23.
  */
 
-internal class InputMethodHelper(private var context: Context) {
+internal class InputMethodApp(private var context: Context) {
     /**
      * 获取系统已安装的输入法
      */
     fun getInputMethods(): ArrayList<String> {
         val ignoredList = arrayListOf<String>()
         val im = (context.getSystemService(Context.INPUT_METHOD_SERVICE)) as InputMethodManager?
-        if (im == null) {
-            return ignoredList
+        return if (im == null) {
+            ignoredList
+        } else {
+            val inputList = im.inputMethodList
+            for (input in inputList) {
+                ignoredList.add(input.packageName)
+            }
+            ignoredList
         }
-        val inputList = im.inputMethodList
-        for (input in inputList) {
-            ignoredList.add(input.packageName)
-        }
-        return ignoredList
     }
 }
