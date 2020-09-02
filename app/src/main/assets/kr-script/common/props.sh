@@ -5,9 +5,10 @@ source ./kr-script/common/mount.sh
 function cat_prop_is_1()
 {
     prop="$1"
+    g="^$prop="
     if [[ -d "$MAGISK_PATH" ]] && [[ -f "$MAGISK_PATH/system.prop" ]]
     then
-        status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
+        status=`grep "$g" $MAGISK_PATH/system.prop | cut -d '=' -f2`
     fi
     if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 1;
@@ -17,7 +18,7 @@ function cat_prop_is_1()
         exit 0
     fi
 
-    status=`grep $prop /system/build.prop|cut -d '=' -f2`
+    status=`grep "$g" /system/build.prop|cut -d '=' -f2`
     if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 1;
         exit 0
@@ -26,7 +27,7 @@ function cat_prop_is_1()
 
     if [[ -f "/vendor/build.prop" ]]
     then
-        status=`grep $prop /vendor/build.prop | cut -d '=' -f2`
+        status=`grep "$g" /vendor/build.prop | cut -d '=' -f2`
     fi
     if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 1;
@@ -40,9 +41,10 @@ function cat_prop_is_1()
 function cat_prop_is_0()
 {
     prop="$1"
+    g="^$prop="
     if [[ -d "$MAGISK_PATH" ]] && [[ -f "$MAGISK_PATH/system.prop" ]]
     then
-        status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
+        status=`grep "$g" $MAGISK_PATH/system.prop | cut -d '=' -f2`
     fi
     if [ "$status" = "0" ] || [ "$status" = "false" ]; then
         echo 1;
@@ -52,7 +54,7 @@ function cat_prop_is_0()
         exit 0
     fi
 
-    status=`grep $prop /system/build.prop|cut -d '=' -f2`
+    status=`grep "$g" /system/build.prop|cut -d '=' -f2`
     if [ "$status" = "0" ] || [ "$status" = "false" ]; then
         echo 1;
         exit 0
@@ -60,7 +62,7 @@ function cat_prop_is_0()
 
     if [[ -f "/vendor/build.prop" ]]
     then
-        status=`grep $prop /vendor/build.prop | cut -d '=' -f2`
+        status=`grep "$g" /vendor/build.prop | cut -d '=' -f2`
     fi
     if [ "$status" = "0" ] || [ "$status" = "false" ]; then
         echo 1;
