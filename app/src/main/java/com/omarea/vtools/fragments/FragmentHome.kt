@@ -307,20 +307,20 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 }
                 if (loads.containsKey(-1)) {
-                    cpu_core_total_load.text = "" + loads.get(-1)!!.toInt().toString() + "%"
+                    cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
                     home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
                     val layoutParams = cpu_core_list.layoutParams
                     if (cores.size < 6) {
-                        layoutParams.height = dp2px(75 * 2F + 8)
+                        layoutParams.height = dp2px(105 * 2F)
                         cpu_core_list.numColumns = 2
                     } else if (cores.size > 12) {
-                        layoutParams.height = dp2px(75 * 4F + 8)
+                        layoutParams.height = dp2px(105 * 4F)
                     } else if (cores.size > 8) {
-                        layoutParams.height = dp2px(75 * 3F + 8)
+                        layoutParams.height = dp2px(105 * 3F)
                     } else {
-                        layoutParams.height = dp2px(75 * 2F + 8)
+                        layoutParams.height = dp2px(105 * 2F)
                     }
                     cpu_core_list.layoutParams = layoutParams
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)

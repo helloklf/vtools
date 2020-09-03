@@ -6,10 +6,15 @@ package com.omarea.library.shell
  */
 
 class PlatformUtils {
+    companion object {
+        private var cpu:String? = null
+    }
     //获取CPU型号，如msm8996
     fun getCPUName(): String {
-        val cpu = PropsUtils.getProp("ro.board.platform")
+        if (cpu == null) {
+            cpu = PropsUtils.getProp("ro.board.platform")
+        }
 
-        return cpu
+        return cpu!!
     }
 }
