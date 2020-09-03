@@ -1,7 +1,6 @@
 package com.omarea.vtools.activities
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.widget.Switch
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.permissions.Busybox
 import com.omarea.shell_utils.AppErrorLogcatUtils
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -60,23 +58,6 @@ class ActivityOtherSettings : ActivityBase() {
             settings_log_content.visibility = View.VISIBLE
             settings_log_content.setText(log)
             settings_log_content.setSelection(0, log.length)
-        }
-
-        val systemBusyboxInstalled = Busybox.systemBusyboxInstalled()
-        settings_private_busybox.isChecked = (!systemBusyboxInstalled) && spf.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false)
-        settings_private_busybox.isEnabled = (!systemBusyboxInstalled)
-        settings_private_busybox.setOnClickListener {
-            val value = (it as Switch).isChecked
-            if (value) {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).apply()
-            } else {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).apply()
-            }
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(R.string.require_restart_app)
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        // KeepShellPublic.doCmdSync("am force-stop ${this.packageName}\nkillall -9 ${this.packageName}")
-                    }.setCancelable(false))
         }
 
         settings_debug_layer.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)

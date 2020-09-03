@@ -77,9 +77,6 @@ class Busybox(private var context: Context) {
                 KeepShellPublic.doCmdSync("sh $absInstallerPath $absInstallPath")
             }
         }
-
-        val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        config.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, true).apply()
         return true
     }
 
@@ -92,8 +89,7 @@ class Busybox(private var context: Context) {
             // BusyboxInstallerUtils().installShellTools()
             next?.run()
         } else {
-            val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            if (config.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false) && (installPrivateBusybox())) {
+            if (installPrivateBusybox()) {
                 next?.run()
             } else {
                 if (installPrivateBusybox()) {

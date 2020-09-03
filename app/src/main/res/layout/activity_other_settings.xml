@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    android:keepScreenOn="false"
-    tools:openDrawer="start">
+    android:keepScreenOn="false">
 
     <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="?android:actionBarSize">
+        android:layout_marginTop="?android:actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,22 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_disable_selinux_desc" />
-            </LinearLayout>
-
-            <LinearLayout style="@style/ListCardItem">
-
-                <Switch
-                    android:id="@+id/settings_private_busybox"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_private_busybox" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_private_busybox_desc" />
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
