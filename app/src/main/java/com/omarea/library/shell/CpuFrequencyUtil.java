@@ -315,16 +315,22 @@ public class CpuFrequencyUtil {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
+    private static int coreCount = -1;
     public static int getCoreCount() {
+        if (coreCount > -1) {
+            return coreCount;
+        }
         int cores = 0;
         while (true) {
             File file = new File(cpu_dir.replace("cpu0", "cpu" + cores));
             if (file.exists()) {
                 cores++;
             } else {
-                return cores;
+                break;
             }
         }
+        coreCount = cores;
+        return coreCount;
     }
 
     public static ArrayList<String[]> getClusterInfo() {
