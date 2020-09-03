@@ -1,4 +1,4 @@
-package com.omarea.library.shell
+package com.omarea.vtools
 
 class SceneJNI {
     external fun getKernelPropLong(path: String): Long

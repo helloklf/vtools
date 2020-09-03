@@ -9,15 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/krscript_item_ripple"
-        android:orientation="vertical"
-        android:paddingBottom="4dp">
+        android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="49dp"
             android:layout_height="55dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="6dp">
+            android:layout_gravity="center">
 
             <com.omarea.ui.CpuChartBarView
                 android:id="@+id/core_cpu_loading_chart"

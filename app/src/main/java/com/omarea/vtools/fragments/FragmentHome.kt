@@ -154,7 +154,19 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        home_device_name.text = (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")").trim()
+        home_device_name.text = when (Build.VERSION.SDK_INT) {
+            30 -> "Android 11"
+            29 -> "Android 10"
+            28 -> "Android 9"
+            27 -> "Android 8.1"
+            26 -> "Android 8.0"
+            25 -> "Android 7.0"
+            24 -> "Android 7.0"
+            23 -> "Android 6.0"
+            22 -> "Android 5.1"
+            21 -> "Android 5.0"
+            else -> "SDK(" + Build.VERSION.SDK_INT + ")"
+        } // (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")").trim()
     }
 
     @SuppressLint("SetTextI18n")

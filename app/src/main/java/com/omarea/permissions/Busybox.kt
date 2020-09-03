@@ -83,105 +83,6 @@ class Busybox(private var context: Context) {
         return true
     }
 
-    private fun uninstallPrivateBusybox() {
-        val installPath = context.getString(R.string.toolkit_install_path)
-        val absInstallPath = FileWrite.getPrivateFilePath(context, installPath)
-        if (absInstallPath.isNotEmpty()) {
-            KeepShellPublic.doCmdSync("rm -rf $absInstallPath")
-        }
-    }
-
-    /**
-     * 使用magisk模块安装busybox
-     */
-    private fun useMagiskModuleInstall(context: Context) {
-        if (!MagiskExtend.moduleInstalled()) {
-            MagiskExtend.magiskModuleInstall(context)
-        }
-
-        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-        MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox)
-        val busyboxPath = MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox")
-        val busyboxDir = File(busyboxPath).parent
-        val cmd = "cd \"$busyboxDir\"\n" +
-                "for applet in `./busybox --list`;\n" +
-                "do\n" +
-                "./busybox ln -sf busybox \$applet;\n" +
-                "done\n"
-        KeepShellPublic.doCmdSync(cmd)
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setMessage(R.string.busybox_installed_magisk)
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
-                }
-                .setNegativeButton(btn_cancel) { _, _ ->
-                }
-                .setCancelable(false))
-    }
-
-    private fun installUseRoot(privateBusybox: String, onSuccess: Runnable?) {
-        val cmd = StringBuilder("cp $privateBusybox /cache/busybox;\n")
-        cmd.append("chmod 7777 $privateBusybox;\n")
-        cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
-        cmd.append("chmod 7777 /cache/busybox;\n")
-        cmd.append("/cache/busybox mount -o rw,remount /system\n" +
-                "/cache/busybox mount -f -o rw,remount /system\n" +
-                "mount -o rw,remount /system\n" +
-                "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                "/cache/busybox mount -o rw,remount /system/xbin\n" +
-                "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
-                "mount -o rw,remount /system/xbin\n")
-        cmd.append("cp $privateBusybox /system/xbin/busybox\n")
-        cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox\n")
-        cmd.append("chmod 0777 /system/xbin/busybox\n")
-        cmd.append("$privateBusybox chown root:root /system/xbin/busybox\n")
-        cmd.append("chown root:root /system/xbin/busybox\n")
-        cmd.append("/system/xbin/busybox --install /system/xbin\n")
-
-        KeepShellPublic.doCmdSync(cmd.toString())
-        if (!systemBusyboxInstalled()) {
-            DialogHelper.animDialog(
-                    AlertDialog.Builder(context)
-                            .setMessage(R.string.busybox_install_fail)
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                forceInstall(onSuccess)
-                            }
-                            .setCancelable(false))
-        } else {
-            onSuccess?.run()
-        }
-    }
-
-    // 选择busybox安装方式
-    private fun installModeChooser(privateBusybox: String, onSuccess: Runnable?) {
-        val builder = AlertDialog.Builder(context)
-                .setTitle(R.string.busybox_install_mode)
-                .setMessage(R.string.busybox_install_desc)
-                .setNegativeButton(R.string.busybox_install_private) { _, _ ->
-                    if (installPrivateBusybox()) {
-                        onSuccess?.run()
-                    } else {
-                        DialogHelper.animDialog(AlertDialog.Builder(context)
-                                .setMessage(R.string.busybox_nonsupport)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.btn_exit) { _, _ ->
-                                    android.os.Process.killProcess(android.os.Process.myPid())
-                                })
-                    }
-                }
-                .setNeutralButton(R.string.busybox_install_classical) { _, _ ->
-                    installUseRoot(privateBusybox, onSuccess)
-                }
-                .setCancelable(false)
-        if (MagiskExtend.magiskSupported()) {
-            builder.setPositiveButton(R.string.busybox_install_module) { _, _ ->
-                useMagiskModuleInstall(context)
-            }
-        }
-        DialogHelper.animDialog(builder)
-    }
-
     fun forceInstall(next: Runnable? = null) {
         val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
         if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "toolkit/busybox", "busybox", context) == privateBusybox)) {
@@ -195,7 +96,16 @@ class Busybox(private var context: Context) {
             if (config.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false) && (installPrivateBusybox())) {
                 next?.run()
             } else {
-                installModeChooser(privateBusybox, next)
+                if (installPrivateBusybox()) {
+                    next?.run()
+                } else {
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setMessage(R.string.busybox_nonsupport)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.btn_exit) { _, _ ->
+                                android.os.Process.killProcess(android.os.Process.myPid())
+                            })
+                }
             }
         }
     }

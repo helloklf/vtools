@@ -376,25 +376,11 @@
     <string name="lmk_optimize_desc">允许Scene根据你的设备内存情况，自动调整LMK参数，从而增强后台能力（可能导致低内存时卡顿）。如需恢复，请关闭该选项重启手机，如需开机后自动设置，请允许工具箱自启动</string>
     <string name="lmk_optimize">低内存优化</string>
     <string name="low_memory_killer">Low Memory Killer</string>
-    <string name="busybox_install_classical">经典</string>
-    <string name="busybox_install_module">Magisk模块</string>
-    <string name="busybox_install_private">私有(推荐)</string>
-    <string name="busybox_install_mode">请选择安装方式</string>
-    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n私有：在Scene内部安装，如果不出意外这是最好的方式\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
-    <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
-    <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
     <string name="dex2oat_compiling">dex2oat编译中</string>
     <string name="dex2oat_reset_running">dex2oat重置中</string>
 
-    <string name="freeze_fingerprint_verify">指纹验证 *敬请期待</string>
-    <string name="freeze_fingerprint_verify_desc">需要验证指纹才能启动[隐藏]的应用</string>
-    <string name="freeze_privacy">私密模式 *敬请期待</string>
-    <string name="freeze_privacy_desc">使用[隐藏]代替[冻结]，隐藏后像卸载了一样，但数据不会丢失</string>
-    <string name="freeze_privacy_warn">请务必在卸载Scene前清除所有偏见应用，否则你就再也找不到它们了！</string>
-    <string name="freeze_pretend">应用伪装 *敬请期待</string>
-    <string name="freeze_pretend_desc">添加快捷方式到桌面时，使用假的图标和应用名</string>
     <string name="freeze_shortcut_lost">快捷方式丢失</string>
     <string name="freeze_shortcut_lost_desc">以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？</string>
     <string name="freeze_add">添加偏见应用</string>

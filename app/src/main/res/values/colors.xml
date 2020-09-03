@@ -5,7 +5,7 @@
     <color name="window_background_light">#EBEBEB</color>
     <color name="window_background_dark">#000000</color>
     <color name="cardBgDark">#181818</color>
-    <color name="cardBgDarkTransparent">#a0000000</color>
+    <color name="cardBgDarkTransparent">#90000000</color>
     <color name="cardBgLight">#ffffff</color>
 
     <color name="color_powersave">#0091D5</color>

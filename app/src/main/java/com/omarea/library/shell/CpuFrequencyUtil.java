@@ -5,6 +5,7 @@ import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.CpuClusterStatus;
 import com.omarea.model.CpuStatus;
 import com.omarea.shell_utils.FileValueMap;
+import com.omarea.vtools.SceneJNI;
 
 import java.io.File;
 import java.util.ArrayList;
