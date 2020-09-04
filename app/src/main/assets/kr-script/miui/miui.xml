@@ -49,7 +49,10 @@
             <title>单手模式</title>
             <desc>是否启用单手模式功能</desc>
             <get>settings get system handy_mode_state</get>
-            <set>settings put system handy_mode_state $state</set>
+            <set>
+                settings put system handy_mode_state 0
+                settings put system handy_mode_state $state
+            </set>
         </switch>
         <picker shell="hidden">
             <title>单手模式-尺寸</title>
@@ -73,6 +76,7 @@
                 <option value="2">右手</option>
             </options>
             <set>
+                settings put system handy_mode_state 0
                 settings put system handy_mode_state 1
                 am broadcast -a miui.action.handymode.changemode --ei mode $state
             </set>

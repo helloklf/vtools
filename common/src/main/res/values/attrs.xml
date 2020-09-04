@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="cardBg" format="color"/>
+    <attr name="cardBg" format="color"/>
     <!--格式为引用-->
     <attr name="radioButtonStyle" format="reference"/>
 </resources>

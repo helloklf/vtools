@@ -2,7 +2,9 @@ package com.omarea.vtools.activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -305,7 +307,7 @@ class ActionPage : ActivityBase() {
 
     private fun chooseFilePath(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             return false
         } else {
@@ -317,19 +319,19 @@ class ActionPage : ActivityBase() {
                     if (!suffix.isNullOrEmpty()) {
                         chooseFilePath(suffix)
                     } else {
-                        val intent = Intent(Intent.ACTION_GET_CONTENT);
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
                         val mimeType = fileSelectedInterface.mimeType()
                         if (mimeType != null) {
                             intent.type = mimeType
                         } else {
                             intent.type = "*/*"
                         }
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE)
+                        startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER)
                     }
                 }
                 this.fileSelectedInterface = fileSelectedInterface
-                true;
+                true
             } catch (ex: java.lang.Exception) {
                 false
             }
@@ -387,7 +389,7 @@ class ActionPage : ActivityBase() {
     private fun loadPageConfig() {
         val activity = this
 
-        Thread(Runnable {
+        Thread {
             currentPageConfig.run {
                 if (beforeRead.isNotEmpty()) {
                     showDialog(getString(R.string.kr_page_before_load))
@@ -445,10 +447,29 @@ class ActionPage : ActivityBase() {
                     finish()
                 }
             }
-        }).start()
+        }.start()
     }
 
     fun _openPage(pageNode: PageNode) {
         OpenPageHelper(this).openPage(pageNode)
+    }
+
+    override fun onDestroy() {
+        this.setExcludeFromRecents()
+        super.onDestroy()
+    }
+
+    private fun setExcludeFromRecents() {
+        if (isTaskRoot) {
+            try {
+                val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                for (task in service.appTasks) {
+                    if (task.taskInfo.id == this.taskId) {
+                        task.setExcludeFromRecents(true)
+                    }
+                }
+            } catch (ex: Exception) {
+            }
+        }
     }
 }

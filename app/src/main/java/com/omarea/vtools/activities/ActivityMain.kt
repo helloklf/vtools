@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class ActivityMain : ActivityBase() {
     private var globalSPF: SharedPreferences? = null
 
-    private fun setExcludeFromRecents(exclude: Boolean? = null) {
+    private fun setExcludeFromRecent(exclude: Boolean? = null) {
         try {
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
@@ -263,7 +263,7 @@ class ActivityMain : ActivityBase() {
                     title = getString(R.string.app_name)
                 }
                 else -> {
-                    setExcludeFromRecents(true)
+                    setExcludeFromRecent(true)
                     super.onBackPressed()
                     this.finishActivity(0)
                 }

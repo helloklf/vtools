@@ -33,7 +33,7 @@ class ActionShortcutManager(private var context: Context) {
         }
     }
 
-    public fun addShortcutNougat(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
+    private fun addShortcutNougat(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         try {
             val shortcut = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
             val id = "addin_" + config.index
@@ -50,6 +50,8 @@ class ActionShortcutManager(private var context: Context) {
             shortcutIntent.putExtras(intent)
 
             shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent)
+            shortcutIntent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+
             context.sendBroadcast(shortcut)
 
             return true
@@ -81,6 +83,7 @@ class ActionShortcutManager(private var context: Context) {
                 val shortcutIntent = Intent(Intent.ACTION_MAIN)
                 shortcutIntent.setClassName(context.getApplicationContext(), intent.component!!.className)
                 shortcutIntent.putExtras(intent)
+                shortcutIntent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
 
                 val info = ShortcutInfo.Builder(context, id)
                         .setIcon(Icon.createWithBitmap((drawable as BitmapDrawable).bitmap))
