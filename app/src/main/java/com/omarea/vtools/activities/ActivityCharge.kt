@@ -4,7 +4,7 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.GlobalStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit

@@ -7,8 +7,8 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.model.SceneConfigInfo
 import com.omarea.library.shell.GAppsUtilis
+import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatScreenRotation

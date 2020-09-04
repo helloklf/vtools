@@ -1,32 +1,35 @@
-package com.omarea.data_collection
+package com.omarea.data.customer
 
 import android.content.Context
 import android.os.BatteryManager
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import java.util.*
 
-class ChargeCurve(private val context: Context) : EventReceiver {
+class ChargeCurve(context: Context) : IEventReceiver {
     private val storage = ChargeSpeedStore(context)
     private var timer: Timer? = null
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     override fun eventFilter(eventType: EventType): Boolean {
-        when (eventType) {
+        return when (eventType) {
             EventType.POWER_CONNECTED,
             EventType.POWER_DISCONNECTED,
             EventType.BATTERY_CHANGED -> {
-                return true
+                true
             }
-            else -> return false
+            else -> false
         }
     }
 
     override fun onReceive(eventType: EventType) {
         when (eventType) {
             EventType.POWER_CONNECTED -> {
-                val last = storage.lastCapacity();
+                val last = storage.lastCapacity()
                 if (GlobalStatus.batteryCapacity != -1 && GlobalStatus.batteryCapacity != last) {
                     storage.clearAll()
                 }

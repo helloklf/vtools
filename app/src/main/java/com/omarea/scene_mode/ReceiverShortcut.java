@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+
 import com.omarea.store.SpfConfig;
 
 // 应用偏见（添加完快捷方式后冻结应用）

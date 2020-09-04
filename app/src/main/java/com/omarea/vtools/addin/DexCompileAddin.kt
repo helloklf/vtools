@@ -1,27 +1,16 @@
 package com.omarea.vtools.addin
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.PropsUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
-import java.util.*
 
 /**
  * Created by Hello on 2018/02/20.
@@ -36,67 +25,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    open class ProgressHandler(context: Context, total: Int) : Handler(Looper.getMainLooper()) {
-        protected var dialog: View
-        protected var alert: android.app.AlertDialog
-        protected var textView: TextView
-        protected var progressBar: ProgressBar
-        private var total: Int = 0
-        private var current: Int = 0
-
-        @SuppressLint("SetTextI18n")
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            try {
-                if (msg.obj != null) {
-                    if (msg.what == 0) {
-                        textView.text = "正在执行操作..."
-                    } else {
-                        val obj = msg.obj.toString()
-                        if (obj == "[operation completed]") {
-                            progressBar.progress = 100
-                            textView.text = "操作完成！"
-                            this.postDelayed({
-                                alert.dismiss()
-                                alert.hide()
-                            }, 2000)
-                        } else if (Regex("^\\[.*]\$").matches(obj)) {
-                            progressBar.progress = msg.what
-                            val text = obj.replace("[compile ", "[编译 ").replace("[reset ", "[重置 ")
-                            if (obj.contains("compile") || obj.contains("reset")) {
-                                current++
-                            }
-                            textView.text = text + "\n(${current}/${total})"
-                        }
-                    }
-                }
-            } catch (ex: Exception) {
-            }
-        }
-
-        init {
-            val layoutInflater = LayoutInflater.from(context)
-            this.total = total
-            dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
-            alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
-            textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
-            progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
-            DialogHelper.animDialog(alert)
-            textView.text = "正在获取权限"
-        }
-    }
-
-
-    private fun getAllPackageNames(): ArrayList<String> {
-        val packageManager: PackageManager = context.packageManager
-        val packageInfos = packageManager.getInstalledApplications(0)
-        val list = ArrayList<String>()/*在数组中存放数据*/
-        for (i in packageInfos.indices) {
-            list.add(packageInfos[i].packageName)
-        }
-
-        return list
-    }
 
     //增加进度显示，而且不再出现因为编译应用自身而退出
     private fun run2() {
@@ -104,7 +32,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("Speed编译(推荐)", "Speed编译(后台进行)", "Everything编译", "Everything编译(后台进行)", "重置(清除编译)")
+        val arr = arrayOf("Speed编译", "Everything编译", "重置(清除编译)")
         var index = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
@@ -112,54 +40,21 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     index = which
                 }
                 .setNegativeButton("确定") { _, _ ->
-                    val lastIndex = arr.size - 1
-                    val apps = getAllPackageNames()
-                    if (index == 1 || index == 3) {
-                        if (CompileService.compiling) {
-                            Toast.makeText(context, "有一个后台编译过程正在进行，不能重复开启", Toast.LENGTH_SHORT).show()
-                        } else {
-                            try {
-                                val service = Intent(context, CompileService::class.java)
-                                service.action = context.getString(if (index == 1) R.string.scene_speed_compile else R.string.scene_everything_compile)
-                                context.startService(service)
-                                Toast.makeText(context, "开始后台编译，请查看通知了解进度", Toast.LENGTH_SHORT).show()
-                            } catch (ex: java.lang.Exception) {
-                                Toast.makeText(context, "启动后台过程失败", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                    if (CompileService.compiling) {
+                        Toast.makeText(context, "有一个后台编译过程正在进行，不能重复开启", Toast.LENGTH_SHORT).show()
                     } else {
-                        if (index == lastIndex) {
-                            // miui com.miui.contentcatcher 停止会导致所有应用被关闭 - 屏蔽它
-                            if (apps.contains("com.miui.contentcatcher")) {
-                                apps.remove("com.miui.contentcatcher")
-                            }
-                            if (apps.contains("com.miui.catcherpatch")) {
-                                apps.remove("com.miui.catcherpatch")
-                            }
-                            apps.remove(context.packageName)
+                        try {
+                            val service = Intent(context, CompileService::class.java)
+                            service.action = context.getString(when(index) {
+                                0 -> R.string.scene_speed_compile
+                                1 -> R.string.scene_everything_compile
+                                else -> R.string.scene_reset_compile
+                            })
+                            context.startService(service)
+                            Toast.makeText(context, "开始后台编译，请查看通知了解进度", Toast.LENGTH_SHORT).show()
+                        } catch (ex: java.lang.Exception) {
+                            Toast.makeText(context, "启动后台过程失败", Toast.LENGTH_SHORT).show()
                         }
-
-                        val commands = StringBuilder()
-                        val action = if (index == lastIndex) "reset" else "compile"
-                        for (app in apps) {
-                            commands.append("echo '[${action} ${app}]'")
-                            commands.append(";\n`")
-                            when (index) {
-                                0 -> commands.append("cmd package compile -m speed ${app}")
-                                2 -> commands.append("cmd package compile -m everything ${app}")
-                                lastIndex -> commands.append("cmd package compile --reset ${app}")
-                            }
-                            commands.append("` > /dev/null;\n\n")
-                        }
-                        commands.append("echo '[operation completed]';")
-                        commands.append("\n\n")
-                        if (index == 0) {
-                            commands.append("cmd package compile -m speed ${context.packageName}")
-                        } else if (index == 2) {
-                            commands.append("cmd package compile -m everything ${context.packageName}")
-                        }
-                        commands.append("\n\n")
-                        AsynSuShellUnit(ProgressHandler(context, apps.size)).exec(commands.toString()).waitFor()
                     }
                 }
                 .setNeutralButton("查看说明") { _, _ ->

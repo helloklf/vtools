@@ -11,12 +11,12 @@ import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
 import com.omarea.Scene
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.library.permissions.NotificationListener
+import com.omarea.library.shell.ProcessUtils
 import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.library.shell.ProcessUtils
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper

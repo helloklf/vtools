@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.GlobalStatus
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R

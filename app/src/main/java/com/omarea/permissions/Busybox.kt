@@ -3,13 +3,10 @@ package com.omarea.permissions
 import android.app.AlertDialog
 import android.content.Context
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.PropsUtils
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
-import com.omarea.vtools.R.string.btn_cancel
 import java.io.File
 
 /** 检查并安装Busybox

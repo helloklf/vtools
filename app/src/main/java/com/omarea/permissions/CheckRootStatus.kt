@@ -10,7 +10,6 @@ import android.provider.Settings
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shell_utils.SysUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlin.system.exitProcess
@@ -74,7 +73,7 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
                 }
             }
             therad!!.start()
-            Thread(Runnable {
+            Thread {
                 Thread.sleep(1000 * 15)
 
                 if (!completed) {
@@ -97,7 +96,7 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
                                 })
                     }
                 }
-            }).start()
+            }.start()
         }
     }
 
@@ -172,13 +171,5 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
             get() {
                 return rootStatus
             }
-
-        public fun isMagisk(): Boolean {
-            return SysUtils.executeCommandWithOutput(false, "su -v").contains("MAGISKSU")
-        }
-
-        public fun isTmpfs(dir: String): Boolean {
-            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().isNotEmpty()
-        }
     }
 }

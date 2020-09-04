@@ -1,14 +1,14 @@
-package com.omarea.data_collection.publisher
+package com.omarea.data.publisher
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.omarea.charger_booster.BatteryReceiver
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.customer.BatteryReceiverI
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 
 class BatteryState(private val applicationContext: Context) : BroadcastReceiver() {
 
@@ -90,6 +90,6 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
             registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
         }
         // 充电控制模块
-        EventBus.subscibe(BatteryReceiver(applicationContext))
+        EventBus.subscibe(BatteryReceiverI(applicationContext))
     }
 }

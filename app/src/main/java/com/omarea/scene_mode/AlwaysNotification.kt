@@ -9,9 +9,9 @@ import android.os.BatteryManager
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
@@ -20,7 +20,7 @@ import com.omarea.vtools.R
 /**
  * 常驻通知
  */
-internal class AlwaysNotification(private var context: Context, notify: Boolean = false, override val isAsync: Boolean = false) : ModeSwitcher(), EventReceiver {
+internal class AlwaysNotification(private var context: Context, notify: Boolean = false, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
     override fun eventFilter(eventType: EventType): Boolean {
         return eventType == EventType.SCENE_MODE_ACTION
     }

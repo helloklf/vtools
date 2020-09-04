@@ -1,4 +1,4 @@
-package com.omarea.charger_booster
+package com.omarea.data.customer
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,18 +8,17 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
-import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
+import com.omarea.library.calculator.GetUpTime
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.library.shell.PropsUtils
 import com.omarea.store.SpfConfig
-import com.omarea.library.calculator.GetUpTime
 import java.util.*
 
-class BatteryReceiver(private var service: Context, override val isAsync: Boolean = true) : EventReceiver {
-
+class BatteryReceiverI(private var service: Context, override val isAsync: Boolean = true) : IEventReceiver {
     override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
             EventType.BATTERY_CAPACITY_CHANGED, // 电量百分比变化
@@ -33,25 +32,25 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
     }
 
     // 是否启用了充电保护
-    val bpAllowed: Boolean
+    private val bpAllowed: Boolean
         get() {
             return chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         }
 
     // 充电保护电量百分比
-    val bpLevel: Int
+    private val bpLevel: Int
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
         }
 
     // 是否正在充电
-    val onCharge: Boolean
+    private val onCharge: Boolean
         get() {
             return GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
         }
 
     // 是否应该在电池保护状态
-    val shouldBP: Boolean
+    private val shouldBP: Boolean
         get() {
             return bpAllowed && (GlobalStatus.batteryCapacity >= bpLevel || (chargeDisabled && GlobalStatus.batteryCapacity > bpLevel - 20))
         }
@@ -100,25 +99,25 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
     private var DisableCharge = "sh " + FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
 
     // 起床时间
-    val getUpTime: Int
+    private val getUpTime: Int
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
         }
 
     // 去睡觉的时间
-    val goToBedTime: Int
+    private val goToBedTime: Int
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
         }
 
     // 现在时间
-    val currentTime: Int
+    private val currentTime: Int
         get() {
             val now = Calendar.getInstance()
             return now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
         }
 
-    val qcLimit: Int
+    private val qcLimit: Int
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
         }
@@ -138,12 +137,9 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
             val sleep = goToBedTime
 
             // 判断是否在夜间慢速充电时间
-            val inSleepTime =
-                    // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
-                    (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
-                            // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
-                            (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
-            return inSleepTime
+            return (getUp > sleep && (nowTimeValue in sleep..getUp)) ||
+                    // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
+                    (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
         }
         return false
     }
@@ -206,13 +202,13 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
         keepShellAsync = null
     }
 
-    internal fun disableCharge() {
+    private fun disableCharge() {
         Scene.toast("充电保护策略已为您暂停充电！", Toast.LENGTH_SHORT)
         keepShellAsync?.doCmd(DisableCharge)
         chargeDisabled = true
     }
 
-    internal fun resumeCharge() {
+    private fun resumeCharge() {
         Scene.toast("充电保护策略已为您恢复充电！", Toast.LENGTH_SHORT)
         keepShellAsync!!.doCmd(ResumeCharge)
         chargeDisabled = false

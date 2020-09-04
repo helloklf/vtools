@@ -1,4 +1,4 @@
-package com.omarea.data_collection;
+package com.omarea.data;
 
 import android.os.BatteryManager;
 

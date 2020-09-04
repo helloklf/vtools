@@ -8,7 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Checkable
 import android.widget.CompoundButton
-import com.omarea.data_collection.EventType
+import com.omarea.data.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
 import com.omarea.scene_mode.ModeSwitcher

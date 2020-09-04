@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.library.calculator.GetUpTime
 import com.omarea.model.Appinfo
 import com.omarea.model.TimingTaskInfo
 import com.omarea.model.TriggerInfo
@@ -27,7 +28,6 @@ import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.SceneTriggerItem
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.library.calculator.GetUpTime
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_system_scene.*
 

@@ -52,6 +52,7 @@ class ActivityImg :  ActivityBase() {
 
         listItem.add(createItem(getString(R.string.backup_action_title_boot), getString(R.string.backup_action_desc_boot)))
         listItem.add(createItem(getString(R.string.restore_action_title_boot), getString(R.string.restore_action_desc_boot)))
+
         listItem.add(createItem(getString(R.string.backup_action_title_rec), getString(R.string.backup_action_desc_rec)))
         listItem.add(createItem(getString(R.string.restore_action_title_rec), getString(R.string.restore_action_desc_rec)))
 

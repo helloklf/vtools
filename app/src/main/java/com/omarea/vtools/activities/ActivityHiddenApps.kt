@@ -16,9 +16,9 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.FileOwner
+import com.omarea.library.basic.UninstalledApp
 import com.omarea.model.Appinfo
 import com.omarea.ui.AppListAdapter
-import com.omarea.library.basic.UninstalledApp
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_hidden_apps.*
 import java.lang.ref.WeakReference
@@ -49,23 +49,6 @@ class ActivityHiddenApps : ActivityBase() {
         pm = packageManager
         progressBarDialog = ProgressBarDialog(this)
         hidden_app.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        /*
-        val dir = filesDir
-        val uid = dir.parentFile.parentFile.name
-        val configPath = "/data/system/users/$uid/package-restrictions.xml"
-
-
-        DialogHelper.animDialog(AlertDialog.Builder(this).setTitle("实验性功能 风险警告")
-                .setMessage("还原卸载的(不包括隐藏的)应用时，会修改\n$configPath\n在不兼容的设备上可能导致应用和数据丢失。\n\n请不要轻易在你工作的手机上尝试！！！")
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                }
-                .setCancelable(false)
-        )
-        */
     }
 
     private fun getAppInfo(it: ApplicationInfo): Appinfo {
@@ -139,6 +122,7 @@ class ActivityHiddenApps : ActivityBase() {
                             cmds.append("pm unsuspend ${app.packageName}\n")
                         }
                     }
+
                     progressBarDialog.showDialog(getString(R.string.please_wait))
                     Thread {
                         keepShell.doCmdSync(cmds.toString())
@@ -190,6 +174,7 @@ class ActivityHiddenApps : ActivityBase() {
         return super.onOptionsItemSelected(item)
     }
 
+    // 重新安装应用到当前用户（修改 /data/system/users/$uid/package-restrictions.xml 也可以做到，但是需要重启）
     private fun reInstallAppShell(apps: ArrayList<Appinfo>): Boolean {
         val uid = FileOwner(this).userId
         for (app in apps) {
@@ -197,67 +182,4 @@ class ActivityHiddenApps : ActivityBase() {
         }
         return true
     }
-
-    /*
-    private fun reInstallAppShellOld(apps: ArrayList<Appinfo>): Boolean {
-        val dir = filesDir
-        val uid = dir.parentFile.parentFile.name
-        val configPath = "/data/system/users/$uid/package-restrictions.xml"
-
-        val copyPath = FileWrite.getPrivateFilePath(this, "t-package-restrictions.xml")
-        var hasChange = false
-
-        if (keepShell.doCmdSync("cp -f $configPath $copyPath\nchmod 777 $copyPath") != "error") {
-            val file = File(copyPath)
-            if (file.exists()) {
-                try {
-                    val inputStream = file.inputStream()
-                    val factory = DocumentBuilderFactory.newInstance()
-                    val builder = factory.newDocumentBuilder()
-                    val dom = builder.parse(inputStream)
-
-                    val rootNode = dom.documentElement
-                    val pkgs = rootNode.getElementsByTagName("pkg")
-                    pkgs?.run {
-                        for (pkgIndex in 0 until pkgs.length) {
-                            val pkg = pkgs.item(pkgIndex) as Element
-                            if (pkg.hasAttribute("name") && pkg.hasAttribute("inst") && pkg.getAttribute("inst") == "false") {
-                                val packageName = pkg.getAttribute("name")
-                                val result = apps.filter { it.packageName == packageName }
-                                if (result.isNotEmpty()) {
-                                    pkg.setAttribute("inst", "true")
-                                    hasChange = true
-                                }
-                            }
-                        }
-                    }
-                    inputStream.close()
-                    if (hasChange) {
-                        val os = file.outputStream()
-                        val str = documentToString(dom)
-                        os.write(str.toByteArray(Charset.defaultCharset()))
-                        // (dom as XmlDocument).write(os)
-                        os.close()
-                        keepShell.doCmdSync("if [[ ! -f $configPath.bak ]]\nthen\ncp $configPath $configPath.bak\nfi\ncp $copyPath $configPath\nchown system:system $configPath\nchmod 664 $configPath")
-                    }
-                } catch (ex: Exception) {
-                }
-            }
-        }
-        keepShell.doCmdSync("rm -f $copyPath")
-        return hasChange
-    }
-
-
-    private fun documentToString(newDoc: Document): String {
-        val domSource = DOMSource(newDoc)
-        val transformer = TransformerFactory.newInstance().newTransformer()
-        val sw = StringWriter()
-        val sr = StreamResult(sw)
-        transformer.transform(domSource, sr)
-        // Log.d("xmlStr", sw.toString())
-
-        return sw.toString()
-    }
-   */
 }

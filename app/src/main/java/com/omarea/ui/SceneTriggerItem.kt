@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.omarea.data_collection.EventType
+import com.omarea.data.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
 import com.omarea.vtools.R

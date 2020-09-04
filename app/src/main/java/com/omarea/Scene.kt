@@ -8,16 +8,15 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
-import com.omarea.data_collection.ChargeCurve
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.publisher.BatteryState
-import com.omarea.data_collection.publisher.ScreenState
+import com.omarea.data.customer.ChargeCurve
+import com.omarea.data.EventBus
+import com.omarea.data.publisher.BatteryState
+import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
 import com.omarea.scene_mode.TimingTaskManager
-import com.omarea.scene_mode.TriggerEventMonitor
+import com.omarea.scene_mode.TriggerIEventMonitor
 import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
-import kotlin.system.exitProcess
 
 class Scene : Application() {
     companion object {
@@ -73,7 +72,7 @@ class Scene : Application() {
         TimingTaskManager(this).updateAlarmManager()
 
         // 事件任务
-        EventBus.subscibe(TriggerEventMonitor(this))
+        EventBus.subscibe(TriggerIEventMonitor(this))
 
         // 充电曲线
         EventBus.subscibe(ChargeCurve(this))

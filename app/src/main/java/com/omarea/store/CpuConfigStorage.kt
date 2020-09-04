@@ -4,8 +4,8 @@ import android.content.Context
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.ObjectStorage
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.model.CpuStatus
 import com.omarea.library.shell.CpuFrequencyUtil
+import com.omarea.model.CpuStatus
 import java.io.File
 
 /**

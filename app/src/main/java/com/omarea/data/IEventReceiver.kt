@@ -1,6 +1,6 @@
-package com.omarea.data_collection
+package com.omarea.data
 
-interface EventReceiver {
+interface IEventReceiver {
     fun eventFilter(eventType: EventType): Boolean
     fun onReceive(eventType: EventType)
     val isAsync:Boolean;

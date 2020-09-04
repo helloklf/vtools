@@ -13,16 +13,15 @@ import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.AsynSuShellUnit
+import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.Appinfo
-import com.omarea.permissions.CheckRootStatus
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
-
 
 /**
  * Created by helloklf on 2017/12/04.
@@ -46,41 +45,41 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             hideAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             clearAll()
         }
         dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, false)
         }
         dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, true)
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAllOnlyUser()
         }
         /*
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             moveToSystem()
         }
         */
         dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             buildAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallKeepDataAll()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
@@ -90,12 +89,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // 暂停使用
             dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 suspendAll()
             }
             // 恢复使用
             dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 unsuspendAll()
             }
         }
@@ -103,13 +102,13 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         if (apps.any { it.enabled }) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 disableAll()
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 enableAll()
             }
         }
@@ -123,24 +122,24 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             hideAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             clearAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAllOnlyUser()
         }
         dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             buildAll()
         }
 
         dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             deleteAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).visibility = View.GONE
@@ -148,11 +147,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         dialogView.findViewById<TextView>(R.id.app_options_title).setText("请选择操作")
 
         dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             enableAll()
         }
         dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             disableAll()
         }
 
@@ -161,12 +160,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // 暂停使用
             dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 suspendAll()
             }
             // 恢复使用
             dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 unsuspendAll()
             }
         }
@@ -191,6 +190,20 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     private fun checkRestoreData(): Boolean {
         val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName}\necho `toybox ls -ld|cut -f3 -d ' '`\n echo `ls -ld|cut -f3 -d ' '`\n")
         return r != "error" && r.trim().isNotEmpty()
+    }
+
+    protected fun isMagisk(): Boolean {
+        val keepShell = KeepShell(false)
+        val result = keepShell.doCmdSync("su -v").toUpperCase(Locale.getDefault()).contains("MAGISKSU")
+        keepShell.tryExit()
+        return result
+    }
+
+    protected fun isTmpfs(dir: String): Boolean {
+        val keepShell = KeepShell(false)
+        val result = keepShell.doCmdSync("df | grep tmpfs | grep \"$dir\"").toUpperCase(Locale.getDefault()).trim().isNotEmpty()
+        keepShell.tryExit()
+        return result
     }
 
     protected fun execShell(sb: StringBuilder) {
@@ -541,7 +554,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      */
     protected fun deleteAll() {
         confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
-            if (CheckRootStatus.isMagisk() && !com.omarea.common.shared.MagiskExtend.moduleInstalled() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
+            if (isMagisk() && !MagiskExtend.moduleInstalled() && (isTmpfs("/system/app") || isTmpfs("/system/priv-app"))) {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
                         .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！")

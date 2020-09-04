@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import android.widget.Toast
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.EventBus
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.library.basic.ScreenState
 import com.omarea.store.TimingTaskStorage
 
@@ -40,7 +40,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
                     Toast.makeText(context, "电量低于" + batteryCapacityRequire + "%，跳过定时任务", Toast.LENGTH_LONG).show()
                 } else if (afterScreenOff && ScreenState(context).isScreenOn()) {
                     // 如果是个要求屏幕关闭后执行的任务，且现在屏幕还在点亮状态，放到息屏事件观测队列中
-                    EventBus.subscibe(ScreenDelayTaskReceiver(taskId, context.applicationContext))
+                    EventBus.subscibe(ScreenDelayTaskReceiverI(taskId, context.applicationContext))
                 } else {
                     TaskActionsExecutor(this.taskActions, context).run()
                 }
@@ -49,7 +49,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
     }
 
     // 屏幕关闭后才执行的任务
-    class ScreenDelayTaskReceiver(private val taskId: String, private val context: Context, override val isAsync: Boolean = false) : EventReceiver {
+    class ScreenDelayTaskReceiverI(private val taskId: String, private val context: Context, override val isAsync: Boolean = false) : IEventReceiver {
         override fun onReceive(eventType: EventType) {
             EventBus.unsubscibe(this)
             val taskIntent = Intent(context, SceneTaskIntentService::class.java)

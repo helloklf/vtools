@@ -1,11 +1,10 @@
-package com.omarea.data_collection;
+package com.omarea.data;
 
 import android.util.Log;
-
 import java.util.ArrayList;
 
 public class EventBus {
-    private static ArrayList<EventReceiver> eventReceivers;
+    private static ArrayList<IEventReceiver> eventReceivers;
 
     /**
      * 发布事件
@@ -14,7 +13,7 @@ public class EventBus {
      */
     public static void publish(EventType eventType) {
         if (eventReceivers != null && eventReceivers.size() > 0) {
-            for (EventReceiver eventReceiver : eventReceivers) {
+            for (IEventReceiver eventReceiver : eventReceivers) {
                 try {
                     if (eventReceiver.eventFilter(eventType)) {
                         if (eventReceiver.isAsync()) {
@@ -31,10 +30,10 @@ public class EventBus {
     }
 
     static class HandlerThread extends Thread {
-        private EventReceiver eventReceiver;
+        private IEventReceiver eventReceiver;
         private EventType eventType;
 
-        HandlerThread(EventReceiver eventReceiver, EventType eventType) {
+        HandlerThread(IEventReceiver eventReceiver, EventType eventType) {
             this.eventReceiver = eventReceiver;
             this.eventType = eventType;
         }
@@ -50,7 +49,7 @@ public class EventBus {
      *
      * @param eventReceiver 事件接收器
      */
-    public static void subscibe(EventReceiver eventReceiver) {
+    public static void subscibe(IEventReceiver eventReceiver) {
         if (eventReceivers == null) {
             eventReceivers = new ArrayList<>();
         }
@@ -65,7 +64,7 @@ public class EventBus {
      *
      * @param eventReceiver 事件接收器
      */
-    public static void unsubscibe(EventReceiver eventReceiver) {
+    public static void unsubscibe(IEventReceiver eventReceiver) {
         if (eventReceivers != null && eventReceivers.indexOf(eventReceiver) > -1) {
             eventReceivers.remove(eventReceiver);
         }

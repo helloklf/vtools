@@ -3,7 +3,7 @@ package com.omarea.utils
 import android.content.Context
 import android.os.BatteryManager
 import android.os.Build
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.GlobalStatus
 import com.omarea.store.SpfConfig
 import java.util.*
 

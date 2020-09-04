@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
+import com.omarea.library.calculator.GetUpTime
 import com.omarea.model.TimingTaskInfo
 import com.omarea.store.TimingTaskStorage
-import com.omarea.library.calculator.GetUpTime
 
 public class TimingTaskManager(private var context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

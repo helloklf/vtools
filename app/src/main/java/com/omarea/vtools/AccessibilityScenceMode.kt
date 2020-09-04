@@ -17,9 +17,9 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig

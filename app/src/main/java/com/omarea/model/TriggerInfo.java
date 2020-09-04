@@ -1,6 +1,6 @@
 package com.omarea.model;
 
-import com.omarea.data_collection.EventType;
+import com.omarea.data.EventType;
 
 import java.io.Serializable;
 import java.util.ArrayList;

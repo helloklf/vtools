@@ -10,12 +10,12 @@ import android.view.View
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
-import com.omarea.model.CpuClusterStatus
-import com.omarea.model.CpuStatus
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.library.shell.CpuFrequencyUtil
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.ThermalControlUtils
+import com.omarea.model.CpuClusterStatus
+import com.omarea.model.CpuStatus
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper

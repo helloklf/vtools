@@ -10,10 +10,10 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
+import com.omarea.data.EventBus
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.ScreenState
 import com.omarea.store.SceneConfigStore
@@ -27,7 +27,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: Context, override val isAsync: Boolean = false) : ModeSwitcher(), EventReceiver {
+class AppSwitchHandler(private var context: Context, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"

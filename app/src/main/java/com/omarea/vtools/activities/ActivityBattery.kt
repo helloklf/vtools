@@ -14,12 +14,12 @@ import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import android.widget.*
 import com.omarea.Scene
-import com.omarea.library.device.BatteryCapacity
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
+import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R

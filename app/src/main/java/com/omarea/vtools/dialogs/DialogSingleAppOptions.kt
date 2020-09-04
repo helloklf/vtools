@@ -334,7 +334,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     }
 
     private fun moveToSystem() {
-        if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
+        if (isMagisk() && isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("Magisk 副作用警告")
                     .setMessage("检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！")

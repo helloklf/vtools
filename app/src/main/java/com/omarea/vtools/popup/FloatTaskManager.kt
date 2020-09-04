@@ -12,8 +12,8 @@ import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.model.ProcessInfo
 import com.omarea.library.shell.ProcessUtils
+import com.omarea.model.ProcessInfo
 import com.omarea.ui.FloatProcessAdapter
 import com.omarea.vtools.R
 import java.util.*

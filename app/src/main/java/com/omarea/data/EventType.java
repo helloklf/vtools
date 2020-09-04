@@ -1,4 +1,4 @@
-package com.omarea.data_collection;
+package com.omarea.data;
 
 public enum EventType {
     POWER_CONNECTED,            // 充电器连接
@@ -13,5 +13,5 @@ public enum EventType {
     APP_SWITCH,                 // 应用切换
     SCENE_MODE_ACTION,          // 场景模式 常驻通知动作触发
     BOOT_COMPLETED,             // 启动完成
-    TIMER;                      // 定时器
+    TIMER                       // 定时器
 }

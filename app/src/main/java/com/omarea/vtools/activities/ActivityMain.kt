@@ -15,6 +15,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -140,9 +141,9 @@ class ActivityMain : ActivityBase() {
         val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
         configlist_tabhost.setup()
 
-        tabIconHelper.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, R.id.app_more)
-        tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
-        tabIconHelper.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, R.id.app_donate)
+        tabIconHelper.newTabSpec(getString(R.string.app_nav), ContextCompat.getDrawable(this, R.drawable.app_more)!!, R.id.app_more)
+        tabIconHelper.newTabSpec(getString(R.string.app_home), ContextCompat.getDrawable(this, R.drawable.app_home)!!, R.id.tab_home)
+        tabIconHelper.newTabSpec(getString(R.string.app_donate), ContextCompat.getDrawable(this, R.drawable.app_donate)!!, R.id.app_donate)
         configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
 

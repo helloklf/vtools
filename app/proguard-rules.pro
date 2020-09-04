@@ -31,12 +31,12 @@
 
 -keep class com.omarea.xposed.XposedInterface{*;}
 -keep class com.omarea.xposed.XposedCheck{*;}
--keep class com.omarea.charger_booster.ServiceBattery{*;}
+-keep class com.omarea.data.customer.ServiceBattery{*;}
 -keep class com.omarea.vtools.activities.ActivityFreezeApps{*;}
 -keep class com.omarea.model.**{*;}
 -keep class com.omarea.krscript.model.**{*;}
 
 -keepclassmembers class com.omarea.xposed.XposedInterface{*;}
 -keepclassmembers class com.omarea.xposed.XposedCheck{*;}
--keepclassmembers class com.omarea.charger_booster.ServiceBattery{*;}
+-keepclassmembers class com.omarea.data.customer.ServiceBattery{*;}
 -keepclassmembers class com.omarea.vtools.activities.ActivityFreezeApps{*;}

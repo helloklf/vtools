@@ -1,7 +1,9 @@
 package com.omarea.library.shell;
 
 import android.annotation.SuppressLint;
+
 import com.omarea.common.shell.KernelProrp;
+
 import java.util.HashMap;
 
 /**

@@ -14,13 +14,13 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
-import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.scene_mode.SceneMode
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.PropsUtils
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.scene_mode.SceneMode
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig

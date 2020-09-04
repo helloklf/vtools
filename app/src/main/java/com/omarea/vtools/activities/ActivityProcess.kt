@@ -13,8 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.omarea.common.ui.DialogHelper
-import com.omarea.model.ProcessInfo
 import com.omarea.library.shell.ProcessUtils
+import com.omarea.model.ProcessInfo
 import com.omarea.ui.ProcessAdapter
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activty_process.*

@@ -2,12 +2,12 @@ package com.omarea.scene_mode
 
 import android.content.Context
 import android.content.Intent
-import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventType
-import com.omarea.store.TriggerStorage
+import com.omarea.data.IEventReceiver
+import com.omarea.data.EventType
 import com.omarea.library.calculator.GetUpTime
+import com.omarea.store.TriggerStorage
 
-class TriggerEventMonitor(private val context: Context, override val isAsync: Boolean = false) : EventReceiver {
+class TriggerIEventMonitor(private val context: Context, override val isAsync: Boolean = false) : IEventReceiver {
     private val triggerListConfig = context.getSharedPreferences("scene_trigger_list", Context.MODE_PRIVATE)
 
     override fun onReceive(eventType: EventType) {

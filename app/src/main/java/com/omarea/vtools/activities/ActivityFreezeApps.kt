@@ -23,11 +23,11 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.library.shell.GAppsUtilis
 import com.omarea.model.Appinfo
 import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.scene_mode.LogoCacheManager
 import com.omarea.scene_mode.SceneMode
-import com.omarea.library.shell.GAppsUtilis
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FreezeAppAdapter
