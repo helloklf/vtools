@@ -69,7 +69,7 @@ if [[ "$action" = "powersave" ]]; then
     ppm policy_status "9 0"
 
     min_freq 500000 730000
-    max_freq 1791000 1622000
+    max_freq 2000000 1622000
 
     ged gpu_dvfs 1
     ged gx_game_mode 0
@@ -90,7 +90,7 @@ elif [[ "$action" = "balance" ]]; then
     ppm policy_status "9 0"
 
     min_freq 500000 730000
-    max_freq 1791000 1927000
+    max_freq 2000000 1927000
 
     ged gpu_dvfs 1
     ged gx_game_mode 0

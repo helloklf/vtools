@@ -114,6 +114,7 @@
                     android:text="@string/battery_step_charge" />
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -133,6 +134,7 @@
                     android:text="@string/battery_pd_allowed" />
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -169,6 +171,7 @@
                     android:text="@string/battery_qc_charger" />
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -239,6 +242,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:visibility="?attr/showHints"
                         style="@style/textSmall"
                         android:text="@string/battery_exec_desc"
                         android:layout_width="match_parent"
@@ -254,6 +258,7 @@
                         android:text="@string/battery_night_mode" />
 
                     <TextView
+                        android:visibility="?attr/showHints"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -316,6 +321,7 @@
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -475,6 +481,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
