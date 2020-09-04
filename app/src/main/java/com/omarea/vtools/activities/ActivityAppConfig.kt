@@ -81,8 +81,7 @@ class ActivityAppConfig : ActivityBase() {
             //新版本（5.0后）必须显式intent启动 绑定服务
             intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
             //绑定的时候服务端自动创建
-            if (bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
-            } else {
+            if (!bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
                 throw Exception("")
             }
         } catch (ex: Exception) {
@@ -123,13 +122,6 @@ class ActivityAppConfig : ActivityBase() {
             tabIconHelper.updateHighlight()
         }
 
-        battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-        battery_monitor.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).apply()
-            BatteryHistoryStore(context).clearData()
-            Toast.makeText(context, "已自动清空耗电统计数据，以便于重新采集！", Toast.LENGTH_SHORT).show()
-            reStartService()
-        }
         scene_app_list.setOnItemClickListener { parent, view2, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
@@ -241,13 +233,6 @@ class ActivityAppConfig : ActivityBase() {
 
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
-
-        scene_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
-        scene_notify.setOnClickListener {
-            val checked = (it as Switch).isChecked
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).apply()
-            reStartService()
-        }
     }
 
     private val REQUEST_APP_CONFIG = 0

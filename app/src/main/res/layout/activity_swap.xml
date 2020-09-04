@@ -15,6 +15,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:paddingBottom="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -28,6 +29,7 @@
                 style="@style/ListCardItem" />
 
             <LinearLayout
+                android:visibility="?attr/showHints"
                 android:id="@+id/zram_stat"
                 style="@style/ListCardItem">
 
@@ -435,7 +437,8 @@
             </LinearLayout>
 
             <TableLayout
-                style="@style/ListCardItemLast"
+                android:visibility="?attr/showHints"
+                style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 

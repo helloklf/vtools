@@ -352,8 +352,6 @@
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
     <string name="accessbility_autoclick">安装点击</string>
     <string name="scene_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
-    <string name="scene_notify">常驻通知</string>
-    <string name="scene_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
     <string name="perf_opt">性能调节</string>
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>

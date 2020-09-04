@@ -21,7 +21,8 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="?attr/showHints">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -55,21 +56,27 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <Switch
-                android:id="@+id/dynamic_control"
-                style="@style/textTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="性能调节  " />
 
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
-                android:textAlignment="center" />
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/dynamic_control"
+                    style="@style/textTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="性能调节  " />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
+                    android:textAlignment="center" />
+            </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
 
@@ -441,7 +448,8 @@
             <LinearLayout
                 style="@style/ListCardItemLast"
                 android:orientation="vertical"
-                android:padding="@dimen/activity_horizontal_margin">
+                android:padding="@dimen/activity_horizontal_margin"
+                android:visibility="?attr/showHints">
 
                 <TextView
                     style="@style/textTitle"

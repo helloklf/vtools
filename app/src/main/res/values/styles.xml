@@ -24,6 +24,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="cardBg">@color/cardBgLight</item>
+        <item name="showHints">gone</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">
@@ -41,6 +42,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="cardBg">@color/cardBgDark</item>
+        <item name="showHints">gone</item>
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">

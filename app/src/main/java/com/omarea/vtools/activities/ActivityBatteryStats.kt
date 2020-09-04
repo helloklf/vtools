@@ -97,8 +97,7 @@ class ActivityBatteryStats : ActivityBase() {
         val storage = BatteryHistoryStore(context)
         val data = storage.getAvgData(BatteryManager.BATTERY_STATUS_DISCHARGING)
 
-        val accuMode = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-        val sampleTime = if (accuMode) 2 else 6
+        val sampleTime = 6
         battery_stats.adapter = AdapterBatteryStats(context, (data.filter {
             // 仅显示运行时间超过2分钟的应用数据，避免误差过大
             (it.count * sampleTime) > 120

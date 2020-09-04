@@ -483,7 +483,6 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItemLast">
-
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"

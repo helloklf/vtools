@@ -91,39 +91,10 @@
                         <LinearLayout style="@style/ListCardItem">
 
                             <Switch
-                                android:id="@+id/battery_monitor"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="精确耗电统计" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="每2秒刷新电池信息（默认6秒），获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
-
-                            <Switch
-                                android:id="@+id/scene_notify"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:text="@string/scene_notify" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="@string/scene_notify_desc" />
-
-                            <Switch
                                 android:id="@+id/settings_autoinstall"
                                 style="@style/textTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
                                 android:text="@string/accessbility_autoclick" />
 
                             <TextView

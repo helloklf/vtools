@@ -38,13 +38,12 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
     private var ignoredList = ArrayList<String>()
     private var dyamicCore = false
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
-    private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
     private var screenOn = false
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
     private var handler = Handler(Looper.getMainLooper())
-    private var notifyHelper = AlwaysNotification(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+    private var notifyHelper = AlwaysNotification(context, true)
     private val sceneMode = SceneMode.getInstanceOrInit(context, SceneConfigStore(context))!!
     private var timer: Timer? = null
     private var sceneConfigChanged: BroadcastReceiver? = null
@@ -57,10 +56,9 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
     private fun updateConfig() {
         lastMode = ""
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
-        batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
 
         initConfig()
-        notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+        notifyHelper.setNotify(true)
         stopTimer()
         startTimer()
     }
@@ -69,7 +67,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         if (timer == null && screenOn && screenState.isScreenOn()) {
             if (screenOn) {
                 timer = Timer(true).apply {
-                    val interval = if (batteryMonitro) 2 else 6
+                    val interval = 6
                     scheduleAtFixedRate(object : TimerTask() {
                         private var ticks = 0
                         override fun run() {

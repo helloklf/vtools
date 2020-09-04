@@ -44,6 +44,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="cardBg">@color/cardBgDark</item>
+        <item name="showHints">gone</item>
     </style>
 
     <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />

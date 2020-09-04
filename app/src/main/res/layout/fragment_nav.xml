@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:src="@drawable/nav_icon_warn"
-                    android:tint="?android:colorAccent"
+                    app:tint="?android:colorAccent"
                     android:layout_width="22dp"
                     android:layout_height="22dp" />
                 <TextView
@@ -44,6 +44,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="?attr/showHints"
                 android:layout_marginTop="4dp"
                 style="@style/textSmall"
                 android:text="场景模式需要辅助服务提供支持。放心，Scene不会窃取界面上的内容，只会分析界面层次和显示大小并用于判断前台应用状态。"
