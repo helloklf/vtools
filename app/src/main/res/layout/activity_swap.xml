@@ -29,7 +29,6 @@
                 style="@style/ListCardItem" />
 
             <LinearLayout
-                android:visibility="?attr/showHints"
                 android:id="@+id/zram_stat"
                 style="@style/ListCardItem">
 
@@ -194,7 +193,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
@@ -290,7 +288,6 @@
                         android:text="@string/swap_zram_adjustment" />
                 </LinearLayout>
                 <TextView
-                    android:visibility="?attr/showHints"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
@@ -325,7 +322,6 @@
                 </TableRow>
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/swap_swappiness_desc" />
@@ -360,7 +356,6 @@
                 </TableRow>
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/extra_free_kbytes_desc" />
@@ -413,7 +408,6 @@
                     android:text="@string/lmk_optimize" />
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -442,7 +436,6 @@
             </LinearLayout>
 
             <TableLayout
-                android:visibility="?attr/showHints"
                 style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">

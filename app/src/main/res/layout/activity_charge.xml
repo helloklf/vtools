@@ -21,8 +21,7 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/ListCardItem"
-                android:visibility="?attr/showHints">
+            <LinearLayout style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"
@@ -106,7 +105,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="?attr/showHints"
                 style="@style/ListCardItem"
                 android:paddingRight="0dp">
 

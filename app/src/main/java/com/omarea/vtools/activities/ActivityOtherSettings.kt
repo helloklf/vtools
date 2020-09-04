@@ -25,8 +25,6 @@ class ActivityOtherSettings : ActivityBase() {
         super.onPostResume()
         delegate.onPostResume()
 
-        home_hide_in_recents.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
-
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
         settings_theme_wallpaper.isChecked = spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10
     }
@@ -37,10 +35,6 @@ class ActivityOtherSettings : ActivityBase() {
         setContentView(R.layout.activity_other_settings)
 
         setBackArrow()
-
-        home_hide_in_recents.setOnCheckedChangeListener { _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).apply()
-        }
 
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {

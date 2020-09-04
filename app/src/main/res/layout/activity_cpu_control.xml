@@ -19,7 +19,6 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:visibility="?attr/showHints"
                 android:id="@+id/cpu_help_text"
                 style="@style/ListCardItem">
 
@@ -158,7 +157,6 @@
                     android:textAlignment="textEnd" />
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_row="6"
                     android:layout_column="0"
@@ -314,7 +312,6 @@
                     android:textAlignment="textEnd" />
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_row="4"
                     android:layout_column="0"
@@ -472,7 +469,6 @@
                     android:enabled="false" />
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_row="7"
                     android:layout_column="0"
@@ -500,7 +496,6 @@
                     android:columnCount="4" />
 
                 <TextView
-                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_row="3"
                     android:layout_column="0"

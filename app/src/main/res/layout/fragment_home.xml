@@ -304,7 +304,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/ic_power_supply"
-                            android:tint="#ff888888" />
+                            app:tint="#ff888888" />
 
                         <TextView
                             android:id="@+id/home_battery_now"
@@ -323,7 +323,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/edit"
-                            android:tint="?android:colorAccent" />
+                            app:tint="?android:colorAccent" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -343,7 +343,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/ic_capacity"
-                            android:tint="#ff888888" />
+                            app:tint="#ff888888" />
 
                         <TextView
                             android:id="@+id/home_battery_capacity"
@@ -370,7 +370,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/ic_temperature"
-                            android:tint="#ff888888" />
+                            app:tint="#ff888888" />
 
                         <TextView
                             android:id="@+id/home_battery_temperature"
@@ -407,7 +407,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/icon_android"
-                            android:tint="#ff888888" />
+                            app:tint="#ff888888" />
 
                         <TextView
                             android:id="@+id/home_device_name"
@@ -416,7 +416,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:text="Andorid"
-                            android:tint="#ff888888" />
+                            android:textColor="#ff888888" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -435,14 +435,14 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/ic_clock"
-                            android:tint="#ff888888" />
+                            app:tint="#ff888888" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="已开机"
-                            android:tint="#ff888888" />
+                            android:textColor="#ff888888" />
 
                         <TextView
                             android:id="@+id/home_running_time"
@@ -450,7 +450,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="0s"
-                            android:tint="#ff888888" />
+                            android:textColor="#ff888888" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -470,7 +470,7 @@
                             android:padding="5dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/icon_global"
-                            android:tint="?android:colorAccent" />
+                            app:tint="?android:colorAccent" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -478,7 +478,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:text="访问Scene官网"
-                            android:tint="#ff888888" />
+                            android:textColor="#ff888888" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -494,7 +494,7 @@
                 android:padding="10dp"
                 android:text=""
                 android:textAlignment="center"
-                android:tint="?android:colorAccent"
+                android:textColor="?android:colorAccent"
                 android:visibility="gone" />
 
         </LinearLayout>

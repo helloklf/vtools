@@ -43,8 +43,7 @@ class ActivityMain : ActivityBase() {
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
                 if (task.taskInfo.id == this.taskId) {
-                    val b = exclude
-                            ?: globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
+                    val b = exclude ?: true
                     task.setExcludeFromRecents(b)
                 }
             }

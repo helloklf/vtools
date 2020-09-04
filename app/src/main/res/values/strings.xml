@@ -72,7 +72,7 @@
     <string name="settings_debug_layer_desc">显示Scene判定前台应用过程的日志（需重启辅助服务）</string>
     <string name="settings_classic_mode">经典模式</string>
     <string name="settings_classic_mode_desc">场景模式使用旧版Scene(3.2以前)的前台应用检测逻辑（需重启辅助服务）</string>
-    <string name="settings_auto_exit">自动退出</string>
+    <string name="settings_auto_exit">异常时自动退出</string>
     <string name="settings_auto_exit_desc">运行过程出现异常时自动结束进程，避免卡死白屏</string>
     <string name="settings_logcat_title">错误日志</string>
     <string name="settings_logcat_desc">当Scene发生错误闪退时，点击下面的按钮通过logcat抓取日志，发送给开发者以便解决问题</string>
@@ -162,8 +162,6 @@
     <string name="electricity_unit_as">显示为：</string>
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
-    <string name="home_hide_in_recents">隐藏后台任务</string>
-    <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能由于稳定性已废止，你可以在Scene首页按下返回键来隐藏后台）</string>
     <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。</string>
     <string name="applist_help">删除应用：\n从应用安装目录删除系统应用文件(如果有Magisk附加模块则通过附加模块实现删除)\n\n卸载：\n从手机上完全卸载应用(如果是系统应用则相当于卸载更新回退到原始版本)\n\n从当前用户卸载：\n只从当前用户卸载此应用，不影响其它用户继续使用此应用(Android系统有多用户机制，MIUI的手机分身也相当于是多用户)\n\n卸载(保留数据)：\n相当于只删除安装包和虚拟机缓存，但应用产生的数据会完全保留，这可能会导致你以后安装不同签的同包名应用无法正常安装(除非你破解了签名验证)\n\n暂停使用：\n使应用显示在桌面的图标变灰，并不可启动\n\n冻结：\n应用图标从桌面消失并，但仍可在系统的应用管理看到\n\n隐藏：\n应用图标从桌面和系统的应用管理列表消失，但仍可通过Scene找回</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
