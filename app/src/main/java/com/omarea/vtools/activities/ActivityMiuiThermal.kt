@@ -45,7 +45,7 @@ class ActivityMiuiThermal : ActivityBase() {
             DialogHelper.animDialog(
                     AlertDialog.Builder(this)
                             .setTitle("选择配置来源目录")
-                            .setSingleChoiceItems(options, currentIndex) { dialog, index ->
+                            .setSingleChoiceItems(options, currentIndex) { _, index ->
                                 currentIndex = index
                             }.setPositiveButton("浏览选定目录") { _, _ ->
                                 if (currentIndex > -1) {

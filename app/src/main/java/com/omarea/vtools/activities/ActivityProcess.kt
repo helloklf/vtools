@@ -48,7 +48,7 @@ class ActivityProcess : ActivityBase() {
         if (supported) {
             process_list.adapter = ProcessAdapter(context)
             process_list.setOnItemClickListener { _, _, position, _ ->
-                openProcessDetail((process_list.adapter as ProcessAdapter).getItem(position) as ProcessInfo)
+                openProcessDetail((process_list.adapter as ProcessAdapter).getItem(position))
             }
         }
 

@@ -14,30 +14,27 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CpuFrequencyUtil {
-    private final static String cpu_dir = "/sys/devices/system/cpu/cpu0/";
-    private final static String cpufreq_sys_dir = "/sys/devices/system/cpu/cpu0/cpufreq/";
-    private final static String scaling_min_freq = cpufreq_sys_dir + "scaling_min_freq";
-    private final static String scaling_cur_freq = cpufreq_sys_dir + "scaling_cur_freq";
-    // private  final  static String scaling_cur_freq = cpufreq_sys_dir + "cpuinfo_cur_freq";
-    private final static String scaling_max_freq = cpufreq_sys_dir + "scaling_max_freq";
-    private final static String scaling_governor = cpufreq_sys_dir + "scaling_governor";
-    private final static String scaling_available_freq = cpufreq_sys_dir + "scaling_available_frequencies";
-    private final static String scaling_available_governors = cpufreq_sys_dir + "scaling_available_governors";
+    private final String cpu_dir = "/sys/devices/system/cpu/cpu0/";
+    private final String cpufreq_sys_dir = "/sys/devices/system/cpu/cpu0/cpufreq/";
+    private final String scaling_min_freq = cpufreq_sys_dir + "scaling_min_freq";
+    private final String scaling_cur_freq = cpufreq_sys_dir + "scaling_cur_freq";
+    // private  final  String scaling_cur_freq = cpufreq_sys_dir + "cpuinfo_cur_freq";
+    private final String scaling_max_freq = cpufreq_sys_dir + "scaling_max_freq";
+    private final String scaling_governor = cpufreq_sys_dir + "scaling_governor";
 
-    private static final Object cpuClusterInfoLoading = true;
-    private static ArrayList<String[]> cpuClusterInfo;
+    private ArrayList<String[]> cpuClusterInfo;
 
     private static String platform;
-    private static boolean isMTK() {
+    private boolean isMTK() {
         if (platform == null) {
             platform = new PlatformUtils().getCPUName();
         }
         return platform.startsWith("mt");
     }
 
-    private static SceneJNI JNI = new SceneJNI();
+    private SceneJNI JNI = new SceneJNI();
 
-    private static String getCpuFreqValue(String path) {
+    private String getCpuFreqValue(String path) {
         long freqValue = JNI.getKernelPropLong(path);
         if (freqValue > -1) {
             return "" + freqValue;
@@ -45,12 +42,13 @@ public class CpuFrequencyUtil {
         return "";
     }
 
-    public static String[] getAvailableFrequencies(Integer cluster) {
+    public String[] getAvailableFrequencies(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return new String[]{};
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         String[] frequencies;
+        String scaling_available_freq = cpufreq_sys_dir + "scaling_available_frequencies";
         if (new File(scaling_available_freq.replace("cpu0", cpu)).exists()) {
             frequencies = KernelProrp.INSTANCE.getProp(scaling_available_freq.replace("cpu0", cpu)).split(" ");
             return frequencies;
@@ -63,7 +61,7 @@ public class CpuFrequencyUtil {
         }
     }
 
-    public static String getCurrentMaxFrequency(Integer cluster) {
+    public String getCurrentMaxFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
@@ -71,11 +69,11 @@ public class CpuFrequencyUtil {
         return KernelProrp.INSTANCE.getProp(scaling_max_freq.replace("cpu0", cpu));
     }
 
-    public static String getCurrentMaxFrequency(String core) {
+    public String getCurrentMaxFrequency(String core) {
         return KernelProrp.INSTANCE.getProp(scaling_max_freq.replace("cpu0", core));
     }
 
-    public static String getCurrentFrequency(Integer cluster) {
+    public String getCurrentFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
@@ -84,11 +82,11 @@ public class CpuFrequencyUtil {
         return getCpuFreqValue(scaling_cur_freq.replace("cpu0", cpu));
     }
 
-    public static String getCurrentFrequency(String cpu) {
+    public String getCurrentFrequency(String cpu) {
         return getCpuFreqValue(scaling_cur_freq.replace("cpu0", cpu));
     }
 
-    public static String getCurrentMinFrequency(Integer cluster) {
+    public String getCurrentMinFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
@@ -96,19 +94,20 @@ public class CpuFrequencyUtil {
         return KernelProrp.INSTANCE.getProp(scaling_min_freq.replace("cpu0", cpu));
     }
 
-    public static String getCurrentMinFrequency(String core) {
+    public String getCurrentMinFrequency(String core) {
         return KernelProrp.INSTANCE.getProp(scaling_min_freq.replace("cpu0", core));
     }
 
-    public static String[] getAvailableGovernors(Integer cluster) {
+    public String[] getAvailableGovernors(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return new String[]{};
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
+        String scaling_available_governors = cpufreq_sys_dir + "scaling_available_governors";
         return KernelProrp.INSTANCE.getProp(scaling_available_governors.replace("cpu0", cpu)).split(" ");
     }
 
-    public static String getCurrentScalingGovernor(Integer cluster) {
+    public String getCurrentScalingGovernor(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
@@ -116,11 +115,11 @@ public class CpuFrequencyUtil {
         return KernelProrp.INSTANCE.getProp(scaling_governor.replace("cpu0", cpu));
     }
 
-    private static String getCurrentScalingGovernor(String core) {
+    private String getCurrentScalingGovernor(String core) {
         return KernelProrp.INSTANCE.getProp(scaling_governor.replace("cpu0", core));
     }
 
-    public static HashMap<String, String> getCurrentScalingGovernorParams(Integer cluster) {
+    public HashMap<String, String> getCurrentScalingGovernorParams(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return null;
         }
@@ -129,13 +128,13 @@ public class CpuFrequencyUtil {
         return new FileValueMap().mapFileValue(cpu_dir.replace("cpu0", cpu) + "cpufreq/" + governor);
     }
 
-    public static HashMap<String, String> getCoregGovernorParams(Integer cluster) {
+    public HashMap<String, String> getCoregGovernorParams(Integer cluster) {
         String cpu = "cpu" + cluster;
         String governor = getCurrentScalingGovernor(cpu);
         return new FileValueMap().mapFileValue(cpu_dir.replace("cpu0", cpu) + "cpufreq/" + governor);
     }
 
-    public static void setMinFrequency(String minFrequency, Integer cluster) {
+    public void setMinFrequency(String minFrequency, Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return;
         }
@@ -159,7 +158,7 @@ public class CpuFrequencyUtil {
         }
     }
 
-    public static void setMaxFrequency(String maxFrequency, Integer cluster) {
+    public void setMaxFrequency(String maxFrequency, Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return;
         }
@@ -190,7 +189,7 @@ public class CpuFrequencyUtil {
         }
     }
 
-    public static void setGovernor(String governor, Integer cluster) {
+    public void setGovernor(String governor, Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return;
         }
@@ -207,11 +206,11 @@ public class CpuFrequencyUtil {
     }
 
     /*
-    public static String getInputBoosterFreq() {
+    public String getInputBoosterFreq() {
         return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_freq");
     }
 
-    public static void setInputBoosterFreq(String freqs) {
+    public void setInputBoosterFreq(String freqs) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
         commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
@@ -219,11 +218,11 @@ public class CpuFrequencyUtil {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String getInputBoosterTime() {
+    public String getInputBoosterTime() {
         return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_ms");
     }
 
-    public static void setInputBoosterTime(String time) {
+    public void setInputBoosterTime(String time) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
         commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
@@ -232,11 +231,11 @@ public class CpuFrequencyUtil {
     }
     */
 
-    public static boolean getCoreOnlineState(int coreIndex) {
+    public boolean getCoreOnlineState(int coreIndex) {
         return KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex)).equals("1");
     }
 
-    public static void setCoreOnlineState(int coreIndex, boolean online) {
+    public void setCoreOnlineState(int coreIndex, boolean online) {
         ArrayList<String> commands = new ArrayList<>();
         if (exynosCpuhotplugSupport() && getExynosHotplug()) {
             commands.add("echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled;");
@@ -247,13 +246,13 @@ public class CpuFrequencyUtil {
     }
 
     /*
-    public static void setCoresOnlineState(boolean[] coreStates) {
+    public void setCoresOnlineState(boolean[] coreStates) {
         ArrayList<String> commands = new ArrayList<>();
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
     */
 
-    public static int getExynosHmpUP() {
+    public int getExynosHmpUP() {
         String up = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/up_threshold").trim();
         if (Objects.equals(up, "")) {
             return 0;
@@ -265,14 +264,14 @@ public class CpuFrequencyUtil {
         }
     }
 
-    public static void setExynosHmpUP(int up) {
+    public void setExynosHmpUP(int up) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
         commands.add("echo " + up + " > /sys/kernel/hmp/up_threshold;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static int getExynosHmpDown() {
+    public int getExynosHmpDown() {
         String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/down_threshold").trim();
         if (Objects.equals(value, "")) {
             return 0;
@@ -284,39 +283,39 @@ public class CpuFrequencyUtil {
         }
     }
 
-    public static void setExynosHmpDown(int down) {
+    public void setExynosHmpDown(int down) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
         commands.add("echo " + down + " > /sys/kernel/hmp/down_threshold;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static boolean getExynosBooster() {
+    public boolean getExynosBooster() {
         String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/boost").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 
-    public static void setExynosBooster(boolean hotplug) {
+    public void setExynosBooster(boolean hotplug) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/boost");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/kernel/hmp/boost");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static boolean getExynosHotplug() {
+    public boolean getExynosHotplug() {
         String value = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpuhotplug/enabled").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 
-    public static void setExynosHotplug(boolean hotplug) {
+    public void setExynosHotplug(boolean hotplug) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    private static int coreCount = -1;
-    public static int getCoreCount() {
+    private int coreCount = -1;
+    public int getCoreCount() {
         if (coreCount > -1) {
             return coreCount;
         }
@@ -333,11 +332,12 @@ public class CpuFrequencyUtil {
         return coreCount;
     }
 
-    public static ArrayList<String[]> getClusterInfo() {
+    private final Object cpuClusterInfoLoading = true;
+    public ArrayList<String[]> getClusterInfo() {
         if (cpuClusterInfo != null) {
             return cpuClusterInfo;
         }
-        synchronized (cpuClusterInfoLoading) {
+        synchronized (this) {
             int cores = 0;
             cpuClusterInfo = new ArrayList<>();
             ArrayList<String> clusters = new ArrayList<>();
@@ -361,12 +361,12 @@ public class CpuFrequencyUtil {
     }
 
     /*
-    private final static String sched_boost = "/proc/sys/kernel/sched_boost";
-    public static String getSechedBoostState() {
+    private final String sched_boost = "/proc/sys/kernel/sched_boost";
+    public String getSechedBoostState() {
         return KernelProrp.INSTANCE.getProp(sched_boost);
     }
 
-    public static void setSechedBoostState(boolean enabled) {
+    public void setSechedBoostState(boolean enabled) {
         String val = enabled ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + sched_boost);
@@ -374,7 +374,7 @@ public class CpuFrequencyUtil {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String[] toMhz(String... values) {
+    public String[] toMhz(String... values) {
         String[] frequency = new String[values.length];
 
         for (int i = 0; i < values.length; i++) {
@@ -389,15 +389,15 @@ public class CpuFrequencyUtil {
     */
 
     // /sys/devices/system/cpu/cpuhotplug
-    public static boolean exynosCpuhotplugSupport() {
+    public boolean exynosCpuhotplugSupport() {
         return new File("/sys/devices/system/cpu/cpuhotplug").exists();
     }
 
-    public static boolean exynosHMP() {
+    public boolean exynosHMP() {
         return new File("/sys/kernel/hmp/down_threshold").exists() && new File("/sys/kernel/hmp/up_threshold").exists() && new File("/sys/kernel/hmp/boost").exists();
     }
 
-    public static ArrayList<String> buikdShell(CpuStatus cpuStatus) {
+    public ArrayList<String> buikdShell(CpuStatus cpuStatus) {
         ArrayList<String> commands = new ArrayList<>();
         if (cpuStatus != null) {
             // thermal
@@ -479,7 +479,7 @@ public class CpuFrequencyUtil {
             commands.addAll(GpuUtils.buildSetAdrenoGPUParams(cpuStatus, commands));
 
             // exynos
-            if (CpuFrequencyUtil.exynosHMP()) {
+            if (exynosHMP()) {
                 commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
                 commands.add("echo " + (cpuStatus.exynosHotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
 

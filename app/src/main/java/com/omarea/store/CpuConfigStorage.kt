@@ -36,7 +36,7 @@ class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(
             KeepShellPublic.doCmdSync(FileWrite.getPrivateFilePath(context, configFile + ".sh"))
         } else if (exists(name)) {
             load(name)?.run {
-                val commands = CpuFrequencyUtil.buikdShell(this).joinToString("\n")
+                val commands = CpuFrequencyUtil().buikdShell(this).joinToString("\n")
                 saveCache(commands, name)
                 KeepShellPublic.doCmdSync(commands)
             }

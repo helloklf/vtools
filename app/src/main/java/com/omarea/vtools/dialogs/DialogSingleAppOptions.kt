@@ -47,55 +47,55 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             copyPackageName()
         }
         dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             copyInstallPath()
         }
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             openDetails()
         }
         dialogView.findViewById<View>(R.id.app_options_app_store).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             showInMarket()
         }
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             hideAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             clearAll()
         }
         dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, false)
         }
         dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, true)
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAllOnlyUser()
         }
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             moveToSystem()
         }
         dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             dex2oatBuild()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallKeepDataAll()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
@@ -103,13 +103,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (app.enabled) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 toggleEnable()
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 toggleEnable()
             }
         }
@@ -119,12 +119,12 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // 恢复使用
             dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 unsuspendAll()
             }
             // 暂停使用
             dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 suspendAll()
             }
         }
@@ -141,57 +141,57 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             copyPackageName()
         }
         dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             copyInstallPath()
         }
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             openDetails()
         }
         dialogView.findViewById<View>(R.id.app_options_app_store).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             showInMarket()
         }
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             hideAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             clearAll()
         }
         /*
         dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, false)
         }
         dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             backupAll(true, true)
         }
         */
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             uninstallAllOnlyUser()
         }
         dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
-            dialog?.dismiss()
+            dialog.dismiss()
             dex2oatBuild()
         }
 
         if (app.updated) {
             dialogView.findViewById<View>(R.id.app_options_delete).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 uninstallAll()
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 deleteAll()
             }
             dialogView.findViewById<View>(R.id.app_options_uninstall).visibility = View.GONE
@@ -203,13 +203,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (app.enabled) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 toggleEnable()
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 toggleEnable()
             }
         }
@@ -219,12 +219,12 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // 恢复使用
             dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 unsuspendAll()
             }
             // 暂停使用
             dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
+                dialog.dismiss()
                 suspendAll()
             }
         }

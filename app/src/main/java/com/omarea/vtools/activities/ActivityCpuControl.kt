@@ -47,6 +47,7 @@ class ActivityCpuControl : ActivityBase() {
     val cluterGovernors: HashMap<Int, Array<String>> = HashMap()
 
     private val thermalControlUtils = ThermalControlUtils()
+    private val CpuFrequencyUtil = CpuFrequencyUtil()
     var qualcommThermalSupported: Boolean = false
 
     private fun initData() {
@@ -185,7 +186,7 @@ class ActivityCpuControl : ActivityBase() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择GPU最小频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
+                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { _, which ->
                             index = which
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -327,8 +328,8 @@ class ActivityCpuControl : ActivityBase() {
         exynos_hmp_booster.setOnClickListener {
             CpuFrequencyUtil.setExynosBooster((it as CheckBox).isChecked)
         }
-        exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
-        exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
+        exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true, CpuFrequencyUtil))
+        exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false, CpuFrequencyUtil))
     }
 
     private fun bindCpusetConfig() {
@@ -371,7 +372,7 @@ class ActivityCpuControl : ActivityBase() {
                 val coreState = parsetCpuset(status.cpusetForeground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -579,13 +580,13 @@ class ActivityCpuControl : ActivityBase() {
         return cores.toTypedArray()
     }
 
-    class OnSeekBarChangeListener(private var up: Boolean) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var up: Boolean, private var cpuFrequencyUtil: CpuFrequencyUtil) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             if (seekBar != null) {
                 if (up)
-                    CpuFrequencyUtil.setExynosHmpUP(seekBar.progress)
+                    cpuFrequencyUtil.setExynosHmpUP(seekBar.progress)
                 else
-                    CpuFrequencyUtil.setExynosHmpDown(seekBar.progress)
+                    cpuFrequencyUtil.setExynosHmpDown(seekBar.progress)
             }
         }
 

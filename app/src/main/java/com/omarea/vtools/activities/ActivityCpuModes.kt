@@ -62,7 +62,7 @@ class ActivityCpuModes : ActivityBase() {
             val value = (it as Switch).isChecked
             if (value && !(modeSwitcher.modeConfigCompleted())) {
                 dynamic_control.isChecked = false
-                DialogHelper.helpInfo(context!!, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
+                DialogHelper.helpInfo(context, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
@@ -70,7 +70,7 @@ class ActivityCpuModes : ActivityBase() {
         }
 
         cpu_mode_delete_outside.setOnClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("确定删除?")
+            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("确定删除?")
                     .setMessage("确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的")
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         configInstaller.removeOutsideConfig()
@@ -83,7 +83,7 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun outsideOverrided(): Boolean {
         if (configInstaller.outsideConfigInstalled()) {
-            DialogHelper.helpInfo(context!!, "你需要先删除外部配置，因为Scene3会优先使用它！")
+            DialogHelper.helpInfo(context, "你需要先删除外部配置，因为Scene3会优先使用它！")
             return true
         }
         return false
@@ -175,7 +175,7 @@ class ActivityCpuModes : ActivityBase() {
                 if (data.extras?.containsKey("file") != true) {
                     return
                 }
-                val path = data.extras!!.getString("file")
+                val path = data.extras!!.getString("file")!!
                 val file = File(path)
                 if (file.exists()) {
                     if (file.length() > 200 * 1024) {

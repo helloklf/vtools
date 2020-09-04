@@ -74,7 +74,7 @@ class ActivityBattery:  ActivityBase() {
                 Scene.toast(R.string.battery_qc_rehoot_desc, Toast.LENGTH_LONG)
             }
         }
-        settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
+        settings_qc.setOnCheckedChangeListener { _, isChecked ->
             battery_charge_speed_ext.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (!isChecked) {
                 battery_night_mode.isChecked = false
@@ -164,7 +164,7 @@ class ActivityBattery:  ActivityBase() {
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                    .setPositiveButton(R.string.btn_confirm) { _, which ->
                         KeepShellPublic.doCmdSync(
                                 "rm -f /data/system/batterystats-checkin.bin;" +
                                         "rm -f /data/system/batterystats-daily.xml;" +
@@ -175,8 +175,8 @@ class ActivityBattery:  ActivityBase() {
                                         "sync;" +
                                         "sleep 2;" +
                                         "reboot;")
-                    })
-                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
+                    }
+                    .setNegativeButton(R.string.btn_cancel) { _, which -> })
         }
 
         bp_disable_charge.setOnClickListener {
@@ -201,7 +201,7 @@ class ActivityBattery:  ActivityBase() {
         battery_sleep.setText(minutes2Str(spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)))
         battery_sleep.setOnClickListener {
             val nightModeSleep = spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
-            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, hourOfDay * 60 + minute).apply()
                 battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
                 notifyConfigChanged()
@@ -282,8 +282,8 @@ class ActivityBattery:  ActivityBase() {
         timer = Timer()
 
         var limit = ""
-        var batteryInfo = ""
-        var usbInfo = ""
+        var batteryInfo: String
+        var usbInfo: String
         timer!!.schedule(object : TimerTask() {
             override fun run() {
                 var pdAllowed = false

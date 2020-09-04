@@ -105,7 +105,7 @@ class ActivityImg :  ActivityBase() {
                         .setTitle(getString(R.string.backup_file_exists))
                         .setMessage(String.format(getString(R.string.backup_img_exists), fileName))
                         .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.yes) { _, _ ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             backupImgConfirm(action)
                         })
             } else {
@@ -150,7 +150,7 @@ class ActivityImg :  ActivityBase() {
                 DialogHelper.animDialog(AlertDialog.Builder(this)
                         .setTitle(getString(R.string.flash_confirm))
                         .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.yes) { _, _ ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             when (requestCode) {
                                 BOOT_IMG -> BackupRestoreUtils(this).flashBoot(path)
                                 RECOVERY_IMG -> BackupRestoreUtils(this).flashRecovery(path)

@@ -43,6 +43,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    private var CpuFrequencyUtil = CpuFrequencyUtil()
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
     private fun showMsg(msg: String) {
@@ -189,7 +190,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         updateRamInfo()
     }
 
-    private var coreCount = -1;
+    private var coreCount = -1
     private lateinit var batteryManager: BatteryManager
     private lateinit var activityManager: ActivityManager
 
@@ -214,15 +215,15 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             if (swapInfo.contains("Swap")) {
                 try {
                     val swapInfos = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
-                    if (Regex("[\\d]{1,}[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
+                    if (Regex("[\\d]+[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
                         val total = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
                         val use = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                         val free = total - use
                         home_swapstate_chat.setData(total.toFloat(), free.toFloat())
                         if (total > 99) {
-                            home_zramsize_text.text = "${(use * 100.0 / total).toInt().toString()}% (${format1(total / 1024.0)}GB)"
+                            home_zramsize_text.text = "${(use * 100.0 / total).toInt()}% (${format1(total / 1024.0)}GB)"
                         } else {
-                            home_zramsize_text.text = "${(use * 100.0 / total).toInt().toString()}% (${total}MB)"
+                            home_zramsize_text.text = "${(use * 100.0 / total).toInt()}% (${total}MB)"
                         }
                     }
                 } catch (ex: java.lang.Exception) {
@@ -247,7 +248,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         return String.format("%02d:%02d:%02d", timer / 3600, timer % 3600 / 60, timer % 60)
     }
 
-    private var updateTick = 0;
+    private var updateTick = 0
 
     private var batteryCurrentNow = 0L
 
@@ -267,12 +268,12 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             val core = CpuCoreInfo(coreIndex)
 
             core.currentFreq = CpuFrequencyUtil.getCurrentFrequency("cpu$coreIndex")
-            if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
+            if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs[coreIndex].isNullOrEmpty())) {
                 maxFreqs[coreIndex] = CpuFrequencyUtil.getCurrentMaxFrequency("cpu$coreIndex")
             }
             core.maxFreq = maxFreqs[coreIndex]
 
-            if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs.get(coreIndex).isNullOrEmpty())) {
+            if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs[coreIndex].isNullOrEmpty())) {
                 minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu$coreIndex"))
             }
             core.minFreq = minFreqs[coreIndex]
@@ -307,8 +308,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 }
                 if (loads.containsKey(-1)) {
-                    cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
-                    home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
+                    cpu_core_total_load.text = "负载：" + loads[-1]!!.toInt().toString() + "%"
+                    home_cpu_chat.setData(100.toFloat(), (100 - loads[-1]!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
                     val layoutParams = cpu_core_list.layoutParams
@@ -391,7 +392,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         if (modeList.modeConfigCompleted()) {
             modeList.executePowercfgMode(action, context!!.packageName)
         } else {
-            CpuConfigInstaller().installOfficialConfig(context!!);
+            CpuConfigInstaller().installOfficialConfig(context!!)
             modeList.executePowercfgMode(action)
         }
         setModeState()
