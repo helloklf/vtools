@@ -71,6 +71,7 @@
                     android:text="性能调节  " />
 
                 <TextView
+                    android:visibility="?attr/showHints"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -103,6 +104,7 @@
                             android:text="使用Scene预设配置" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -160,6 +162,7 @@
                             android:text="导入外部配置" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -291,6 +294,7 @@
                             android:text="@string/powersave" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -327,6 +331,7 @@
                             android:text="@string/balance" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -363,6 +368,7 @@
                             android:text="@string/performance" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -399,6 +405,7 @@
                             android:text="@string/fast" />
 
                         <TextView
+                            android:visibility="?attr/showHints"
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

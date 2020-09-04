@@ -125,6 +125,7 @@
                                 android:text="保留图标" />
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -140,6 +141,7 @@
                                 android:text="Xposed授权通融" />
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -158,6 +160,7 @@
                                 android:text="单击启动应用" />
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -173,6 +176,7 @@
                                 android:text="提示创建快捷方式" />
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -217,6 +221,7 @@
                             </LinearLayout>
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -259,6 +264,7 @@
                             </LinearLayout>
 
                             <TextView
+                                android:visibility="?attr/showHints"
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
