@@ -135,7 +135,7 @@ elif [[ "$action" = "fast" ]]; then
     min_freq 1812000 1933000
     max_freq 2000000 2600000
 
-    gpu_dvfs 0
+    gpu_dvfs 1
     gx_game_mode 0
     gx_3d_benchmark_on 1
 

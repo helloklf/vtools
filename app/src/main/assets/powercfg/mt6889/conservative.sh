@@ -113,7 +113,7 @@ elif [[ "$action" = "performance" ]]; then
     min_freq 500000 730000
     max_freq 2000000 2600000
 
-    ged gpu_dvfs 0
+    ged gpu_dvfs 1
     ged gx_3d_benchmark_on 0
     ged gx_game_mode 1
 
@@ -134,7 +134,7 @@ elif [[ "$action" = "fast" ]]; then
     min_freq 1791000 1622000
     max_freq 2000000 2600000
 
-    ged gpu_dvfs 0
+    ged gpu_dvfs 1
     ged gx_game_mode 0
     ged gx_3d_benchmark_on 1
 
