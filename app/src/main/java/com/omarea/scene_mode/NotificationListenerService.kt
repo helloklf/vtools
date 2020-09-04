@@ -4,6 +4,7 @@ import android.app.Notification.FLAG_AUTO_CANCEL
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 
+// 通知监听（游戏勿扰）
 class NotificationListenerService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
