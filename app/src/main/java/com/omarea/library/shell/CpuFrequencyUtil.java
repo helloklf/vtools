@@ -49,11 +49,11 @@ public class CpuFrequencyUtil {
         String[] frequencies;
         String scaling_available_freq = cpufreq_sys_dir + "scaling_available_frequencies";
         if (new File(scaling_available_freq.replace("cpu0", cpu)).exists()) {
-            frequencies = KernelProrp.INSTANCE.getProp(scaling_available_freq.replace("cpu0", cpu)).split(" ");
+            frequencies = KernelProrp.INSTANCE.getProp(scaling_available_freq.replace("cpu0", cpu)).split("[ ]+");
             return frequencies;
         } else if (new File("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table").exists()) {
             frequencies = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table")
-                    .split(" ");
+                    .split("[ ]+");
             return frequencies;
         } else {
             return new String[]{};
@@ -103,7 +103,7 @@ public class CpuFrequencyUtil {
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         String scaling_available_governors = cpufreq_sys_dir + "scaling_available_governors";
-        return KernelProrp.INSTANCE.getProp(scaling_available_governors.replace("cpu0", cpu)).split(" ");
+        return KernelProrp.INSTANCE.getProp(scaling_available_governors.replace("cpu0", cpu)).split("[ ]+");
     }
 
     public String getCurrentScalingGovernor(Integer cluster) {
@@ -353,7 +353,7 @@ public class CpuFrequencyUtil {
                 cores++;
             }
             for (int i = 0; i < clusters.size(); i++) {
-                cpuClusterInfo.add(clusters.get(i).split(" "));
+                cpuClusterInfo.add(clusters.get(i).split("[ ]+"));
             }
         }
         return cpuClusterInfo;

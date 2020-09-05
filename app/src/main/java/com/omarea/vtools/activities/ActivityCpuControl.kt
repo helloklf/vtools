@@ -420,6 +420,22 @@ class ActivityCpuControl : ActivityBase() {
         }
     }
 
+    private fun getClusterFreqs(cluster: Int) : Array<String> {
+        val freqs = cluterFreqs[cluster]
+        if (freqs == null || freqs.size < 2) {
+            cluterFreqs[cluster] = CpuFrequencyUtil.getAvailableFrequencies(cluster)
+        }
+        return cluterFreqs[cluster]!!
+    }
+
+    private fun getClusterGovernors(cluster: Int) : Array<String> {
+        val freqs = cluterGovernors[cluster]
+        if (freqs == null || freqs.size < 2) {
+            cluterFreqs[cluster] = CpuFrequencyUtil.getAvailableGovernors(cluster)
+        }
+        return cluterGovernors[cluster]!!
+    }
+
     private fun bindClusterConfig(cluster: Int) {
         val view = View.inflate(context, R.layout.fragment_cpu_cluster, null)
         cpu_cluster_list.addView(view)
@@ -432,7 +448,8 @@ class ActivityCpuControl : ActivityBase() {
         val cluster_governor_params = view.findViewById<TextView>(R.id.cluster_governor_params)
 
         cluster_min_freq.setOnClickListener {
-            var currentIndex = cluterFreqs[cluster]!!.indexOf(getApproximation(cluterFreqs[cluster]!!, status.cpuClusterStatuses[cluster].min_freq))
+            val freqs = getClusterFreqs(cluster)
+            var currentIndex = freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].min_freq))
             if (currentIndex < 0) {
                 currentIndex = 0
             }
@@ -440,12 +457,12 @@ class ActivityCpuControl : ActivityBase() {
 
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最小频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { _, which ->
+                    .setSingleChoiceItems(parseFreqList(freqs), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
-                            val g = cluterFreqs[cluster]!![index]
+                            val g = freqs[index]
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
                                 return@setPositiveButton
                             }
@@ -455,20 +472,22 @@ class ActivityCpuControl : ActivityBase() {
                         }
                     })
         }
+
         cluster_max_freq.setOnClickListener {
-            var currentIndex = cluterFreqs[cluster]!!.indexOf(getApproximation(cluterFreqs[cluster]!!, status.cpuClusterStatuses[cluster].max_freq))
+            val freqs = getClusterFreqs(cluster)
+            var currentIndex = freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].max_freq))
             if (currentIndex < 0) {
                 currentIndex = 0
             }
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最大频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { _, which ->
+                    .setSingleChoiceItems(parseFreqList(freqs), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
-                            val g = cluterFreqs[cluster]!![index]
+                            val g = freqs[index]
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
                                 return@setPositiveButton
                             }
@@ -478,21 +497,23 @@ class ActivityCpuControl : ActivityBase() {
                         }
                     })
         }
+
         // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
         cluster_governor.setOnClickListener {
-            var currentIndex = cluterGovernors[cluster]!!.indexOf(status.cpuClusterStatuses[cluster].governor)
+            val governors = getClusterGovernors(cluster)
+            var currentIndex = governors.indexOf(status.cpuClusterStatuses[cluster].governor)
             if (currentIndex < 0) {
                 currentIndex = 0
             }
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择调度模式")
-                    .setSingleChoiceItems((cluterGovernors[cluster]!!), currentIndex) { _, which ->
+                    .setSingleChoiceItems((governors), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
-                            val v = cluterGovernors[cluster]!![index]
+                            val v = governors[index]
                             if (CpuFrequencyUtil.getCurrentScalingGovernor(cluster) == v) {
                                 return@setPositiveButton
                             }
@@ -503,6 +524,7 @@ class ActivityCpuControl : ActivityBase() {
                     })
             return@setOnClickListener
         }
+
         cluster_governor_params.setOnClickListener {
             status.cpuClusterStatuses[cluster].governor_params = CpuFrequencyUtil.getCurrentScalingGovernorParams(cluster)
 

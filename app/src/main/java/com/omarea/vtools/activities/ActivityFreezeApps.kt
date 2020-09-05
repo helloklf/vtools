@@ -415,7 +415,6 @@ class ActivityFreezeApps : ActivityBase() {
             enableApp(appInfo)
         }
         try {
-            SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appInfo.packageName.toString())
             val intent = this.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
 

@@ -75,7 +75,7 @@ public class GpuUtils {
 
     public static String[] getFreqs() {
         String freqs = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_frequencies");
-        return freqs.split(" ");
+        return freqs.split("[ ]+");
     }
 
     public static boolean supported() {
@@ -119,7 +119,7 @@ public class GpuUtils {
 
     public static String[] getGovernors() {
         String g = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_governors");
-        return g.split(" ");
+        return g.split("[ ]+");
     }
 
     public static String getMinFreq() {
