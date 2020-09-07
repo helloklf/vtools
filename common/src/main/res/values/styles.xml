@@ -15,4 +15,18 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
+
+    <style name="SceneSeekBar" >
+        <item name="android:thumbOffset">0dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:maxHeight">16dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">?android:colorAccent</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress_drawable</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:thumbTint">?android:colorAccent</item>
+    </style>
 </resources>

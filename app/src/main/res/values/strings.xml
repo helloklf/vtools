@@ -111,7 +111,7 @@
     <string name="battery_title_desc1">如需使用“充电调速”、“充电保护”功能，请务必保持Scene后台运行！</string>
     <string name="battery_reality_limit">实际上限电流：</string>
     <string name="battery_pd_allowed">USB-PD快充</string>
-    <string name="battery_pd_allowed_desc">手机会根兼容情况决定是否激活USB-PD充电，无需手动设置</string>
+    <string name="battery_pd_allowed_desc">手机会根兼容情况决定是否激活USB-PD充电，无需手动设置。手动开关会导致充电速度缓慢，因此不允许手动修改！</string>
     <string name="battery_pd_active_state">当前状态：</string>
     <string name="battery_pd_active_1">已进入PD快充模式</string>
     <string name="battery_pd_active_0">未进入PD快充模式</string>
@@ -122,7 +122,7 @@
     <string name="battery_usb_uevent_title">$ usb/uevent</string>
     <string name="battery_night_mode_time">%02d:%02d</string>
     <string name="battery_night_mode">动态充电速度</string>
-    <string name="battery_night_mode_desc">在接近充满时调至缓慢充电，并在夜间主动降低充电速度</string>
+    <string name="battery_night_mode_desc">在接近充满时调至缓慢充电\n\n并在夜间主动降低充电速度</string>
     <string name="battery_time_get_up">起床时间</string>
     <string name="battery_time_sleep">入睡时间</string>
     <string name="battery_manual_control">手动控制</string>
@@ -132,18 +132,18 @@
     <string name="battery_view_history">查看记录</string>
     <string name="battery_delete_history">删除记录</string>
     <string name="battery_bp">充电保护</string>
-    <string name="battery_bp_desc">达到指定电量后停止充电，长期使用可能导致电量显示失准</string>
+    <string name="battery_bp_desc">达到指定电量后停止充电\n\n注意：长期使用可能导致电量显示失准</string>
     <string name="battery_bp_level_desc">电量限制值（%）</string>
     <string name="battery_qc_charger">充电调速</string>
     <string name="battery_bp_status">达到%d%%停止充电，低于%d%%恢复</string>
-    <string name="battery_qc_charger_desc">调整充电速度限制。疯狂调高毫无意义，请在有效范围内调节</string>
+    <string name="battery_qc_charger_desc">调整充电速度限制。疯狂调高毫无意义，因为并不会取得实际效果，请在有效范围内调节数值\n\n注意：上限数值仅供参考，请以实际充电速度为准！</string>
     <string name="battery_charge_disabled">充电功能已禁止！</string>
     <string name="battery_charge_resumed">充电功能已恢复！</string>
     <string name="battery_forgery">数据伪装</string>
     <string name="battery_forgery_ratio">电池电量</string>
     <string name="battery_forgery_full_now">充满容量</string>
     <string name="battery_step_charge">阶梯式充电</string>
-    <string name="battery_step_charge_desc">系统根据电量分阶段调整充电速度上限，有助于保护电池寿命</string>
+    <string name="battery_step_charge_desc">系统根据电量分阶段调整充电速度上限，有助于保护电池寿命\n\n一般建议保持默认设置</string>
     <string name="battery_exec_option">充电调速目的</string>
     <string-array name="battery_exec_options">
         <item>降低速度</item>

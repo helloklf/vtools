@@ -13,6 +13,7 @@ import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -65,7 +66,7 @@ class ActivityBattery:  ActivityBase() {
         pdSettingSupport = batteryUnits.pdSupported()
 
         settings_qc.setOnClickListener {
-            val checked = (it as Switch).isChecked
+            val checked = (it as SwitchCompat).isChecked
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
             if (checked) {
                 notifyConfigChanged()
@@ -122,7 +123,7 @@ class ActivityBattery:  ActivityBase() {
         if (pdSettingSupport) {
             settings_pd_support.visibility = View.VISIBLE
             settings_pd.setOnClickListener {
-                val isChecked = (it as Switch).isChecked
+                val isChecked = (it as SwitchCompat).isChecked
                 batteryUnits.setAllowed(isChecked)
             }
             settings_pd.isChecked = batteryUnits.pdAllowed()
@@ -209,7 +210,7 @@ class ActivityBattery:  ActivityBase() {
         }
         battery_night_mode.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)
         battery_night_mode.setOnClickListener {
-            val checked = (it as Switch).isChecked
+            val checked = (it as SwitchCompat).isChecked
             if (checked && !spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 Toast.makeText(this.context, "需要开启 " + getString(R.string.battery_qc_charger), Toast.LENGTH_LONG).show()
                 it.isChecked = false

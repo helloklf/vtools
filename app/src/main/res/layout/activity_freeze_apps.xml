@@ -203,8 +203,7 @@
                                     android:layout_weight="1"
                                     android:max="10"
                                     android:min="0"
-                                    android:paddingStart="6dp"
-                                    android:paddingEnd="6dp"
+                                    style="@style/SceneSeekBar"
                                     android:progress="2" />
 
                                 <TextView
@@ -245,8 +244,7 @@
                                     android:layout_weight="1"
                                     android:max="10"
                                     android:min="0"
-                                    android:paddingStart="6dp"
-                                    android:paddingEnd="6dp"
+                                    style="@style/SceneSeekBar"
                                     android:progress="5" />
 
                                 <TextView

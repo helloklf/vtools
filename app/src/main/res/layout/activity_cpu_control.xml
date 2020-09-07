@@ -452,7 +452,7 @@
                     android:enabled="false"
                     android:max="1000"
                     android:min="0"
-                    android:textAlignment="center" />
+                    style="@style/SceneSeekBar" />
 
                 <TextView
                     android:id="@+id/exynos_hmp_up_text"
@@ -478,7 +478,8 @@
                     android:layout_column="0"
                     android:layout_gravity="fill_horizontal"
                     android:enabled="false"
-                    android:max="1000" />
+                    android:max="1000"
+                    style="@style/SceneSeekBar" />
 
                 <TextView
                     android:id="@+id/exynos_hmp_down_text"

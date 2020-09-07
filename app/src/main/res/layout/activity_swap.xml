@@ -112,10 +112,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:max="64"
-                        android:paddingStart="6dp"
-                        android:paddingEnd="6dp" />
+                        style="@style/SceneSeekBar" />
 
                     <Button
+                        android:layout_marginStart="8dp"
                         android:id="@+id/btn_swap_create"
                         style="@style/sceneSmallButton"
                         android:text="@string/swap_create" />
@@ -261,8 +261,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:max="1"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp" />
+                    style="@style/SceneSeekBar" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -338,12 +337,10 @@
                 </LinearLayout>
 
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
-
                     <SeekBar
                         android:id="@+id/seekbar_swap_swappiness"
                         android:layout_width="match_parent"
-                        android:paddingStart="6dp"
-                        android:paddingEnd="6dp" />
+                        style="@style/SceneSeekBar" />
 
                     <TextView
                         android:id="@+id/txt_zramstus_swappiness"
@@ -386,8 +383,7 @@
                         android:id="@+id/seekbar_extra_free_kbytes"
                         android:layout_width="match_parent"
                         android:max="1048576"
-                        android:paddingStart="6dp"
-                        android:paddingEnd="6dp" />
+                        style="@style/SceneSeekBar" />
 
                     <TextView
                         android:id="@+id/txt_extra_free_kbytes"
