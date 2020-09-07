@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,10 +10,10 @@
         android:layout_height="wrap_content" />
 
     <com.omarea.common.ui.OverScrollListView
-        android:layout_below="@id/layout_app_bar"
         android:id="@+id/file_selector_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
 
     </com.omarea.common.ui.OverScrollListView>
 </RelativeLayout>

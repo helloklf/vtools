@@ -16,10 +16,7 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Filterable
-import android.widget.SeekBar
-import android.widget.Switch
-import android.widget.Toast
+import android.widget.*
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -109,7 +106,7 @@ class ActivityFreezeApps : ActivityBase() {
             isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
             isChecked = useSuspendMode
             setOnClickListener {
-                val checked = (it as Switch).isChecked
+                val checked = (it as CompoundButton).isChecked
                 switchSuspendMode(checked)
 
                 useSuspendMode = checked
@@ -123,18 +120,18 @@ class ActivityFreezeApps : ActivityBase() {
             isEnabled = useSuspendMode
             isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, false)
             setOnClickListener {
-                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, (it as Switch).isChecked).apply()
+                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, (it as CompoundButton).isChecked).apply()
             }
         }
 
         freeze_click_open.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, false)
         freeze_click_open.setOnClickListener {
-            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, (it as Switch).isChecked).apply()
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, (it as CompoundButton).isChecked).apply()
         }
 
         freeze_shortcut_suggest.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)
         freeze_shortcut_suggest.setOnClickListener {
-            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, (it as Switch).isChecked).apply()
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, (it as CompoundButton).isChecked).apply()
         }
 
         freeze_time_limit.run {

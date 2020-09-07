@@ -70,9 +70,9 @@
 
         <com.omarea.common.ui.OverScrollListView
             android:id="@+id/process_list"
-            android:layout_marginBottom="6dp"
             android:layout_width="155dp"
             android:layout_height="170dp"
+            android:layout_marginBottom="6dp"
             android:divider="@null"
             android:fastScrollAlwaysVisible="false"
             android:fastScrollEnabled="false" />

@@ -33,10 +33,10 @@
         <EditText
             android:id="@+id/number_input_value"
             style="@style/textTitle"
-            android:maxLines="1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:maxLines="1"
             android:textAlignment="center" />
 
         <ImageButton
@@ -52,28 +52,30 @@
 
     <TextView
         android:id="@+id/number_input_help"
-        android:textAlignment="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAlignment="center" />
 
     <RelativeLayout
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
         <Button
             android:id="@+id/number_input_cancel"
-            android:layout_alignParentStart="true"
             style="?android:buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_alignParentStart="true"
             android:layout_gravity="end"
             android:text="@string/btn_cancel" />
+
         <Button
             android:id="@+id/number_input_applay"
-            android:layout_alignParentEnd="true"
             style="?android:buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
             android:layout_gravity="end"
             android:text="@string/btn_confirm" />
     </RelativeLayout>

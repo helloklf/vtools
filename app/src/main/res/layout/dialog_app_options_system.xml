@@ -232,11 +232,11 @@
                 android:id="@+id/app_limit_p_suspend"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:layout_marginEnd="6dp"
                 android:padding="6dp">
 
                 <ImageView
@@ -319,9 +319,9 @@
             <!--复制应用包名-->
             <LinearLayout
                 android:id="@+id/app_options_copay_path"
-                android:layout_marginStart="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"

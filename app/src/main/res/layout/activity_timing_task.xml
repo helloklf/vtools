@@ -103,27 +103,27 @@
                         android:textStyle="normal" />
 
                     <RadioButton
-                        android:visibility="gone"
-                        android:enabled="false"
                         android:id="@+id/task_before_execute_confirm"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="false"
                         android:text="执行前提示确认"
                         android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"
+                        android:visibility="gone" />
 
                     <LinearLayout
-                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <RadioButton
-                            android:enabled="false"
                             android:id="@+id/task_battery_capacity_require"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:enabled="false"
                             android:text="电量高于"
                             android:textColor="?android:textColorPrimary"
                             android:textStyle="normal" />
@@ -376,9 +376,9 @@
                         android:text="维护任务" />
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 

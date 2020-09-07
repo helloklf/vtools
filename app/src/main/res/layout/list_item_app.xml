@@ -29,9 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="7dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="7dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/ItemTitle"
@@ -39,27 +39,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1" />
+
         <TextView
             android:id="@+id/ItemText"
             style="@style/textSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1" />
+
         <TextView
             android:id="@+id/ItemEnabledStateText"
+            style="@style/textSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxWidth="100dp"
-            android:textColor="?android:colorAccent"
-            style="@style/textSmall" />
+            android:textColor="?android:colorAccent" />
 
         <TextView
             android:id="@+id/ItemPath"
-            android:visibility="gone"
             style="@style/textSmall"
-            android:textSize="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

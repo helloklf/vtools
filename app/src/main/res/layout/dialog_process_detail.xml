@@ -138,6 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,6 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -180,18 +182,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
             android:layout_marginTop="50dp"
+            android:gravity="end"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/ProcessStopApp"
-                android:visibility="gone"
-                android:layout_marginEnd="10dp"
-                android:layout_width="wrap_content"
-                android:paddingRight="6dp"
-                android:paddingLeft="6dp"
                 style="@style/sceneSmallButton"
-                android:text="杀死安卓应用" />
+                android:layout_width="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:text="杀死安卓应用"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/ProcessKill"

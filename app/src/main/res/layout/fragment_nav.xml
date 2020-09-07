@@ -19,36 +19,38 @@
 
         <LinearLayout
             android:id="@+id/nav_scene_service_not_active"
-            android:visibility="gone"
+            style="@style/ListCardItem"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            style="@style/ListCardItem">
+            android:visibility="gone">
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:src="@drawable/nav_icon_warn"
-                    app:tint="?android:colorAccent"
                     android:layout_width="22dp"
-                    android:layout_height="22dp" />
+                    android:layout_height="22dp"
+                    android:src="@drawable/nav_icon_warn"
+                    app:tint="?android:colorAccent" />
+
                 <TextView
                     style="@style/textDefault"
-                    android:layout_marginLeft="4dp"
-                    android:text="请先点击此处，去激活辅助服务"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:text="请先点击此处，去激活辅助服务" />
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="4dp"
                 style="@style/textSmall"
-                android:text="场景模式需要辅助服务提供支持。放心，Scene不会窃取界面上的内容，只会分析界面层次和显示大小并用于判断前台应用状态。"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="场景模式需要辅助服务提供支持。放心，Scene不会窃取界面上的内容，只会分析界面层次和显示大小并用于判断前台应用状态。" />
         </LinearLayout>
 
         <GridLayout

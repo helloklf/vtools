@@ -76,20 +76,20 @@
         android:visibility="gone">
 
         <ImageView
-            android:tint="?android:colorAccent"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/ic_settings" />
+            android:src="@drawable/ic_settings"
+            android:tint="?android:colorAccent" />
 
         <TextView
             android:id="@+id/fullscreen_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50sp"
+            android:alpha="0.3"
             android:gravity="center"
             android:keepScreenOn="true"
             android:text="TOOLBOX·SCENE"
-            android:alpha="0.3"
             android:textColor="?android:colorAccent"
             android:textSize="35sp"
             android:textStyle="bold" />

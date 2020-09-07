@@ -201,8 +201,8 @@
                     android:orientation="horizontal">
 
                     <SeekBar
-                        style="@style/SceneSeekBar"
                         android:id="@+id/settings_qc_limit"
+                        style="@style/SceneSeekBar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -233,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -244,7 +244,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
+                            android:layout_marginEnd="5dp"
                             app:text="@string/battery_exec_desc" />
 
                         <TextView
@@ -257,11 +257,8 @@
 
                         <Spinner
                             android:id="@+id/battery_exec_options"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:entries="@array/battery_exec_options"
-                            android:paddingStart="0dp"
-                            android:paddingEnd="0dp" />
+                            style="@style/SceneSpinner"
+                            android:entries="@array/battery_exec_options" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -358,11 +355,11 @@
 
                 <SeekBar
                     android:id="@+id/settings_bp_level"
+                    style="@style/SceneSeekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="70"
-                    style="@style/SceneSeekBar" />
+                    android:max="70" />
 
                 <TextView
                     android:id="@+id/battery_bp_level_desc"

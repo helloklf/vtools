@@ -10,10 +10,10 @@
         android:layout_height="wrap_content" />
 
     <TabHost
-        android:layout_below="@id/layout_app_bar"
         android:id="@+id/magisk_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar"
         android:focusable="false">
 
         <LinearLayout
@@ -45,15 +45,15 @@
                         android:layout_height="0dp"
                         android:layout_gravity="top"
                         android:layout_weight="1"
+                        android:background="@null"
                         android:gravity="top"
                         android:paddingStart="15dp"
-                        android:background="@null"
                         android:textSize="12sp" />
 
                     <LinearLayout
-                        android:background="#33dddddd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="#33dddddd"
                         android:gravity="end">
 
                         <Button
@@ -88,21 +88,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <EditText
                         android:id="@+id/magisk_beforestart"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_gravity="top"
                         android:layout_weight="1"
-                        android:gravity="top"
                         android:background="@null"
+                        android:gravity="top"
                         android:paddingStart="15dp"
                         android:textSize="12sp" />
 
                     <LinearLayout
-                        android:background="#33dddddd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="#33dddddd"
                         android:gravity="end">
 
                         <Button
@@ -133,15 +134,15 @@
                         android:layout_height="0dp"
                         android:layout_gravity="top"
                         android:layout_weight="1"
+                        android:background="@null"
                         android:gravity="top"
                         android:paddingStart="15dp"
-                        android:background="@null"
                         android:textSize="12sp" />
 
                     <LinearLayout
-                        android:background="#33dddddd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="#33dddddd"
                         android:gravity="end">
 
                         <Button

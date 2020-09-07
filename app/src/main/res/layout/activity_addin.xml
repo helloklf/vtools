@@ -12,10 +12,11 @@
 
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/addin_system_listview"
-        android:layout_below="@+id/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_app_bar"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        android:background="@drawable/krscript_item_ripple_inactive"
         android:divider="@color/color_list_divider"
         android:dividerHeight="0sp"
         android:listSelector="@android:color/transparent"

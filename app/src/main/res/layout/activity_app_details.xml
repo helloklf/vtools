@@ -56,11 +56,11 @@
 
             <Switch
                 android:id="@+id/scene_mode_allow"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="场景模式"
-                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="场景模式" />
 
             <LinearLayout
                 android:id="@+id/scene_mode_config"
@@ -68,10 +68,10 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/app_details_auto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/app_details_auto">
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/scene_config_title"
@@ -91,25 +91,25 @@
 
                         <TextView
                             android:id="@+id/app_details_dynamic"
-                            android:gravity="center_vertical|end"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:paddingEnd="8dp"
+                            android:gravity="center_vertical|end"
                             android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
                             android:paddingBottom="8dp" />
                     </LinearLayout>
 
                     <Switch
-                        style="@style/scene_config_item"
                         android:id="@+id/app_details_aloowlight"
+                        style="@style/scene_config_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="独立亮度" />
 
                     <Switch
-                        style="@style/scene_config_item"
                         android:id="@+id/app_details_gps"
+                        style="@style/scene_config_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="自动打开GPS（离开后还原）" />
@@ -123,42 +123,47 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="屏幕旋转" />
+
                         <RadioGroup
-                            android:orientation="horizontal"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:gravity="end">
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:orientation="horizontal">
+
                             <RadioButton
                                 android:id="@+id/scene_orientation_default"
-                                android:text="默认"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="默认" />
+
                             <RadioButton
                                 android:id="@+id/scene_orientation_auto"
-                                android:text="自动"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="自动" />
+
                             <RadioButton
                                 android:id="@+id/scene_orientation_portrait"
-                                android:text="竖屏"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="竖屏" />
+
                             <RadioButton
                                 android:id="@+id/scene_orientation_landscape"
-                                android:text="横屏"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="横屏" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:id="@+id/app_details_assist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/app_details_assist">
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/scene_config_title"
@@ -171,16 +176,16 @@
                         android:layout_height="wrap_content">
 
                         <Switch
-                            style="@style/scene_config_item"
                             android:id="@+id/app_details_hidenav"
+                            style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="隐藏导航栏" />
 
                         <Switch
-                            style="@style/scene_config_item"
                             android:id="@+id/app_details_hidestatus"
+                            style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="50dp"
@@ -193,16 +198,16 @@
                         android:layout_height="wrap_content">
 
                         <Switch
-                            style="@style/scene_config_item"
                             android:id="@+id/app_details_hidenotice"
+                            style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="屏蔽通知" />
 
                         <Switch
-                            style="@style/scene_config_item"
                             android:id="@+id/app_details_hidebtn"
+                            style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="50dp"
@@ -218,15 +223,15 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/scene_config_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="应用偏见" />
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_freeze"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="自动冻结" />
@@ -270,43 +275,43 @@
 
                     <TextView
                         android:id="@+id/app_details_dpi"
-                        android:paddingEnd="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingEnd="10dp"
                         android:text="默认" />
                 </LinearLayout>
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_excludetask"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="从最近任务隐藏" />
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_scrollopt"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="弹性缓慢滚动" />
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_webview_debug"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Webview调试模式（全局）" />
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_hide_su"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="隐藏类原生状态栏SU图标（全局）" />
 
                 <Switch
-                    style="@style/scene_config_item"
                     android:id="@+id/app_details_service_running"
+                    style="@style/scene_config_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="阻止“正在后台运行”通知（全局）" />
@@ -314,10 +319,10 @@
                 <TextView
                     android:id="@+id/addin_auto_run_help"
                     style="@style/textSmall"
-                    android:textColor="?android:colorAccent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="高级设定功能由一个名为“Scene-高级设定”的无界面应用提供，你需要在自启动管理中找到它，并单独设置允许自启动。否则Scene无法与之通讯！" />
+                    android:text="高级设定功能由一个名为“Scene-高级设定”的无界面应用提供，你需要在自启动管理中找到它，并单独设置允许自启动。否则Scene无法与之通讯！"
+                    android:textColor="?android:colorAccent" />
             </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>

@@ -10,10 +10,10 @@
         android:layout_height="wrap_content" />
 
     <TabHost
-        android:layout_below="@id/layout_app_bar"
         android:id="@+id/applications_tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,8 +55,8 @@
                         android:id="@+id/apps_userlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_margin="@dimen/activity_vertical_margin"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:divider="@null"
                         android:scrollbars="none" />
                 </FrameLayout>
@@ -79,8 +79,8 @@
                         android:id="@+id/apps_systemlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_margin="@dimen/activity_vertical_margin"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:divider="@null"
                         android:scrollbars="none" />
 
@@ -104,8 +104,8 @@
                         android:id="@+id/apps_backupedlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_margin="@dimen/activity_vertical_margin"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:divider="@null"
                         android:scrollbars="none" />
 

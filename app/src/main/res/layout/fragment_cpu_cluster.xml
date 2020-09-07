@@ -6,16 +6,16 @@
     <GridLayout style="@style/ListCardItem">
 
         <LinearLayout
-            android:layout_marginBottom="10dp"
             android:layout_row="0"
             android:layout_columnSpan="2"
-            android:layout_gravity="fill">
+            android:layout_gravity="fill"
+            android:layout_marginBottom="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/cluster_title"
-                style="@style/textTitle" />
+                style="@style/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <com.omarea.ui.HelpIcon
                 android:layout_width="wrap_content"

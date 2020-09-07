@@ -25,8 +25,8 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/textTitle"
             android:id="@+id/itemTitle"
+            style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -39,8 +39,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/textSmall"
                 android:id="@+id/itemModeName"
+                style="@style/textSmall"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:text="@string/balance" />
@@ -61,13 +61,13 @@
 
             <TextView
                 android:id="@+id/itemCounts"
-                android:textAlignment="textEnd"
-                android:layout_marginEnd="8dp"
                 style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="0分钟" />
+                android:text="0分钟"
+                android:textAlignment="textEnd" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

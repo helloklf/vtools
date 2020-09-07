@@ -64,15 +64,15 @@
             <GridLayout style="@style/ListCardItem">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/textTitle"
                         android:text="Cpuset" />
 
                     <com.omarea.ui.HelpIcon
@@ -183,16 +183,16 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="GPU Governor"
-                        style="@style/textTitle" />
+                        android:text="GPU Governor" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -261,16 +261,16 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="GPU Power"
-                        style="@style/textTitle" />
+                        android:text="GPU Power" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -340,16 +340,16 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Qualcomm温控"
-                        style="@style/textTitle" />
+                        android:text="Qualcomm温控" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -402,16 +402,16 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Exynos"
-                        style="@style/textTitle" />
+                        android:text="Exynos" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -446,13 +446,13 @@
 
                 <SeekBar
                     android:id="@+id/exynos_hmp_up"
+                    style="@style/SceneSeekBar"
                     android:layout_row="3"
                     android:layout_column="0"
                     android:layout_gravity="fill_horizontal"
                     android:enabled="false"
                     android:max="1000"
-                    android:min="0"
-                    style="@style/SceneSeekBar" />
+                    android:min="0" />
 
                 <TextView
                     android:id="@+id/exynos_hmp_up_text"
@@ -474,12 +474,12 @@
 
                 <SeekBar
                     android:id="@+id/exynos_hmp_down"
+                    style="@style/SceneSeekBar"
                     android:layout_row="5"
                     android:layout_column="0"
                     android:layout_gravity="fill_horizontal"
                     android:enabled="false"
-                    android:max="1000"
-                    style="@style/SceneSeekBar" />
+                    android:max="1000" />
 
                 <TextView
                     android:id="@+id/exynos_hmp_down_text"
@@ -510,16 +510,16 @@
             <GridLayout style="@style/ListCardItemLast">
 
                 <LinearLayout
-                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill">
+                    android:layout_gravity="fill"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Core Online"
-                        style="@style/textTitle" />
+                        android:text="Core Online" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"

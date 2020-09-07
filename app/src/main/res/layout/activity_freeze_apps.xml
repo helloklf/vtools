@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include
         android:id="@+id/layout_app_bar"
         layout="@layout/layout_app_bar"
@@ -10,10 +11,10 @@
         android:layout_height="wrap_content" />
 
     <TabHost
-        android:layout_below="@id/layout_app_bar"
         android:id="@+id/freeze_tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,11 +74,11 @@
 
                     <LinearLayout
                         style="@style/ListCardItemLast"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:alpha="0.9"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:orientation="vertical"
                         android:paddingLeft="0dp"
                         android:paddingTop="0dp"
@@ -117,76 +118,119 @@
 
                         <LinearLayout style="@style/ListCardItem">
 
-                            <Switch
-                                android:id="@+id/freeze_suspend_mode"
-                                style="@style/textTitle"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="保留图标" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
 
-                            <Switch
-                                android:id="@+id/freeze_any_unfreeze"
-                                style="@style/textTitle"
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/freeze_suspend_mode"
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="保留图标" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:text="Xposed授权通融" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n[一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置、Pixel 启动器]\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n一加桌面、一加Hydrogen桌面、一加氢桌面\nLawnchair测试版、Lawnchair魔趣版\nMIUI桌面、POCO桌面、MIUI全局搜索\nLineageOS Trebuchet\n系统设置、Pixel 启动器\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/freeze_any_unfreeze"
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Xposed授权通融" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
                         <LinearLayout style="@style/ListCardItem">
 
-                            <Switch
-                                android:id="@+id/freeze_click_open"
-                                style="@style/textTitle"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="单击启动应用" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="点击偏见列表中的应用时打开应用，而不是切换冻结状态" />
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="点击偏见列表中的应用时打开应用，而不是切换冻结状态" />
 
-                            <Switch
-                                android:id="@+id/freeze_shortcut_suggest"
-                                style="@style/textTitle"
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/freeze_click_open"
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="单击启动应用" />
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:text="提示创建快捷方式" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/freeze_shortcut_suggest"
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="提示创建快捷方式" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout style="@style/ListCardItem">
 
-                            <TextView
-                                style="@style/textTitle"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="活动时间限制（分）" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="离开应用界面超过此时间后冻结，0表示不限制。锁屏1分钟后自动冻结所有偏见应用，不受此设置影响！" />
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="活动时间限制（分）" />
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -198,12 +242,12 @@
 
                                 <SeekBar
                                     android:id="@+id/freeze_time_limit"
+                                    style="@style/SceneSeekBar"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:max="10"
                                     android:min="0"
-                                    style="@style/SceneSeekBar"
                                     android:progress="2" />
 
                                 <TextView
@@ -215,19 +259,27 @@
                                     android:textAlignment="center" />
                             </LinearLayout>
 
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="离开应用界面超过此时间后冻结，0表示不限制。锁屏1分钟后自动冻结所有偏见应用，不受此设置影响！" />
 
-                            <TextView
-                                style="@style/textTitle"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:text="活动数量限制（个）" />
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="能同时处于解冻状态的偏见应用最大数量，0表示不限制" />
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="活动数量限制（个）" />
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -239,12 +291,12 @@
 
                                 <SeekBar
                                     android:id="@+id/freeze_item_limit"
+                                    style="@style/SceneSeekBar"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:max="10"
                                     android:min="0"
-                                    style="@style/SceneSeekBar"
                                     android:progress="5" />
 
                                 <TextView
@@ -255,13 +307,6 @@
                                     android:text="5"
                                     android:textAlignment="center" />
                             </LinearLayout>
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="能同时处于解冻状态的偏见应用最大数量，0表示不限制" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.omarea.common.ui.OverScrollView>

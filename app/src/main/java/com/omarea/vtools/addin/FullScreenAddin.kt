@@ -11,7 +11,7 @@ import com.omarea.common.ui.DialogHelper
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {
 
     fun fullScreen() {
-        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）", "MIUI(专属)去导航栏")
+        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）")
         var index = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择操作")
@@ -25,10 +25,6 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
                         2 -> execShell("wm overscan reset;settings put global policy_control immersive.status=apps,-android,-com.android.systemui")
                         3 -> execShell("wm overscan reset;settings put global policy_control null")
                         4 -> execShell("wm overscan 0,0,0,-${getNavHeight()}")
-                        5 -> {
-                            DialogHelper.helpInfo(context, "功能迁移提示", "该功能已迁移到 [附加功能] - [全部] - [MIUI专属] 中")
-                            return@setNegativeButton
-                        }
                     }
                 })
     }

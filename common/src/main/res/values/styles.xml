@@ -16,7 +16,16 @@
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
 
-    <style name="SceneSeekBar" >
+    <style name="SceneSpinner">
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="SceneSeekBar">
         <item name="android:thumbOffset">0dp</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>

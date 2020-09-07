@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:theme="@style/AppThemeLight"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/AppThemeLight">
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
@@ -60,9 +60,9 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginBottom="5dp">
 
                     <TextView
@@ -76,8 +76,8 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/powersave_short"
-                        android:textColor="@android:color/white"
                         android:textAlignment="center"
+                        android:textColor="@android:color/white"
                         android:textSize="12dp" />
 
                     <TextView
@@ -90,9 +90,9 @@
                         android:background="@drawable/powercfg_balance"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:textColor="@android:color/white"
                         android:text="@string/balance_short"
                         android:textAlignment="center"
+                        android:textColor="@android:color/white"
                         android:textSize="12dp" />
 
                     <TextView
@@ -105,9 +105,9 @@
                         android:background="@drawable/powercfg_performance"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:textColor="@android:color/white"
                         android:text="@string/performance_short"
                         android:textAlignment="center"
+                        android:textColor="@android:color/white"
                         android:textSize="12dp" />
 
                     <TextView
@@ -119,9 +119,9 @@
                         android:background="@drawable/powercfg_fast"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:textColor="@android:color/white"
                         android:text="@string/fast_short"
                         android:textAlignment="center"
+                        android:textColor="@android:color/white"
                         android:textSize="12dp" />
                 </LinearLayout>
 
@@ -129,8 +129,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:paddingStart="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp">
 
                     <CheckBox
                         android:id="@+id/fw_app_light"
@@ -163,8 +163,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp">
 
                     <CheckBox
                         android:id="@+id/fw_app_gps"
@@ -179,10 +179,10 @@
             </LinearLayout>
 
             <View
-                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
-                android:background="#e0e0e0"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#e0e0e0" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -216,9 +216,10 @@
                     android:src="@drawable/dialog_performance" />
 
                 <View
-                    android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_height="0dp" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
                 <Switch
                     android:id="@+id/fw_dynamic_state"
                     android:layout_width="wrap_content"

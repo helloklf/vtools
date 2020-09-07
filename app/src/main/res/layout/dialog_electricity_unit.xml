@@ -53,9 +53,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -66,22 +66,23 @@
 
         <TextView
             android:id="@+id/electricity_adj_sample"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0mA"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
-        android:paddingTop="6dp"
-        android:textSize="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="6dp"
+        android:paddingTop="6dp"
+        android:text="@string/electricity_unit_adj_desc2"
         android:textAlignment="center"
         android:textColor="@android:color/holo_red_dark"
-        android:text="@string/electricity_unit_adj_desc2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textSize="12dp" />
+
     <Button
         android:id="@+id/electricity_adj_applay"
         style="?android:buttonBarButtonStyle"

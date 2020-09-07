@@ -108,16 +108,16 @@
 
                     <SeekBar
                         android:id="@+id/seekbar_swap_size"
+                        style="@style/SceneSeekBar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:max="64"
-                        style="@style/SceneSeekBar" />
+                        android:max="64" />
 
                     <Button
-                        android:layout_marginStart="8dp"
                         android:id="@+id/btn_swap_create"
                         style="@style/sceneSmallButton"
+                        android:layout_marginStart="8dp"
                         android:text="@string/swap_create" />
                 </LinearLayout>
 
@@ -257,11 +257,11 @@
 
                 <SeekBar
                     android:id="@+id/seekbar_zram_size"
+                    style="@style/SceneSeekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="1"
-                    style="@style/SceneSeekBar" />
+                    android:max="1" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -337,10 +337,11 @@
                 </LinearLayout>
 
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
+
                     <SeekBar
                         android:id="@+id/seekbar_swap_swappiness"
-                        android:layout_width="match_parent"
-                        style="@style/SceneSeekBar" />
+                        style="@style/SceneSeekBar"
+                        android:layout_width="match_parent" />
 
                     <TextView
                         android:id="@+id/txt_zramstus_swappiness"
@@ -381,9 +382,9 @@
 
                     <SeekBar
                         android:id="@+id/seekbar_extra_free_kbytes"
+                        style="@style/SceneSeekBar"
                         android:layout_width="match_parent"
-                        android:max="1048576"
-                        style="@style/SceneSeekBar" />
+                        android:max="1048576" />
 
                     <TextView
                         android:id="@+id/txt_extra_free_kbytes"

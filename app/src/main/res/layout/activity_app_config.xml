@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include
         android:id="@+id/layout_app_bar"
         layout="@layout/layout_app_bar"
@@ -10,10 +10,10 @@
         android:layout_height="wrap_content" />
 
     <TabHost
-        android:layout_below="@id/layout_app_bar"
         android:id="@+id/configlist_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar"
         android:focusable="false">
 
         <LinearLayout
@@ -29,9 +29,9 @@
 
                 <LinearLayout
                     android:id="@+id/configlist_tab0"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -40,12 +40,12 @@
 
                         <EditText
                             android:id="@+id/config_search_box"
-                            android:imeOptions="actionSearch"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:hint="搜索应用名"
+                            android:imeOptions="actionSearch"
                             android:inputType="textFilter"
                             android:padding="8dp"
                             android:singleLine="true"
@@ -69,13 +69,13 @@
                     </LinearLayout>
 
                     <com.omarea.common.ui.OverScrollListView
-                        android:divider="@null"
-                        android:background="@drawable/krscript_item_ripple_inactive"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:scrollbars="none"
                         android:id="@+id/scene_app_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/activity_vertical_margin"
+                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:divider="@null"
+                        android:scrollbars="none" />
                 </LinearLayout>
 
                 <com.omarea.common.ui.OverScrollView
@@ -106,7 +106,9 @@
 
                         </LinearLayout>
 
-                        <LinearLayout android:id="@+id/dynamic_control_opts" style="@style/ListCardItem">
+                        <LinearLayout
+                            android:id="@+id/dynamic_control_opts"
+                            style="@style/ListCardItem">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
