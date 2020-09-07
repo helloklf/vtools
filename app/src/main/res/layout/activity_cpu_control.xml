@@ -64,6 +64,7 @@
             <GridLayout style="@style/ListCardItem">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -71,11 +72,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
-                        android:text="Cpuset"
-                        android:textColor="?android:colorAccent"
-                        android:textSize="16dp" />
+                        style="@style/textTitle"
+                        android:text="Cpuset" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -185,6 +183,7 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -192,10 +191,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:text="GPU Governor"
-                        android:textColor="?android:colorAccent" />
+                        style="@style/textTitle" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -264,6 +261,7 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -271,10 +269,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:text="GPU Power"
-                        android:textColor="?android:colorAccent" />
+                        style="@style/textTitle" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -344,6 +340,7 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -351,10 +348,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:text="Qualcomm温控"
-                        android:textColor="?android:colorAccent" />
+                        style="@style/textTitle" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -407,6 +402,7 @@
                 style="@style/ListCardItem">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -414,10 +410,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:text="Exynos"
-                        android:textColor="?android:colorAccent" />
+                        style="@style/textTitle" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
@@ -515,6 +509,7 @@
             <GridLayout style="@style/ListCardItemLast">
 
                 <LinearLayout
+                    android:layout_marginBottom="10dp"
                     android:layout_row="0"
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill">
@@ -522,10 +517,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginBottom="10dp"
                         android:text="Core Online"
-                        android:textColor="?android:colorAccent" />
+                        style="@style/textTitle" />
 
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"

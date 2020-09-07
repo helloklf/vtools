@@ -1,17 +1,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <GridLayout style="@style/ListCardItem">
 
-        <TextView
-            android:id="@+id/cluster_title"
+        <LinearLayout
+            android:layout_marginBottom="10dp"
             android:layout_row="0"
             android:layout_columnSpan="2"
-            android:layout_gravity="fill_horizontal"
-            android:layout_marginBottom="10dp"
-            android:textColor="?android:colorAccent"
-            android:textSize="16dp" />
+            android:layout_gravity="fill">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cluster_title"
+                style="@style/textTitle" />
+
+            <com.omarea.ui.HelpIcon
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                app:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
+
+        </LinearLayout>
 
         <TextView
             android:layout_row="1"
