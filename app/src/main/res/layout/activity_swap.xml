@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,23 +11,23 @@
         android:layout_height="wrap_content" />
 
     <com.omarea.common.ui.OverScrollView
-        android:layout_below="@id/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
 
         <LinearLayout
-            android:paddingBottom="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
             <TextView
                 android:id="@+id/swap_module_state"
-                android:textColor="?android:colorAccent"
-                android:visibility="gone"
+                style="@style/ListCardItem"
                 android:text="@string/swap_outside_module_installed"
                 android:textAlignment="center"
-                style="@style/ListCardItem" />
+                android:textColor="?android:colorAccent"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/zram_stat"
@@ -61,38 +62,46 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_swap" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="@string/swap_swap_desc" />
+
                     <TextView
                         android:id="@+id/swap_state"
-                        android:textAlignment="textEnd"
-                        android:textColor="?android:colorAccent"
                         style="@style/textDefault"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/swap_state_undefined" />
+                        android:text="@string/swap_state_undefined"
+                        android:textAlignment="textEnd"
+                        android:textColor="?android:colorAccent" />
+
                     <TextView
                         android:id="@+id/txt_swap_size_display"
                         android:layout_width="71dp"
-                        android:layout_marginEnd="4dp"
-                        android:textAlignment="textEnd"
                         android:layout_height="wrap_content"
-                        android:text="8192MB" />
+                        android:layout_marginEnd="4dp"
+                        android:text="8192MB"
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
@@ -100,50 +109,56 @@
                     <SeekBar
                         android:id="@+id/seekbar_swap_size"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:max="64"
                         android:paddingStart="6dp"
                         android:paddingEnd="6dp" />
+
                     <Button
                         android:id="@+id/btn_swap_create"
                         style="@style/sceneSmallButton"
                         android:text="@string/swap_create" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
                         <RadioGroup
                             android:id="@+id/chk_swap_order"
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
                             <RadioButton
                                 android:id="@+id/swap_zram_preferred"
-                                android:checked="true"
-                                android:text="@string/swap_zram_preferred"
                                 style="@style/textDefault"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="@string/swap_zram_preferred" />
+
                             <RadioButton
                                 android:id="@+id/swap_zram_equitable"
-                                android:text="@string/swap_zram_equitable"
                                 style="@style/textDefault"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="@string/swap_zram_equitable" />
+
                             <RadioButton
                                 android:id="@+id/swap_swap_preferred"
-                                android:text="@string/swap_swap_preferred"
                                 style="@style/textDefault"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="@string/swap_swap_preferred" />
                         </RadioGroup>
 
                         <CheckBox
@@ -153,10 +168,11 @@
                             android:layout_height="wrap_content"
                             android:text="@string/swap_use_loop" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/btn_swap_start"
@@ -166,93 +182,101 @@
 
 
                         <Button
-                            android:layout_marginStart="6dp"
                             android:id="@+id/btn_swap_delete"
                             style="@style/sceneSmallButton"
+                            android:layout_marginStart="6dp"
                             android:text="@string/swap_delete" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <CheckBox
                         android:id="@+id/chk_swap_autostart"
                         style="@style/textDefault"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/swap_auto_start" />
+
                     <Button
                         android:id="@+id/btn_swap_close"
                         style="@style/sceneSmallButton"
                         android:layout_marginStart="6dp"
                         android:text="@string/swap_stop" />
                 </LinearLayout>
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_swap_desc" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:id="@+id/swap_config_zram"
                 style="@style/ListCardItem"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_zram" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="@string/swap_zram_desc" />
+
                     <TextView
                         android:id="@+id/zram_state"
-                        android:textAlignment="textEnd"
-                        android:textColor="?android:colorAccent"
                         style="@style/textDefault"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/swap_state_undefined" />
-                    <TextView
-                        android:layout_width="71dp"
-                        android:layout_marginEnd="4dp"
+                        android:text="@string/swap_state_undefined"
                         android:textAlignment="textEnd"
+                        android:textColor="?android:colorAccent" />
+
+                    <TextView
                         android:id="@+id/txt_zram_size_display"
+                        android:layout_width="71dp"
                         android:layout_height="wrap_content"
-                        android:text="0MB" />
+                        android:layout_marginEnd="4dp"
+                        android:text="0MB"
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
 
                 <SeekBar
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/seekbar_zram_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:max="1"
                     android:paddingStart="6dp"
                     android:paddingEnd="6dp" />
 
-                <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/activity_vertical_margin">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="horizontal">
+
                     <TextView
                         style="@style/textDefault"
-                        android:layout_marginStart="6dp"
                         android:layout_width="0dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
                         android:max="2048"
                         android:paddingStart="0dp"
                         android:paddingEnd="0dp"
@@ -268,18 +292,18 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/chk_zram_autostart"
                         style="@style/textDefault"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/swap_auto_start" />
 
                     <Button
@@ -287,12 +311,6 @@
                         style="@style/sceneSmallButton"
                         android:text="@string/swap_zram_adjustment" />
                 </LinearLayout>
-                <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_zram_desc" />
             </LinearLayout>
 
             <TableLayout
@@ -300,9 +318,24 @@
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
-                <TextView
-                    style="@style/textTitle"
-                    android:text="@string/swap_swappiness" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/swap_swappiness" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="@string/swap_swappiness_desc" />
+                </LinearLayout>
 
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
@@ -321,11 +354,6 @@
                         android:textAlignment="center" />
                 </TableRow>
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/swap_swappiness_desc" />
-
             </TableLayout>
 
             <TableLayout
@@ -333,16 +361,31 @@
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
-                <TextView
-                    style="@style/textTitle"
-                    android:text="@string/extra_free_kbytes" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/extra_free_kbytes" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="@string/extra_free_kbytes_desc" />
+                </LinearLayout>
 
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
                         android:id="@+id/seekbar_extra_free_kbytes"
-                        android:max="1048576"
                         android:layout_width="match_parent"
+                        android:max="1048576"
                         android:paddingStart="6dp"
                         android:paddingEnd="6dp" />
 
@@ -354,11 +397,6 @@
                         android:layout_marginStart="8dp"
                         android:textAlignment="center" />
                 </TableRow>
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/extra_free_kbytes_desc" />
 
             </TableLayout>
 
@@ -391,7 +429,9 @@
                     android:textSize="10dp" />
             </TableLayout>
 
-            <LinearLayout style="@style/ListCardItem" android:id="@+id/swap_auto_lmk_wrap">
+            <LinearLayout
+                android:id="@+id/swap_auto_lmk_wrap"
+                style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"

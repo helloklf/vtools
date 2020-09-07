@@ -216,11 +216,11 @@
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="swap_current_state">当前状态：</string>
     <string name="swap_memory_info">Memory Info</string>
-    <string name="swap_swappiness_desc">说明：数值越高使用ZRAM/SWAP越积极</string>
+    <string name="swap_swappiness_desc">说明：数值越高会越积极的使用ZRAM/SWAP，此设置对流畅度的影响难以感知，酌情调整即可~</string>
     <string name="swap_swappiness">Swappiness</string>
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
-    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据降低占用，会给CPU带来额外负担</string>
+    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据降低占用，会给CPU带来额外负担\n\n注意：不建议在处理器性能偏弱的设备上使用ZRAM，以免在内存不足时手机变得缓慢和严重耗电！</string>
     <string name="swap_zram_comp_options">压缩算法</string>
     <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n lzo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
     </string>
@@ -236,7 +236,7 @@
     <string name="swap_swap_preferred">优先于ZRAM使用</string>
     <string name="swap_use_loop">挂载为回环设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米的SDM845机型在Android9.0，需要勾选此项才能正常使用SWAP</string>
-    <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差</string>
+    <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差。\n\n注意：避免在小容量或空间不足的手机上使用此功能，以免闪存老化过快！</string>
     <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_auto_start_desc">注意：你需要允许Scene自启动，下次开机才会生效！</string>
     <string name="swap_zram_stat">ZRAM 统计</string>
@@ -248,7 +248,7 @@
     <string name="swap_state_created">未启动</string>
     <string name="swap_state_using">使用中</string>
     <string name="extra_free_kbytes">额外空余内存(KB)</string>
-    <string name="extra_free_kbytes_desc">简单地说extra_free_kbytes设置越大，会导致内核越勤快的把RAM中的数据搬到SWAP</string>
+    <string name="extra_free_kbytes_desc">说明：此值指定Linux内核会额外保留多少物理内存，当内存不足时会立即开始压缩内存到SWAP/ZRAM，在可用内存回升到合理范围之前设备会明显变得缓慢\n\n简单地说extra_free_kbytes设置越大，会导致内核越勤快的把RAM中的数据搬到SWAP/ZRAM，但不建议设置过大，以免浪费物理内存而加重磁盘/处理器负担！</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>

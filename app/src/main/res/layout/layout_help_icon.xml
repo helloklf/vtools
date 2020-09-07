@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/help_icon"
+    android:id="@android:id/button1"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+</ImageButton>

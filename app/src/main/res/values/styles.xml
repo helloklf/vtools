@@ -288,4 +288,16 @@
         <item name="android:textColor">?android:attr/colorAccent</item>
         <item name="android:layout_marginBottom">4dp</item>
     </style>
+
+    <style name="help_icon">
+        <item name="android:alpha">0.5</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:contentDescription">DESC</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">#888888</item>
+        <item name="android:src">@drawable/icon_question</item>
+        <item name="android:background">@null</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:layout_width">20dp</item>
+    </style>
 </resources>

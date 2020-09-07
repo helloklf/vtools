@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -99,13 +100,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="使用Scene预设配置" />
+                            android:text="Scene自带" />
 
                         <TextView
                             style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Scene针对你使用的处理器定制了两套配置，每套配置包含四个模式，推荐使用" />
+                            android:text="针对处理器定制的两套调度方案" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -156,13 +157,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="导入外部配置" />
+                            android:text="第三方配置" />
 
                         <TextView
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="从SdCard导入自定义的配置，或在线下载YC大大分享的配置" />
+                            android:text="从SdCard导入或在线下载第三方配置" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -260,6 +261,11 @@
                         android:layout_height="wrap_content"
                         android:text="@string/app_name"
                         android:textColor="?android:colorAccent" />
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入模块创建的[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -293,7 +299,7 @@
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="尽可能的限制性能，从而获得更长的续航。适用于观看视频、阅读小说这类不需要太多性能的应用" />
+                            android:text="适用于阅读、视频播放等场景" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -329,7 +335,7 @@
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="平衡耗电与性能，适用于大多数应用，如购物软件、聊天工具、网页浏览、娱乐小游戏" />
+                            android:text="适用于绝大多数的场景" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -365,7 +371,7 @@
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="充分释放性能，兼顾持续性能和响应速度，适用于大型游戏" />
+                            android:text="充分释放性能，适用于游戏" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -401,7 +407,7 @@
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="激进的调度，用于短时间突发性能需要，如性能测试、视频编辑、解压缩" />
+                            android:text="适用于跑分、压缩解压" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -442,25 +448,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/ListCardItemLast"
-                android:orientation="vertical"
-                android:padding="@dimen/activity_horizontal_margin">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="其它说明" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入模块创建的[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh" />
             </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>

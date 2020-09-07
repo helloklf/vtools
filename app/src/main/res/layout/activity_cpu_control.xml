@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,9 +10,9 @@
         android:layout_height="wrap_content" />
 
     <com.omarea.common.ui.OverScrollView
-        android:layout_below="@id/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,14 +63,27 @@
 
             <GridLayout style="@style/ListCardItem">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:text="Cpuset"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="Cpuset"
+                        android:textColor="?android:colorAccent"
+                        android:textSize="16dp" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
+
+                </LinearLayout>
 
                 <TextView
                     android:layout_row="1"
@@ -156,15 +170,6 @@
                     android:text=""
                     android:textAlignment="textEnd" />
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_row="6"
-                    android:layout_column="0"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginTop="4dp"
-                    android:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
-
             </GridLayout>
 
             <LinearLayout
@@ -179,14 +184,25 @@
                 android:id="@+id/gpu_params"
                 style="@style/ListCardItem">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:text="GPU Governor"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="GPU Governor"
+                        android:textColor="?android:colorAccent" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="一般来说，默认的调度器就是最好的，不需要更换，除非你使用的内核有特殊的优化，或者你有特殊的需求。\n\n最大最小频率，建议配合功耗级(如果你有看到的话)别设置更改" />
+                </LinearLayout>
 
                 <TextView
 
@@ -247,14 +263,25 @@
                 android:id="@+id/adreno_gpu_power"
                 style="@style/ListCardItem">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:text="GPU Power"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="GPU Power"
+                        android:textColor="?android:colorAccent" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="Adreno GPU的性能通常会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低(能达到的频率越低)\n\n一般来说，PowerLevel可选级别数量和可选频率数量是对等，设置频率时注意保持一致即可" />
+                </LinearLayout>
 
                 <TextView
 
@@ -310,27 +337,31 @@
                     android:padding="5dp"
                     android:text="Default PL"
                     android:textAlignment="textEnd" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_row="4"
-                    android:layout_column="0"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginTop="4dp"
-                    android:text="有时候，GPU会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低" />
             </GridLayout>
 
-            <GridLayout style="@style/ListCardItem" android:id="@+id/qualcomm_thermal">
+            <GridLayout
+                android:id="@+id/qualcomm_thermal"
+                style="@style/ListCardItem">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginBottom="10dp"
-                    android:text="Qualcomm温控"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="Qualcomm温控"
+                        android:textColor="?android:colorAccent" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="Qualcomm在老旧SOC上使用的一些发热控制先关的模块，在骁龙835之后基本已被废弃。一般来说保持默认即可，如果你希望设备达到最佳性能，那么建议不要勾选任何一项！" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_row="1"
@@ -375,14 +406,25 @@
                 android:id="@+id/cpu_exynos"
                 style="@style/ListCardItem">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginBottom="10dp"
-                    android:text="Exynos"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="Exynos"
+                        android:textColor="?android:colorAccent" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极）" />
+                </LinearLayout>
 
                 <TextView
 
@@ -468,41 +510,34 @@
                     android:layout_marginTop="5dp"
                     android:enabled="false" />
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_row="7"
-                    android:layout_column="0"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginTop="4dp"
-                    android:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极）" />
-
             </GridLayout>
 
             <GridLayout style="@style/ListCardItemLast">
 
-                <TextView
+                <LinearLayout
                     android:layout_row="0"
                     android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginBottom="10dp"
-                    android:text="Core Online"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="16dp" />
+                    android:layout_gravity="fill">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:text="Core Online"
+                        android:textColor="?android:colorAccent" />
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        app:text="诸如温控和场景智能加速都可能会不断调节参数，导致你关闭的核心被重新开启，这是正常现象\n\n除非你禁用掉所有企图自启调节相关的功能(Scene并不能帮你找出并关闭这些东西)" />
+                </LinearLayout>
 
                 <GridLayout
                     android:id="@+id/cpu_cores"
                     android:layout_columnSpan="2"
                     android:columnCount="4" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_row="3"
-                    android:layout_column="0"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:text="可能需要关闭温控栏的“核心控制”（高通设备），并关闭热插拔才能设置CPU核心离线状态！" />
             </GridLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
