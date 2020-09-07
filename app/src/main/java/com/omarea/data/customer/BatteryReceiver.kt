@@ -151,40 +151,41 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
      * @param qcLimit 充电速度限制
      */
     private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int, qcLimit: Int, eventType: EventType): Boolean {
-        // 如果开启了夜间充电降速
-        if (inSleepTime()) {
-            val inSleepTime = inSleepTime()
+        // 电量不足20%不使用慢速充电
+        if (currentCapacityRatio < 20) {
+            return false
+        }
+
+        val inSleepTime = inSleepTime()
+        // 如果开启了夜间充电降速 并且 正在夜间慢速充电时间
+        if (inSleepTime) {
             val getUp = getUpTime
-
-            // 如果正在夜间慢速充电时间
-            if (inSleepTime) {
-                if (currentCapacityRatio >= targetRatio) {
-                    // 如果已经超出了电池保护的电量，限制为50mA
-                    if (lastLimitValue != lowSpeedExtreme) { // 避免重复执行操作
-                        lastLimitValue = lowSpeedExtreme
-                        batteryUnits.setChargeInputLimit(lastLimitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
-                    }
-                } else {
-                    // 计算预期还需要充入多少电量（mAh）
-                    val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
-                    // 距离起床的剩余时间（小时）
-                    val timeRemaining = GetUpTime(getUp).minutes / 60F
-
-                    // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
-                    var limitValue = (target / timeRemaining).toInt()
-                    if (limitValue < lowSpeedExtreme) {
-                        limitValue = lowSpeedExtreme
-                    } else if (limitValue > qcLimit) {
-                        limitValue = qcLimit
-                    }
-
-                    if (lastLimitValue != limitValue) { // 避免重复执行操作
-                        lastLimitValue = limitValue
-                        batteryUnits.setChargeInputLimit(limitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
-                    }
+            if (currentCapacityRatio >= targetRatio) {
+                // 如果已经超出了电池保护的电量，限制为50mA
+                if (lastLimitValue != lowSpeedExtreme) { // 避免重复执行操作
+                    lastLimitValue = lowSpeedExtreme
+                    batteryUnits.setChargeInputLimit(lastLimitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
                 }
-                return true
+            } else {
+                // 计算预期还需要充入多少电量（mAh）
+                val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
+                // 距离起床的剩余时间（小时）
+                val timeRemaining = GetUpTime(getUp).minutes / 60F
+
+                // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
+                var limitValue = (target / timeRemaining).toInt()
+                if (limitValue < lowSpeedExtreme) {
+                    limitValue = lowSpeedExtreme
+                } else if (limitValue > qcLimit) {
+                    limitValue = qcLimit
+                }
+
+                if (lastLimitValue != limitValue) { // 避免重复执行操作
+                    lastLimitValue = limitValue
+                    batteryUnits.setChargeInputLimit(limitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
+                }
             }
+            return true
         }
         return false
     }
