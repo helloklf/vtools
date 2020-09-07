@@ -384,12 +384,12 @@
                         android:id="@+id/seekbar_extra_free_kbytes"
                         style="@style/SceneSeekBar"
                         android:layout_width="match_parent"
-                        android:max="1048576" />
+                        android:max="524288" />
 
                     <TextView
                         android:id="@+id/txt_extra_free_kbytes"
                         style="@style/textSmall"
-                        android:layout_width="55dp"
+                        android:layout_width="60dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:textAlignment="center" />

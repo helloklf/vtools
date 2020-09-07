@@ -266,7 +266,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        app:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入模块创建的[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh" />
+                        app:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入Magisk模块创建了[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh\n\n疑问：我刷了yc9559的Uperf以后，还需要做什么操作吗？\n说明：Uperf本身不依赖Scene运行，但你可以配合Scene使用，当[来源/作者]显示为“外部配置”表示已经就绪！" />
                 </LinearLayout>
 
                 <LinearLayout

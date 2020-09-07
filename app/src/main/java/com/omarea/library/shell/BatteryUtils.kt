@@ -344,8 +344,8 @@ class BatteryUtils {
     }
 
     // 设置充电速度限制
-    fun setChargeInputLimit(limit: Int, context: Context): Boolean {
-        if (changeLimitRunning) {
+    fun setChargeInputLimit(limit: Int, context: Context, force: Boolean = false): Boolean {
+        if (changeLimitRunning && !force) {
             return false
         } else {
             synchronized(Scene.context) {

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.omarea.data.customer.BatteryReceiverI
+import com.omarea.data.customer.BatteryReceiver
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
@@ -90,6 +90,6 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
             registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
         }
         // 充电控制模块
-        EventBus.subscibe(BatteryReceiverI(applicationContext))
+        EventBus.subscibe(BatteryReceiver(applicationContext))
     }
 }

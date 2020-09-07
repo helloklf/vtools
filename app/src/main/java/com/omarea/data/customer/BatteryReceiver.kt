@@ -18,7 +18,7 @@ import com.omarea.library.shell.PropsUtils
 import com.omarea.store.SpfConfig
 import java.util.*
 
-class BatteryReceiverI(private var service: Context, override val isAsync: Boolean = true) : IEventReceiver {
+class BatteryReceiver(private var service: Context, override val isAsync: Boolean = true) : IEventReceiver {
     override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
             EventType.BATTERY_CAPACITY_CHANGED, // 电量百分比变化
@@ -75,7 +75,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
 
             if (onCharge) {
                 // 夜间慢速充电
-                val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit)
+                val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit, eventType)
 
                 // 充电加速
                 if (!isSleepTime && chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
@@ -150,7 +150,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
      * @param targetRatio 目标充电百分比
      * @param qcLimit 充电速度限制
      */
-    private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int, qcLimit: Int): Boolean {
+    private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int, qcLimit: Int, eventType: EventType): Boolean {
         // 如果开启了夜间充电降速
         if (inSleepTime()) {
             val inSleepTime = inSleepTime()
@@ -162,7 +162,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
                     // 如果已经超出了电池保护的电量，限制为50mA
                     if (lastLimitValue != lowSpeedExtreme) { // 避免重复执行操作
                         lastLimitValue = lowSpeedExtreme
-                        batteryUnits.setChargeInputLimit(lastLimitValue, service)
+                        batteryUnits.setChargeInputLimit(lastLimitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
                     }
                 } else {
                     // 计算预期还需要充入多少电量（mAh）
@@ -180,7 +180,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
 
                     if (lastLimitValue != limitValue) { // 避免重复执行操作
                         lastLimitValue = limitValue
-                        batteryUnits.setChargeInputLimit(limitValue, service)
+                        batteryUnits.setChargeInputLimit(limitValue, service, eventType == EventType.BATTERY_CAPACITY_CHANGED)
                     }
                 }
                 return true
@@ -276,6 +276,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
     private fun setChargerLimitToValue(speedMa: Int, eventType: EventType, protectedMode: Boolean) {
         val execMode = chargeConfig.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
         try {
+            var forceRun = false
             val required = if (eventType == EventType.CHARGE_CONFIG_CHANGED) {
                 true
             } else {
@@ -285,6 +286,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
                         if (eventType != EventType.BATTERY_CHANGED) {
                             Log.d("@Scene", "CHARGE_SPF_EXEC_MODE_SPEED_DOWN > " + eventType.name)
                         }
+                        forceRun = true
                         eventType == EventType.BATTERY_CAPACITY_CHANGED || eventType == EventType.POWER_CONNECTED || eventType == EventType.POWER_DISCONNECTED
                     }
                     // 如果是暴力充电加速，则要尽可能高频率的执行速度调节，并且开启定时任务不断执行（除非已经进入动态调速保护阶段）
@@ -314,7 +316,7 @@ class BatteryReceiverI(private var service: Context, override val isAsync: Boole
             if (required) {
                 lastSetChargeLimit = System.currentTimeMillis()
                 lastLimitValue = speedMa
-                batteryUnits.setChargeInputLimit(lastLimitValue, service)
+                batteryUnits.setChargeInputLimit(lastLimitValue, service, forceRun)
             }
         } catch (ex: Exception) {
         }

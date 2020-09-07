@@ -150,7 +150,7 @@
         <item>加速充电</item>
         <item>往死里充</item>
     </string-array>
-    <string name="battery_exec_desc">将根据你所选目的在最佳时机调整充电速率</string>
+    <string name="battery_exec_desc">Scene会根据你的选择在不同时机执行速度变更，具体差异如下\n\n降低速度：只在充电器连接和电量百分比变化时重新设置充电速度\n加速充电：电池状态发生变化、充电器连接时重新设置充电速度\n往死里充：在[充电加速]的逻辑基础上，每秒自动重新设置充电速度</string>
 
     <string name="battery_status_discharging">当前状态：未充电</string>
     <string name="battery_status_charging">当前状态：充电中</string>
