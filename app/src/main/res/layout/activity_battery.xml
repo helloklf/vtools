@@ -117,7 +117,7 @@
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/settings_step_charge_enabled"
-                    style="@style/textTitle"
+                    style="@style/SceneSwitch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -142,7 +142,7 @@
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/settings_pd"
-                        style="@style/textTitle"
+                        style="@style/SceneSwitch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -187,7 +187,7 @@
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/settings_qc"
-                        style="@style/textTitle"
+                        style="@style/SceneSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/battery_qc_charger" />
@@ -276,7 +276,7 @@
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/battery_night_mode"
-                            style="@style/textTitle"
+                            style="@style/SceneSwitch"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/battery_night_mode" />
@@ -345,7 +345,7 @@
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/settings_bp"
-                        style="@style/textTitle"
+                        style="@style/SceneSwitch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

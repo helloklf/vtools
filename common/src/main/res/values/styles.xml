@@ -25,6 +25,13 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
+    <style name="SceneSwitch">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+        <item name="android:track">@drawable/switch_track</item>
+    </style>
     <style name="SceneSeekBar">
         <item name="android:thumbOffset">0dp</item>
         <item name="android:paddingStart">0dp</item>

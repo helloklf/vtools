@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="5dp"
+        android:color="@android:color/transparent" />
+    <solid android:color="#33888888" />
+    <corners android:radius="7dp" />
+</shape>
+
+    <!--
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:drawable="@drawable/kr_switch_track_open" android:state_checked="true" />
+        <item android:drawable="@drawable/kr_switch_track_close" android:state_checked="false" />
+        <item android:drawable="@drawable/kr_switch_track_close" />
+    </selector>
+    -->
