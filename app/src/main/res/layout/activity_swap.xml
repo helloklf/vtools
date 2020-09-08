@@ -433,7 +433,7 @@
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swap_auto_lmk"
-                    style="@style/textDefault"
+                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"

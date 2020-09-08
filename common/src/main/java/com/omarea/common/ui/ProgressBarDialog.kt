@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -19,12 +20,12 @@ open class ProgressBarDialog(private var context: Context) {
     private var alert: AlertDialog? = null
     private var textView: TextView? = null
 
-    class DefaultHandler(private var alertDialog: AlertDialog?) : Handler() {
-        override fun handleMessage(msg: Message?) {
+    class DefaultHandler(private var alertDialog: AlertDialog?) : Handler(Looper.myLooper()!!) {
+        override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
 
             try {
-                if (msg == null || alertDialog == null) {
+                if (alertDialog == null) {
                     return
                 }
                 if (msg.what == 10) {

@@ -24,6 +24,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
     <style name="SceneSwitch">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
@@ -31,6 +32,7 @@
         <item name="android:textSize">14dp</item>
         <item name="android:thumb">@drawable/switch_thumb</item>
         <item name="android:track">@drawable/switch_track</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
     <style name="SceneCheckBox">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
@@ -42,6 +44,7 @@
         <item name="android:paddingBottom">2dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
     <style name="SceneRadioBox">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
@@ -53,6 +56,7 @@
         <item name="android:paddingBottom">2dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
     <style name="SceneSeekBar">
         <item name="android:thumbOffset">0dp</item>
@@ -66,6 +70,8 @@
         <item name="android:minHeight">20dp</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
         <item name="android:thumbTint">?android:colorAccent</item>
+        <item name="android:alpha">0.6</item>
+        <item name="android:background">@null</item>
     </style>
 
     <style name="SceneButton" parent="Widget.AppCompat.ButtonBar">
@@ -75,5 +81,32 @@
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
         <item name="android:textSize">13dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="textTitle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+    <style name="textSmallTitle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="textDefault">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="textSmall">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 </resources>

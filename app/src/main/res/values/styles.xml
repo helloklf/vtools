@@ -3,13 +3,6 @@
 
     <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />
 
-    <style name="SwitchTheme" parent="textTitle">
-        <item name="android:thumb">@drawable/switch_thumb</item>
-        <item name="android:track">@drawable/switch_track</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
@@ -125,28 +118,6 @@
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="textTitle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14dp</item>
-    </style>
-    <style name="textSmallTitle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">11dp</item>
-    </style>
-
-    <style name="textDefault">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">14dp</item>
-    </style>
-
-    <style name="textSmall">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textSize">11dp</item>
-    </style>
 
     <!--activity 对话框样式  -->
     <style name="FloatActivity" parent="Theme.AppCompat.Light">

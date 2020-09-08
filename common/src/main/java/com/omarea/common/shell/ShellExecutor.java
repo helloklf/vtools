@@ -12,7 +12,7 @@ public class ShellExecutor {
         ShellExecutor.extraEnvPath = extraEnvPath;
     }
 
-    private static String[] getEnv() {
+    private static String getEnvPath() {
         // FIXME:非root模式下，默认的 TMPDIR=/data/local/tmp 变量可能会导致某些需要写缓存的场景（例如使用source指令）脚本执行失败！
         if (extraEnvPath != null && !extraEnvPath.isEmpty()) {
             if (defaultEnvPath.isEmpty()) {
@@ -42,21 +42,32 @@ public class ShellExecutor {
 
             String path = defaultEnvPath;
 
-            return new String[]{
-                "PATH=" + path + ":" + extraEnvPath
-            };
+            return ( "PATH=" + path + ":" + extraEnvPath);
         }
 
         return null;
     }
 
     private static Process getProcess(String run) throws IOException {
-        String[] env = getEnv();
+        String env = getEnvPath();
         Runtime runtime = Runtime.getRuntime();
+        /*
+        // 部分机型会有Aborted错误
         if (env != null) {
-            return runtime.exec(run, getEnv());
+            return runtime.exec(run, new String[]{
+                env
+            });
         }
-        return runtime.exec(run);
+        */
+        Process process = runtime.exec(run);
+        if (env != null) {
+            OutputStream outputStream = process.getOutputStream();
+            outputStream.write("export ".getBytes());
+            outputStream.write(env.getBytes());
+            outputStream.write("\n".getBytes());
+            outputStream.flush();
+        }
+        return process;
     }
 
     public static Process getSuperUserRuntime() throws IOException {

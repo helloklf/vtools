@@ -32,8 +32,8 @@
                     android:id="@+id/battery_capacity_wrap"
                     style="@style/ListCardItem"
                     android:layout_width="0dp"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="1">
 
                     <com.omarea.ui.BatteryView
@@ -121,6 +121,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="monospace"
                     android:text="@string/battery_step_charge" />
             </LinearLayout>
 
