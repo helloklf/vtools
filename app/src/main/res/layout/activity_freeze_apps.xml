@@ -132,7 +132,7 @@
 
                                 <Switch
                                     android:id="@+id/freeze_suspend_mode"
-                                    style="@style/textTitle"
+                                    style="@style/SceneSwitch"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -155,7 +155,7 @@
 
                                 <Switch
                                     android:id="@+id/freeze_any_unfreeze"
-                                    style="@style/textTitle"
+                                    style="@style/SceneSwitch"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -180,7 +180,7 @@
 
                                 <Switch
                                     android:id="@+id/freeze_click_open"
-                                    style="@style/textTitle"
+                                    style="@style/SceneSwitch"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -202,7 +202,7 @@
 
                                 <Switch
                                     android:id="@+id/freeze_shortcut_suggest"
-                                    style="@style/textTitle"
+                                    style="@style/SceneSwitch"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"

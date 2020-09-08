@@ -241,7 +241,7 @@
         <item name="android:layout_column">2</item>
     </style>
 
-    <style name="scene_config_item">
+    <style name="scene_config_item" parent="SceneSwitch">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14dp</item>

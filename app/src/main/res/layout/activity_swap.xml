@@ -483,6 +483,7 @@
 
                     <TextView
                         android:id="@+id/txt_mem"
+                        android:typeface="monospace"
                         style="@style/textSmall" />
                 </TableRow>
             </TableLayout>

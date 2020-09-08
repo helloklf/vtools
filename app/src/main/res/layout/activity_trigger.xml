@@ -25,6 +25,7 @@
 
                 <Switch
                     android:id="@+id/system_scene_task_enable"
+                    style="@style/SceneSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -52,6 +53,7 @@
 
                         <CheckBox
                             android:id="@+id/trigger_boot_completed"
+                            style="@style/SceneCheckBox"
                             android:layout_height="wrap_content"
                             android:layout_column="0"
                             android:layout_columnWeight="1"
@@ -59,12 +61,14 @@
 
                         <CheckBox
                             android:id="@+id/trigger_battery_low"
+                            style="@style/SceneCheckBox"
                             android:layout_height="wrap_content"
                             android:layout_column="1"
                             android:layout_columnWeight="1"
                             android:text="电量不足" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/trigger_screen_on"
                             android:layout_height="wrap_content"
                             android:layout_column="0"
@@ -72,6 +76,7 @@
                             android:text="屏幕点亮" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/trigger_screen_off"
                             android:layout_height="wrap_content"
                             android:layout_column="1"
@@ -79,6 +84,7 @@
                             android:text="屏幕关闭" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/trigger_power_connected"
                             android:layout_height="wrap_content"
                             android:layout_column="0"
@@ -86,6 +92,7 @@
                             android:text="插充电器" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/trigger_power_disconnected"
                             android:layout_height="wrap_content"
                             android:layout_column="1"
@@ -104,7 +111,7 @@
 
                     <Switch
                         android:id="@+id/trigger_time_limit"
-                        style="@style/textTitle"
+                        style="@style/SceneSwitch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -180,12 +187,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_standby_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_standby_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -207,12 +216,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_airplane_mode_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_airplane_mode_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -234,12 +245,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_wifi_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_wifi_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -261,12 +274,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_gps_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_gps_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -288,12 +303,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_gprs_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_gprs_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -316,12 +333,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_zen_mode_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_zen_mode_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -343,12 +362,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_power_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="关机" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_power_reboot"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -387,6 +408,7 @@
 
                         <CheckBox
                             android:id="@+id/task_fstrim"
+                            style="@style/SceneCheckBox"
                             android:layout_width="220dp"
                             android:layout_height="wrap_content"
                             android:text="fstrim" />
@@ -408,12 +430,14 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_compile_speed"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="speed" />
 
                         <RadioButton
+                            style="@style/SceneRadioBox"
                             android:id="@+id/task_compile_everything"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
@@ -422,6 +446,7 @@
 
                     <LinearLayout
                         android:id="@+id/task_mode_switch"
+                        style="@style/SceneSwitch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -440,24 +465,28 @@
                             android:layout_height="wrap_content">
 
                             <RadioButton
+                                style="@style/SceneRadioBox"
                                 android:id="@+id/task_mode_powersave"
                                 android:layout_width="110dp"
                                 android:layout_height="wrap_content"
                                 android:text="省电模式" />
 
                             <RadioButton
+                                style="@style/SceneRadioBox"
                                 android:id="@+id/task_mode_balance"
                                 android:layout_width="110dp"
                                 android:layout_height="wrap_content"
                                 android:text="均衡模式" />
 
                             <RadioButton
+                                style="@style/SceneRadioBox"
                                 android:id="@+id/task_mode_performance"
                                 android:layout_width="110dp"
                                 android:layout_height="wrap_content"
                                 android:text="性能模式" />
 
                             <RadioButton
+                                style="@style/SceneRadioBox"
                                 android:id="@+id/task_mode_fast"
                                 android:layout_width="110dp"
                                 android:layout_height="wrap_content"

@@ -64,11 +64,12 @@
 
                 <Switch
                     android:id="@+id/dynamic_control"
-                    style="@style/textTitle"
+                    style="@style/SceneSwitch"
+                    android:layout_marginBottom="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="性能调节  " />
+                    android:text="性能调节 " />
 
                 <TextView
                     style="@style/textSmall"

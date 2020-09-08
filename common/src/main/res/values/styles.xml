@@ -69,7 +69,7 @@
         <item name="android:minHeight">20dp</item>
         <item name="android:thumb">@drawable/seekbar_thumb</item>
         <item name="android:thumbTint">?android:colorAccent</item>
-        <item name="android:alpha">0.6</item>
+        <item name="android:alpha">0.45</item>
         <item name="android:background">@null</item>
     </style>
 

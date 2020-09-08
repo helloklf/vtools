@@ -6,6 +6,7 @@
 
     <CheckBox
         android:id="@+id/select_state_all"
+        style="@style/SceneCheckBox"
         android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_row="0"

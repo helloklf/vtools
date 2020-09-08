@@ -92,7 +92,7 @@
 
                             <Switch
                                 android:id="@+id/settings_autoinstall"
-                                style="@style/textTitle"
+                                style="@style/SceneSwitch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/accessbility_autoclick" />
@@ -142,7 +142,7 @@
 
                             <Switch
                                 android:id="@+id/dynamic_lock_mode"
-                                style="@style/textTitle"
+                                style="@style/SceneSwitch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="锁屏优化" />

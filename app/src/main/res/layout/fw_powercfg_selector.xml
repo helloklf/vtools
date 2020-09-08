@@ -134,6 +134,7 @@
 
                     <CheckBox
                         android:id="@+id/fw_app_light"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -143,6 +144,7 @@
 
                     <CheckBox
                         android:id="@+id/fw_app_dis_notice"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -152,6 +154,7 @@
 
                     <CheckBox
                         android:id="@+id/fw_app_dis_button"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -168,6 +171,7 @@
 
                     <CheckBox
                         android:id="@+id/fw_app_gps"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -222,6 +226,7 @@
 
                 <Switch
                     android:id="@+id/fw_dynamic_state"
+                    style="@style/SceneSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
