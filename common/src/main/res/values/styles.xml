@@ -85,9 +85,9 @@
 
     <style name="textTitle" parent="@style/TextAppearance.AppCompat.Title">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">14dp</item>
-        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:alpha">0.8</item>
     </style>
 
     <style name="textSmallTitle" parent="textTitle">

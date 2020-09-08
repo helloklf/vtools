@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -32,8 +32,7 @@
             android:layout_marginBottom="4dp"
             android:lines="1"
             android:text=""
-            android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold" />
+            style="@style/textTitle" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,21 +43,21 @@
                 android:id="@+id/ItemEnabledStateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:minWidth="60dp"
                 android:textAlignment="textStart"
-                android:textColor="#0094ff"
-                android:textSize="12dp" />
+                style="@style/textSmall"
+                android:textColor="#0094ff" />
 
             <TextView
                 android:id="@+id/ItemDesc"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_horizontal"
                 android:layout_weight="1"
                 android:lines="1"
                 android:text=""
-                android:textSize="11dp" />
+                style="@style/textSmall" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

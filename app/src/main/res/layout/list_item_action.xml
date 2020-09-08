@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:textAllCaps="false"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold" />
+            style="@style/textTitle" />
 
         <TextView
             android:id="@+id/Desc"
@@ -29,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10dp" />
+            style="@style/textSmall" />
     </LinearLayout>
 </FrameLayout>
