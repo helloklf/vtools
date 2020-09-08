@@ -26,14 +26,13 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-    <style name="SceneSwitch">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14dp</item>
+
+    <style name="SceneSwitch" parent="textTitle">
         <item name="android:thumb">@drawable/switch_thumb</item>
         <item name="android:track">@drawable/switch_track</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAppearance">@style/textTitle</item>
     </style>
+
     <style name="SceneCheckBox">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:button">@drawable/checkbox_style</item>
@@ -84,17 +83,15 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="textTitle">
+    <style name="textTitle" parent="@style/TextAppearance.AppCompat.Title">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textSize">14dp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif-black</item>
     </style>
-    <style name="textSmallTitle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
+
+    <style name="textSmallTitle" parent="textTitle">
         <item name="android:textSize">11dp</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="textDefault">

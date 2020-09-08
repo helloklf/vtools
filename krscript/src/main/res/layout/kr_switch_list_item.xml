@@ -65,20 +65,18 @@
 
     <Switch
         android:id="@id/kr_switch"
-        android:layout_width="36dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="10dp"
-        android:alpha="0.8"
+        style="@style/SceneSwitch"
         android:padding="5dp"
         android:layout_gravity="center_vertical"
         android:clickable="false"
         android:elevation="5dp"
         android:enabled="false"
-        android:focusable="false"
-        android:thumb="@drawable/kr_switch_thumb"
-        android:track="@drawable/kr_switch_track" />
+        android:focusable="false" />
 </RelativeLayout>
