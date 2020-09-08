@@ -56,7 +56,6 @@
 
             <Switch
                 android:id="@+id/scene_mode_allow"
-                style="@style/SceneSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -134,28 +133,24 @@
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_default"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="默认" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_auto"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="自动" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_portrait"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="竖屏" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_landscape"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="横屏" />

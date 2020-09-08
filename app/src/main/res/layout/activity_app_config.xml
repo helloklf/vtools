@@ -72,8 +72,7 @@
                         android:id="@+id/scene_app_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:divider="@null"
                         android:scrollbars="none" />
                 </LinearLayout>
@@ -92,7 +91,6 @@
 
                             <Switch
                                 android:id="@+id/settings_autoinstall"
-                                style="@style/SceneSwitch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/accessbility_autoclick" />
@@ -142,7 +140,6 @@
 
                             <Switch
                                 android:id="@+id/dynamic_lock_mode"
-                                style="@style/SceneSwitch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="锁屏优化" />

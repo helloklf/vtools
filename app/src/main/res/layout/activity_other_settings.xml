@@ -21,7 +21,6 @@
 
                 <Switch
                     android:id="@+id/settings_disable_selinux"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_disable_selinux" />
@@ -148,7 +147,6 @@
 
                 <Switch
                     android:id="@+id/settings_theme_wallpaper"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -167,7 +165,6 @@
 
                 <Switch
                     android:id="@+id/settings_debug_layer"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="onThemeClick"
@@ -182,7 +179,6 @@
 
                 <Switch
                     android:id="@+id/settings_classic_mode"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -198,7 +194,6 @@
 
                 <Switch
                     android:id="@+id/settings_auto_exit"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"

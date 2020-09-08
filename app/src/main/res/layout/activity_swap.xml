@@ -140,7 +140,6 @@
 
                             <RadioButton
                                 android:id="@+id/swap_zram_preferred"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="true"
@@ -148,14 +147,12 @@
 
                             <RadioButton
                                 android:id="@+id/swap_zram_equitable"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/swap_zram_equitable" />
 
                             <RadioButton
                                 android:id="@+id/swap_swap_preferred"
-                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/swap_swap_preferred" />
@@ -163,7 +160,6 @@
 
                         <CheckBox
                             android:id="@+id/chk_swap_use_loop"
-                            style="@style/SceneCheckBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/swap_use_loop" />
@@ -197,7 +193,6 @@
 
                     <CheckBox
                         android:id="@+id/chk_swap_autostart"
-                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -298,7 +293,6 @@
 
                     <CheckBox
                         android:id="@+id/chk_zram_autostart"
-                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -433,7 +427,6 @@
 
                 <Switch
                     android:id="@+id/swap_auto_lmk"
-                    style="@style/SceneSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"

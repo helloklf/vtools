@@ -55,8 +55,7 @@
                         android:id="@+id/apps_userlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:divider="@null"
                         android:scrollbars="none" />
                 </FrameLayout>
@@ -79,8 +78,7 @@
                         android:id="@+id/apps_systemlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:divider="@null"
                         android:scrollbars="none" />
 
@@ -104,8 +102,7 @@
                         android:id="@+id/apps_backupedlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:divider="@null"
                         android:scrollbars="none" />
 

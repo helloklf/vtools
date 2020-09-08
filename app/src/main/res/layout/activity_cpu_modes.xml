@@ -64,7 +64,6 @@
 
                 <Switch
                     android:id="@+id/dynamic_control"
-                    style="@style/SceneSwitch"
                     android:layout_marginBottom="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

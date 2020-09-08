@@ -44,5 +44,9 @@
         <item name="windowNoTitle">true</item>
         <item name="cardBg">@color/cardBgDark</item>
         <item name="showHints">gone</item>
+        <item name="android:switchStyle">@style/SceneSwitch</item>
+        <item name="android:seekBarStyle">@style/SceneSeekBar</item>
+        <item name="android:checkboxStyle">@style/SceneCheckBox</item>
+        <item name="android:radioButtonStyle">@style/SceneRadioBox</item>
     </style>
 </resources>

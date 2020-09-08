@@ -36,6 +36,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
-        style="@style/SceneCheckBox"
         android:text="@string/boot_after_auto_modify" />
 </LinearLayout>

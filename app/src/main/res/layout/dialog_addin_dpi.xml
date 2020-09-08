@@ -64,7 +64,6 @@
 
     <CheckBox
         android:id="@+id/dialog_addin_dpi_quickchange"
-        style="@style/SceneCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
