@@ -67,17 +67,17 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/swap_swap_desc" />
+
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_swap" />
-
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        app:text="@string/swap_swap_desc" />
 
                     <TextView
                         android:id="@+id/swap_state"
@@ -140,7 +140,7 @@
 
                             <RadioButton
                                 android:id="@+id/swap_zram_preferred"
-                                style="@style/textDefault"
+                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="true"
@@ -148,14 +148,14 @@
 
                             <RadioButton
                                 android:id="@+id/swap_zram_equitable"
-                                style="@style/textDefault"
+                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/swap_zram_equitable" />
 
                             <RadioButton
                                 android:id="@+id/swap_swap_preferred"
-                                style="@style/textDefault"
+                                style="@style/SceneRadioBox"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/swap_swap_preferred" />
@@ -163,7 +163,7 @@
 
                         <CheckBox
                             android:id="@+id/chk_swap_use_loop"
-                            style="@style/textDefault"
+                            style="@style/SceneCheckBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/swap_use_loop" />
@@ -197,7 +197,7 @@
 
                     <CheckBox
                         android:id="@+id/chk_swap_autostart"
-                        style="@style/textDefault"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -224,17 +224,17 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/swap_zram_desc" />
+
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_zram" />
-
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        app:text="@string/swap_zram_desc" />
 
                     <TextView
                         android:id="@+id/zram_state"
@@ -299,7 +299,7 @@
 
                     <CheckBox
                         android:id="@+id/chk_zram_autostart"
-                        style="@style/textDefault"
+                        style="@style/SceneCheckBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -323,34 +323,32 @@
                     android:orientation="horizontal">
 
 
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/swap_swappiness_desc" />
+
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_swappiness" />
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        app:text="@string/swap_swappiness_desc" />
-                </LinearLayout>
-
-                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
-
-                    <SeekBar
-                        android:id="@+id/seekbar_swap_swappiness"
-                        style="@style/SceneSeekBar"
-                        android:layout_width="match_parent" />
-
                     <TextView
                         android:id="@+id/txt_zramstus_swappiness"
-                        style="@style/textSmall"
-                        android:layout_width="45dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:textAlignment="center" />
-                </TableRow>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekbar_swap_swappiness"
+                    style="@style/SceneSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/activity_vertical_margin" />
 
             </TableLayout>
 
@@ -365,35 +363,33 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/extra_free_kbytes_desc" />
+
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/extra_free_kbytes" />
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        app:text="@string/extra_free_kbytes_desc" />
-                </LinearLayout>
-
-                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
-
-                    <SeekBar
-                        android:id="@+id/seekbar_extra_free_kbytes"
-                        style="@style/SceneSeekBar"
-                        android:layout_width="match_parent"
-                        android:max="524288" />
-
                     <TextView
                         android:id="@+id/txt_extra_free_kbytes"
-                        style="@style/textSmall"
-                        android:layout_width="60dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="8dp"
-                        android:textAlignment="center" />
-                </TableRow>
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekbar_extra_free_kbytes"
+                    style="@style/SceneSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:max="524288" />
 
             </TableLayout>
 
@@ -422,7 +418,7 @@
                 <ListView
                     android:id="@+id/list_swaps2"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="90dp"
                     android:textSize="10dp" />
             </TableLayout>
 
@@ -436,7 +432,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/low_memory_killer" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/swap_auto_lmk"
                     style="@style/textDefault"
                     android:layout_width="match_parent"

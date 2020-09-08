@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -89,7 +90,7 @@ class ActivitySwap : ActivityBase() {
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
         seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
-        txt_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "\n(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
+        txt_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
 
         seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
@@ -110,10 +111,10 @@ class ActivitySwap : ActivityBase() {
         // 额外空余内存设置
         seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
-            txt_extra_free_kbytes.text = value.toString() + "\n(" + (value / 1024) + "MB)"
+            txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
         }, Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
-            txt_extra_free_kbytes.text = value.toString() + "\n(" + (value / 1024) + "MB)"
+            txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/extra_free_kbytes")
@@ -154,7 +155,7 @@ class ActivitySwap : ActivityBase() {
 
         // 自动lmk调节
         swap_auto_lmk.setOnClickListener {
-            val checked = (it as Switch).isChecked
+            val checked = (it as SwitchCompat).isChecked
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, checked).apply()
             if (checked) {
                 val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
