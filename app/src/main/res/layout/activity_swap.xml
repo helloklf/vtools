@@ -116,7 +116,7 @@
 
                     <Button
                         android:id="@+id/btn_swap_create"
-                        style="@style/sceneSmallButton"
+                        style="@style/SceneButton"
                         android:layout_marginStart="8dp"
                         android:text="@string/swap_create" />
                 </LinearLayout>
@@ -176,14 +176,14 @@
 
                         <Button
                             android:id="@+id/btn_swap_start"
-                            style="@style/sceneSmallButton"
+                            style="@style/SceneButton"
                             android:layout_marginStart="6dp"
                             android:text="@string/swap_start" />
 
 
                         <Button
                             android:id="@+id/btn_swap_delete"
-                            style="@style/sceneSmallButton"
+                            style="@style/SceneButton"
                             android:layout_marginStart="6dp"
                             android:text="@string/swap_delete" />
                     </LinearLayout>
@@ -205,7 +205,7 @@
 
                     <Button
                         android:id="@+id/btn_swap_close"
-                        style="@style/sceneSmallButton"
+                        style="@style/SceneButton"
                         android:layout_marginStart="6dp"
                         android:text="@string/swap_stop" />
                 </LinearLayout>
@@ -274,7 +274,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         android:max="2048"
                         android:paddingStart="0dp"
@@ -307,7 +306,7 @@
 
                     <Button
                         android:id="@+id/btn_zram_resize"
-                        style="@style/sceneSmallButton"
+                        style="@style/SceneButton"
                         android:text="@string/swap_zram_adjustment" />
                 </LinearLayout>
             </LinearLayout>

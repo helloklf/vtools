@@ -148,12 +148,6 @@
         <item name="android:textSize">11dp</item>
     </style>
 
-    <style name="sceneSmallButton" parent="Widget.AppCompat.ButtonBar">
-        <item name="android:background">@drawable/btn_bg</item>
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">32dp</item>
-    </style>
-
     <!--activity 对话框样式  -->
     <style name="FloatActivity" parent="Theme.AppCompat.Light">
         <!-- float_box为我们定义的窗口背景-->

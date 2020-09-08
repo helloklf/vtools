@@ -144,34 +144,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="textTitle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14dp</item>
-    </style>
-    <style name="textSmallTitle">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">11dp</item>
-    </style>
-
-    <style name="textDefault">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">14dp</item>
-    </style>
-
-    <style name="textSmall">
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textSize">11dp</item>
-    </style>
-
-    <style name="sceneSmallButton" parent="Widget.AppCompat.ButtonBar">
-        <item name="android:background">@drawable/btn_bg</item>
-        <item name="android:layout_width">60dp</item>
-        <item name="android:layout_height">32dp</item>
-    </style>
-
     <!--activity 对话框样式  -->
     <style name="FloatActivity" parent="Theme.AppCompat.Light">
         <!-- float_box为我们定义的窗口背景-->
