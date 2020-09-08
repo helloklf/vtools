@@ -431,7 +431,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/low_memory_killer" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <Switch
                     android:id="@+id/swap_auto_lmk"
                     style="@style/SceneSwitch"
                     android:layout_width="match_parent"

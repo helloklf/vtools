@@ -66,7 +66,7 @@ class ActivityBattery:  ActivityBase() {
         pdSettingSupport = batteryUnits.pdSupported()
 
         settings_qc.setOnClickListener {
-            val checked = (it as SwitchCompat).isChecked
+            val checked = (it as CompoundButton).isChecked
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
             if (checked) {
                 notifyConfigChanged()
@@ -123,7 +123,7 @@ class ActivityBattery:  ActivityBase() {
         if (pdSettingSupport) {
             settings_pd_support.visibility = View.VISIBLE
             settings_pd.setOnClickListener {
-                val isChecked = (it as SwitchCompat).isChecked
+                val isChecked = (it as CompoundButton).isChecked
                 batteryUnits.setAllowed(isChecked)
             }
             settings_pd.isChecked = batteryUnits.pdAllowed()
@@ -210,7 +210,7 @@ class ActivityBattery:  ActivityBase() {
         }
         battery_night_mode.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)
         battery_night_mode.setOnClickListener {
-            val checked = (it as SwitchCompat).isChecked
+            val checked = (it as CompoundButton).isChecked
             if (checked && !spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 Toast.makeText(this.context, "需要开启 " + getString(R.string.battery_qc_charger), Toast.LENGTH_LONG).show()
                 it.isChecked = false

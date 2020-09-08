@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight">
@@ -11,8 +12,8 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/kr_shortcut_icon"
-        android:tint="@color/kr_shortcut_color"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:tint="@color/kr_shortcut_color" />
 
     <LinearLayout
         android:layout_marginStart="10dp"
@@ -43,18 +44,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/kr_title_size"
-                android:textStyle="bold" />
+                style="@style/textTitle" />
 
             <TextView
                 android:id="@id/kr_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="@dimen/kr_desc_size"
-                android:visibility="gone" />
+                style="@style/textSmall" />
 
             <TextView
                 android:id="@id/kr_summary"
@@ -62,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textColor="?android:colorAccent"
-                android:textSize="@dimen/kr_desc_size"
+                style="@style/textSmall"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

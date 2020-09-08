@@ -155,7 +155,7 @@ class ActivitySwap : ActivityBase() {
 
         // 自动lmk调节
         swap_auto_lmk.setOnClickListener {
-            val checked = (it as SwitchCompat).isChecked
+            val checked = (it as CompoundButton).isChecked
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, checked).apply()
             if (checked) {
                 val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager

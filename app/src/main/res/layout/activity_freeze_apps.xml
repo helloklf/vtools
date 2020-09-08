@@ -130,7 +130,7 @@
                                     android:layout_marginEnd="5dp"
                                     app:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
 
-                                <androidx.appcompat.widget.SwitchCompat
+                                <Switch
                                     android:id="@+id/freeze_suspend_mode"
                                     style="@style/textTitle"
                                     android:layout_width="0dp"
@@ -153,7 +153,7 @@
                                     android:layout_marginEnd="5dp"
                                     app:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n一加桌面、一加Hydrogen桌面、一加氢桌面\nLawnchair测试版、Lawnchair魔趣版\nMIUI桌面、POCO桌面、MIUI全局搜索\nLineageOS Trebuchet\n系统设置、Pixel 启动器\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
 
-                                <androidx.appcompat.widget.SwitchCompat
+                                <Switch
                                     android:id="@+id/freeze_any_unfreeze"
                                     style="@style/textTitle"
                                     android:layout_width="0dp"
@@ -178,7 +178,7 @@
                                     android:layout_marginEnd="5dp"
                                     app:text="点击偏见列表中的应用时打开应用，而不是切换冻结状态" />
 
-                                <androidx.appcompat.widget.SwitchCompat
+                                <Switch
                                     android:id="@+id/freeze_click_open"
                                     style="@style/textTitle"
                                     android:layout_width="0dp"
@@ -200,7 +200,7 @@
                                     android:layout_marginEnd="5dp"
                                     app:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
 
-                                <androidx.appcompat.widget.SwitchCompat
+                                <Switch
                                     android:id="@+id/freeze_shortcut_suggest"
                                     style="@style/textTitle"
                                     android:layout_width="0dp"

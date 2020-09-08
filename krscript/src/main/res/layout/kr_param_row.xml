@@ -7,10 +7,9 @@
 
     <TextView
         android:id="@+id/kr_param_title"
-        style="@style/textTitle"
+        style="@style/textSmallTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/kr_desc_size" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"

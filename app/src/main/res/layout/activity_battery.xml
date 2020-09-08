@@ -115,13 +115,12 @@
                     android:layout_marginEnd="5dp"
                     app:text="@string/battery_step_charge_desc" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <Switch
                     android:id="@+id/settings_step_charge_enabled"
                     style="@style/SceneSwitch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="monospace"
                     android:text="@string/battery_step_charge" />
             </LinearLayout>
 
@@ -141,7 +140,7 @@
                         android:layout_marginEnd="5dp"
                         app:text="@string/battery_pd_allowed_desc" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <Switch
                         android:id="@+id/settings_pd"
                         style="@style/SceneSwitch"
                         android:layout_width="0dp"
@@ -186,7 +185,7 @@
                         android:layout_marginEnd="5dp"
                         app:text="@string/battery_qc_charger_desc" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <Switch
                         android:id="@+id/settings_qc"
                         style="@style/SceneSwitch"
                         android:layout_width="match_parent"
@@ -275,7 +274,7 @@
                             android:layout_marginEnd="5dp"
                             app:text="@string/battery_night_mode_desc" />
 
-                        <androidx.appcompat.widget.SwitchCompat
+                        <Switch
                             android:id="@+id/battery_night_mode"
                             style="@style/SceneSwitch"
                             android:layout_width="match_parent"
@@ -344,7 +343,7 @@
                         android:layout_marginEnd="5dp"
                         app:text="@string/battery_bp_desc" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <Switch
                         android:id="@+id/settings_bp"
                         style="@style/SceneSwitch"
                         android:layout_width="0dp"

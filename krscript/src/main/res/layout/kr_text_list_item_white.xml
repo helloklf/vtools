@@ -13,18 +13,14 @@
         android:id="@id/kr_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.8"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="@dimen/kr_title_size"
-        android:textStyle="bold" />
+        style="@style/textTitle" />
 
     <TextView
         android:id="@id/kr_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="@dimen/kr_desc_size" />
+        style="@style/textSmall" />
 
     <TextView
         android:id="@id/kr_summary"
@@ -32,12 +28,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="?android:colorAccent"
-        android:textSize="@dimen/kr_desc_size" />
+        style="@style/textSmall" />
 
     <TextView
         android:id="@id/kr_rows"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="10dp" />
+        style="@style/textSmall" />
 </LinearLayout>
