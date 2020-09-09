@@ -425,18 +425,24 @@
                     android:layout_height="wrap_content"
                     android:text="@string/low_memory_killer" />
 
-                <Switch
-                    android:id="@+id/swap_auto_lmk"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/lmk_optimize" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/lmk_optimize_desc" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/lmk_optimize_desc" />
+                    <Switch
+                        android:id="@+id/swap_auto_lmk"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lmk_optimize" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

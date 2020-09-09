@@ -79,4 +79,12 @@
             android:textSize="11dp" />
     </LinearLayout>
 
+    <TextView
+        style="@style/textSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="警告：修改机型可能导致无法开机，或部分功能不能使用！"
+        android:textColor="@android:color/holo_red_dark" />
+
 </LinearLayout>

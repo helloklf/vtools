@@ -11,7 +11,7 @@ import com.omarea.common.ui.DialogHelper
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {
 
     fun fullScreen() {
-        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）")
+        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏(overscan)")
         var index = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择操作")

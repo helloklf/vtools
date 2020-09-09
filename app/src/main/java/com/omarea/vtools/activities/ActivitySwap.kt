@@ -207,6 +207,10 @@ class ActivitySwap : ActivityBase() {
         // swap启动
         btn_swap_create.setOnClickListener {
             val size = seekbar_swap_size.progress * 128
+            if (size < 1) {
+                Scene.toast("请先设定SWAP大小！")
+                return@setOnClickListener
+            }
 
             val run = Runnable {
                 val startTime = System.currentTimeMillis()

@@ -27,6 +27,11 @@ class Scene : Application() {
                 Toast.makeText(context, message, time).show()
             }
         }
+        public fun toast(message: String) {
+            handler.post {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
         public fun toast(message: Int, time: Int) {
             handler.post {
                 Toast.makeText(context, message, time).show()

@@ -35,6 +35,9 @@
         <item name="android:thumb">@drawable/switch_thumb</item>
         <item name="android:track">@drawable/switch_track</item>
         <item name="android:textAppearance">@style/textTitle</item>
+        <item name="android:textOn" />
+        <item name="android:textOff" />
+        <item name="android:showText">false</item>
     </style>
 
     <style name="SceneCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
