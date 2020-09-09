@@ -8,6 +8,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.PropsUtils
 import com.omarea.vtools.R
 import java.io.File
+import java.util.*
 
 /** 检查并安装Busybox
  * Created by helloklf on 2017/6/3.
@@ -49,7 +50,7 @@ class Busybox(private var context: Context) {
     private fun installPrivateBusybox(): Boolean {
         if (!(privateBusyboxInstalled() || systemBusyboxInstalled())) {
             // ro.product.cpu.abi
-            val abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase()
+            val abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase(Locale.getDefault())
             if (!abi.startsWith("arm")) {
                 return false
             }
@@ -77,28 +78,23 @@ class Busybox(private var context: Context) {
         return true
     }
 
-    fun forceInstall(next: Runnable? = null) {
+    fun forceInstall(next: Runnable) {
         val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
         if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "toolkit/busybox", "busybox", context) == privateBusybox)) {
             return
         }
         if (systemBusyboxInstalled()) {
-            // BusyboxInstallerUtils().installShellTools()
-            next?.run()
+            next.run()
         } else {
             if (installPrivateBusybox()) {
-                next?.run()
+                next.run()
             } else {
-                if (installPrivateBusybox()) {
-                    next?.run()
-                } else {
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setMessage(R.string.busybox_nonsupport)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.btn_exit) { _, _ ->
-                                android.os.Process.killProcess(android.os.Process.myPid())
-                            })
-                }
+                DialogHelper.animDialog(AlertDialog.Builder(context)
+                        .setMessage(R.string.busybox_nonsupport)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.btn_exit) { _, _ ->
+                            android.os.Process.killProcess(android.os.Process.myPid())
+                        })
             }
         }
     }

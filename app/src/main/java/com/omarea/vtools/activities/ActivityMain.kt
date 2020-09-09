@@ -36,7 +36,7 @@ import com.omarea.vtools.popup.FloatMonitor
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : ActivityBase() {
-    private var globalSPF: SharedPreferences? = null
+    private lateinit var globalSPF: SharedPreferences
 
     private fun setExcludeFromRecent(exclude: Boolean? = null) {
         try {
@@ -124,11 +124,9 @@ class ActivityMain : ActivityBase() {
                 .build());
         */
 
-        if (globalSPF == null) {
-            globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            if (!globalSPF!!.contains(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT)) {
-                globalSPF!!.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, ElectricityUnit().getDefaultElectricityUnit(this)).apply()
-            }
+        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (!globalSPF.contains(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT)) {
+            globalSPF.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, ElectricityUnit().getDefaultElectricityUnit(this)).apply()
         }
 
         super.onCreate(savedInstanceState)
@@ -162,7 +160,7 @@ class ActivityMain : ActivityBase() {
         if (CheckRootStatus.lastCheckResult) {
             try {
                 if (MagiskExtend.magiskSupported() &&
-                        !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
+                        !(MagiskExtend.moduleInstalled() || globalSPF.getBoolean("magisk_dot_show", false))
                 ) {
                     DialogHelper.animDialog(
                             AlertDialog.Builder(this)
@@ -172,7 +170,7 @@ class ActivityMain : ActivityBase() {
                                         MagiskExtend.magiskModuleInstall(this)
                                     }.setNegativeButton(R.string.btn_cancel) { _, _ ->
                                     }.setNeutralButton(R.string.btn_dontshow) { _, _ ->
-                                        globalSPF!!.edit().putBoolean("magisk_dot_show", true).apply()
+                                        globalSPF.edit().putBoolean("magisk_dot_show", true).apply()
                                     })
                 }
             } catch (ex: Exception) {
@@ -203,9 +201,9 @@ class ActivityMain : ActivityBase() {
         super.onResume()
 
         // 如果距离上次检查更新超过 24 小时
-        if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
+        if (globalSPF.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
             Update().checkUpdate(this)
-            globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
+            globalSPF.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
         }
     }
 
