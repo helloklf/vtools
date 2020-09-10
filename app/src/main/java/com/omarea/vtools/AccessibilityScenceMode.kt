@@ -83,6 +83,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
+            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
+                info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
+            }
         }
 
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC

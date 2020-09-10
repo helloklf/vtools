@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityEventSource
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.omarea.Scene
@@ -18,6 +19,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
     companion object {
         private var lstClickedNode: AccessibilityNodeInfo? = null
         private var lstClickedApp: String? = null
+        private var lastActivity:String? = null
         private var ids = arrayListOf(
                 "com.ruanmei.ithome:id/tv_skip",            // IT之家
                 "com.miui.systemAdSolution:id/view_skip",   // MIUI广告
@@ -43,7 +45,23 @@ class AutoSkipAd(private val service: AccessibilityService) {
         }
     }
 
-    private val blackList = arrayListOf("com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
+    private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
+
+    // com.xiaomi.shop com.xiaomi.shop.activity.MainTabActivity com.xiaomi.shop:id/skip
+
+    private fun preciseSkip(root: AccessibilityNodeInfo): Boolean {
+        if (lastActivity == "com.xiaomi.shop.activity.MainTabActivity") {
+            val id = "com.xiaomi.shop:id/skip"
+            root.findAccessibilityNodeInfosByViewId(id)?.run {
+                for (i in indices) {
+                    autoClickBase.touchOrClickNode(get(i), service)
+                    Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
+                }
+                return true
+            }
+        }
+        return false
+    }
 
     fun skipAd(event: AccessibilityEvent, precise: Boolean) {
         val packageName = event.packageName
@@ -52,6 +70,20 @@ class AutoSkipAd(private val service: AccessibilityService) {
         }
 
         val source = event.source ?: return
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            lastActivity = event.className?.toString()
+        } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
+            val viewId = if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
+            if (viewId != null && !ids.contains(viewId)) {
+                ids.add(viewId)
+                KeepShellAsync.getInstance("skip-ad").doCmd("echo '$lastActivity $viewId' >> /cache/ids.log")
+                Scene.toast("点击了$viewId")
+            }
+        }
+        if (preciseSkip(source)) {
+            return
+        }
+
         try {
             source.findAccessibilityNodeInfosByText("跳过")?.run {
                 var node: AccessibilityNodeInfo
