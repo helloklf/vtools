@@ -10,16 +10,15 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
-import android.widget.CheckBox
-import android.widget.Switch
+import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
@@ -37,7 +36,6 @@ class ActivityAppConfig : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
     private lateinit var applistHelper: AppListHelper
     private var installedList: ArrayList<Appinfo>? = null
     private var displayList: ArrayList<Appinfo>? = null
@@ -75,11 +73,11 @@ class ActivityAppConfig : ActivityBase() {
             return
         }
         try {
-            val intent = Intent();
+            val intent = Intent()
             //绑定服务端的service
-            intent.setAction("com.omarea.vaddin.ConfigUpdateService");
+            intent.action = "com.omarea.vaddin.ConfigUpdateService"
             //新版本（5.0后）必须显式intent启动 绑定服务
-            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
+            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"))
             //绑定的时候服务端自动创建
             if (!bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
                 throw Exception("")
@@ -104,7 +102,6 @@ class ActivityAppConfig : ActivityBase() {
         applistHelper = AppListHelper(context)
         spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        editor = spfPowercfg.edit()
         firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         sceneConfigStore = SceneConfigStore(this.context)
 
@@ -115,8 +112,8 @@ class ActivityAppConfig : ActivityBase() {
         val tabIconHelper = TabIconHelper(configlist_tabhost, this)
         configlist_tabhost.setup()
 
-        tabIconHelper.newTabSpec("APP场景", getDrawable(R.drawable.tab_app)!!, R.id.configlist_tab0)
-        tabIconHelper.newTabSpec("设置", getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
+        tabIconHelper.newTabSpec("APP场景", ContextCompat.getDrawable(this, R.drawable.tab_app)!!, R.id.configlist_tab0)
+        tabIconHelper.newTabSpec("杂项", ContextCompat.getDrawable(this, R.drawable.tab_settings)!!, R.id.configlist_tab5)
         configlist_tabhost.currentTab = 0
         configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
@@ -135,19 +132,16 @@ class ActivityAppConfig : ActivityBase() {
 
         // 动态响应检测
         val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        first_mode.isEnabled = dynamicControl
         if (dynamicControl) {
-            dynamic_control_opts.visibility = View.VISIBLE
             scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
                 val item = (parent.adapter.getItem(position) as Appinfo)
-                var originIndex = 0
-                when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
-                    ModeSwitcher.POWERSAVE -> originIndex = 0
-                    ModeSwitcher.BALANCE -> originIndex = 1
-                    ModeSwitcher.PERFORMANCE -> originIndex = 2
-                    ModeSwitcher.FAST -> originIndex = 3
-                    ModeSwitcher.IGONED -> originIndex = 5
-                    else -> originIndex = 4
+                val originIndex = when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
+                    ModeSwitcher.POWERSAVE -> 0
+                    ModeSwitcher.BALANCE -> 1
+                    ModeSwitcher.PERFORMANCE -> 2
+                    ModeSwitcher.FAST -> 3
+                    ModeSwitcher.IGONED -> 5
+                    else -> 4
                 }
                 var currentMode = originIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
@@ -155,7 +149,7 @@ class ActivityAppConfig : ActivityBase() {
                         .setSingleChoiceItems(
                                 R.array.powercfg_modes2,
                                 originIndex
-                        ) { dialog, which ->
+                        ) { _, which ->
                             currentMode = which
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -185,7 +179,6 @@ class ActivityAppConfig : ActivityBase() {
                 true
             }
         } else {
-            dynamic_control_opts.visibility = View.GONE
             scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
                 DialogHelper.helpInfo(context, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
                 true
@@ -218,21 +211,8 @@ class ActivityAppConfig : ActivityBase() {
 
         loadList()
 
-        val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
-        when (modeValue) {
-            ModeSwitcher.POWERSAVE -> first_mode.setSelection(0)
-            ModeSwitcher.BALANCE -> first_mode.setSelection(1)
-            ModeSwitcher.PERFORMANCE -> first_mode.setSelection(2)
-            ModeSwitcher.FAST -> first_mode.setSelection(3)
-            ModeSwitcher.IGONED -> first_mode.setSelection(4)
-        }
-        first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
-            reStartService()
-            loadList()
-        })
-
-        bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
-        bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
+        bindSPF(settings_auto_install, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
+        bindSPF(settings_skip_ad, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD, false)
     }
 
     private val REQUEST_APP_CONFIG = 0
@@ -285,63 +265,30 @@ class ActivityAppConfig : ActivityBase() {
     }
 
     @SuppressLint("ApplySharedPref")
-    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
+    private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             spf.edit().putBoolean(prop, isChecked).commit()
         }
         if (restartService) {
             reStartService()
-        }
-    }
-
-    @SuppressLint("ApplySharedPref")
-    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
-        checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            spf.edit().putBoolean(prop, isChecked).commit()
-        }
-        if (restartService) {
-            reStartService()
-        }
-    }
-
-    private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable) : AdapterView.OnItemSelectedListener {
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-        }
-
-        @SuppressLint("ApplySharedPref")
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var mode = ModeSwitcher.DEFAULT
-            when (position) {
-                0 -> mode = ModeSwitcher.POWERSAVE
-                1 -> mode = ModeSwitcher.BALANCE
-                2 -> mode = ModeSwitcher.PERFORMANCE
-                3 -> mode = ModeSwitcher.FAST
-                4 -> mode = ModeSwitcher.IGONED
-            }
-            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT) != mode) {
-                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
-                runnable.run()
-            }
         }
     }
 
     private fun initDefaultConfig() {
         for (item in resources.getStringArray(R.array.powercfg_igoned)) {
-            editor.putString(item, ModeSwitcher.IGONED)
+            spfPowercfg.edit().putString(item, ModeSwitcher.IGONED).apply()
         }
         for (item in resources.getStringArray(R.array.powercfg_fast)) {
-            editor.putString(item, ModeSwitcher.FAST)
+            spfPowercfg.edit().putString(item, ModeSwitcher.FAST).apply()
         }
         for (item in resources.getStringArray(R.array.powercfg_game)) {
-            editor.putString(item, ModeSwitcher.PERFORMANCE)
+            spfPowercfg.edit().putString(item, ModeSwitcher.PERFORMANCE).apply()
         }
-        editor.commit()
     }
 
     private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
-        list.sortWith(Comparator { l, r ->
+        list.sortWith { l, r ->
             try {
                 val les = l.enabledState.toString()
                 val res = r.enabledState.toString()
@@ -361,15 +308,15 @@ class ActivityAppConfig : ActivityBase() {
             } catch (ex: Exception) {
                 0
             }
-        })
+        }
         return list
     }
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
-        Scene.post(Runnable {
+        Scene.post {
             lv.adapter = SceneModeAdapter(context, dl!!)
             processBarDialog.hideDialog()
-        })
+        }
     }
 
     private var onLoading = false
@@ -387,12 +334,12 @@ class ActivityAppConfig : ActivityBase() {
                 installedList = applistHelper.getAll()
             }
             if (config_search_box == null) {
-                Scene.post(Runnable {
+                Scene.post {
                     processBarDialog.hideDialog()
-                })
+                }
                 return@Runnable
             }
-            val keyword = config_search_box.text.toString().toLowerCase()
+            val keyword = config_search_box.text.toString().toLowerCase(Locale.getDefault())
             val search = keyword.isNotEmpty()
             var filterMode = ""
             var filterAppType = ""
@@ -415,7 +362,7 @@ class ActivityAppConfig : ActivityBase() {
                 val item = installedList!![i]
                 setAppRowDesc(item)
                 val packageName = item.packageName.toString()
-                if (search && !(packageName.toLowerCase().contains(keyword) || item.appName.toString().toLowerCase().contains(keyword))) {
+                if (search && !(packageName.toLowerCase(Locale.getDefault()).contains(keyword) || item.appName.toString().toLowerCase(Locale.getDefault()).contains(keyword))) {
                     continue
                 } else {
                     if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, "")) {
@@ -426,10 +373,10 @@ class ActivityAppConfig : ActivityBase() {
                 }
             }
             sortAppList(displayList!!)
-            Scene.post(Runnable {
+            Scene.post {
                 processBarDialog.hideDialog()
                 setListData(displayList, scene_app_list)
-            })
+            }
             onLoading = false
         }).start()
     }
@@ -459,12 +406,16 @@ class ActivityAppConfig : ActivityBase() {
         if (configInfo.dpi >= 96) {
             desc.append("DIP " + configInfo.dpi + "  ")
         }
-        if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
-            desc.append("横屏显示  ")
-        } else if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT) {
-            desc.append("竖屏显示  ")
-        } else if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR) {
-            desc.append("自动旋转  ")
+        when (configInfo.screenOrientation) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE -> {
+                desc.append("横屏显示  ")
+            }
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT -> {
+                desc.append("竖屏显示  ")
+            }
+            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR -> {
+                desc.append("自动旋转  ")
+            }
         }
         if (aidlConn != null) {
             try {

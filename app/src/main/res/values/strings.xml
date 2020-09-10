@@ -348,8 +348,10 @@
     <string name="scene_addin_install_fail">“Scene - 高级设定”插件安装失败！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
-    <string name="accessbility_autoclick">安装点击</string>
-    <string name="scene_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
+    <string name="scene_install_autoclick">安装点击</string>
+    <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
+    <string name="scene_install_skip_ad">跳过广告</string>
+    <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但也会有误点现象</string>
     <string name="perf_opt">性能调节</string>
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>

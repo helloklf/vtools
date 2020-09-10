@@ -18,44 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                style="@style/ListCardItem"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="性能配置 - 模式管理"
-                        android:textColor="?android:colorAccent" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="在使用 [应用场景] - [性能调节]功能前，你需要在此界面完成四个模式的配置，并打开 [性能调节] 开关" />
-                </LinearLayout>
-
-                <ImageButton
-                    style="?android:buttonBarButtonStyle"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="6dp"
-                    android:padding="0dp"
-                    android:src="@drawable/delete"
-                    android:visibility="gone" />
-            </LinearLayout>
-
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin">
 
             <LinearLayout
                 style="@style/ListCardItem"
@@ -64,10 +28,10 @@
 
                 <Switch
                     android:id="@+id/dynamic_control"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="4dp"
                     android:text="性能调节 " />
 
                 <TextView
@@ -449,6 +413,56 @@
 
                     </LinearLayout>
                 </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/dynamic_control_opts"
+                style="@style/ListCardItem">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="全局默认" />
+
+                    <Spinner
+                        android:id="@+id/first_mode"
+                        style="@style/SceneSpinner"
+                        android:layout_width="110dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:entries="@array/default_powercfg_mode_options"
+                        android:paddingRight="0dp" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:text="没有单独设置模式的应用，将默认使用此模式" />
+
+                <Switch
+                    android:id="@+id/dynamic_lock_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="锁屏优化" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="屏幕关闭5秒后，自动切换为省电模式，需要开启性能调节" />
+
             </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>

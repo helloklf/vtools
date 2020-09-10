@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
@@ -25,7 +26,6 @@ import kotlinx.android.synthetic.main.kr_dialog_log.*
 
 
 class DialogLogFragment : androidx.fragment.app.DialogFragment() {
-    private lateinit var dialogInstance: Dialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // val view = inflater.inflate(R.layout.kr_dialog_log, container, false)
 
@@ -34,7 +34,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
     }
 
     private var running = false
-    private lateinit var nodeInfo: RunnableNode
+    private var nodeInfo: RunnableNode? = null
     private lateinit var onExit: Runnable
     private lateinit var script: String
     private var params: HashMap<String, String>? = null
@@ -47,20 +47,25 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        if (nodeInfo != null) {
+            nodeInfo?.run {
+                // 如果执行完以后需要刷新界面，那么就不允许隐藏日志窗口到后台执行
+                if (reloadPage) {
+                    btn_hide.visibility = View.GONE
+                }
 
-        // 如果执行完以后需要刷新界面，那么就不允许隐藏日志窗口到后台执行
-        if (nodeInfo.reloadPage) {
-            btn_hide.visibility = View.GONE
-        }
+                val shellHandler = openExecutor(this)
 
-        val shellHandler = openExecutor()
-
-        if (shellHandler != null) {
-            ShellExecutor().execute(this.activity, nodeInfo, script, onExit, params, shellHandler)
+                if (shellHandler != null) {
+                    ShellExecutor().execute(activity, this, script, onExit, params, shellHandler)
+                }
+            }
+        } else {
+            dismiss()
         }
     }
 
-    private fun openExecutor(): ShellHandlerBase? {
+    private fun openExecutor(nodeInfo: RunnableNode): ShellHandlerBase? {
         var forceStopRunnable: Runnable? = null
 
         btn_hide.setOnClickListener {

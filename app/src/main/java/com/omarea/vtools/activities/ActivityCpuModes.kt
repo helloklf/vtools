@@ -1,5 +1,6 @@
 package com.omarea.vtools.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -7,8 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.widget.Switch
-import android.widget.Toast
+import android.widget.*
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
@@ -58,15 +58,20 @@ class ActivityCpuModes : ActivityBase() {
         }
         checkConfig()
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value && !(modeSwitcher.modeConfigCompleted())) {
-                dynamic_control.isChecked = false
+                it.isChecked = false
                 DialogHelper.helpInfo(context, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
             }
+
+        }
+        dynamic_control.setOnCheckedChangeListener { _, isChecked ->
+            dynamic_control_opts.visibility = if (isChecked) View.VISIBLE else View.GONE
         }
 
         cpu_mode_delete_outside.setOnClickListener {
@@ -79,7 +84,53 @@ class ActivityCpuModes : ActivityBase() {
                         updateState()
                     }.setNegativeButton(R.string.btn_cancel, { _, _ -> }))
         }
+
+        val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+        when (modeValue) {
+            ModeSwitcher.POWERSAVE -> first_mode.setSelection(0)
+            ModeSwitcher.BALANCE -> first_mode.setSelection(1)
+            ModeSwitcher.PERFORMANCE -> first_mode.setSelection(2)
+            ModeSwitcher.FAST -> first_mode.setSelection(3)
+            ModeSwitcher.IGONED -> first_mode.setSelection(4)
+        }
+        first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF) {
+            reStartService()
+        }
+        bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
     }
+
+    @SuppressLint("ApplySharedPref")
+    private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
+        checkBox.isChecked = spf.getBoolean(prop, defValue)
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            spf.edit().putBoolean(prop, isChecked).commit()
+        }
+        if (restartService) {
+            reStartService()
+        }
+    }
+
+    private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable) : AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+        }
+
+        @SuppressLint("ApplySharedPref")
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            var mode = ModeSwitcher.DEFAULT
+            when (position) {
+                0 -> mode = ModeSwitcher.POWERSAVE
+                1 -> mode = ModeSwitcher.BALANCE
+                2 -> mode = ModeSwitcher.PERFORMANCE
+                3 -> mode = ModeSwitcher.FAST
+                4 -> mode = ModeSwitcher.IGONED
+            }
+            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT) != mode) {
+                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
+                runnable.run()
+            }
+        }
+    }
+
 
     private fun outsideOverrided(): Boolean {
         if (configInstaller.outsideConfigInstalled()) {

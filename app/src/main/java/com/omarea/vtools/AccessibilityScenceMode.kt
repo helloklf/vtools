@@ -2,16 +2,14 @@ package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -20,10 +18,12 @@ import android.widget.Toast
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.utils.AutoClick
+import com.omarea.scene_mode.AutoSkipAd
+import com.omarea.scene_mode.AutoClickInstall
 import com.omarea.vtools.popup.FloatLogView
 import java.util.*
 
@@ -46,6 +46,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     internal var appSwitchHandler: AppSwitchHandler? = null
 
+    private lateinit var spf: SharedPreferences
 
     /**
      * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
@@ -80,25 +81,31 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         val info = serviceInfo // AccessibilityServiceInfo()
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
+
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
+            info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
+        }
+
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
         info.notificationTimeout = 0
         info.packageNames = null
 
+        info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
         if (flagRequestKeyEvent) {
-            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-        } else {
-            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
+            info.flags = Flags(info.flags).addFlag(AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS)
         }
-        setServiceInfo(info);
+
+        serviceInfo = info
     }
 
     public override fun onServiceConnected() {
+        spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
         // 获取屏幕方向
         onScreenConfigurationChanged(this.resources.configuration)
 
         serviceIsConnected = true
 
-        val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
 
         updateConfig()
@@ -143,22 +150,29 @@ public class AccessibilityScenceMode : AccessibilityService() {
             return
         }
 
-        if (packageName.contains("packageinstaller")) {
-            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
-                return
+        when {
+            packageName.contains("packageinstaller") -> {
+                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
+                    return
 
-            try {
-                AutoClick().packageinstallerAutoClick(this.applicationContext, event)
-            } catch (ex: Exception) {
+                try {
+                    AutoClickInstall().packageinstallerAutoClick(this, event)
+                } catch (ex: Exception) {
+                }
             }
-        } else if (packageName == "com.miui.securitycenter") {
-            try {
-                AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
-            } catch (ex: Exception) {
+            packageName == "com.miui.securitycenter" -> {
+                try {
+                    AutoClickInstall().miuiUsbInstallAutoClick(this, event)
+                } catch (ex: Exception) {
+                }
+                return
             }
-            return
-        } else if (packageName == "com.android.permissioncontroller") { // 原生权限控制器
-            return
+            packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
+                return
+            }
+            spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
+                AutoSkipAd().skipAd(this, event)
+            }
         }
 
         // 针对一加部分系统的修复
@@ -166,33 +180,32 @@ public class AccessibilityScenceMode : AccessibilityService() {
             return
         }
 
-        if (event.source != null) {
+        val source = event.source
+        if (source != null) {
             val logs = StringBuilder()
             logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-            logs.append("事件: ${event.source.packageName}\n")
+            logs.append("事件: ${source.packageName}\n")
 
-            val windows_ = windows
-            if (windows_ == null || windows_.isEmpty()) {
+            val windowsList = windows
+            if (windowsList == null || windowsList.isEmpty()) {
                 return
-            } else if (windows_.size > 1) {
-                var lastWindow: AccessibilityWindowInfo? = null
-                val effectiveWindows = windows_.filter {
+            } else if (windowsList.size > 1) {
+                val effectiveWindows = windowsList.filter {
                     (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
                 }.sortedBy { it.layer }
 
-                if (effectiveWindows.size > 0) {
-                    lastWindow = effectiveWindows.get(0)
+                if (effectiveWindows.isNotEmpty()) {
+                    val lastWindow = effectiveWindows[0]
 
                     for (window in effectiveWindows) {
                         val wp = window.root?.packageName
                         if (wp != null) {
-                            logs.append("\n层级: ${window.layer} ${wp}")
+                            logs.append("\n层级: ${window.layer} $wp")
                         }
                     }
 
                     try {
-                        val source = event.source
-                        if (source == null || source.windowId != lastWindow.id) {
+                        if (source.windowId != lastWindow.id) {
                             val windowRoot = lastWindow!!.root
                             if (windowRoot == null || windowRoot.packageName == null) {
                                 return
@@ -208,10 +221,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
             }
             GlobalStatus.lastPackageName = packageName
-            EventBus.publish(EventType.APP_SWITCH);
+            EventBus.publish(EventType.APP_SWITCH)
         } else {
             GlobalStatus.lastPackageName = packageName
-            EventBus.publish(EventType.APP_SWITCH);
+            EventBus.publish(EventType.APP_SWITCH)
         }
     }
 
@@ -236,22 +249,29 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
             val packageName = event.packageName
             if (packageName != null) {
-                if (packageName.contains("packageinstaller")) {
-                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
-                        return
+                when {
+                    packageName.contains("packageinstaller") -> {
+                        if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
+                            return
 
-                    try {
-                        AutoClick().packageinstallerAutoClick(this.applicationContext, event)
-                    } catch (ex: Exception) {
+                        try {
+                            AutoClickInstall().packageinstallerAutoClick(this, event)
+                        } catch (ex: Exception) {
+                        }
                     }
-                } else if (packageName == "com.miui.securitycenter") {
-                    try {
-                        AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
-                    } catch (ex: Exception) {
+                    packageName == "com.miui.securitycenter" -> {
+                        try {
+                            AutoClickInstall().miuiUsbInstallAutoClick(this, event)
+                        } catch (ex: Exception) {
+                        }
+                        return
                     }
-                    return
-                } else if (packageName == "com.android.permissioncontroller") { // 原生权限控制器
-                    return
+                    packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
+                        return
+                    }
+                    spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
+                        AutoSkipAd().skipAd(this, event)
+                    }
                 }
             }
 
@@ -263,11 +283,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
-        val windows_ = windows
-        if (windows_ == null || windows_.isEmpty()) {
+        val windowsList = windows
+        if (windowsList == null || windowsList.isEmpty()) {
             return
-        } else if (windows_.size > 1) {
-            val effectiveWindows = windows_.filter {
+        } else if (windowsList.size > 1) {
+            val effectiveWindows = windowsList.filter {
                 (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
             } // .sortedBy { it.layer }
 
@@ -402,7 +422,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 pollingTimer?.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
                         val interval = System.currentTimeMillis() - lastEventTime
-                        if (interval < pollingTimeout && interval >= pollingInterval) {
+                        if (interval in pollingInterval until pollingTimeout) {
                             // Log.d(">>>>", "Scene Get Windows")
                             modernModeEvent()
                         } else {
@@ -418,7 +438,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         synchronized(this) {
             if (pollingTimer != null) {
                 pollingTimer?.cancel()
-                pollingTimer?.purge();
+                pollingTimer?.purge()
                 pollingTimer = null
             }
         }
@@ -438,7 +458,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var handler = Handler(Looper.getMainLooper())
     private var downTime: Long = -1
-    private var longClickTime: Long = 500;
+    private var longClickTime: Long = 500
     private var serviceIsConnected = false
     override fun onKeyEvent(event: KeyEvent): Boolean {
         // Log.d("onKeyEvent", "keyCode " + event.keyCode);
@@ -453,29 +473,33 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (!(keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_SEARCH)) {
             return super.onKeyEvent(event)
         }
-        if (event.action == KeyEvent.ACTION_DOWN) {
-            downTime = event.eventTime
-            val currentDownTime = downTime
-            val stopEvent = appSwitchHandler!!.onKeyDown()
-            if (stopEvent) {
-                handler.postDelayed({
-                    if (downTime == currentDownTime) {
-                        if (keyCode == KeyEvent.KEYCODE_HOME) {
-                            performGlobalAction(GLOBAL_ACTION_HOME)
-                        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            performGlobalAction(GLOBAL_ACTION_BACK)
-                        } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
-                            performGlobalAction(GLOBAL_ACTION_RECENTS)
+        when (event.action) {
+            KeyEvent.ACTION_DOWN -> {
+                downTime = event.eventTime
+                val currentDownTime = downTime
+                val stopEvent = appSwitchHandler!!.onKeyDown()
+                if (stopEvent) {
+                    handler.postDelayed({
+                        if (downTime == currentDownTime) {
+                            if (keyCode == KeyEvent.KEYCODE_HOME) {
+                                performGlobalAction(GLOBAL_ACTION_HOME)
+                            } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                                performGlobalAction(GLOBAL_ACTION_BACK)
+                            } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
+                                performGlobalAction(GLOBAL_ACTION_RECENTS)
+                            }
                         }
-                    }
-                }, longClickTime)
+                    }, longClickTime)
+                }
+                return stopEvent
             }
-            return stopEvent
-        } else if (event.action == KeyEvent.ACTION_UP) {
-            downTime = -1
-            return appSwitchHandler!!.onKeyDown()
-        } else {
-            return super.onKeyEvent(event)
+            KeyEvent.ACTION_UP -> {
+                downTime = -1
+                return appSwitchHandler!!.onKeyDown()
+            }
+            else -> {
+                return super.onKeyEvent(event)
+            }
         }
     }
 
