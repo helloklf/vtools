@@ -1,6 +1,7 @@
 package com.omarea.scene_mode
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Rect
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -69,7 +70,11 @@ class AutoSkipAd(private val service: AccessibilityService) {
                         ) {
                             if (!(lstClickedApp == packageName && lstClickedNode == node)) {
                                 val viewId = node.viewIdResourceName
-                                Log.d("@Scene", "SkipAD √ $packageName ${viewId}  " + node.text)
+                                val p = Rect()
+                                node.getBoundsInScreen(p)
+                                val parentId = node.parent.viewIdResourceName
+                                val pParentId = node.parent.parent.viewIdResourceName
+                                Log.d("@Scene", "SkipAD √ $packageName ${p} ${viewId}" + node.text)
                                 autoClickBase.touchOrClickNode(node, service, true)
                                 lstClickedApp = packageName.toString()
                                 lstClickedNode = node
