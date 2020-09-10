@@ -6,15 +6,27 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.omarea.Scene
+import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
 import java.util.*
 
 /**
  * Created by Hello on 2020/09/10.
  */
-class AutoSkipAd {
+class AutoSkipAd(private val service: AccessibilityService) {
     companion object {
         private var lstClickedNode: AccessibilityNodeInfo? = null
         private var lstClickedApp: String? = null
+        private var ids = arrayListOf(
+                "com.ruanmei.ithome:id/tv_skip",            // IT之家
+                "com.miui.systemAdSolution:id/view_skip",   // MIUI广告
+                "com.baidu.searchbox:id/splash_ad_btn_ski", // 百度
+                "com.baidu.tieba:id/splash_ad_btn_skip"     // 百度贴吧
+        )
+    }
+    init {
+        ids.clear()
+        ids.addAll(KeepShellPublic.doCmdSync("cat /cache/ids.log").split("\n"))
     }
 
     private val autoClickBase = AutoClickBase()
@@ -31,14 +43,14 @@ class AutoSkipAd {
     }
 
     private val blackList = arrayListOf("com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
-    fun skipAd(service: AccessibilityService, event: AccessibilityEvent) {
+
+    fun skipAd(event: AccessibilityEvent, precise: Boolean) {
         val packageName = event.packageName
         if (packageName == null || this.blackList.contains(event.packageName)) {
             return
         }
 
         val source = event.source ?: return
-
         try {
             source.findAccessibilityNodeInfosByText("跳过")?.run {
                 var node: AccessibilityNodeInfo
@@ -50,12 +62,22 @@ class AutoSkipAd {
                             className.toLowerCase(Locale.getDefault()).contains("button")
                     ) {
                         val text = node.text.trim()
-                        if (text == "跳过" || text == "跳过广告" || Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) || Regex("^跳过[广告]*[\\ss]{0,}[0-9]+\$").matches(text)) {
+                        if (
+                                text == "跳过" || text == "跳过广告" ||
+                                Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) ||
+                                Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$").matches(text)
+                        ) {
                             if (!(lstClickedApp == packageName && lstClickedNode == node)) {
+                                val viewId = node.viewIdResourceName
+                                Log.d("@Scene", "SkipAD √ $packageName ${viewId}  " + node.text)
                                 autoClickBase.touchOrClickNode(node, service, true)
                                 lstClickedApp = packageName.toString()
                                 lstClickedNode = node
                                 Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                if (viewId != null && !ids.contains(viewId)) {
+                                    ids.add(viewId)
+                                    KeepShellAsync.getInstance("skip-ad").doCmd("echo '$viewId' >> /cache/ids.log")
+                                }
                                 return
                             }
                         } else {

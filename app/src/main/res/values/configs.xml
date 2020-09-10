@@ -124,4 +124,15 @@
     </string-array>
 
     <string name="toolkit_install_path">toolkit</string>
+
+    <string-array name="ad_skip_list">
+        <!--IT之家-->
+        <item>com.ruanmei.ithome:id/tv_skip</item>
+        <!--MIUI广告-->
+        <item>com.miui.systemAdSolution:id/view_skip</item>
+        <!--百度客户端-->
+        <item>com.baidu.searchbox:id/splash_ad_btn_ski</item>
+        <!--百度贴吧-->
+        <item>com.baidu.tieba:id/splash_ad_btn_skip</item>
+    </string-array>
 </resources>

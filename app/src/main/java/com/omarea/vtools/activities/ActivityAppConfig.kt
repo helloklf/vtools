@@ -213,6 +213,7 @@ class ActivityAppConfig : ActivityBase() {
 
         bindSPF(settings_auto_install, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         bindSPF(settings_skip_ad, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD, false)
+        bindSPF(settings_skip_ad_precise, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)
     }
 
     private val REQUEST_APP_CONFIG = 0

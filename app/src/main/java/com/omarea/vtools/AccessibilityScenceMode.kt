@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -171,7 +170,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
             spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                AutoSkipAd().skipAd(this, event)
+                trySkipAD(event)
             }
         }
 
@@ -270,7 +269,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         return
                     }
                     spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                        AutoSkipAd().skipAd(this, event)
+                        trySkipAD(event)
                     }
                 }
             }
@@ -279,6 +278,14 @@ public class AccessibilityScenceMode : AccessibilityService() {
         } else {
             classicModelEvent(event)
         }
+    }
+
+    private var autoSkipAd:AutoSkipAd? = null
+    private fun trySkipAD(event: AccessibilityEvent) {
+        if (autoSkipAd == null) {
+            autoSkipAd = AutoSkipAd(this)
+        }
+        autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false))
     }
 
     // 新的前台应用窗口判定逻辑
