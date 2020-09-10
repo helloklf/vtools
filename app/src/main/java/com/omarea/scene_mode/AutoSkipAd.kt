@@ -54,8 +54,13 @@ class AutoSkipAd(private val service: AccessibilityService) {
             val id = "com.xiaomi.shop:id/skip"
             root.findAccessibilityNodeInfosByViewId(id)?.run {
                 for (i in indices) {
-                    autoClickBase.touchOrClickNode(get(i), service)
-                    Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
+                    val node = get(i)
+                    if (!(lstClickedNode == node)) {
+                        lstClickedNode = node
+                        lstClickedApp = root.packageName?.toString()
+                        autoClickBase.touchOrClickNode(node, service)
+                        Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
+                    }
                 }
                 return true
             }
