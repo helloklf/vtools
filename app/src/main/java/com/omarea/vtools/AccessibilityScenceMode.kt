@@ -122,7 +122,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             sceneConfigChanged = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     updateConfig()
-                    Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
+                    Scene.toast("辅助服务配置已更新~", Toast.LENGTH_SHORT)
                 }
             }
             registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_service_config_change_action)))
