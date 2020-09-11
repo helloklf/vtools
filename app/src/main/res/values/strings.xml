@@ -351,16 +351,18 @@
     <string name="scene_install_autoclick">安装点击</string>
     <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
     <string name="scene_install_skip_ad">跳过广告</string>
-    <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但也会有误点现象（更改此设置后请重启辅助服务）</string>
+    <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但也会有误点现象</string>
     <string name="scene_install_skip_ad_precise">跳过广告+</string>
     <string name="scene_install_skip_ad_precise_desc">使用云端记录的一些按钮数据，来点击特殊的跳过按钮</string>
+    <string name="scene_install_skip_ad_delay">延迟跳过广告</string>
+    <string name="scene_install_skip_ad_delay_desc">降低界面内容检测频率，从而减少性能消耗</string>
     <string name="perf_opt">性能调节</string>
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
 
-    <string name="scene_key_capture_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
+    <string name="scene_service_config_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
     <string name="scene_create_shortcut_action">com.omarea.vtools.CreateShortcut</string>

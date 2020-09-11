@@ -15,6 +15,7 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
@@ -87,9 +88,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
-                // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
+                info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
-            info.notificationTimeout = 100
+            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, false)) {
+                info.notificationTimeout = 500
+            }
         }
 
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
@@ -119,10 +122,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
             sceneConfigChanged = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     updateConfig()
-                    Toast.makeText(context, "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+                    Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
                 }
             }
-            registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_key_capture_change_action)))
+            registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_service_config_change_action)))
         }
         super.onServiceConnected()
 

@@ -236,7 +236,7 @@ class FloatPowercfgSelector(context: Context) {
             appConfig.disButton = isChecked
             store.setAppConfig(appConfig)
             if (isChecked && !needKeyCapture) {
-                context.sendBroadcast(Intent(context.getString(R.string.scene_key_capture_change_action)))
+                context.sendBroadcast(Intent(context.getString(R.string.scene_service_config_change_action)))
                 needKeyCapture = true
             }
 

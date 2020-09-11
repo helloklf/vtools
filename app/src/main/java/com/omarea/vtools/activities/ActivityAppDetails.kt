@@ -391,7 +391,7 @@ class ActivityAppDetails : ActivityBase() {
             sceneConfigInfo.disButton = isChecked
             if (isChecked && !needKeyCapture) {
                 saveConfig()
-                sendBroadcast(Intent(getString(R.string.scene_key_capture_change_action)))
+                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
             }
         }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {

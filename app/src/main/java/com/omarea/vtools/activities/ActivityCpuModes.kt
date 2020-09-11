@@ -99,14 +99,13 @@ class ActivityCpuModes : ActivityBase() {
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
     }
 
-    @SuppressLint("ApplySharedPref")
     private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
-            spf.edit().putBoolean(prop, isChecked).commit()
-        }
-        if (restartService) {
-            reStartService()
+            spf.edit().putBoolean(prop, isChecked).apply()
+            if (restartService) {
+                reStartService()
+            }
         }
     }
 

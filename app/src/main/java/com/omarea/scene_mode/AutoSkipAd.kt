@@ -85,7 +85,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                 Scene.toast("点击了$viewId")
             }
         }
-        if (preciseSkip(source)) {
+        if (precise && preciseSkip(source)) {
             return
         }
 
