@@ -25,6 +25,7 @@ import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
+import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_app_config.*
@@ -214,6 +215,12 @@ class ActivityAppConfig : ActivityBase() {
         bindSPF(settings_auto_install, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         bindSPF(settings_skip_ad, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD, false)
         bindSPF(settings_skip_ad_precise, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)
+
+        settings_skip_ad_precise.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AutoSkipCloudData().updateConfig(context, true)
+            }
+        }
     }
 
     private val REQUEST_APP_CONFIG = 0
@@ -265,11 +272,10 @@ class ActivityAppConfig : ActivityBase() {
         }
     }
 
-    @SuppressLint("ApplySharedPref")
     private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            spf.edit().putBoolean(prop, isChecked).commit()
+        checkBox.setOnClickListener { view ->
+            spf.edit().putBoolean(prop, (view as CompoundButton).isChecked).apply()
         }
         if (restartService) {
             reStartService()

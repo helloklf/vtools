@@ -1,0 +1,10 @@
+﻿[
+  {
+    "activity": "com.xiaomi.shop.activity.MainTabActivity",
+    "viewId": "com.xiaomi.shop:id/skip"
+  },
+  {
+    "activity": "com.antutu.ABenchMark.ABenchMarkStart",
+    "viewId": "com.antutu.ABenchMark:id/tt_splash_skip_btn"
+  }
+]

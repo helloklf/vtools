@@ -20,8 +20,9 @@ import java.util.ArrayList
 open class AutoClickBase {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun buildGesture(rect: Rect): GestureDescription {
-        // val position = Point(rect.left + 5, rect.top + 5)
-        val position = Point(rect.left + 5, rect.bottom - 5) // 这个位置更容易点到，因为有些跳过按钮太靠近状态栏，点顶部点不着
+        val width = rect.right - rect.left
+        val height = rect.bottom - rect.top
+        val position = Point(rect.left + (width/ 2), rect.top + (height / 2))
         val builder = GestureDescription.Builder()
         val p = Path()
         p.moveTo(position.x.toFloat(), position.y.toFloat())

@@ -42,7 +42,7 @@ class AutoClickInstall : AutoClickBase() {
                     for (i in nextNodes.indices) {
                         node = nextNodes[i]
                         if (node.className.toString().toLowerCase(Locale.getDefault()).contains("button") && node.isEnabled) {
-                            if (node.text != autoClickKeyWords[ki])
+                            if (node.text.trim().toString() != autoClickKeyWords[ki])
                                 continue
                             super.touchOrClickNode(node, service, false)
                             try {
@@ -67,7 +67,7 @@ class AutoClickInstall : AutoClickBase() {
                             if (!node.isEnabled) {
                                 node.isEnabled = true
                             }
-                            if (node.text != autoClickKeyWords2[ki])
+                            if (node.text.trim().toString() != autoClickKeyWords2[ki])
                                 continue
                             super.touchOrClickNode(node, service, false)
                         }

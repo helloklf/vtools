@@ -10,12 +10,14 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.store.AutoSkipConfigStore
 import java.util.*
 
 /**
  * Created by Hello on 2020/09/10.
  */
 class AutoSkipAd(private val service: AccessibilityService) {
+    private val autoSkipConfigStore = AutoSkipConfigStore(service.applicationContext)
     companion object {
         private var lstClickedNode: AccessibilityNodeInfo? = null
         private var lstClickedApp: String? = null
@@ -47,18 +49,16 @@ class AutoSkipAd(private val service: AccessibilityService) {
 
     private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
 
-    // com.xiaomi.shop com.xiaomi.shop.activity.MainTabActivity com.xiaomi.shop:id/skip
-
     private fun preciseSkip(root: AccessibilityNodeInfo): Boolean {
-        if (lastActivity == "com.xiaomi.shop.activity.MainTabActivity") {
-            val id = "com.xiaomi.shop:id/skip"
+        autoSkipConfigStore.getSkipViewId(lastActivity)?.run {
+            val id = this
             root.findAccessibilityNodeInfosByViewId(id)?.run {
                 for (i in indices) {
                     val node = get(i)
                     if (!(lstClickedNode == node)) {
                         lstClickedNode = node
                         lstClickedApp = root.packageName?.toString()
-                        autoClickBase.touchOrClickNode(node, service)
+                        autoClickBase.touchOrClickNode(node, service, true)
                         Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
                     }
                 }
@@ -78,7 +78,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             lastActivity = event.className?.toString()
         } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-            val viewId = if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
+            val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
             if (viewId != null && !ids.contains(viewId)) {
                 ids.add(viewId)
                 KeepShellAsync.getInstance("skip-ad").doCmd("echo '$lastActivity $viewId' >> /cache/ids.log")
@@ -99,7 +99,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                             className == "android.widget.textview" ||
                             className.toLowerCase(Locale.getDefault()).contains("button")
                     ) {
-                        val text = node.text.trim()
+                        val text = node.text.trim().toString()
                         if (
                                 text == "跳过" || text == "跳过广告" ||
                                 Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) ||
@@ -143,7 +143,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                 className == "android.widget.textview" ||
                                 className.toLowerCase(Locale.getDefault()).contains("button")
                         ) {
-                            val text = node.text.trim()
+                            val text = node.text.trim().toString()
                             if (text == keyword) {
                                 if (!(lstClickedApp == packageName && lstClickedNode == node)) {
                                     autoClickBase.touchOrClickNode(node, service, true)

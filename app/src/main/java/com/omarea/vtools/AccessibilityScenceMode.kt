@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -81,11 +82,14 @@ public class AccessibilityScenceMode : AccessibilityService() {
         val info = serviceInfo // AccessibilityServiceInfo()
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
 
+        info.notificationTimeout = 0
+
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
-                info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
+                // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
+            info.notificationTimeout = 100
         }
 
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
@@ -177,6 +181,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
             }
         }
 
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
+            return
+        }
+
         // 针对一加部分系统的修复
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
             return
@@ -232,7 +240,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!classicModel) {
-            /*
             when(event.eventType) {
                 AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
                     Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
@@ -247,7 +254,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     Log.e(">>>>", "???? " + event.eventType)
                 }
             }
-            */
 
             val packageName = event.packageName
             if (packageName != null) {
@@ -277,6 +283,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
             }
 
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
+                return
+            }
             modernModeEvent(event)
         } else {
             classicModelEvent(event)

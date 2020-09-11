@@ -352,8 +352,8 @@
     <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
     <string name="scene_install_skip_ad">跳过广告</string>
     <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但也会有误点现象（更改此设置后请重启辅助服务）</string>
-    <string name="scene_install_skip_ad_precise">精准点击</string>
-    <string name="scene_install_skip_ad_precise_desc">只点击已经确定为跳过广告的“跳过”按钮</string>
+    <string name="scene_install_skip_ad_precise">跳过广告+</string>
+    <string name="scene_install_skip_ad_precise_desc">使用云端记录的一些按钮数据，来点击特殊的跳过按钮</string>
     <string name="perf_opt">性能调节</string>
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
