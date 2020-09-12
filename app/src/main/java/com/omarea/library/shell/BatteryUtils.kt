@@ -179,15 +179,7 @@ class BatteryUtils {
                 var electricity = 0F
                 for (info in infos) {
                     try {
-                        if (info.startsWith("POWER_SUPPLY_ONLINE=")) {
-                            val keyword = "POWER_SUPPLY_ONLINE="
-                            stringBuilder.append("USB供电 = ")
-                            if (info.substring(keyword.length, info.length) == "1") {
-                                stringBuilder.append("√")
-                            } else {
-                                stringBuilder.append("×")
-                            }
-                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
+                        if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
                             val keyword = "POWER_SUPPLY_VOLTAGE_NOW="
                             stringBuilder.append("当前电压 = ")
                             val v = str2voltage(info.substring(keyword.length, info.length))
@@ -254,7 +246,7 @@ class BatteryUtils {
                             }
                         } else if (info.startsWith("POWER_SUPPLY_REAL_TYPE=")) {
                             val keyword = "POWER_SUPPLY_REAL_TYPE="
-                            stringBuilder.append("实际类型 = ")
+                            stringBuilder.append("输电协议 = ")
                             stringBuilder.append(info.substring(keyword.length, info.length))
                         } else if (info.startsWith("POWER_SUPPLY_HVDCP3_TYPE=")) {
                             val keyword = "POWER_SUPPLY_HVDCP3_TYPE="

@@ -11,6 +11,8 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
@@ -274,8 +276,8 @@ class ActivityBattery:  ActivityBase() {
                     print(ex.message)
                 }
             }
-            registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
+        registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
         val battrystatus = findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
@@ -417,6 +419,7 @@ class ActivityBattery:  ActivityBase() {
                 unregisterReceiver(broadcast)
         } catch (ex: Exception) {
         }
+        broadcast = null
         super.onDestroy()
     }
 

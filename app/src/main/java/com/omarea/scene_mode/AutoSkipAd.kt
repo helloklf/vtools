@@ -4,12 +4,9 @@ import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityEventSource
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.omarea.Scene
-import com.omarea.common.shell.KeepShellAsync
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.AutoSkipConfigStore
 import java.util.*
 
@@ -22,16 +19,6 @@ class AutoSkipAd(private val service: AccessibilityService) {
         private var lstClickedNode: AccessibilityNodeInfo? = null
         private var lstClickedApp: String? = null
         private var lastActivity:String? = null
-        private var ids = arrayListOf(
-                "com.ruanmei.ithome:id/tv_skip",            // IT之家
-                "com.miui.systemAdSolution:id/view_skip",   // MIUI广告
-                "com.baidu.searchbox:id/splash_ad_btn_ski", // 百度
-                "com.baidu.tieba:id/splash_ad_btn_skip"     // 百度贴吧
-        )
-    }
-    init {
-        ids.clear()
-        ids.addAll(KeepShellPublic.doCmdSync("cat /cache/ids.log").split("\n"))
     }
 
     private val autoClickBase = AutoClickBase()
@@ -40,10 +27,6 @@ class AutoSkipAd(private val service: AccessibilityService) {
         init {
             add("暂不升级")
             add("忽略此版本")
-            // add("跳过广告")
-            // add("Next")
-            // add("skip")
-            // add("Skip")
         }
     }
 
@@ -79,11 +62,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
             lastActivity = event.className?.toString()
         } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
-            if (viewId != null && !ids.contains(viewId)) {
-                ids.add(viewId)
-                KeepShellAsync.getInstance("skip-ad").doCmd("echo '$lastActivity $viewId' >> /cache/ids.log")
-                Scene.toast("点击了$viewId")
-            }
+            Log.d("@Scene", "点击了$viewId")
         }
         if (precise && preciseSkip(source)) {
             return
@@ -116,10 +95,6 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                 lstClickedApp = packageName.toString()
                                 lstClickedNode = node
                                 Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
-                                if (viewId != null && !ids.contains(viewId)) {
-                                    ids.add(viewId)
-                                    KeepShellAsync.getInstance("skip-ad").doCmd("echo '$viewId' >> /cache/ids.log")
-                                }
                                 return
                             }
                         } else {

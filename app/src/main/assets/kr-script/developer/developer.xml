@@ -28,6 +28,12 @@
             <get>run anr_get.sh</get>
             <set>run anr_set.sh</set>
         </switch>
+        <switch id="show_touches" shell="hidden">
+            <title>显示触摸反馈</title>
+            <desc>触摸屏幕时显示小圆点</desc>
+            <get>settings get system show_touches</get>
+            <set>settings put system show_touches $state</set>
+        </switch>
         <picker value=" "
             auto-off="true"
             visible=". ./kr-script/common/android_q.sh">

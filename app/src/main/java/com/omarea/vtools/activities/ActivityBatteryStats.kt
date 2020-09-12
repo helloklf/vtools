@@ -5,6 +5,8 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
@@ -27,12 +29,24 @@ class ActivityBatteryStats : ActivityBase() {
     }
 
     private fun onViewCreated() {
-        battery_stats_delete.setOnClickListener {
-            BatteryHistoryStore(context).clearData()
-            Toast.makeText(context, "统计记录已清理", Toast.LENGTH_SHORT).show()
-            loadData()
-        }
         storage = BatteryHistoryStore(context)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.delete, menu)
+        return true
+    }
+
+    //右上角菜单
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_delete -> {
+                BatteryHistoryStore(context).clearData()
+                Toast.makeText(context, "统计记录已清理", Toast.LENGTH_SHORT).show()
+                loadData()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
