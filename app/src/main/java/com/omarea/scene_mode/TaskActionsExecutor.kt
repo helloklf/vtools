@@ -24,6 +24,14 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
 
     private lateinit var mPowerManager: PowerManager
     private lateinit var mWakeLock: PowerManager.WakeLock
+    private var currentShell:KeepShell? = null
+    private val keepShell: KeepShell
+        get () {
+            if (currentShell == null) {
+                currentShell = KeepShell();
+            }
+            return currentShell!!
+        }
 
     public fun run() {
         mPowerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager;
@@ -37,8 +45,6 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:TaskActionsExecutor");
         mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
 
-        var keepShell: KeepShell? = null
-
         taskActions.forEach {
             try {
                 when (it) {
@@ -51,16 +57,15 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                         NetworkUtils(context).airModeOn()
                     }
                     TaskAction.COMPILE_EVERYTHING -> {
+                        updateNotification("dex2oat everything编译")
                         everythingDex2oatCompile()
                     }
                     TaskAction.COMPILE_SPEED -> {
+                        updateNotification("dex2oat speed编译")
                         speedDex2oatCompile()
                     }
                     TaskAction.FSTRIM -> {
                         updateNotification("执行fstrim")
-                        if (keepShell == null) {
-                            keepShell = KeepShell()
-                        }
                         FstrimUtils(keepShell!!).run()
                     }
                     TaskAction.GPRS_OFF -> {
@@ -82,18 +87,12 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                         LocationHelper().enableGPS()
                     }
                     TaskAction.STANDBY_MODE_OFF -> {
-                        if (keepShell == null) {
-                            keepShell = KeepShell()
-                        }
                         updateNotification("关闭待机模式")
-                        SceneStandbyMode(context, keepShell!!).off()
+                        SceneStandbyMode(context, keepShell).off()
                     }
                     TaskAction.STANDBY_MODE_ON -> {
-                        if (keepShell == null) {
-                            keepShell = KeepShell()
-                        }
                         updateNotification("打开待机模式")
-                        SceneStandbyMode(context, keepShell!!).on()
+                        SceneStandbyMode(context, keepShell).on()
                     }
                     TaskAction.WIFI_OFF -> {
                         updateNotification("关闭WIFI")
@@ -145,22 +144,18 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
             }
         }
 
-        keepShell?.tryExit()
+        currentShell?.tryExit()
         hideNotification()
 
         mWakeLock.release()
     }
 
     private fun speedDex2oatCompile() {
-        val service = Intent(context, CompileService::class.java)
-        service.action = context.getString(R.string.scene_speed_compile)
-        context.startService(service)
+        keepShell.doCmdSync("nohup cmd package compile -m speed -a >/dev/null 2>&1 &")
     }
 
     private fun everythingDex2oatCompile() {
-        val service = Intent(context, CompileService::class.java)
-        service.action = context.getString(R.string.scene_everything_compile)
-        context.startService(service)
+        keepShell.doCmdSync("nohup cmd package compile -m everything -a >/dev/null 2>&1 &")
     }
 
     private var channelCreated = false

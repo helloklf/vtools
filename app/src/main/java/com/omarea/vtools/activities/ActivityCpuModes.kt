@@ -38,9 +38,6 @@ class ActivityCpuModes : ActivityBase() {
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         modeSwitcher = ModeSwitcher()
 
-        cpu_config_p4.setOnClickListener {
-            Toast.makeText(context, "该模式暂未开放使用", Toast.LENGTH_SHORT).show()
-        }
         bindMode(cpu_config_p0, ModeSwitcher.POWERSAVE)
         bindMode(cpu_config_p1, ModeSwitcher.BALANCE)
         bindMode(cpu_config_p2, ModeSwitcher.PERFORMANCE)
@@ -96,7 +93,6 @@ class ActivityCpuModes : ActivityBase() {
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF) {
             reStartService()
         }
-        bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
     }
 
     private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {

@@ -59,12 +59,10 @@ public class SpfConfig {
     public static String GLOBAL_SPF_MAC_AUTOCHANGE_MODE = "wifi_mac_autochange_mode";
     public static int GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1 = 1;
     public static int GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2 = 2;
-    public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
     public static boolean GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT = false;
     public static String GLOBAL_SPF_CPU_CONFIG_AUTHOR = "cpu_config_author";
-    public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
     public static String GLOBAL_SPF_CONTRACT = "global_contract";
     public static String GLOBAL_SPF_POWERCFG_FRIST_NOTIFY = "global_powercfg_notifyed";
@@ -89,10 +87,6 @@ public class SpfConfig {
     public static String SWAP_MIN_FREE_KBYTES = "extra_free_kbytes";
     public static String SWAP_SPF_AUTO_LMK = "auto_lmk";
     public static String SWAP_SPF_ALGORITHM = "comp_algorithm"; // zram 压缩算法
-
-    public static String KEY_EVENT_SPF = "key_event_spf";
-    public static String KEY_EVENT_ONTHER_CONFIG_SPF = "key_event_spf2";
-    public static String CONFIG_SPF_TOUCH_BAR = "touch_bar";
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
     public static String SCENE_BLACK_LIST = "scene_black_list_spf";

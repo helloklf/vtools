@@ -376,43 +376,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cpu_config_p4"
-                    style="@style/InCardListItemLast"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shortcut_p4" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/textDefault"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="暖手模式" />
-
-                        <TextView
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="已经放弃调度，直接锁定最高频率" />
-
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
 
 
@@ -448,20 +411,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:text="没有单独设置模式的应用，将默认使用此模式" />
-
-                <Switch
-                    android:id="@+id/dynamic_lock_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="锁屏优化" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="屏幕关闭5秒后，自动切换为省电模式，需要开启性能调节" />
 
             </LinearLayout>
         </LinearLayout>

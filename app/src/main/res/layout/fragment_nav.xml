@@ -69,7 +69,7 @@
                 android:id="@+id/nav_cpu_modes"
                 style="@style/nav_item_wrap_right"
                 android:tag="root"
-                app:drawable="@drawable/cpu"
+                app:drawable="@drawable/ic_menu_digital"
                 app:text="@string/menu_cpu_modes" />
 
             <com.omarea.ui.NavItem
@@ -137,14 +137,14 @@
                 android:id="@+id/nav_core_control"
                 style="@style/nav_item_wrap"
                 android:tag="root"
-                app:drawable="@drawable/cpu"
+                app:drawable="@drawable/ic_menu_cpu"
                 app:text="@string/menu_core_control" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_swap"
                 style="@style/nav_item_wrap_right"
                 android:tag="root"
-                app:drawable="@drawable/ic_menu_digital"
+                app:drawable="@drawable/ic_menu_swap"
                 app:text="@string/menu_swap" />
 
             <com.omarea.ui.NavItem
@@ -206,14 +206,14 @@
                 android:id="@+id/nav_additional_all"
                 style="@style/nav_item_wrap_right"
                 android:tag="root"
-                app:drawable="@drawable/ic_menu_command"
+                app:drawable="@drawable/ic_menu_shell"
                 app:text="@string/menu_additional" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_app_magisk"
                 style="@style/nav_item_wrap"
                 android:tag="root"
-                app:drawable="@drawable/mask"
+                app:drawable="@drawable/ic_menu_magisk"
                 app:text="@string/menu_app_magisk" />
 
             <com.omarea.ui.NavItem
@@ -240,7 +240,7 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_qq"
                 style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_config"
+                app:drawable="@drawable/ic_menu_qq"
                 app:text="@string/menu_qq" />
 
             <com.omarea.ui.NavItem

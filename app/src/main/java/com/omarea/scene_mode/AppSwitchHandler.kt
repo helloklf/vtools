@@ -124,12 +124,6 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
      */
     private fun onScreenOffCloseNetwork() {
         if (!screenOn) {
-            if (dyamicCore && !screenOn) {
-                if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)) {
-                    updateModeNofity() // 屏幕关闭后
-                    toggleConfig(POWERSAVE)
-                }
-            }
             if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
                 sceneMode.onScreenOffDelay()
                 systemScene.onScreenOff()
