@@ -85,6 +85,7 @@ public class SpfConfig {
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
     public static String SWAP_MIN_FREE_KBYTES = "extra_free_kbytes";
+    public static String SWAP_MIN_WATERMARK_SCALE = "watermark_scale";
     public static String SWAP_SPF_AUTO_LMK = "auto_lmk";
     public static String SWAP_SPF_ALGORITHM = "comp_algorithm"; // zram 压缩算法
 

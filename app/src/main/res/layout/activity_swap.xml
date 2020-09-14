@@ -309,7 +309,6 @@
                 style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -343,14 +342,8 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/activity_vertical_margin" />
 
-            </TableLayout>
-
-            <TableLayout
-                style="@style/ListCardItem"
-                android:showDividers="beginning"
-                android:stretchColumns="0">
-
                 <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -404,7 +397,7 @@
                         android:text="@string/watermark_scale_factor" />
 
                     <TextView
-                        android:id="@+id/txt_watermark_scale_factor"
+                        android:id="@+id/text_watermark_scale_factor"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"
@@ -417,7 +410,7 @@
                     style="@style/SceneSeekBar"
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="524288" />
+                    android:max="1000" />
 
             </TableLayout>
 
@@ -440,8 +433,14 @@
                 <TextView
                     android:id="@+id/extra_free_kbytes_display"
                     style="@style/textSmall"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="4dp"
                     android:text="extra_free_kbytes" />
+
+                <TextView
+                    android:id="@+id/watermark_scale_factor_display"
+                    style="@style/textSmall"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:text="watermark_scale_factor" />
 
                 <ListView
                     android:id="@+id/list_swaps2"

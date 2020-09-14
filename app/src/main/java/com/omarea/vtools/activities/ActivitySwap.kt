@@ -14,6 +14,7 @@ import androidx.appcompat.widget.SwitchCompat
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.shell.LMKUtils
@@ -91,6 +92,9 @@ class ActivitySwap : ActivityBase() {
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
         seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
         txt_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
+        text_watermark_scale_factor.text = seekbar_extra_free_kbytes.progress.run {
+            "$this(${this / 100F})%"
+        }
 
         seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
@@ -98,10 +102,10 @@ class ActivitySwap : ActivityBase() {
         seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
         }, null, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
-        seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
-        }, Runnable {
+        }, {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
             KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness")
@@ -109,13 +113,13 @@ class ActivitySwap : ActivityBase() {
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
         // extra_free_kbytes设置
-        seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
+        seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener({
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
             txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
-        }, Runnable {
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
+        }, {
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
             txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
-            processBarDialog.showDialog(getString(R.string.swap_on_close))
+            processBarDialog.showDialog()
             val run = Runnable {
                 KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/extra_free_kbytes")
                 myHandler.post {
@@ -125,6 +129,28 @@ class ActivitySwap : ActivityBase() {
             }
             Thread(run).start()
         }, swapConfig, SpfConfig.SWAP_MIN_FREE_KBYTES))
+
+        seekbar_watermark_scale_factor.isEnabled = RootFile.fileExists("/proc/sys/vm/watermark_scale_factor")
+        seekbar_watermark_scale_factor.setOnSeekBarChangeListener(OnSeekBarChangeListener({
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_WATERMARK_SCALE, 100)
+            text_watermark_scale_factor.text = value.run {
+                "$this(${this / 100F})%"
+            }
+        }, {
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_WATERMARK_SCALE, 100)
+            text_watermark_scale_factor.text = value.run {
+                "$this(${this / 100F})%"
+            }
+            processBarDialog.showDialog()
+            val run = Runnable {
+                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/watermark_scale_factor")
+                myHandler.post {
+                    processBarDialog.hideDialog()
+                    getSwaps()
+                }
+            }
+            Thread(run).start()
+        }, swapConfig, SpfConfig.SWAP_MIN_WATERMARK_SCALE))
 
         // 关闭swap
         btn_swap_close.setOnClickListener {
@@ -352,7 +378,9 @@ class ActivitySwap : ActivityBase() {
         }
 
         val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
+        val watermark_scale_factor = KernelProrp.getProp("/proc/sys/vm/watermark_scale_factor")
         swap_swappiness_display.text = "/proc/sys/vm/swappiness :  $swappiness"
+        watermark_scale_factor_display.text = "/proc/sys/vm/watermark_scale_factor :  $watermark_scale_factor"
 
         val datas = AdapterSwaplist(this, list)
         list_swaps2.adapter = datas

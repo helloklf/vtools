@@ -209,7 +209,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     protected fun execShell(sb: StringBuilder) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
-        val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+        val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = "正在获取权限"
         val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
@@ -217,7 +217,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
-        private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+        private var textView: TextView = (dialog.findViewById(R.id.dialog_text) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
         private var error = java.lang.StringBuilder()
 
