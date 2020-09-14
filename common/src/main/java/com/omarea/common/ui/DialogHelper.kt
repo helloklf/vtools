@@ -51,7 +51,8 @@ class DialogHelper {
         fun helpInfo(context: Context, title: String, message: String): DialogWrap {
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
-            val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false)
+            val alert = AlertDialog.Builder(context).setView(dialog)
+            alert.setCancelable(true)
 
             (dialog.findViewById(R.id.dialog_help_title) as TextView).run {
                 if (title.isNotEmpty()) {
