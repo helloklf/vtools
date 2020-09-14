@@ -2,24 +2,28 @@ package com.omarea.common.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
 import com.omarea.common.R
-import java.lang.Exception
 
 class DialogHelper {
     class DialogWrap(private val dialog: AlertDialog) {
         public fun dismiss() {
             try {
                 dialog.dismiss()
-            } catch (ex: Exception) {}
+            } catch (ex: Exception) {
+            }
         }
 
         public fun hide() {
             try {
                 dialog.hide()
-            } catch (ex: Exception) {}
+            } catch (ex: Exception) {
+            }
         }
 
-        public val isShowing:Boolean
+        public val isShowing: Boolean
             get() {
                 return dialog.isShowing()
             }
@@ -41,26 +45,33 @@ class DialogHelper {
         }
 
         fun helpInfo(context: Context, message: String): DialogWrap {
-            val dialog = AlertDialog.Builder(context)
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    }
-            if (message.isNotEmpty()) {
-                dialog.setMessage(message)
-            }
-            return animDialog(dialog)
+            return helpInfo(context, "", message)
         }
 
         fun helpInfo(context: Context, title: String, message: String): DialogWrap {
-            val dialog = AlertDialog.Builder(context)
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    }
-            if (title.isNotEmpty()) {
-                dialog.setTitle(title)
+            val layoutInflater = LayoutInflater.from(context)
+            val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
+            val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false)
+
+            (dialog.findViewById(R.id.dialog_help_title) as TextView).run {
+                if (title.isNotEmpty()) {
+                    text = message
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
             }
-            if (message.isNotEmpty()) {
-                dialog.setMessage(message)
+
+            (dialog.findViewById(R.id.dialog_help_info) as TextView).run {
+                if (message.isNotEmpty()) {
+                    text = message
+                    visibility = View.VISIBLE
+                } else {
+                    visibility = View.GONE
+                }
             }
-            return animDialog(dialog)
+
+            return animDialog(alert)
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {

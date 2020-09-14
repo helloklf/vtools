@@ -5,21 +5,20 @@
     android:keepScreenOn="true"
     android:orientation="vertical"
     android:padding="26dp">
-
-    <ProgressBar
-        android:id="@+id/dialog_app_details_progress"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="30dp"
-        android:indeterminate="false"
-        android:max="100" />
-
     <TextView
-        android:id="@+id/dialog_text"
+        android:id="@+id/dialog_help_title"
+        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/execute_wait"
+        android:text=""
         android:textAlignment="center"
-        android:textSize="16dp" />
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/dialog_help_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="12sp" />
 </LinearLayout>

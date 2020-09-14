@@ -54,7 +54,7 @@ open class ProgressBarDialog(private var context: Context) {
 
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
-        val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+        val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = context.getString(R.string.execute_wait)
         alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
@@ -92,7 +92,7 @@ open class ProgressBarDialog(private var context: Context) {
             hideDialog()
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
-            textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+            textView = (dialog.findViewById(R.id.dialog_text) as TextView)
             textView!!.text = text
             alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             alert!!.window!!.setWindowAnimations(R.style.windowAnim)
