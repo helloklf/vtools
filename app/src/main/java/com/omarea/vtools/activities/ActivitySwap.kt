@@ -108,7 +108,7 @@ class ActivitySwap : ActivityBase() {
             swap_swappiness_display.text = "/proc/sys/vm/swappiness :  " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
-        // 额外空余内存设置
+        // extra_free_kbytes设置
         seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
             txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"

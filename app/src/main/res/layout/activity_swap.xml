@@ -384,6 +384,41 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:max="524288" />
 
+                <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/watermark_scale_factor_desc" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/watermark_scale_factor" />
+
+                    <TextView
+                        android:id="@+id/txt_watermark_scale_factor"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekbar_watermark_scale_factor"
+                    style="@style/SceneSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:max="524288" />
+
             </TableLayout>
 
             <TableLayout

@@ -26,7 +26,7 @@ comp_algorithm=lzo
 
 # 使用zram、swap的积极性
 swappiness=100
-# 额外空余内存(kbytes)
+# extra_free_kbytes(kbytes)
 extra_free_kbytes=98304
 */
 
