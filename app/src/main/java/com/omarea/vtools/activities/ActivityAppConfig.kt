@@ -120,7 +120,7 @@ class ActivityAppConfig : ActivityBase() {
             tabIconHelper.updateHighlight()
         }
 
-        scene_app_list.setOnItemClickListener { parent, view2, position, id ->
+        scene_app_list.setOnItemClickListener { parent, view2, position, _ ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
@@ -133,10 +133,12 @@ class ActivityAppConfig : ActivityBase() {
 
         // 动态响应检测
         val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+
         if (dynamicControl) {
             scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
                 val item = (parent.adapter.getItem(position) as Appinfo)
-                val originIndex = when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
+                val app = item.packageName.toString()
+                val originIndex = when (spfPowercfg.getString(app, firstMode)) {
                     ModeSwitcher.POWERSAVE -> 0
                     ModeSwitcher.BALANCE -> 1
                     ModeSwitcher.PERFORMANCE -> 2
@@ -146,34 +148,26 @@ class ActivityAppConfig : ActivityBase() {
                 }
                 var currentMode = originIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(item.appName.toString())
-                        .setSingleChoiceItems(
-                                R.array.powercfg_modes2,
-                                originIndex
-                        ) { _, which ->
+                        // .setTitle(item.appName.toString())
+                        .setTitle("启动时 调节性能至")
+                        .setSingleChoiceItems(R.array.powercfg_options_menu, originIndex) { _, which ->
                             currentMode = which
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (currentMode != originIndex) {
-                                var modeName = ""
-                                when (currentMode) {
-                                    0 -> modeName = ModeSwitcher.POWERSAVE
-                                    1 -> modeName = ModeSwitcher.BALANCE
-                                    2 -> modeName = ModeSwitcher.PERFORMANCE
-                                    3 -> modeName = ModeSwitcher.FAST
-                                    4 -> modeName = ""
-                                    5 -> modeName = ModeSwitcher.IGONED
-                                }
+                                val modeName = resources.getStringArray(R.array.powercfg_options_values)[currentMode]
 
-                                if (modeName.isEmpty()) {
-                                    spfPowercfg.edit().remove(item.packageName.toString()).apply()
-                                } else {
-                                    spfPowercfg.edit().putString(item.packageName.toString(), modeName).apply()
-                                }
+                                spfPowercfg.edit().run {
+                                    if (modeName.isEmpty()) {
+                                        remove(app)
+                                    } else {
+                                        putString(app, modeName)
+                                    }
+                                }.apply()
 
                                 setAppRowDesc(item)
-                                (scene_app_list.adapter as SceneModeAdapter).updateRow(position, view)
-                                notifyService(item.packageName.toString(), modeName)
+                                (parent.adapter as SceneModeAdapter).updateRow(position, view)
+                                notifyService(app, modeName)
                             }
                         }
                         .setNeutralButton(R.string.btn_cancel, null))
@@ -245,7 +239,9 @@ class ActivityAppConfig : ActivityBase() {
                     }
                     val item = adapter.getItem(index)
                     setAppRowDesc(item)
-                    (scene_app_list.adapter as SceneModeAdapter).updateRow(index, lastClickRow!!)
+                    (scene_app_list.adapter as SceneModeAdapter?)?.run {
+                        updateRow(index, lastClickRow!!)
+                    }
                     //loadList(false)
                 }
             } catch (ex: Exception) {
@@ -313,12 +309,13 @@ class ActivityAppConfig : ActivityBase() {
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         Scene.post {
-            lv.adapter = SceneModeAdapter(context, dl!!)
+            lv.adapter = SceneModeAdapter(context, dl!!, firstMode)
             processBarDialog.hideDialog()
         }
     }
 
     private var onLoading = false
+
     @SuppressLint("ApplySharedPref")
     private fun loadList(foreceReload: Boolean = false) {
         if (onLoading) {

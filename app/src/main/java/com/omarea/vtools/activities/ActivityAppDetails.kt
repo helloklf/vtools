@@ -315,25 +315,19 @@ class ActivityAppDetails : ActivityBase() {
             var selectedIndex = index
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
-                    .setSingleChoiceItems(R.array.powercfg_modes2, index) { dialog, which ->
+                    .setSingleChoiceItems(R.array.powercfg_options_menu, index) { dialog, which ->
                         selectedIndex = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                         if (index != selectedIndex) {
-                            var modeName = ModeSwitcher.BALANCE
-                            when (selectedIndex) {
-                                0 -> modeName = ModeSwitcher.POWERSAVE
-                                1 -> modeName = ModeSwitcher.BALANCE
-                                2 -> modeName = ModeSwitcher.PERFORMANCE
-                                3 -> modeName = ModeSwitcher.FAST
-                                4 -> modeName = ""
-                                5 -> modeName = ModeSwitcher.IGONED
-                            }
-                            if (modeName.isEmpty()) {
-                                powercfg.edit().remove(app).apply()
-                            } else {
-                                powercfg.edit().putString(app, modeName).apply()
-                            }
+                            val modeName = resources.getStringArray(R.array.powercfg_options_values)[selectedIndex]
+                            powercfg.edit().run {
+                                if (modeName.isEmpty()) {
+                                    remove(app)
+                                } else {
+                                    putString(app, modeName)
+                                }
+                            }.apply()
                             app_details_dynamic.text = ModeSwitcher.getModName(modeName)
                             _result = RESULT_OK
                             notifyService(app, modeName)

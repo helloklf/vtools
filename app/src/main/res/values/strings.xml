@@ -294,13 +294,21 @@
     <string name="boot_after_auto_modify">开机后自动修改</string>
     <string name="core_control_helpinfo">部分手机具有CPU参数动态调整机制，会导致自定义的参数很快失效，此外，温控也会限制你调高CPU频率。</string>
     <string name="shell_executor">脚本执行</string>
-    <string-array name="powercfg_modes2">
-        <item>省电模式（阅读）</item>
-        <item>均衡模式（日常）</item>
-        <item>性能模式（游戏）</item>
-        <item>极速模式（跑分）</item>
-        <item>全局默认</item>
-        <item>保持上个应用状态</item>
+    <string-array name="powercfg_options_menu">
+        <item>省电模式</item>
+        <item>均衡模式</item>
+        <item>性能模式</item>
+        <item>极速模式</item>
+        <item>全局默认模式</item>
+        <item>保持不变</item>
+    </string-array>
+    <string-array name="powercfg_options_values">
+        <item>powersave</item>
+        <item>balance</item>
+        <item>performance</item>
+        <item>FAST</item>
+        <item />
+        <item>igoned</item>
     </string-array>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>

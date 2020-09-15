@@ -251,8 +251,6 @@
 
     <style name="scene_config_item" parent="SceneSwitch">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">14dp</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:layout_gravity">center_vertical</item>

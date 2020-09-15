@@ -60,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="场景模式 " />
+                android:switchPadding="6dp"
+                android:text="打开应用自动执行操作" />
 
             <LinearLayout
                 android:id="@+id/scene_mode_config"
@@ -87,7 +88,7 @@
                             style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="性能调节" />
+                            android:text="调节性能至" />
 
                         <TextView
                             android:id="@+id/app_details_dynamic"
@@ -105,14 +106,14 @@
                         style="@style/scene_config_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="独立亮度" />
+                        android:text="关闭自动亮度" />
 
                     <Switch
                         android:id="@+id/app_details_gps"
                         style="@style/scene_config_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="自动打开GPS（离开后还原）" />
+                        android:text="打开GPS（离开后还原）" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -122,7 +123,7 @@
                             style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="屏幕旋转" />
+                            android:text="旋转屏幕" />
 
                         <RadioGroup
                             android:layout_width="0dp"
@@ -135,25 +136,28 @@
                                 android:id="@+id/scene_orientation_default"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginEnd="6dp"
                                 android:text="默认" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_auto"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="自动" />
+                                android:layout_marginEnd="6dp"
+                                android:text="重力" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_portrait"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="竖屏" />
+                                android:layout_marginEnd="6dp"
+                                android:text="竖" />
 
                             <RadioButton
                                 android:id="@+id/scene_orientation_landscape"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="横屏" />
+                                android:text="横" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -169,7 +173,7 @@
                         style="@style/scene_config_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="专注模式" />
+                        android:text="沉浸体验" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
