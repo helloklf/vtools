@@ -309,6 +309,7 @@
                 style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -343,9 +344,9 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -378,9 +379,9 @@
                     android:max="524288" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -423,24 +424,72 @@
                     style="@style/textTitle"
                     android:text="当前状态" />
 
-                <TextView
-                    android:id="@+id/swap_swappiness_display"
-                    style="@style/textSmall"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginBottom="4dp"
-                    android:text="swappiness" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/extra_free_kbytes_display"
-                    style="@style/textSmall"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/proc/sys/vm/swappiness : " />
+
+                    <TextView
+                        android:id="@+id/swap_swappiness_display"
+                        style="@style/textSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:text="extra_free_kbytes" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/watermark_scale_factor_display"
-                    style="@style/textSmall"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/proc/sys/vm/extra_free_kbytes : " />
+
+                    <TextView
+                        android:id="@+id/extra_free_kbytes_display"
+                        style="@style/textSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="watermark_scale_factor" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/proc/sys/vm/watermark_scale_factor : " />
+
+                    <TextView
+                        android:id="@+id/watermark_scale_factor_display"
+                        style="@style/textSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
 
                 <ListView
                     android:id="@+id/list_swaps2"
@@ -460,21 +509,23 @@
                     android:text="@string/low_memory_killer" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
                         app:text="@string/lmk_optimize_desc" />
+
                     <Switch
                         android:id="@+id/swap_auto_lmk"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="@string/lmk_optimize" />
                 </LinearLayout>
 
@@ -516,8 +567,8 @@
 
                     <TextView
                         android:id="@+id/txt_mem"
-                        android:typeface="monospace"
-                        style="@style/textSmall" />
+                        style="@style/textSmall"
+                        android:typeface="monospace" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>

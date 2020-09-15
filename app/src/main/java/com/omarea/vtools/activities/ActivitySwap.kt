@@ -59,12 +59,16 @@ class ActivitySwap : ActivityBase() {
         processBarDialog = ProgressBarDialog(context)
 
         val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
-        if (swapPriority == 5) {
-            swap_swap_preferred.isChecked = true
-        } else if (swapPriority == 0) {
-            swap_zram_equitable.isChecked = true
-        } else {
-            swap_zram_preferred.isChecked = true
+        when (swapPriority) {
+            5 -> {
+                swap_swap_preferred.isChecked = true
+            }
+            0 -> {
+                swap_zram_equitable.isChecked = true
+            }
+            else -> {
+                swap_zram_preferred.isChecked = true
+            }
         }
 
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
@@ -98,10 +102,10 @@ class ActivitySwap : ActivityBase() {
             "$this(${this / 100F}%)"
         }
 
-        seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
         }, null, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 128))
-        seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
         }, null, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
         seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener({
@@ -211,7 +215,7 @@ class ActivitySwap : ActivityBase() {
                         DialogHelper.helpInfo(context, R.string.help, R.string.swap_zram_comp_algorithm_desc)
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        val algorithm = options.get(selectedIndex)
+                        val algorithm = options[selectedIndex]
                         swapUtils.compAlgorithm = algorithm
                         swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm).apply()
 
@@ -259,12 +263,16 @@ class ActivitySwap : ActivityBase() {
         // swap启动
         btn_swap_start.setOnClickListener {
             val autostart = chk_swap_autostart.isChecked
-            val priority = if (swap_swap_preferred.isChecked) {
-                5
-            } else if (swap_zram_equitable.isChecked) {
-                0
-            } else {
-                -2
+            val priority = when {
+                swap_swap_preferred.isChecked -> {
+                    5
+                }
+                swap_zram_equitable.isChecked -> {
+                    0
+                }
+                else -> {
+                    -2
+                }
             }
             swapConfig.edit()
                     .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
@@ -273,7 +281,7 @@ class ActivitySwap : ActivityBase() {
                     .apply()
 
             processBarDialog.showDialog("稍等...")
-            Thread(Runnable {
+            Thread {
                 val result = swapUtils.swapOn(priority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
                 if (result.isNotEmpty()) {
                     Scene.toast(result, Toast.LENGTH_LONG)
@@ -282,7 +290,7 @@ class ActivitySwap : ActivityBase() {
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
                 processBarDialog.hideDialog()
-            }).start()
+            }.start()
         }
 
         // 调整zram大小操作
@@ -364,25 +372,23 @@ class ActivitySwap : ActivityBase() {
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
-            tr.put("path", params[0])
-            tr.put("type", params[1].replace("file", "文件").replace("partition", "分区"))
+            tr["path"] = params[0]
+            tr["type"] = params[1].replace("file", "文件").replace("partition", "分区")
 
             val size = params[2]
             // tr.put("size", if (size.length > 3) (size.substring(0, size.length - 3) + "m") else "0")
-            tr.put("size", swapUsedSizeParseMB(size))
+            tr["size"] = swapUsedSizeParseMB(size)
 
             val used = params[3]
             // tr.put("used", if (used.length > 3) (used.substring(0, used.length - 3) + "m") else "0")
-            tr.put("used", swapUsedSizeParseMB(used))
+            tr["used"] = swapUsedSizeParseMB(used)
 
-            tr.put("priority", params[4])
+            tr["priority"] = params[4]
             list.add(tr)
         }
 
-        val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        val watermark_scale_factor = KernelProrp.getProp("/proc/sys/vm/watermark_scale_factor")
-        swap_swappiness_display.text = "/proc/sys/vm/swappiness :  $swappiness"
-        watermark_scale_factor_display.text = "/proc/sys/vm/watermark_scale_factor :  $watermark_scale_factor"
+        swap_swappiness_display.text = KernelProrp.getProp("/proc/sys/vm/swappiness")
+        watermark_scale_factor_display.text = KernelProrp.getProp("/proc/sys/vm/watermark_scale_factor")
 
         val datas = AdapterSwaplist(this, list)
         list_swaps2.adapter = datas
@@ -403,7 +409,7 @@ class ActivitySwap : ActivityBase() {
             btn_swap_close.visibility = View.VISIBLE
             chk_swap_use_loop.visibility = View.GONE
             chk_swap_order.visibility = View.GONE
-            swap_state.setText(getString(R.string.swap_state_using))
+            swap_state.text = getString(R.string.swap_state_using)
         } else {
             btn_swap_start.visibility = if (swapFileExists) View.VISIBLE else View.GONE
             btn_swap_delete.visibility = if (swapFileExists) View.VISIBLE else View.GONE
@@ -412,16 +418,16 @@ class ActivitySwap : ActivityBase() {
             chk_swap_use_loop.visibility = if (swapFileExists) View.VISIBLE else View.GONE
             chk_swap_order.visibility = if (swapFileExists) View.VISIBLE else View.GONE
             if (swapFileExists) {
-                swap_state.setText(getString(R.string.swap_state_created))
+                swap_state.text = getString(R.string.swap_state_created)
             } else {
-                swap_state.setText(getString(R.string.swap_state_undefined))
+                swap_state.text = getString(R.string.swap_state_undefined)
             }
         }
 
         if (swapUtils.zramEnabled) {
-            zram_state.setText(getString(R.string.swap_state_using))
+            zram_state.text = getString(R.string.swap_state_using)
         } else {
-            zram_state.setText(getString(R.string.swap_state_created))
+            zram_state.text = getString(R.string.swap_state_created)
         }
 
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
@@ -433,30 +439,30 @@ class ActivitySwap : ActivityBase() {
             swap_auto_lmk_wrap.visibility = View.GONE
         }
 
-        val extra_free_kbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
+        val extraFreeKbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
+        extra_free_kbytes_display.text = extraFreeKbytes
         try {
-            val bytes = extra_free_kbytes.toInt()
+            val bytes = extraFreeKbytes.toInt()
             if (seekbar_extra_free_kbytes.max < bytes) {
                 seekbar_extra_free_kbytes.max = bytes
             }
-            extra_free_kbytes_display.text = "/proc/sys/vm/extra_free_kbytes : " + extra_free_kbytes
         } catch (ex: Exception) {
         }
 
         // 压缩算法
-        val comp_algorithm = swapUtils.compAlgorithm
+        val compAlgorithm = swapUtils.compAlgorithm
         // 最大压缩流
         // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
         // 存储在此磁盘中的未压缩数据大小
-        val orig_data_size = KernelProrp.getProp("/sys/block/zram0/orig_data_size")
+        val origDataSize = KernelProrp.getProp("/sys/block/zram0/orig_data_size")
         // 存储在此磁盘中的压缩数据大小
-        val compr_data_size = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
+        val comprDataSize = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
         // 为此磁盘分配的内存量
-        val mem_used_total = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
+        val memUsedTotal = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
         // 可用于存储的最大内存量
-        val mem_limit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
+        val memLimit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
         // 消耗的最大内存量
-        val mem_used_max = KernelProrp.getProp("/sys/block/zram0/mem_used_max")
+        val memUsedMax = KernelProrp.getProp("/sys/block/zram0/mem_used_max")
         // 写入此磁盘的相同元素填充页面的数量 不占用内存
         // val same_pages = KernelProrp.getProp("/sys/block/zram0/same_pages")
         // 压缩期间释放的页数
@@ -466,39 +472,39 @@ class ActivitySwap : ActivityBase() {
 
         zram0_stat.text = String.format(
                 getString(R.string.swap_zram_stat_format),
-                comp_algorithm,
-                zramInfoValueParseMB(orig_data_size),
-                zramInfoValueParseMB(compr_data_size),
-                zramInfoValueParseMB(mem_used_total),
-                zramInfoValueParseMB(mem_used_max),
-                if (mem_limit == "0") "" else mem_limit,
-                zramCompressionRatio(orig_data_size, compr_data_size),
-                zramCompressionRatio(orig_data_size, mem_used_total))
+                compAlgorithm,
+                zramInfoValueParseMB(origDataSize),
+                zramInfoValueParseMB(comprDataSize),
+                zramInfoValueParseMB(memUsedTotal),
+                zramInfoValueParseMB(memUsedMax),
+                if (memLimit == "0") "" else memLimit,
+                zramCompressionRatio(origDataSize, comprDataSize),
+                zramCompressionRatio(origDataSize, memUsedTotal))
 
-        zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, comp_algorithm)
+        zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
-        try {
-            return (sizeStr.toLong() / 1024 / 1024).toString() + "MB"
+        return try {
+            (sizeStr.toLong() / 1024 / 1024).toString() + "MB"
         } catch (ex: java.lang.Exception) {
-            return sizeStr
+            sizeStr
         }
     }
 
     private fun zramCompressionRatio(origDataSize: String, comprDataSize: String): String {
-        try {
-            return (comprDataSize.toLong() * 1000 / origDataSize.toLong() / 10.0).toString() + "%"
+        return try {
+            (comprDataSize.toLong() * 1000 / origDataSize.toLong() / 10.0).toString() + "%"
         } catch (ex: java.lang.Exception) {
-            return "$comprDataSize/$origDataSize"
+            "$comprDataSize/$origDataSize"
         }
     }
 
-    fun swapUsedSizeParseMB(sizeStr: String): String {
-        try {
-            return (sizeStr.toLong() / 1024).toString()
+    private fun swapUsedSizeParseMB(sizeStr: String): String {
+        return try {
+            (sizeStr.toLong() / 1024).toString()
         } catch (ex: java.lang.Exception) {
-            return sizeStr
+            sizeStr
         }
     }
 
