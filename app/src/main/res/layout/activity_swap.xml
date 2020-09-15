@@ -362,7 +362,7 @@
                         android:text="@string/extra_free_kbytes" />
 
                     <TextView
-                        android:id="@+id/txt_extra_free_kbytes"
+                        android:id="@+id/text_extra_free_kbytes"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"

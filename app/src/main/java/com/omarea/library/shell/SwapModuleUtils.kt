@@ -49,6 +49,7 @@ class SwapModuleUtils {
 
     private val swappiness = "swappiness"
     private val extraFreeKbytes = "extra_free_kbytes"
+    private val watermarkScaleFactor = "watermark_scale_factor"
 
     private fun getProp(prop: String):String {
         return KeepShellPublic.doCmdSync("cat /data/swap_config.conf | grep -v '^#' | grep \"^${prop}=\" | cut -f2 -d '='")
@@ -68,8 +69,9 @@ class SwapModuleUtils {
         setProp(zramSize, spf.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0))
         setProp(zramCompAlgorithm, "" + spf.getString(SpfConfig.SWAP_SPF_ALGORITHM, "lzo"))
 
-        setProp(swappiness, spf.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0))
-        setProp(extraFreeKbytes, spf.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 0))
+        setProp(swappiness, spf.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65))
+        setProp(extraFreeKbytes, spf.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615))
+        setProp(watermarkScaleFactor, spf.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100))
     }
 
     fun loadModuleConfig(spf:SharedPreferences) {
@@ -92,7 +94,10 @@ class SwapModuleUtils {
 
         try {
             editor.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, getProp(swappiness).toInt())
-            editor.putInt(SpfConfig.SWAP_MIN_FREE_KBYTES, getProp(extraFreeKbytes).toInt())
+            editor.putInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, getProp(extraFreeKbytes).toInt())
+        } catch (ex: Exception) {}
+        try {
+            editor.putInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, getProp(watermarkScaleFactor).toInt())
         } catch (ex: Exception) {}
 
         editor.apply()

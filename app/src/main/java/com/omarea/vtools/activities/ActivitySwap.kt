@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.*
-import androidx.appcompat.widget.SwitchCompat
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -90,10 +89,13 @@ class ActivitySwap : ActivityBase() {
         txt_zram_size_display.text = "${zramSize}MB"
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
-        seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
-        txt_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
-        text_watermark_scale_factor.text = seekbar_extra_free_kbytes.progress.run {
-            "$this(${this / 100F})%"
+
+        seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
+        text_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
+
+        seekbar_watermark_scale_factor.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
+        text_watermark_scale_factor.text = seekbar_watermark_scale_factor.progress.run {
+            "$this(${this / 100F}%)"
         }
 
         seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
@@ -114,11 +116,11 @@ class ActivitySwap : ActivityBase() {
 
         // extra_free_kbytes设置
         seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
-            txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
+            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
+            text_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
         }, {
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
-            txt_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
+            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
+            text_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
             processBarDialog.showDialog()
             val run = Runnable {
                 KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/extra_free_kbytes")
@@ -128,18 +130,18 @@ class ActivitySwap : ActivityBase() {
                 }
             }
             Thread(run).start()
-        }, swapConfig, SpfConfig.SWAP_MIN_FREE_KBYTES))
+        }, swapConfig, SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES))
 
         seekbar_watermark_scale_factor.isEnabled = RootFile.fileExists("/proc/sys/vm/watermark_scale_factor")
         seekbar_watermark_scale_factor.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_WATERMARK_SCALE, 100)
+            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
             text_watermark_scale_factor.text = value.run {
-                "$this(${this / 100F})%"
+                "$this(${this / 100F}%)"
             }
         }, {
-            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_WATERMARK_SCALE, 100)
+            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
             text_watermark_scale_factor.text = value.run {
-                "$this(${this / 100F})%"
+                "$this(${this / 100F}%)"
             }
             processBarDialog.showDialog()
             val run = Runnable {
@@ -150,7 +152,7 @@ class ActivitySwap : ActivityBase() {
                 }
             }
             Thread(run).start()
-        }, swapConfig, SpfConfig.SWAP_MIN_WATERMARK_SCALE))
+        }, swapConfig, SpfConfig.SWAP_SPF_WATERMARK_SCALE))
 
         // 关闭swap
         btn_swap_close.setOnClickListener {
