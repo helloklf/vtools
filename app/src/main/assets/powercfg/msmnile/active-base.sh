@@ -83,8 +83,6 @@ echo 120 > /sys/module/cpu_boost/parameters/input_boost_ms
 echo "0:0 1:0 2:0 3:0 4:2323200 5:0 6:0 7:2323200" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
 echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
 
-echo 120 > /proc/sys/vm/watermark_scale_factor
-
 # limt the GPU max frequency
 echo 585000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 

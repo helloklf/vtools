@@ -41,7 +41,12 @@ class BatteryUtils {
                 str.substring(0, 3).toInt() / 100f
             }
             str.length >= 2 -> {
-                str.substring(0, 2).toInt() / 10f
+                val v = str.substring(0, 2).toInt()
+                if (v >= 30) {
+                    str.substring(0, 2).toInt() / 10f
+                } else {
+                    v
+                }
             }
             else -> {
                 return str

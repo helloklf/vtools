@@ -163,11 +163,11 @@
             <LinearLayout
                 android:id="@+id/cpu_mode_outside"
                 style="@style/ListCardItem"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:visibility="gone">
+                android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:layout_width="0dp"
@@ -184,6 +184,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="6dp"
                     android:padding="0dp"
+                    android:scaleType="centerInside"
                     android:src="@drawable/delete" />
             </LinearLayout>
 
