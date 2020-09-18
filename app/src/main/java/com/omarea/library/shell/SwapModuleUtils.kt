@@ -75,6 +75,11 @@ class SwapModuleUtils {
     }
 
     fun loadModuleConfig(spf:SharedPreferences) {
+        // 如果模块没有安装，就不要再去读取配置了
+        if(!magiskModuleInstalled) {
+            return
+        }
+
         val editor = spf.edit()
 
         try {
