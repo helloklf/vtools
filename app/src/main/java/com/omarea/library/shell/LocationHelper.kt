@@ -1,4 +1,4 @@
-package com.omarea.scene_mode
+package com.omarea.library.shell
 
 import android.os.Build
 import com.omarea.common.shell.KeepShellPublic
@@ -12,7 +12,8 @@ class LocationHelper {
      */
     fun enableGPS() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
-            KeepShellPublic.doCmdSync("settings put secure location_mode 2")
+            // 1:GPS      2:GPRS WIFI      3: ALL
+            KeepShellPublic.doCmdSync("settings put secure location_mode 3")
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed +gps")
         else

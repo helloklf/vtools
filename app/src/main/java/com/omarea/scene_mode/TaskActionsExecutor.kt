@@ -4,7 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
-import android.content.Intent
 import android.os.Build
 import android.os.PowerManager
 import android.widget.Toast
@@ -12,11 +11,11 @@ import androidx.core.app.NotificationCompat
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.FstrimUtils
+import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.NetworkUtils
 import com.omarea.library.shell.ZenModeUtils
 import com.omarea.model.TaskAction
 import com.omarea.vtools.R
-import com.omarea.vtools.services.CompileService
 import java.util.*
 
 class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, private val context: Context) {
