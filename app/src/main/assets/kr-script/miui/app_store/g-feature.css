@@ -1,0 +1,5 @@
+/* 游戏 */
+
+.rich-banner, .rec-apps,.c_gamedau,.c_gamesubscribe,.recommend,.c_newesttest,.rec-game-desc-list, .card.applist {
+    display: none !important;
+}

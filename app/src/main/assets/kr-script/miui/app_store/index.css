@@ -1,0 +1,13 @@
+/* 首页 - 推荐 */
+
+@import url("index.chunk.css");
+
+.carousel-recommend {
+    display: none;
+}
+.rec-apps.card {
+    display: none;
+}
+.card.applist {
+    display: none;
+}

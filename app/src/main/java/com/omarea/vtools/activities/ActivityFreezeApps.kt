@@ -168,6 +168,23 @@ class ActivityFreezeApps : ActivityBase() {
             })
         }
 
+        freeze_screen_delay.run {
+            progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0)
+            freeze_screen_delay_text.text =  progress.toString()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    freeze_screen_delay_text.text = progress.toString()
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    seekBar?.run {
+                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, seekBar.progress).apply()
+                    }
+                }
+            })
+        }
+
         processBarDialog = ProgressBarDialog(context)
 
         processBarDialog.showDialog()

@@ -1,0 +1,29 @@
+/* 排行榜 */
+.c_featuretoplist_array {
+  display: none;
+}
+.applist-img {
+  height: 10vw;
+  width: 10vw;
+}
+.c_category_v2 {
+  margin-top: -12vw;
+}
+.applist-name {
+  font-weight: 100;
+  color: #555;
+}
+.applist-wrap-flex-item,
+.applist-brief {
+  display: none;
+}
+.applist-wrap-des {
+  align-content: center;
+  min-height: 10vw;
+}
+.applist .install-btn {
+  top: 8.5vw;
+}
+.applist-desc {
+  display: none !important;
+}

@@ -255,7 +255,6 @@
                                     android:textAlignment="center" />
                             </LinearLayout>
 
-
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -301,6 +300,55 @@
                                     android:layout_width="30dp"
                                     android:layout_height="wrap_content"
                                     android:text="5"
+                                    android:textAlignment="center" />
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/activity_vertical_margin"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="息屏后冻结偏见应用的延迟时间" />
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="息屏处理延迟（分）" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingBottom="6dp">
+
+                                <SeekBar
+                                    android:id="@+id/freeze_screen_delay"
+                                    style="@style/SceneSeekBar"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:max="10"
+                                    android:min="0"
+                                    android:progress="0" />
+
+                                <TextView
+                                    android:id="@+id/freeze_screen_delay_text"
+                                    style="@style/textSmall"
+                                    android:layout_width="30dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="0"
                                     android:textAlignment="center" />
                             </LinearLayout>
                         </LinearLayout>

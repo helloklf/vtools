@@ -29,7 +29,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     // 偏见应用后台超时时间
     private val freezAppTimeLimit:Int
         get() {
-            return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
+            return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
         }
 
     // 是否使用suspend命令冻结应用，不隐藏图标
@@ -406,7 +406,9 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
 
     fun onScreenOffDelay() {
-        clearFreezeApp()
+        if (config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0) < 1) {
+            clearFreezeApp()
+        }
     }
 
     /**

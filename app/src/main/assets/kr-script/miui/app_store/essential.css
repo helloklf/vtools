@@ -1,0 +1,36 @@
+/* 必备 */
+
+.essential-apps {
+  display: none;
+}
+
+.app-group-list {
+  box-shadow: 0 0 3px #ccc;
+  margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px 10px;
+}
+
+.applist-img {
+  height: 10vw;
+  width: 10vw;
+}
+
+.applist-wrap-des {
+  align-content: center;
+  min-height: 10vw;
+}
+
+.applist-wrap-des .applist-wrap-flex-item {
+  display: none;
+}
+
+.applist-name {
+  font-weight: 100;
+  color: #555;
+}
+
+.applist-brief {
+  display: none;
+}

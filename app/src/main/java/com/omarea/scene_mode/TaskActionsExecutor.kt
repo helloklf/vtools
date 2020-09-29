@@ -15,6 +15,8 @@ import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.NetworkUtils
 import com.omarea.library.shell.ZenModeUtils
 import com.omarea.model.TaskAction
+import com.omarea.store.SceneConfigStore
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import java.util.*
 
@@ -42,7 +44,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
             FULL_WAKE_LOCK          开启  变亮  变亮
         */
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:TaskActionsExecutor");
-        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+        mWakeLock.acquire(600 * 1000) // 默认限制10分钟
 
         taskActions.forEach {
             try {
@@ -65,7 +67,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                     }
                     TaskAction.FSTRIM -> {
                         updateNotification("执行fstrim")
-                        FstrimUtils(keepShell!!).run()
+                        FstrimUtils(keepShell).run()
                     }
                     TaskAction.GPRS_OFF -> {
                         updateNotification("关闭数据网络")
@@ -113,11 +115,11 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                     }
                     TaskAction.POWER_REBOOT -> {
                         updateNotification("重启手机")
-                        KeepShellPublic.doCmdSync("sync;reboot")
+                        KeepShellPublic.doCmdSync("sync;svc power reboot || reboot")
                     }
                     TaskAction.POWER_OFF -> {
                         updateNotification("自动关机")
-                        KeepShellPublic.doCmdSync("sync;reboot -p")
+                        KeepShellPublic.doCmdSync("sync;svc power shutdown || reboot -p")
                     }
                     TaskAction.MODE_POWERSAVE -> {
                         updateNotification("切换省电模式")
@@ -134,6 +136,10 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                     TaskAction.MODE_FAST -> {
                         updateNotification("切换极速模式")
                         ModeSwitcher().setCurrentPowercfg(ModeSwitcher.FAST)
+                    }
+                    TaskAction.FROZEN_APPS -> {
+                        updateNotification("冻结偏见应用")
+                        SceneMode.getCurrentInstance()?.clearFreezeApp()
                     }
                     else -> {
                     }

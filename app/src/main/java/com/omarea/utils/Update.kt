@@ -127,7 +127,8 @@ class Update {
                     }, intentFilter)
                     */
                 }
-                .setNegativeButton(R.string.btn_cancel) { _, _ -> })
+                .setNegativeButton(R.string.btn_cancel) { _, _ -> }
+                .setCancelable(false))
     }
 
     fun getRealFilePath(context: Context, uri: Uri?): String? {

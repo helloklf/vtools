@@ -16,6 +16,9 @@ import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.ScreenState
+import com.omarea.library.calculator.GetUpTime
+import com.omarea.model.TaskAction
+import com.omarea.model.TimingTaskInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -115,6 +118,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
             if (!screenOn) {
                 notifyHelper.hideNotify()
                 stopTimer()
+                setTimingTask();
             }
         }, 10000)
     }
@@ -149,6 +153,36 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
             updateModeNofity() // 屏幕点亮后更新通知
 
             systemScene.onScreenOn()
+        }
+    }
+
+    private var timingTaskInfo: TimingTaskInfo? = null
+    private fun setTimingTask() {
+        if (timingTaskInfo != null) {
+            cancelTimingTask();
+        }
+        val delay = spfGlobal.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0)
+        if (delay > 0) {
+            timingTaskInfo = TimingTaskInfo().apply {
+                val calendar = Calendar.getInstance()
+                val currentMinutes = (calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)  // 当前时间
+                triggerTimeMinutes = (currentMinutes + delay) % 1440
+                expireDate = GetUpTime(triggerTimeMinutes).nextGetUpTime
+                taskId = "SCENE_FROZEN_APPS"
+                taskName = "偏见应用清理"
+                enabled = true
+                taskActions = ArrayList<TaskAction>().apply {
+                    add(TaskAction.FROZEN_APPS)
+                }
+                TimingTaskManager(context).setTask(this)
+            }
+        }
+    }
+
+    private fun cancelTimingTask() {
+        if (timingTaskInfo != null) {
+            TimingTaskManager(this.context).cancelTask(timingTaskInfo!!);
+            timingTaskInfo = null;
         }
     }
 

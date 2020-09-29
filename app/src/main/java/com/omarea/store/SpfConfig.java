@@ -71,6 +71,7 @@ public class SpfConfig {
     public static int GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT = -1000;
     public static String GLOBAL_SPF_FREEZE_ICON_NOTIFY = "freeze_icon_notify";
     public static String GLOBAL_SPF_FREEZE_SUSPEND = "freeze_suspend";
+    public static String GLOBAL_SPF_FREEZE_DELAY = "freeze_screen_off_delay"; // 息屏后处理延迟
     public static String GLOBAL_SPF_FREEZE_TIME_LIMIT = "freeze_suspend_time_limit";
     public static String GLOBAL_SPF_FREEZE_ITEM_LIMIT = "freeze_suspend_item_limit";
     public static String GLOBAL_SPF_FREEZE_XPOSED_OPEN = "freeze_xposed_open";
