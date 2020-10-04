@@ -57,88 +57,65 @@ fi
 # dump_cluster_1_dvfs_table
 # 2600000 2529000 2387000 2245000 2068000 1927000 1750000 1622000 1526000 1367000 1271000 1176000 1048000 921000 825000 730000
 
+ppm enabled 1
+
+ppm policy_status "1 0"
+ppm policy_status "2 0"
+# ppm policy_status "4 0"
+ppm policy_status "5 0"
+ppm policy_status "7 0"
+ppm policy_status "9 0"
+
 if [[ "$action" = "powersave" ]]; then
-    #powersave
-    ppm enabled 1
+  #powersave
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 0"
-    ppm policy_status "4 1"
-    ppm policy_status "5 0"
-    ppm policy_status "7 0"
-    ppm policy_status "9 0"
+  min_freq 500000 730000
+  max_freq 2000000 1622000
 
-    min_freq 500000 730000
-    max_freq 2000000 1622000
+  ged gpu_dvfs 1
+  ged gx_game_mode 0
+  ged gx_3d_benchmark_on 0
 
-    ged gpu_dvfs 1
-    ged gx_game_mode 0
-    ged gx_3d_benchmark_on 0
-
-    cpuset 0-2 0-3 0-5 0-7 0-3
+  cpuset 0-2 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
 	#balance
-    ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 0"
-    ppm policy_status "4 1"
-    ppm policy_status "5 0"
-    ppm policy_status "7 0"
-    ppm policy_status "9 0"
+  min_freq 500000 730000
+  max_freq 2000000 1927000
 
-    min_freq 500000 730000
-    max_freq 2000000 1927000
+  ged gpu_dvfs 1
+  ged gx_game_mode 0
+  ged gx_3d_benchmark_on 0
 
-    ged gpu_dvfs 1
-    ged gx_game_mode 0
-    ged gx_3d_benchmark_on 0
-
-    cpuset 1-3 0-3 0-5 0-7 0-3
+  cpuset 1-3 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
 	#performance
-    ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 1"
-    ppm policy_status "4 0"
-    ppm policy_status "5 1"
-    ppm policy_status "7 0"
-    ppm policy_status "9 1"
+  min_freq 500000 730000
+  max_freq 2000000 2600000
 
-    min_freq 500000 730000
-    max_freq 2000000 2600000
+  ged gpu_dvfs 1
+  ged gx_3d_benchmark_on 0
+  ged gx_game_mode 1
 
-    ged gpu_dvfs 1
-    ged gx_3d_benchmark_on 0
-    ged gx_game_mode 1
-
-    cpuset 1-2 0-3 0-5 0-7 0-3
+  cpuset 1-2 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
 	#fast
-    ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 1"
-    ppm policy_status "4 0"
-    ppm policy_status "5 1"
-    ppm policy_status "7 0"
-    ppm policy_status "9 1"
+  min_freq 1791000 1622000
+  max_freq 2000000 2600000
 
-    min_freq 1791000 1622000
-    max_freq 2000000 2600000
+  ged gpu_dvfs 1
+  ged gx_game_mode 0
+  ged gx_3d_benchmark_on 1
 
-    ged gpu_dvfs 1
-    ged gx_game_mode 0
-    ged gx_3d_benchmark_on 1
-
-    cpuset 1 0-3 0-5 0-7 0-3
+  cpuset 1 0-3 0-7 0-7 0-3
 
 	exit 0
 fi

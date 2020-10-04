@@ -68,7 +68,7 @@ if [[ "$action" = "powersave" ]]; then
 
     ppm policy_status "1 0"
     ppm policy_status "2 0"
-    ppm policy_status "4 1"
+    # ppm policy_status "4 1"
     ppm policy_status "7 0"
     ppm policy_status "9 0"
 
@@ -79,7 +79,7 @@ if [[ "$action" = "powersave" ]]; then
     gx_game_mode 0
     gx_3d_benchmark_on 0
 
-    cpuset 0-2 0-3 0-5 0-7 0-3
+    cpuset 0-2 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
@@ -88,7 +88,7 @@ elif [[ "$action" = "balance" ]]; then
 
     ppm policy_status "1 0"
     ppm policy_status "2 0"
-    ppm policy_status "4 1"
+    # ppm policy_status "4 1"
     ppm policy_status "7 0"
     ppm policy_status "9 0"
 
@@ -99,7 +99,7 @@ elif [[ "$action" = "balance" ]]; then
     gx_game_mode 0
     gx_3d_benchmark_on 0
 
-    cpuset 1-3 0-3 0-5 0-7 0-3
+    cpuset 1-3 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
@@ -108,7 +108,7 @@ elif [[ "$action" = "performance" ]]; then
 
     ppm policy_status "1 0"
     ppm policy_status "2 1"
-    ppm policy_status "4 0"
+    # ppm policy_status "4 0" #
     ppm policy_status "7 0"
     ppm policy_status "9 1"
 
@@ -119,7 +119,7 @@ elif [[ "$action" = "performance" ]]; then
     gx_3d_benchmark_on 0
     gx_game_mode 1
 
-    cpuset 1-2 0-3 0-5 0-7 0-3
+    cpuset 1-2 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
@@ -128,7 +128,7 @@ elif [[ "$action" = "fast" ]]; then
 
     ppm policy_status "1 0"
     ppm policy_status "2 1"
-    ppm policy_status "4 0"
+    # ppm policy_status "4 0"
     ppm policy_status "7 0"
     ppm policy_status "9 1"
 
@@ -139,7 +139,7 @@ elif [[ "$action" = "fast" ]]; then
     gx_game_mode 0
     gx_3d_benchmark_on 1
 
-    cpuset 1 0-3 0-5 0-7 0-3
+    cpuset 1 0-3 0-7 0-7 0-3
 
 	exit 0
 fi

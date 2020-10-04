@@ -1,5 +1,7 @@
 package com.omarea.library.shell;
 
+import android.util.Log;
+
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
@@ -51,12 +53,14 @@ public class GpuUtils {
                     "/sys/class/kgsl/kgsl-3d0/gpuload",
 
                     "/sys/class/devfreq/gpufreq/mali_ondemand/utilisation", // 麒麟
-                    "/sys/module/ged/parameters/gpu_loading" // 天玑820 （或者 cat /sys/kernel/debug/ged/hal/gpu_utilization | cut -f1 -d ' '）
+                    "/sys/kernel/debug/ged/hal/gpu_utilization", // 天玑820（cat /sys/kernel/debug/ged/hal/gpu_utilization | cut -f1 -d ' '）
+                    "/sys/module/ged/parameters/gpu_loading" // 天玑820 数值比较好看，但是值经常为0，莫名其妙
             };
             GPU_LOAD_PATH = "";
             for (String path : paths) {
                 if (RootFile.INSTANCE.fileExists(path)) {
                     GPU_LOAD_PATH = path;
+                    break;
                 }
             }
         }
@@ -66,7 +70,7 @@ public class GpuUtils {
         } else {
             String load = KernelProrp.INSTANCE.getProp(GPU_LOAD_PATH);
             try {
-                return Integer.parseInt(load.replace("%", "").trim());
+                return Integer.parseInt(load.replace("%", "").trim().split(" ")[0]);
             } catch (Exception ex) {
                 return -1;
             }

@@ -4,7 +4,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class EventBus {
-    private static ArrayList<IEventReceiver> eventReceivers;
+    private static ArrayList<IEventReceiver> eventReceivers = new ArrayList<>();
 
     /**
      * 发布事件
@@ -12,8 +12,10 @@ public class EventBus {
      * @param eventType 事件类型
      */
     public static void publish(EventType eventType) {
-        if (eventReceivers != null && eventReceivers.size() > 0) {
-            for (IEventReceiver eventReceiver : eventReceivers) {
+        if (eventReceivers.size() > 0) {
+            // 复制一个副本用于循环，避免在运行过程中unsubscibe致使eventReceivers发生变化而崩溃
+            ArrayList<IEventReceiver> temp = new ArrayList<>(eventReceivers);
+            for (IEventReceiver eventReceiver : temp) {
                 try {
                     if (eventReceiver.eventFilter(eventType)) {
                         if (eventReceiver.isAsync()) {
@@ -50,10 +52,6 @@ public class EventBus {
      * @param eventReceiver 事件接收器
      */
     public static void subscibe(IEventReceiver eventReceiver) {
-        if (eventReceivers == null) {
-            eventReceivers = new ArrayList<>();
-        }
-
         if (eventReceivers.indexOf(eventReceiver) < 0) {
             eventReceivers.add(eventReceiver);
         }
@@ -65,7 +63,7 @@ public class EventBus {
      * @param eventReceiver 事件接收器
      */
     public static void unsubscibe(IEventReceiver eventReceiver) {
-        if (eventReceivers != null && eventReceivers.indexOf(eventReceiver) > -1) {
+        if (eventReceivers.indexOf(eventReceiver) > -1) {
             eventReceivers.remove(eventReceiver);
         }
     }
