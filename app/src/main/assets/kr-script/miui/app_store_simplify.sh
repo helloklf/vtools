@@ -14,7 +14,7 @@ function override_file() {
     chmod 777 $css_override
     chmod 777 "$html_file"
   else
-    echo '未找到' $html_file 1>2
+    echo '未找到' $html_file 1>&2
   fi
 
   echo ''
@@ -23,8 +23,9 @@ function override_file() {
 echo '在使用本功能前，请务必打开一次应用商店的各个界面~'
 echo ''
 
-if [[ "$res_dir" = "" ]];then
-  echo '请先启动一次应用商店，并浏览各个界面~' 1>2
+if [[ "$res_dir" = "" ]];
+then
+  echo '请先启动一次应用商店，并浏览各个界面~' 1>&2
   exit 1
 fi
 
@@ -53,3 +54,6 @@ echo '精简[软件]~'
 override_file "software"
 
 killall -9 com.xiaomi.market 2>/dev/null
+
+
+echo '如需还原，清空“应用商店”的数据即可~'
