@@ -5,4 +5,5 @@ thermal_files=(
 "${thermal_file_prefix}normal${thermal_file_suffix}"
 "${thermal_file_prefix}nolimits${thermal_file_suffix}"
 "${thermal_file_prefix}tgame${thermal_file_suffix}"
+".tp"
 )

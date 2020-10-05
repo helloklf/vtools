@@ -305,7 +305,7 @@ class FloatMonitor(private val mContext: Context) {
                                 val load = loads.get(core.toInt())
                                 if (load != null) {
                                     if (load < 10) {
-                                        otherInfos.append("0")
+                                        otherInfos.append(" ")
                                         otherInfos.append(load.toInt())
                                         otherInfos.append("%")
                                     } else {
