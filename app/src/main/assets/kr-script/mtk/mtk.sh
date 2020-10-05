@@ -98,7 +98,10 @@ xml_start
         ged_render
     group_end
 
+if [[ -f /proc/gpufreq/gpufreq_opp_freq ]]
+then
     group_start 'GPU'
       gpu_render
     group_end
+fi
 xml_end

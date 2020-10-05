@@ -14,6 +14,54 @@ public class GpuUtils {
     private static String GPU_LOAD_PATH = null;
     private static String GPU_FREQ_CMD = null;
 
+    private static String GPU_MEMORY_CMD = null;
+    private static String GPU_MEMORY_CMD1 = "cat /proc/mali/memory_usage | grep \"Total\" | cut -f2 -d \"(\" | cut -f1 -d \" \"";
+    private static String GPU_MEMORY_CMD2 = null;
+
+    private static String platform;
+    private static boolean isMTK() {
+        if (platform == null) {
+            platform = new PlatformUtils().getCPUName();
+        }
+        return platform.startsWith("mt");
+    }
+
+    private static boolean kgsGM = true;
+    private static long kgsGMMAX = -1;
+    public static String getMemoryUsage() {
+        // MTK cat /proc/mali/memory_usage | grep "Total" | cut -f2 -d "(" | cut -f1 -d " "
+        if (isMTK()) {
+            String bytes = KeepShellPublic.INSTANCE.doCmdSync(GPU_MEMORY_CMD1);
+            try {
+                return (Long.parseLong(bytes) / 1024 /1024) + "MB";
+            } catch (Exception ex) {
+                return "?MB";
+            }
+        } else if (kgsGM) {
+            // /sys/devices/virtual/kgsl/kgsl/page_alloc
+            String bytes = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/virtual/kgsl/kgsl/page_alloc");
+            try {
+                long b = (Long.parseLong(bytes));
+                if (kgsGMMAX == -1) {
+                    try {
+                        String maxBytes = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/virtual/kgsl/kgsl/page_alloc_max");
+                        kgsGMMAX = Long.parseLong(maxBytes);
+                    } catch (Exception ex) {
+                        kgsGMMAX = 0;
+                    }
+                }
+                if (kgsGMMAX > 0) {
+                    return (b / 1024 / 1024) + "M " + ((int)(100f * b / kgsGMMAX)) + "%";
+                } else {
+                    return (b / 1024 / 1024) + "MB";
+                }
+            } catch (Exception ex) {
+                kgsGM = false;
+            }
+        }
+        return null;
+    }
+
     public static String getGpuFreq() {
         if (GPU_FREQ_CMD == null) {
             String path1 = getGpuParamsDir() + "/cur_freq"; // 骁龙
