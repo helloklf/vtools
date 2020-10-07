@@ -19,6 +19,7 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import java.io.File
 import java.nio.charset.Charset
+import java.util.*
 
 
 class ActivityCpuModes : ActivityBase() {
@@ -176,7 +177,7 @@ class ActivityCpuModes : ActivityBase() {
     }
 
     private fun getProviderName(name: String): String {
-        return when (name.toLowerCase()) {
+        return when (name.toLowerCase(Locale.getDefault())) {
             "scene" -> "Scene自带"
             "downloader" -> "在线下载"
             "outside" -> "外部配置"

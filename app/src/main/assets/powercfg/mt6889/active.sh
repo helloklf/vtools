@@ -1,40 +1,40 @@
 function ppm() {
-    echo $2 > "/proc/ppm/$1"
+  echo $2 > "/proc/ppm/$1"
 }
 
 function policy() {
-    echo $2 > "/proc/ppm/policy/$1"
+  echo $2 > "/proc/ppm/policy/$1"
 }
 
 function lock_freq() {
-    policy ut_fix_freq_idx "$1 $2"
+  policy ut_fix_freq_idx "$1 $2"
 }
 
 function max_freq() {
-    policy hard_userlimit_max_cpu_freq "0 $1"
-    policy hard_userlimit_max_cpu_freq "1 $2"
+  policy hard_userlimit_max_cpu_freq "0 $1"
+  policy hard_userlimit_max_cpu_freq "1 $2"
 }
 
 function min_freq() {
-    policy hard_userlimit_min_cpu_freq "0 $1"
-    policy hard_userlimit_min_cpu_freq "1 $2"
+  policy hard_userlimit_min_cpu_freq "0 $1"
+  policy hard_userlimit_min_cpu_freq "1 $2"
 }
 
 function ged() {
-    echo $2 > /sys/module/ged/parameters/$1
+  echo $2 > /sys/module/ged/parameters/$1
 }
 
 function cpuset() {
-    echo $1 > /dev/cpuset/background/cpus
-    echo $2 > /dev/cpuset/system-background/cpus
-    echo $3 > /dev/cpuset/foreground/cpus
-    echo $4 > /dev/cpuset/top-app/cpus
-    echo $5 > /dev/cpuset/restricted/cpus
+  echo $1 > /dev/cpuset/background/cpus
+  echo $2 > /dev/cpuset/system-background/cpus
+  echo $3 > /dev/cpuset/foreground/cpus
+  echo $4 > /dev/cpuset/top-app/cpus
+  echo $5 > /dev/cpuset/restricted/cpus
 }
 
 action=$1
 if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
-    sh /data/powercfg-base.sh
+  sh /data/powercfg-base.sh
 	exit 0
 fi
 

@@ -306,7 +306,7 @@
         <item>powersave</item>
         <item>balance</item>
         <item>performance</item>
-        <item>FAST</item>
+        <item>fast</item>
         <item />
         <item>igoned</item>
     </string-array>

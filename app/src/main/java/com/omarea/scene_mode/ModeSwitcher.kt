@@ -1,11 +1,14 @@
 package com.omarea.scene_mode
 
+import android.content.Context
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.PropsUtils
 import com.omarea.store.CpuConfigStorage
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.util.*
 
 /**
  * Created by Hello on 2018/06/03.
@@ -15,6 +18,9 @@ open class ModeSwitcher {
     private var inited = false
 
     companion object {
+        // 是否已经完成内置配置文件的自动更新（如果使用的是Scene自带的配置，每次切换调度前，先安装配置）
+        private var innerConfigUpdated = false
+
         const val OUTSIDE_POWER_CFG_PATH = "/data/powercfg.sh"
         const val OUTSIDE_POWER_CFG_BASE = "/data/powercfg-base.sh"
 
@@ -107,6 +113,10 @@ open class ModeSwitcher {
             if (installer.outsideConfigInstalled()) {
                 configProvider = OUTSIDE_POWER_CFG_PATH
             } else {
+                if (installer.insideConfigInstalled() && !innerConfigUpdated) {
+                    installer.applyConfigNewVersion(Scene.context)
+                    innerConfigUpdated = true
+                }
                 configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
             }
         }

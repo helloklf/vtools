@@ -193,5 +193,5 @@ elif [ "$action" = "fast" ]; then
     echo 300 > /proc/sys/kernel/sched_group_downmigrate
     echo 400 > /proc/sys/kernel/sched_group_upmigrate
 
-    sched_config 80 92 300 400
+    sched_config 70 82 300 400
 fi

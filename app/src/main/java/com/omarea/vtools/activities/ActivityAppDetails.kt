@@ -300,18 +300,12 @@ class ActivityAppDetails : ActivityBase() {
                 return@setOnClickListener
             }
 
-            val modeList = ModeSwitcher()
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
             val currentMode = powercfg.getString(app, spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
-            var index = 0
-            when (currentMode) {
-                ModeSwitcher.POWERSAVE -> index = 0
-                ModeSwitcher.BALANCE -> index = 1
-                ModeSwitcher.PERFORMANCE -> index = 2
-                ModeSwitcher.FAST -> index = 3
-                ModeSwitcher.IGONED -> index = 5
-                else -> index = 4
+            val values = ArrayList<String>().apply {
+                addAll(resources.getStringArray(R.array.powercfg_options_values))
             }
+            val index = values.indexOf(currentMode)
             var selectedIndex = index
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))

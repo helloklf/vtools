@@ -188,6 +188,6 @@ elif [ "$action" = "fast" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 80 92 300 400
+    sched_config 72 85 300 400
 
 fi
