@@ -74,8 +74,11 @@ class CpuConfigInstaller {
 
     // 尝试更新调度配置文件（目前仅支持自动更新内置的调度文件）
     fun applyConfigNewVersion(context: Context) {
-        val config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (config.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")?.toLowerCase(Locale.getDefault()) == "scene") {
+        if (
+                (!outsideConfigInstalled()) &&
+                Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                        .getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")?.toLowerCase(Locale.getDefault()) == "scene"
+        ) {
             installOfficialConfig(context)
         }
     }
