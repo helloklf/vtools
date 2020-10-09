@@ -33,24 +33,18 @@ class BatteryUtils {
                     }*/
 
     private fun str2voltage(str:String): String {
-        return (when {
-            str.length >= 4 -> {
-                str.substring(0, 4).toInt() / 1000f
-            }
-            str.length >= 3 -> {
-                str.substring(0, 3).toInt() / 100f
-            }
-            str.length >= 2 -> {
-                val v = str.substring(0, 2).toInt()
-                if (v >= 30) {
-                    str.substring(0, 2).toInt() / 10f
-                } else {
-                    v
-                }
-            }
-            else -> {
-                return str
-            }
+        val v = (when {
+            str.length >= 4 -> str.substring(0, 4).toInt() / 1000f
+            str.length >= 3 -> str.substring(0, 3).toInt() / 100f
+            str.length >= 2 -> str.substring(0, 2).toFloat()
+            else -> str.toFloat()
+        })
+
+
+        return (if (v >= 30f) {
+            str.substring(0, 2).toInt() / 10f
+        } else {
+            v
         }).toString() + "v"
     }
 
