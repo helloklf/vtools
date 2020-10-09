@@ -28,6 +28,10 @@ if [[ "$res_dir" = "" ]];then
   exit 1
 fi
 
+echo '本功能最佳适配：'
+echo '应用商店20.9.14(4001240)，web-res-1749'
+echo ''
+
 echo '精简[应用详情]~'
 override_file "detailV2"
 
@@ -53,3 +57,10 @@ echo '精简[软件]~'
 override_file "software"
 
 killall -9 com.xiaomi.market 2>/dev/null
+
+versionCode=`dumpsys package com.xiaomi.market | grep versionCode | cut -f2 -d '=' | cut -f1 -d ' ' | head -1`
+if [[ $versionCode < 4001102 ]] || [[ $versionCode > 4001240 ]]
+then
+  echo '你的[应用商店]不是本功能最佳适配版本，部分修改可能不生效~'
+  # 最佳适配 4001240，web-res-1749
+fi
