@@ -22,8 +22,8 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="32dp"
-                android:layout_height="32dp">
+                android:layout_width="35dp"
+                android:layout_height="35dp">
 
                 <com.omarea.ui.FloatMonitorChartView
                     android:id="@+id/fw_cpu_load"
@@ -63,8 +63,8 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="32dp"
-                android:layout_height="32dp">
+                android:layout_width="35dp"
+                android:layout_height="35dp">
 
                 <com.omarea.ui.FloatMonitorChartView
                     android:id="@+id/fw_gpu_load"
@@ -103,8 +103,8 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="32dp"
-                android:layout_height="32dp">
+                android:layout_width="35dp"
+                android:layout_height="35dp">
 
                 <com.omarea.ui.FloatMonitorBatteryView
                     android:id="@+id/fw_battery_chart"
@@ -156,6 +156,7 @@
         android:text="Loading……"
         android:textColor="#bbffffff"
         android:textSize="7dp"
+        android:textStyle="bold"
         android:typeface="monospace"
         android:visibility="gone" />
 </LinearLayout>

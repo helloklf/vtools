@@ -254,6 +254,9 @@ class FloatMonitor(private val mContext: Context) {
             null
         }
 
+        // GPU内存使用
+        var gpuMemoryUsage = GpuUtils.getMemoryUsage()
+
         myHandler.post {
             if (showOtherInfo) {
                 otherInfo!!.setText("")
@@ -268,6 +271,16 @@ class FloatMonitor(private val mContext: Context) {
                 ramSpannable.setSpan(styleSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 otherInfo?.append(ramSpannable)
                 otherInfo?.append("\n")
+
+                if (gpuMemoryUsage != null) {
+                    gpuMemoryUsage = "#GMEM " + gpuMemoryUsage
+                    val gmemSpannable = SpannableString(gpuMemoryUsage)
+                    val styleSpan = StyleSpan(Typeface.BOLD);
+                    gmemSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, gpuMemoryUsage.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    gmemSpannable.setSpan(styleSpan, 0, gpuMemoryUsage.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    otherInfo?.append(gmemSpannable)
+                    otherInfo?.append("\n")
+                }
 
                 var clusterIndex = 0
                 for (cluster in clusters) {
@@ -292,7 +305,7 @@ class FloatMonitor(private val mContext: Context) {
                                 val load = loads.get(core.toInt())
                                 if (load != null) {
                                     if (load < 10) {
-                                        otherInfos.append("0")
+                                        otherInfos.append(" ")
                                         otherInfos.append(load.toInt())
                                         otherInfos.append("%")
                                     } else {

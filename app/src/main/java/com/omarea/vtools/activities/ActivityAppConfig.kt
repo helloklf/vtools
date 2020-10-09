@@ -138,14 +138,10 @@ class ActivityAppConfig : ActivityBase() {
             scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val app = item.packageName.toString()
-                val originIndex = when (spfPowercfg.getString(app, firstMode)) {
-                    ModeSwitcher.POWERSAVE -> 0
-                    ModeSwitcher.BALANCE -> 1
-                    ModeSwitcher.PERFORMANCE -> 2
-                    ModeSwitcher.FAST -> 3
-                    ModeSwitcher.IGONED -> 5
-                    else -> 4
+                val values = ArrayList<String>().apply {
+                    addAll(resources.getStringArray(R.array.powercfg_options_values))
                 }
+                val originIndex = values.indexOf(spfPowercfg.getString(app, firstMode))
                 var currentMode = originIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         // .setTitle(item.appName.toString())
@@ -155,7 +151,7 @@ class ActivityAppConfig : ActivityBase() {
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (currentMode != originIndex) {
-                                val modeName = resources.getStringArray(R.array.powercfg_options_values)[currentMode]
+                                val modeName = values[currentMode]
 
                                 spfPowercfg.edit().run {
                                     if (modeName.isEmpty()) {

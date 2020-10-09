@@ -88,7 +88,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
-                info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
+                // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, false)) {
                 info.notificationTimeout = 500
@@ -243,6 +243,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!classicModel) {
+            /*
             when(event.eventType) {
                 AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
                     Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
@@ -257,6 +258,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     Log.e(">>>>", "???? " + event.eventType)
                 }
             }
+            */
 
             val packageName = event.packageName
             if (packageName != null) {
@@ -300,7 +302,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (autoSkipAd == null) {
             autoSkipAd = AutoSkipAd(this)
         }
-        autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false))
+        autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
     }
 
     // 新的前台应用窗口判定逻辑

@@ -11,6 +11,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import java.io.File
 import java.nio.charset.Charset
+import java.util.*
 
 class CpuConfigInstaller {
     val rootDir = "powercfg"
@@ -62,13 +63,24 @@ class CpuConfigInstaller {
                 if (!afterCmds.isEmpty()) {
                     KeepShellPublic.doCmdSync(afterCmds)
                 }
-                context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, context.getString(R.string.app_name)).apply()
+                context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "scene").apply()
                 removeCustomModes(context)
                 return true
             }
         } catch (ex: Exception) {
         }
         return false
+    }
+
+    // 尝试更新调度配置文件（目前仅支持自动更新内置的调度文件）
+    fun applyConfigNewVersion(context: Context) {
+        if (
+                (!outsideConfigInstalled()) &&
+                Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                        .getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")?.toLowerCase(Locale.getDefault()) == "scene"
+        ) {
+            installOfficialConfig(context)
+        }
     }
 
     // 安装自定义配置

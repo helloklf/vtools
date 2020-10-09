@@ -26,10 +26,17 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
     private lateinit var mPowerManager: PowerManager
     private lateinit var mWakeLock: PowerManager.WakeLock
     private var currentShell:KeepShell? = null
+    private var isCommonShell = false
     private val keepShell: KeepShell
         get () {
             if (currentShell == null) {
-                currentShell = KeepShell();
+                val commonInstance = KeepShellPublic.getInstance("TaskActionsExecutor", true)
+                if (commonInstance.isIdle) {
+                    currentShell = commonInstance
+                    isCommonShell = true
+                } else {
+                    currentShell = KeepShell();
+                }
             }
             return currentShell!!
         }
@@ -149,7 +156,9 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
             }
         }
 
-        currentShell?.tryExit()
+        if (!isCommonShell) {
+            currentShell?.tryExit()
+        }
         hideNotification()
 
         mWakeLock.release()

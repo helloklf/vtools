@@ -15,9 +15,21 @@ import java.util.*
  */
 class AutoSkipAd(private val service: AccessibilityService) {
     private val autoSkipConfigStore = AutoSkipConfigStore(service.applicationContext)
+    private var displayWidth: Int = 0
+    private var displayHeight: Int = 0
+
     companion object {
-        private var lstClickedNode: AccessibilityNodeInfo? = null
-        private var lstClickedApp: String? = null
+        private var lastClickedNodeValue: AccessibilityNodeInfo? = null
+        private var lastClickedNode: AccessibilityNodeInfo?
+            get() {
+                return lastClickedNodeValue
+            }
+            set (value) {
+                lastClickedNodeValue = value
+                lastClickedNodeText = value?.text
+            }
+        private var lastClickedNodeText: CharSequence? = null
+        private var lastClickedApp: String? = null
         private var lastActivity:String? = null
     }
 
@@ -38,9 +50,9 @@ class AutoSkipAd(private val service: AccessibilityService) {
             root.findAccessibilityNodeInfosByViewId(id)?.run {
                 for (i in indices) {
                     val node = get(i)
-                    if (!(lstClickedNode == node)) {
-                        lstClickedNode = node
-                        lstClickedApp = root.packageName?.toString()
+                    if (!(lastClickedNode == node)) {
+                        lastClickedNode = node
+                        lastClickedApp = root.packageName?.toString()
                         autoClickBase.touchOrClickNode(node, service, true)
                         Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
                     }
@@ -51,7 +63,31 @@ class AutoSkipAd(private val service: AccessibilityService) {
         return false
     }
 
-    fun skipAd(event: AccessibilityEvent, precise: Boolean) {
+    // 根据元素位置判断是否要当做广告跳过按钮点击
+    // 一般来说，广告跳过按钮都在屏幕四角区域
+    // 因此过滤掉非四角区域的按钮有助于降低误点率
+    private fun pointFilter(rect: Rect):Boolean {
+        val top = rect.top.toFloat()
+        val bottom = displayHeight - rect.bottom.toFloat()
+        val left = rect.left.toFloat()
+        val right = displayWidth - rect.right.toFloat()
+        val minSide = if (displayHeight > displayWidth) displayWidth else displayHeight
+        val xMax = minSide * 0.3f
+        val yMax = minSide * 0.5f
+        if (top > yMax && bottom > yMax) {
+            Log.d("@Scene", "Y Filter ${top} ${bottom} ${yMax}")
+            return false
+        }
+        if (left > xMax && right > xMax) {
+            Log.d("@Scene", "X Filter ${left} ${right} ${xMax}")
+            return false
+        }
+        return true
+    }
+
+    fun skipAd(event: AccessibilityEvent, precise: Boolean, displayWidth: Int, displayHeight: Int) {
+        this.displayWidth = displayWidth
+        this.displayHeight = displayHeight
         val packageName = event.packageName
         if (packageName == null || this.blackList.contains(event.packageName)) {
             return
@@ -84,17 +120,19 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                 Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) ||
                                 Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$").matches(text)
                         ) {
-                            if (!(lstClickedApp == packageName && lstClickedNode == node)) {
+                            if (!(lastClickedApp == packageName && (lastClickedNode == node && lastClickedNodeText == node.text))) {
                                 val viewId = node.viewIdResourceName
                                 val p = Rect()
                                 node.getBoundsInScreen(p)
-                                val parentId = node.parent.viewIdResourceName
-                                val pParentId = node.parent.parent.viewIdResourceName
-                                Log.d("@Scene", "SkipAD √ $packageName ${p} ${viewId}" + node.text)
-                                autoClickBase.touchOrClickNode(node, service, true)
-                                lstClickedApp = packageName.toString()
-                                lstClickedNode = node
-                                Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                if (pointFilter(p)) {
+                                    val parentId = node.parent.viewIdResourceName
+                                    val pParentId = node.parent.parent.viewIdResourceName
+                                    Log.d("@Scene", "SkipAD √ $packageName ${p} ${viewId}" + node.text)
+                                    autoClickBase.touchOrClickNode(node, service, true)
+                                    lastClickedApp = packageName.toString()
+                                    lastClickedNode = node
+                                    Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                }
                                 return
                             }
                         } else {
@@ -120,10 +158,10 @@ class AutoSkipAd(private val service: AccessibilityService) {
                         ) {
                             val text = node.text.trim().toString()
                             if (text == keyword) {
-                                if (!(lstClickedApp == packageName && lstClickedNode == node)) {
+                                if (!(lastClickedApp == packageName && lastClickedNode == node)) {
                                     autoClickBase.touchOrClickNode(node, service, true)
-                                    lstClickedApp = packageName.toString()
-                                    lstClickedNode = node
+                                    lastClickedApp = packageName.toString()
+                                    lastClickedNode = node
                                     Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
                                 }
                             }

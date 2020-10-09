@@ -16,6 +16,11 @@ public class KeepShell(private var rootMode: Boolean = true) {
     private var p: Process? = null
     private var out: OutputStream? = null
     private var reader: BufferedReader? = null
+    private var currentIsIdle = true // 是否处于闲置状态
+    public val isIdle: Boolean
+        get() {
+            return currentIsIdle
+        }
 
     //尝试退出命令行程序
     public fun tryExit() {
@@ -34,6 +39,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
         out = null
         reader = null
         p = null
+        currentIsIdle = true
     }
 
     //获取ROOT超时时间
@@ -135,6 +141,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
         try {
             mLock.lockInterruptibly()
+            currentIsIdle = false
 
             out!!.run {
                 write(br)
@@ -183,6 +190,8 @@ public class KeepShell(private var rootMode: Boolean = true) {
         } finally {
             enterLockTime = 0L
             mLock.unlock()
+
+            currentIsIdle = true
         }
     }
 }
