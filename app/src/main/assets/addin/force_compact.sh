@@ -69,6 +69,8 @@ else
 
     while [ $sleep_time -gt 0 ]; do
         sleep 1
+        MemMemFreeStr=`cat /proc/meminfo | grep MemFree`
+        MemMemFree=${MemMemFreeStr:16:8}
 
         # 如果内存已经回收足够，提前结束
         if [[ $MemMemFree -gt $TargetRecycle ]]; then
