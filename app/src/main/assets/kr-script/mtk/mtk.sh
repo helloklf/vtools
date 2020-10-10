@@ -46,6 +46,8 @@ function get_row_state() {
 }
 
 function ppm_render() {
+    switch_hidden "启用PPM" "state=\`cat /proc/ppm/enabled | grep enabled\`; if [[ \$state != '' ]]; then echo 1; fi" "echo \$state > /proc/ppm/enabled"
+
     path="/proc/ppm/policy_status"
     cat $path | grep 'PPM_' | while read line
     do
@@ -122,6 +124,6 @@ group_start '电池统计'
     then
       action "清空电池老化率" "将手机统计的电池老化率数值清空（并不会恢复电池寿命，重置此值可能导致低电量时突然关机！）" "echo 1 &gt; /sys/devices/platform/battery/reset_aging_factor"
     fi
-group_start 'GPU'
+group_end
 
 xml_end

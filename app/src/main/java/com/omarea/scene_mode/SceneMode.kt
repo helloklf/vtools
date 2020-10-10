@@ -64,7 +64,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             if (app.equals("com.android.vending")) {
                 GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
             } else {
-                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app} || am kill current ${app}")
             }
         }
 

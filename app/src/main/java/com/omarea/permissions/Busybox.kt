@@ -2,6 +2,7 @@ package com.omarea.permissions
 
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -50,8 +51,8 @@ class Busybox(private var context: Context) {
     private fun installPrivateBusybox(): Boolean {
         if (!(privateBusyboxInstalled() || systemBusyboxInstalled())) {
             // ro.product.cpu.abi
-            val abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase(Locale.getDefault())
-            if (!abi.startsWith("arm")) {
+            val abi = Build.SUPPORTED_ABIS.joinToString(" ").toLowerCase(Locale.getDefault())
+            if (!abi.contains("arm")) {
                 return false
             }
             val installPath = context.getString(R.string.toolkit_install_path)
