@@ -30,7 +30,7 @@ SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
 SwapFree=${SwapFreeStr:16:8}
 
 if [[ $friendly == "true" ]]; then
-  TargetRecycle=$(($MemTotal / 100 * 50))
+  TargetRecycle=$(($MemTotal / 100 * 45))
 else
   TargetRecycle=$(($MemTotal / 100 * 20))
 fi
