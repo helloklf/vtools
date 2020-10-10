@@ -81,6 +81,14 @@
                 <action android:name="com.omarea.scene_mode.ReceiverSceneMode" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.omarea.vtools.ReceiverCompileState"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.omarea.vtools.ReceiverCompileState" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="xposedmodule"

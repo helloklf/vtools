@@ -9,9 +9,14 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.omarea.Scene
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.vtools.R
+import java.lang.StringBuilder
+import java.nio.charset.Charset
 import java.util.*
 
 /**
@@ -111,15 +116,26 @@ class CompileService : IntentService("vtools-compile") {
         val total = packageNames.size
         var current = 0
         if (compile_method == "reset") {
+            val cmdBuilder = StringBuilder()
             for (packageName in packageNames) {
                 if (true) {
                     updateNotification(getString(R.string.dex2oat_reset_running), packageName, total, current)
-                    keepShell.doCmdSync("cmd package compile --reset ${packageName}")
+                    cmdBuilder.append("am broadcast -n com.omarea.vtools/com.omarea.vtools.ReceiverCompileState --ei current $current --ei total $total --es packageName $packageName\n")
+                    cmdBuilder.append("cmd package compile --reset ${packageName}\n")
                     current++
                 } else {
                     break
                 }
             }
+            cmdBuilder.append("am broadcast -n com.omarea.vtools/com.omarea.vtools.ReceiverCompileState --ei current $total --ei total $total --es packageName OK\n")
+            val cache = "/dex2oat/reset.sh"
+            if (FileWrite.writePrivateFile(cmdBuilder.toString().toByteArray(Charset.defaultCharset()), cache, this.applicationContext)) {
+                val shellFile = FileWrite.getPrivateFilePath(this.applicationContext, cache)
+                keepShell.doCmdSync("sh " + shellFile + " >/dev/null 2>&1 &")
+            }
+            keepShell.tryExit()
+            compileCanceled = true
+            Scene.Companion.toast("重置过程中手机会有点卡，请耐心等待~", Toast.LENGTH_LONG)
         } else {
             for (packageName in packageNames) {
                 if (true) {
