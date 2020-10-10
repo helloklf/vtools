@@ -30,9 +30,9 @@ SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
 SwapFree=${SwapFreeStr:16:8}
 
 if [[ $friendly == "true" ]]; then
-  TargetRecycle=$(($MemTotal / 100 * 60))
+  TargetRecycle=$(($MemTotal / 100 * 50))
 else
-  TargetRecycle=$(($MemTotal / 100 * 25))
+  TargetRecycle=$(($MemTotal / 100 * 20))
 fi
 
 # 如果可用内存大于目标可用内存大小，则不需要回收了
@@ -67,11 +67,28 @@ else
     echo $TargetRecycle > $modify_path
     sleep_time=$(($RecyclingSize / 1024 / 60 + 2))
 
-    echo '等待 ' $sleep_time '秒'
-    sleep $sleep_time
+    while [ $sleep_time -gt 0 ]; do
+        sleep 1
+
+        # 如果内存已经回收足够，提前结束
+        if [[ $MemMemFree -gt $TargetRecycle ]]; then
+          break
+        fi
+
+        SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
+        SwapFree=${SwapFreeStr:16:8}
+        # 如果SWAP可用空间已经不足，提前结束
+        if [[ $SwapFree -lt 100 ]]; then
+          break
+        fi
+
+        # 否则继续等待倒计时结束
+        sleep_time=$(expr $sleep_time - 1)
+    done
+
     # 还原原始设置
     echo $min_free_kbytes > $modify_path
-    echo '好咯，内存回收完毕~'
+    echo '好咯，内存回收结束~'
 
     # 清除执行状态标记
     setprop vtools.state.force_compact 0
