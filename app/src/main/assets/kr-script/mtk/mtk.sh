@@ -27,6 +27,13 @@ function switch_hidden() {
     echo "      </switch>"
 }
 
+function action() {
+    echo "      <action confirm=\"true\" title=\"$1\">"
+    echo "          <desc>$2</desc>"
+    echo "          <set>$3</set>"
+    echo "      </action>"
+}
+
 function get_row_id() {
   local row_id=`echo $1 | cut -f1 -d ']'`
   echo ${row_id/[/}
@@ -104,4 +111,17 @@ then
       gpu_render
     group_end
 fi
+
+group_start '电池统计'
+    if [[ -f /sys/devices/platform/battery/reset_battery_cycle ]]
+    then
+      action "清空电池循环计数" "将手机统计的电池循环次数归零（这并不会恢复电池容量）" "echo 1 &gt; /sys/devices/platform/battery/reset_battery_cycle"
+    fi
+
+    if [[ -f /sys/devices/platform/battery/reset_aging_factor ]]
+    then
+      action "清空电池老化率" "将手机统计的电池老化率数值清空（并不会恢复电池寿命，重置此值可能导致低电量时突然关机！）" "echo 1 &gt; /sys/devices/platform/battery/reset_aging_factor"
+    fi
+group_start 'GPU'
+
 xml_end

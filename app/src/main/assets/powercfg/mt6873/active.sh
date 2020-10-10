@@ -38,6 +38,11 @@ function cpuset() {
     echo $5 > /dev/cpuset/restricted/cpus
 }
 
+function eas() {
+    echo ${1}000/sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us
+    echo ${2}000/sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us
+}
+
 action=$1
 if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
@@ -63,76 +68,88 @@ fi
 # 2600000 2433000 2266000 2133000 1933000 1800000 1633000 1548000 1383000 1300000 1175000 1133000 1050000 925000 841000 774000
 
 if [[ "$action" = "powersave" ]]; then
-    #powersave
-    ppm enabled 1
+  #powersave
+  ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 0"
-    # ppm policy_status "4 1"
-    ppm policy_status "7 0"
-    ppm policy_status "9 0"
+  ppm policy_status "1 0"
+  ppm policy_status "2 0"
+  # ppm policy_status "4 1"
+  ppm policy_status "7 0"
+  ppm policy_status "9 0"
 
-    min_freq 500000 774000
-    max_freq 2000000 1933000
+  min_freq 500000 774000
+  max_freq 2000000 1933000
 
-    gpu_dvfs 1
-    echo 358000 > /proc/gpufreq/gpufreq_opp_freq
+  gpu_dvfs 1
+  echo 358000 > /proc/gpufreq/gpufreq_opp_freq
 
-    cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 1-2 0-3 0-7 0-7 0-3
+
+  echo 1 > /proc/cpuidle/enable
+  eas 0 20
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
 	#balance
-    ppm enabled 1
+  ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 0"
-    # ppm policy_status "4 1"
-    ppm policy_status "7 0"
-    ppm policy_status "9 0"
+  ppm policy_status "1 0"
+  ppm policy_status "2 0"
+  # ppm policy_status "4 1"
+  ppm policy_status "7 0"
+  ppm policy_status "9 0"
 
-    min_freq 500000 774000
-    max_freq 2000000 2433000
+  min_freq 500000 774000
+  max_freq 2000000 2433000
 
-    gpu_dvfs 1
+  gpu_dvfs 1
 
-    cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 1-2 0-3 0-7 0-7 0-3
+
+  echo 1 > /proc/cpuidle/enable
+  eas 0 10
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
 	#performance
-    ppm enabled 1
+  ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 1"
-    # ppm policy_status "4 0"
-    ppm policy_status "7 0"
-    ppm policy_status "9 1"
+  ppm policy_status "1 0"
+  ppm policy_status "2 1"
+  # ppm policy_status "4 0"
+  ppm policy_status "7 0"
+  ppm policy_status "9 1"
 
-    min_freq 1181000 1300000
-    max_freq 2000000 2600000
+  min_freq 1181000 1300000
+  max_freq 2000000 2600000
 
-    gpu_dvfs 1
+  gpu_dvfs 1
 
-    cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 1-2 0-3 0-7 0-7 0-3
+
+  echo 1 > /proc/cpuidle/enable
+  eas 10 0
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
 	#fast
-    ppm enabled 1
+  ppm enabled 1
 
-    ppm policy_status "1 0"
-    ppm policy_status "2 1"
-    # ppm policy_status "4 0"
-    ppm policy_status "7 0"
-    ppm policy_status "9 1"
+  ppm policy_status "1 0"
+  ppm policy_status "2 1"
+  # ppm policy_status "4 0"
+  ppm policy_status "7 0"
+  ppm policy_status "9 1"
 
-    min_freq 1812000 1933000
-    max_freq 2000000 2600000
+  min_freq 1812000 1933000
+  max_freq 2000000 2600000
 
-    gpu_dvfs 0
+  gpu_dvfs 0
 
-    cpuset 1 0-3 0-7 0-7 0-3
+  cpuset 1 0-3 0-7 0-7 0-3
+
+  echo 0 > /proc/cpuidle/enable
+  eas 50 0
 
 	exit 0
 fi
