@@ -90,8 +90,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
                 // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
-            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, false)) {
-                info.notificationTimeout = 500
+            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
+                info.notificationTimeout = 1000
             }
         }
 
@@ -187,6 +187,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
             return
         }
+
+        lastWindowChanged = System.currentTimeMillis()
 
         // 针对一加部分系统的修复
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
@@ -291,18 +293,24 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
                 return
             }
+            lastWindowChanged = System.currentTimeMillis()
             modernModeEvent(event)
         } else {
             classicModelEvent(event)
         }
     }
 
+    private var lastWindowChanged = 0L
     private var autoSkipAd:AutoSkipAd? = null
     private fun trySkipAD(event: AccessibilityEvent) {
         if (autoSkipAd == null) {
             autoSkipAd = AutoSkipAd(this)
         }
-        autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
+
+        // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
+        if (System.currentTimeMillis() - lastWindowChanged < 5000 || !spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
+            autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
+        }
     }
 
     // 新的前台应用窗口判定逻辑
@@ -467,7 +475,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             }
         }
     }
-
 
     private fun deestory() {
         Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()

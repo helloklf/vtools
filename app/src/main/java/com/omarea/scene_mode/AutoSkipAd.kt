@@ -36,10 +36,12 @@ class AutoSkipAd(private val service: AccessibilityService) {
     private val autoClickBase = AutoClickBase()
 
     private var autoClickKeyWords: ArrayList<String> = object : ArrayList<String>() {
+        /*
         init {
             add("暂不升级")
             add("忽略此版本")
         }
+        */
     }
 
     private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
