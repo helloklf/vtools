@@ -96,6 +96,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /proc/cpuidle/enable
   eas 0 40
   cpufreq 1 0
+  echo 0 > /proc/ufs_perf
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
@@ -119,6 +120,7 @@ elif [[ "$action" = "balance" ]]; then
   echo 1 > /proc/cpuidle/enable
   eas 0 10
   cpufreq 0 0
+  echo 0 > /proc/ufs_perf
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
@@ -142,6 +144,7 @@ elif [[ "$action" = "performance" ]]; then
   echo 1 > /proc/cpuidle/enable
   eas 50 0
   cpufreq 3 1
+  echo 2 > /proc/ufs_perf
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
@@ -165,6 +168,7 @@ elif [[ "$action" = "fast" ]]; then
   echo 0 > /proc/cpuidle/enable
   eas 200 0
   cpufreq 3 1
+  echo 2 > /proc/ufs_perf
 
 	exit 0
 fi
