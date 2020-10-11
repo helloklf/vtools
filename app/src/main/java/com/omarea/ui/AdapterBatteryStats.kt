@@ -90,10 +90,10 @@ class AdapterBatteryStats : BaseAdapter {
             }
         }
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = (abs(batteryStats.io)).toString() + "mA"
-        convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
+        convertView.findViewById<TextView>(R.id.itemTemperature).text = "Avg:${batteryStats.avgTemperature}°C Max:${batteryStats.maxTemperature}°C"
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "前台运行 ${time} 分钟"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "🕓 ${time}分钟"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

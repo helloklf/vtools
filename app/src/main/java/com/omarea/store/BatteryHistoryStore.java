@@ -87,7 +87,6 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             Cursor cursor = database.rawQuery("select max(io) AS io from battery_io where status = ? ", new String[]{
                     "" + batteryStatus
             });
-            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
             int io = 0;
             while (cursor.moveToNext()) {
                 io = cursor.getInt(0);
@@ -108,7 +107,6 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             Cursor cursor = database.rawQuery("select min(io) AS io from battery_io where status = ? ", new String[]{
                     "" + batteryStatus
             });
-            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
             int io = 0;
             while (cursor.moveToNext()) {
                 io = cursor.getInt(0);
@@ -126,7 +124,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         try {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery(
-                    "select * from (select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = ? group by package, mode) r order by io",
+                    "select * from (select avg(io) AS io, avg(temperature) as avg, min(temperature) as min, max(temperature) as max, package, mode, count(io) from battery_io where status = ? group by package, mode) r order by io",
                     new String[]{
                             "" + batteryStatus
                     });
@@ -134,10 +132,12 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 BatteryAvgStatus batteryAvgStatus = new BatteryAvgStatus();
                 batteryAvgStatus.io = cursor.getInt(0);
-                batteryAvgStatus.temperature = cursor.getInt(1);
-                batteryAvgStatus.packageName = cursor.getString(2);
-                batteryAvgStatus.mode = cursor.getString(3);
-                batteryAvgStatus.count = cursor.getInt(4);
+                batteryAvgStatus.avgTemperature = cursor.getInt(1);
+                batteryAvgStatus.minTemperature = cursor.getInt(2);
+                batteryAvgStatus.maxTemperature = cursor.getInt(3);
+                batteryAvgStatus.packageName = cursor.getString(4);
+                batteryAvgStatus.mode = cursor.getString(5);
+                batteryAvgStatus.count = cursor.getInt(6);
                 data.add(batteryAvgStatus);
             }
             cursor.close();
