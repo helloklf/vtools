@@ -113,7 +113,7 @@ open class ModeSwitcher {
             if (installer.outsideConfigInstalled()) {
                 configProvider = OUTSIDE_POWER_CFG_PATH
             } else {
-                if (installer.insideConfigInstalled() && !innerConfigUpdated) {
+                if (installer.insideConfigInstalled() && !innerConfigUpdated && !anyModeReplaced()) {
                     installer.applyConfigNewVersion(Scene.context)
                     innerConfigUpdated = true
                 }
