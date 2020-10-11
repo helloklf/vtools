@@ -43,6 +43,13 @@ function eas() {
     echo ${2}000/sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us
 }
 
+function cpufreq() {
+    # 0 Normal, 1 Low Power, 2 Just Make, 3 Perf
+    echo $1 > /proc/cpufreq/cpufreq_power_mode
+    # 0 Normal, 1 Perf
+    echo $1 > /proc/cpufreq/cpufreq_cci_mode
+}
+
 action=$1
 if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
@@ -73,7 +80,8 @@ if [[ "$action" = "powersave" ]]; then
 
   ppm policy_status "1 0"
   ppm policy_status "2 0"
-  # ppm policy_status "4 1"
+  ppm policy_status "3 0"
+  ppm policy_status "4 1"
   ppm policy_status "7 0"
   ppm policy_status "9 0"
 
@@ -86,7 +94,8 @@ if [[ "$action" = "powersave" ]]; then
   cpuset 1-2 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 0 20
+  eas 0 40
+  cpufreq 1 0
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
@@ -95,7 +104,8 @@ elif [[ "$action" = "balance" ]]; then
 
   ppm policy_status "1 0"
   ppm policy_status "2 0"
-  # ppm policy_status "4 1"
+  ppm policy_status "3 0"
+  ppm policy_status "4 1"
   ppm policy_status "7 0"
   ppm policy_status "9 0"
 
@@ -108,6 +118,7 @@ elif [[ "$action" = "balance" ]]; then
 
   echo 1 > /proc/cpuidle/enable
   eas 0 10
+  cpufreq 0 0
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
@@ -116,7 +127,8 @@ elif [[ "$action" = "performance" ]]; then
 
   ppm policy_status "1 0"
   ppm policy_status "2 1"
-  # ppm policy_status "4 0"
+  ppm policy_status "3 0"
+  ppm policy_status "4 1"
   ppm policy_status "7 0"
   ppm policy_status "9 1"
 
@@ -128,7 +140,8 @@ elif [[ "$action" = "performance" ]]; then
   cpuset 1-2 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 10 0
+  eas 50 0
+  cpufreq 3 1
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
@@ -137,7 +150,8 @@ elif [[ "$action" = "fast" ]]; then
 
   ppm policy_status "1 0"
   ppm policy_status "2 1"
-  # ppm policy_status "4 0"
+  ppm policy_status "3 0"
+  ppm policy_status "4 0"
   ppm policy_status "7 0"
   ppm policy_status "9 1"
 
@@ -149,7 +163,8 @@ elif [[ "$action" = "fast" ]]; then
   cpuset 1 0-3 0-7 0-7 0-3
 
   echo 0 > /proc/cpuidle/enable
-  eas 50 0
+  eas 200 0
+  cpufreq 3 1
 
 	exit 0
 fi

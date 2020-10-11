@@ -2,6 +2,7 @@ package com.omarea.scene_mode
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
@@ -39,6 +40,22 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         }
 
     private val floatScreenRotation = FloatScreenRotation(context)
+    private class FreezeAppThread(private val context: Context) : Thread() {
+        override fun run() {
+            val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            val launchedFreezeApp = getCurrentInstance()?.getLaunchedFreezeApp()
+            val suspendMode = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            for (item in SceneConfigStore(context).freezeAppList) {
+                if (launchedFreezeApp == null || !launchedFreezeApp.contains(item)) {
+                    if (suspendMode) {
+                        suspendApp(item)
+                    } else {
+                        freezeApp(item)
+                    }
+                }
+            }
+        }
+    }
 
     companion object {
 
@@ -55,6 +72,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             if (instance == null) {
                 synchronized(SceneMode::class) {
                     instance = SceneMode(context, store)
+                    FreezeAppThread(context.applicationContext).start()
                 }
             }
             return instance!!
