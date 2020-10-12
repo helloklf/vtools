@@ -6,4 +6,7 @@ thermal_files=(
 "${thermal_file_prefix}nolimits${thermal_file_suffix}"
 "${thermal_file_prefix}tgame${thermal_file_suffix}"
 ".tp"
+"power_whitelist_cfg.xml"
+"powercontable.xml"
+"powerscntbl.xml"
 )

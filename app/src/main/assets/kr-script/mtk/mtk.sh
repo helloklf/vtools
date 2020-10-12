@@ -1,3 +1,5 @@
+import_utils="source $START_DIR/kr-script/mtk/mtk_utils.sh;"
+
 function xml_start() {
     echo '<?xml version="1.0" encoding="UTF-8" ?>'
     echo "<root>"
@@ -71,6 +73,8 @@ function ged_render() {
         title="强制使用MDP"
       elif [[ "$line" == "gx_game_mode" ]]; then
         title="游戏模式"
+      else
+        continue # 有些效果不佳的选项，暂时隐藏掉
       fi
       switch_hidden "$title" "cat $ged/$line" "echo \$state > $ged/$line"
     done
@@ -91,6 +95,32 @@ function gpu_render() {
     echo "          <get>$get_shell</get>"
     echo "          <set>echo \$state &gt; /proc/gpufreq/gpufreq_opp_freq</set>"
     echo "      </picker>"
+}
+
+function cpu_render() {
+    if [[ -f /sys/devices/system/cpu/sched/sched_boost ]]; then
+      echo "      <picker title=\"Sched Boost\" shell=\"hidden\">"
+      echo "          <options>"
+      echo "            <option value=\"no boost\">no boost</option>"
+      echo "            <option value=\"all boost\">all</option>"
+      echo "            <option value=\"foreground boost\">foreground</option>"
+      echo "          </options>"
+      echo "          <get>$import_utils sched_boost_get</get>"
+      echo "          <set>$import_utils sched_boost_set</set>"
+      echo "      </picker>"
+    fi
+
+    if [[ -f /sys/devices/system/cpu/eas/enable ]]; then
+      echo "      <picker title=\"Eas Enable\" shell=\"hidden\">"
+      echo "          <options>"
+      echo "            <option value=\"HMP\">HMP</option>"
+      echo "            <option value=\"EAS\">EAS</option>"
+      echo "            <option value=\"hybrid\">Hybrid</option>"
+      echo "          </options>"
+      echo "          <get>$import_utils eas_get</get>"
+      echo "          <set>$import_utils eas_set</set>"
+      echo "      </picker>"
+    fi
 }
 
 # 显存占用 bytes
@@ -114,6 +144,11 @@ then
     group_end
 fi
 
+
+group_start 'CPU'
+  cpu_render
+group_end
+
 group_start '电池统计'
     if [[ -f /sys/devices/platform/battery/reset_battery_cycle ]]
     then
@@ -125,5 +160,4 @@ group_start '电池统计'
       action "清空电池老化率" "将手机统计的电池老化率数值清空（并不会恢复电池寿命，重置此值可能导致低电量时突然关机！）" "echo 1 &gt; /sys/devices/platform/battery/reset_aging_factor"
     fi
 group_end
-
 xml_end

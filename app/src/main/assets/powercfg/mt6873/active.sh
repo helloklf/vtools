@@ -39,8 +39,9 @@ function cpuset() {
 }
 
 function eas() {
-    echo ${1}000/sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us
-    echo ${2}000/sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us
+    echo ${1}000 > /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us
+    echo ${2}000 > /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us
+    echo 1 > /sys/devices/system/cpu/eas/enable
 }
 
 function cpufreq() {
@@ -94,7 +95,7 @@ if [[ "$action" = "powersave" ]]; then
   cpuset 1-2 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 0 40
+  eas 0 20
   cpufreq 1 0
   echo 0 > /proc/ufs_perf
 

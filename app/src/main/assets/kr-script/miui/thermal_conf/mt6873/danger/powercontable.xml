@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONTABLE>
+    <CMD name="PERF_RES_SCHED_BOOST_VALUE_FG" id="0x01400100">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_fg_boost"></Entry>
+        <LegacyCmdID>36</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>-100</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_BOOST_VALUE_ROOT" id="0x01400000">
+        <Entry path="/dev/stune/schedtune.boost"></Entry>
+        <LegacyCmdID>34</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_BOOST_VALUE_TA" id="0x01400300">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_ta_boost"></Entry>
+        <LegacyCmdID>35</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>-100</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_BOOST_VALUE_BG" id="0x01400200">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_bg_boost"></Entry>
+        <LegacyCmdID>37</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>-100</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_FLOOR_BOUND" id="0x02014000">
+        <Entry path="/sys/module/fbt_cpu/parameters/floor_bound"></Entry>
+        <LegacyCmdID>59</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>20</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_KMIN" id="0x02018000">
+        <Entry path="/sys/module/fbt_cpu/parameters/kmin"></Entry>
+        <LegacyCmdID>60</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>20</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+	<CMD name="PERF_RES_FPS_FBT_VARIANCE" id="0x02018100">
+        <Entry path="/sys/module/fbt_cpu/parameters/variance"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>40</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_DRAM_OPP_MIN" id="0x01000000">
+        <Entry path="/proc/perfmgr/boost_ctrl/dram_ctrl/ddr"></Entry>
+        <LegacyCmdID>62</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>2</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_WALT" id="0x01430000">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_ext_launch_mon"></Entry>
+        <LegacyCmdID>63</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_PREFER_IDLE_TA" id="0x01404300">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_prefer_idle"></Entry>
+        <LegacyCmdID>66</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+        <Prefix>3^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_PREFER_IDLE_FG" id="0x01404100">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_prefer_idle"></Entry>
+        <LegacyCmdID>67</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+        <Prefix>1^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_BHR_OPP" id="0x02020000">
+        <Entry path="/sys/module/fbt_cpu/parameters/bhr_opp"></Entry>
+        <LegacyCmdID>72</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_BHR" id="0x02024000">
+        <Entry path="/sys/module/fbt_cpu/parameters/bhr"></Entry>
+        <LegacyCmdID>71</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>5</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_BOOST" id="0x01410000">
+        <Entry path="/sys/devices/system/cpu/sched/sched_boost"></Entry>
+        <LegacyCmdID>73</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>2</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_MIGRATE_COST" id="0x01414000">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/m_sched_migrate_cost_n"></Entry>
+        <LegacyCmdID>74</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>10000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>200000</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_BTASK_ROTATE" id="0x0141c000">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/sched_big_task_rotation"></Entry>
+        <LegacyCmdID>102</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_CPUFREQ_CCI_FREQ" id="0x00410000">
+        <Entry path="/proc/cpufreq/cpufreq_cci_mode"></Entry>
+        <LegacyCmdID>110</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_UCLAMP_MIN_ROOT" id="0x01408000">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_uclamp_min"></Entry>
+        <LegacyCmdID>104</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_UCLAMP_MIN_FG" id="0x01408100">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_fg_uclamp_min"></Entry>
+        <LegacyCmdID>106</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_UCLAMP_MIN_BG" id="0x01408200">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_bg_uclamp_min"></Entry>
+        <LegacyCmdID>107</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_UCLAMP_MIN_TA" id="0x01408300">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_ta_uclamp_min"></Entry>
+        <LegacyCmdID>105</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_PERF_TASK_TURBO" id="0x0300c000">
+        <Entry path="/sys/module/task_turbo/parameters/feats"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_EARA_BENCH" id="0x02028000">
+        <Entry path="/sys/kernel/debug/fpsgo/eara/ai_bench"></Entry>
+        <LegacyCmdID>137</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_GPU_FREQ_LOW_LATENCY" id="0x00c08000">
+        <Entry path="/d/ged/hal/event_notify"></Entry>
+        <LegacyCmdID>126</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <Prefix>low_latency_mode^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_GPU_BLOCK_BOOST" id="0x0202c000">
+        <Entry path="/sys/kernel/debug/fpsgo/common/gpu_block_boost"></Entry>
+        <LegacyCmdID>145</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>101</MaxValue>
+        <MinValue>-1</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_BOOST_TA" id="0x02030000">
+        <Entry path="/sys/kernel/debug/fpsgo/fbt/boost_ta"></Entry>
+        <LegacyCmdID>146</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_PLUS_DOWN_THROTTLE_NS" id="0x01424000">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_schedplus_down_throttle"></Entry>
+        <LegacyCmdID>147</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_PLUS_SYNC_FLAG" id="0x01424200">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_schedplus_sync_flag"></Entry>
+        <LegacyCmdID>148</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_GPU_GED_MARGIN_MODE" id="0x00c0c100">
+        <Entry path="/sys/kernel/debug/ged/hal/dvfs_margin_value"></Entry>
+        <LegacyCmdID>149</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>6553599</MaxValue>
+        <MinValue>1</MinValue>
+        <DefaultValue>130</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_MARGIN_MODE" id="0x02034000">
+        <Entry path="/sys/kernel/debug/fpsgo/fstb/margin_mode"></Entry>
+        <LegacyCmdID>150</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>2</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_RESCUE_F" id="0x0203c000">
+        <Entry path="/sys/module/fbt_cpu/parameters/rescue_enhance_f"></Entry>
+        <LegacyCmdID>152</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_RESCUE_PERCENT" id="0x0203c100">
+        <Entry path="/sys/module/fbt_cpu/parameters/rescue_percent"></Entry>
+        <LegacyCmdID>153</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_ULTRA_RESCUE" id="0x0203c200">
+        <Entry path="/sys/kernel/debug/fpsgo/fbt/ultra_rescue"></Entry>
+        <LegacyCmdID>154</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_RESCUE_C" id="0x0203c300">
+        <Entry path="/sys/module/fbt_cpu/parameters/rescue_opp_c"></Entry>
+        <LegacyCmdID>155</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_DISP_IDLE_TIME" id="0x0240C000">
+        <Entry path="/d/displowpower/idletime"></Entry>
+        <LegacyCmdID>79</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1000000</MaxValue>
+        <MinValue>33</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_DRAM_CM_MGR" id="0x01010000">
+        <Entry path="/proc/cm_mgr/dbg_cm_mgr"></Entry>
+        <LegacyCmdID>80</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>1</DefaultValue>
+        <Prefix>cm_mgr_perf_enable^</Prefix>
+        <Valid>1</Valid>
+    </CMD>
+    <CMD name="PERF_RES_DRAM_CM_MGR_CAM_ENABLE" id="0x01010100">
+        <Entry path="/proc/cm_mgr/dbg_cm_mgr"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+        <Prefix>cm_mgr_camera_enable^</Prefix>
+    </CMD>
+     <CMD name="PERF_RES_DRAM_CM_RATIO_UP_X_3" id="0x01014300">
+        <Entry path="/proc/cm_mgr/dbg_cm_mgr"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+        <Prefix>cpu_power_ratio_up_x^3^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_DRAM_CM_RATIO_UP_X_4" id="0x01014400">
+        <Entry path="/proc/cm_mgr/dbg_cm_mgr"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+        <Prefix>cpu_power_ratio_up_x^4^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_NET_WIFI_CAM" id="0x02800000">
+        <Entry path="/proc/net/wlan/setCAM"></Entry>
+        <LegacyCmdID>70</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <Prefix>CAM^</Prefix>
+        <Valid>1</Valid>
+    </CMD>
+    <CMD name="PERF_RES_POWERHAL_TOUCH_BOOST_OPP" id="0x03408000">
+        <Entry path="/proc/perfmgr/tchbst/user/usrtch"></Entry>
+        <LegacyCmdID>156</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>2</DefaultValue>
+        <Prefix>touch_opp^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_POWERHAL_TOUCH_BOOST_DURATION" id="0x03408100">
+        <Entry path="/proc/perfmgr/tchbst/user/usrtch"></Entry>
+        <LegacyCmdID>157</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>2000000000</MaxValue>
+        <MinValue>10000000</MinValue>
+        <DefaultValue>100000000</DefaultValue>
+        <Prefix>duration^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_POWERHAL_TOUCH_BOOST_ACTIVE_TIME" id="0x03408200">
+        <Entry path="/proc/perfmgr/tchbst/user/usrtch"></Entry>
+        <LegacyCmdID>158</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>100000</DefaultValue>
+        <Prefix>active_time^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_POWERHAL_TOUCH_BOOST_EAS_BOOST" id="0x03408300">
+        <Entry path="/proc/perfmgr/tchbst/user/usrtch"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>80</DefaultValue>
+        <Prefix>eas_boost^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_POWERHAL_TOUCH_BOOST_TIME_TO_LAST_TOUCH" id="0x03408400">
+        <Entry path="/proc/perfmgr/tchbst/user/usrtch"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>6000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>600000</DefaultValue>
+        <Prefix>time_to_last_touch^</Prefix>
+    </CMD>
+    <CMD name="PERF_RES_SCHED_PLUS_UP_THROTTLE_NS" id="0x01424100">
+        <Entry path="/proc/perfmgr/boost_ctrl/eas_ctrl/perfserv_schedplus_up_throttle"></Entry>
+        <LegacyCmdID>159</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>4000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_SHORT_RESCUE_NS" id="0x0200c000">
+        <Entry path="/sys/module/fbt_cpu/parameters/short_rescue_ns"></Entry>
+        <LegacyCmdID>160</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>2000000000</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FBT_MIN_RESCUE_PERCENT" id="0x0200c100">
+        <Entry path="/sys/module/fbt_cpu/parameters/min_rescue_percent"></Entry>
+        <LegacyCmdID>161</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_GPU_GED_TIMER_BASE_DVFS_MARGIN" id="0x00c0c200">
+        <Entry path="/sys/kernel/debug/ged/hal/timer_base_dvfs_margin"></Entry>
+        <LegacyCmdID>162</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>2000000000</MaxValue>
+        <MinValue>-1</MinValue>
+        <DefaultValue>798</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_GPU_GED_LOADING_BASE_DVFS_STEP" id="0x00c0c300">
+        <Entry path="/sys/kernel/debug/ged/hal/loading_base_dvfs_step"></Entry>
+        <LegacyCmdID>163</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>25855</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>4</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_MARGIN_MODE_DBNC_A" id="0x02034100">
+        <Entry path="/sys/kernel/debug/fpsgo/fstb/margin_mode_dbnc_a"></Entry>
+        <LegacyCmdID>165</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32767</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_MARGIN_MODE_DBNC_B" id="0x02034200">
+        <Entry path="/sys/kernel/debug/fpsgo/fstb/margin_mode_dbnc_b"></Entry>
+        <LegacyCmdID>166</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32767</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_ENABLE" id="0x03008000">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_enable"></Entry>
+        <LegacyCmdID>176</LegacyCmdID>
+        <Compare>less</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_POLLING_MS" id="0x03008100">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_polling_ms"></Entry>
+        <LegacyCmdID>177</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32767</MaxValue>
+        <MinValue>8</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_UP_TIME" id="0x03008400">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_up_time"></Entry>
+        <LegacyCmdID>180</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32768</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_DOWN_TIME" id="0x03008500">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_down_time"></Entry>
+        <LegacyCmdID>181</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32768</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_UP_OPP" id="0x03008600">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_up_opp"></Entry>
+        <LegacyCmdID>182</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_CFP_DOWN_OPP" id="0x03008700">
+        <Entry path="/proc/perfmgr/boost_ctrl/cpu_ctrl/cfp_down_opp"></Entry>
+        <LegacyCmdID>183</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_ADJ_LOADING" id="0x02040000">
+        <Entry path="/sys/module/fbt_cpu/parameters/adjust_loading"></Entry>
+        <LegacyCmdID>184</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_ADJ_CNT" id="0x02040100">
+        <Entry path="/sys/module/fbt_cpu/parameters/loading_adj_cnt"></Entry>
+        <LegacyCmdID>185</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32767</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_ADJ_DEBNC_CNT" id="0x02040200">
+        <Entry path="/sys/module/fbt_cpu/parameters/loading_debnc_cnt"></Entry>
+        <LegacyCmdID>186</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>32767</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_ADJ_LOADING_TIMEDIFF" id="0x02040300">
+        <Entry path="/sys/module/fbt_cpu/parameters/loading_time_diff"></Entry>
+        <LegacyCmdID>187</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>16000000</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_LLF_TH" id="0x02044000">
+        <Entry path="/sys/module/fbt_cpu/parameters/loading_th"></Entry>
+        <LegacyCmdID>188</LegacyCmdID>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_LLF_POLICY" id="0x02044100">
+        <Entry path="/sys/kernel/debug/fpsgo/fbt/llf_task_policy"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>2</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_GPU_GED_DVFS_LOADING_MODE" id="0x00c0c600">
+        <Entry path="/sys/kernel/debug/ged/hal/dvfs_loading_mode"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>2</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_DEP_FRAMES" id="0x02048000">
+        <Entry path="/sys/module/xgf/parameters/xgf_dep_frames"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>20</MaxValue>
+        <MinValue>2</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_SP_NAME_ID" id="0x02048100">
+        <Entry path="/sys/module/xgf/parameters/xgf_sp_name_id"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>50</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_SP_SUB" id="0x02048200">
+        <Entry path="/sys/module/xgf/parameters/xgf_spid_sub"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_SP_CK_PERIOD" id="0x02048300">
+        <Entry path="/sys/module/xgf/parameters/xgf_spid_ck_period"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1000000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>1000000000</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE1_ENABLE" id="0x0204c000">
+        <Entry path="/sys/kernel/debug/gbe/gbe_enable1"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE2_ENABLE" id="0x0204c100">
+        <Entry path="/sys/kernel/debug/gbe/gbe_enable2"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE2_TIMER2_MS" id="0x0204c200">
+        <Entry path="/sys/kernel/debug/gbe/gbe2_timer2"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>10000</MaxValue>
+        <MinValue>500</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE2_MAX_BOOST_CNT" id="0x0204c400">
+        <Entry path="/sys/kernel/debug/gbe/gbe2_max_boost_cnt"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>15</MaxValue>
+        <MinValue>1</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE2_LOADING_TH" id="0x0204c300">
+        <Entry path="/sys/kernel/debug/gbe/gbe2_loading_th"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_GBE_POLICY_MASK" id="0x0204c500">
+        <Entry path="/sys/kernel/debug/gbe/gbe_policy_mask"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>100</MaxValue>
+        <MinValue>0</MinValue>
+    </CMD>
+    <CMD name="PERF_RES_FPS_FPSGO_IDLEPREFER" id="0x02050000">
+        <Entry path="/sys/kernel/debug/fpsgo/fbt/switch_idleprefer"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_POWER_CPUIDLE_MCDI_ENABLE" id="0x01c3c000">
+        <Entry path="/proc/cpuidle/enable"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_POWER_SYSLIMITER_60" id="0x01c40000">
+        <Entry path="/proc/perfmgr/syslimiter/syslimiter_fps_60"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>3000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_POWER_SYSLIMITER_90" id="0x01c40100">
+        <Entry path="/proc/perfmgr/syslimiter/syslimiter_fps_90"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>3000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_POWER_SYSLIMITER_120" id="0x01c40200">
+        <Entry path="/proc/perfmgr/syslimiter/syslimiter_fps_120"></Entry>
+        <Compare>less</Compare>
+        <MaxValue>3000000</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>-1</DefaultValue>
+    </CMD>
+    <CMD name="PERF_RES_AI_APUSYS_BOOST_IPU_IF" id="0x01810000">
+        <Entry path="/sys/kernel/debug/apusys_mnoc/mnoc_apu_qos_boost"></Entry>
+        <Compare>more</Compare>
+        <MaxValue>1</MaxValue>
+        <MinValue>0</MinValue>
+        <DefaultValue>0</DefaultValue>
+    </CMD>
+</CONTABLE>
+
