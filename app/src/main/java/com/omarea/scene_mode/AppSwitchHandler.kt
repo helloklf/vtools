@@ -200,8 +200,12 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         if (packageName != null && packageName != lastModePackage) {
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(packageName, firstMode)!!
-                if (mode != IGONED && lastMode != mode) {
-                    toggleConfig(mode)
+                if (mode != IGONED && (lastMode != mode || spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false))) {
+                    if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, false)) {
+                        delayToggleConfig(mode)
+                    } else {
+                        toggleConfig(mode)
+                    }
                 }
             }
             lastModePackage = packageName
@@ -212,6 +216,15 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
 
     private fun toggleConfig(mode: String) {
         executePowercfgMode(mode)
+        lastMode = mode
+    }
+
+    private fun delayToggleConfig(mode: String) {
+        handler.postDelayed({
+            if (lastMode == mode) {
+                executePowercfgMode(mode)
+            }
+        }, 5000)
         lastMode = mode
     }
     //#endregion

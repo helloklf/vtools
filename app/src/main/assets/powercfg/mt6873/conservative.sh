@@ -86,7 +86,7 @@ if [[ "$action" = "powersave" ]]; then
   ppm policy_status "9 0"
 
   min_freq 500000 774000
-  max_freq 2000000 1633000
+  max_freq 1500000 1383000
 
   gpu_dvfs 1
   echo 358000 > /proc/gpufreq/gpufreq_opp_freq

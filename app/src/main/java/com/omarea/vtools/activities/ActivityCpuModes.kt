@@ -72,6 +72,18 @@ class ActivityCpuModes : ActivityBase() {
             dynamic_control_opts.visibility = if (isChecked) View.VISIBLE else View.GONE
         }
 
+        strict_mode.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+        strict_mode.setOnClickListener {
+            val checked = (it as CompoundButton).isChecked
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, checked).apply()
+        }
+
+        delay_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, false)
+        delay_switch.setOnClickListener {
+            val checked = (it as CompoundButton).isChecked
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, checked).apply()
+        }
+
         cpu_mode_delete_outside.setOnClickListener {
             DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("确定删除?")
                     .setMessage("确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的")
