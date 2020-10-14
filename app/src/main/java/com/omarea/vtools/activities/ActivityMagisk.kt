@@ -12,6 +12,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.AdapterRootFileSelector
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_magisk.*
+import java.io.File
 
 
 class ActivityMagisk : ActivityBase() {
@@ -63,9 +64,11 @@ class ActivityMagisk : ActivityBase() {
         }
         magisk_props_save.setOnClickListener {
             if (FileWrite.writePrivateFile((magisk_props.text.toString() + "\n").toByteArray(), "magisk_system.prop", context)) {
-                if (MagiskExtend.updateProps(FileWrite.getPrivateFilePath(context, "magisk_system.prop"))) {
+                val file = FileWrite.getPrivateFilePath(context, "magisk_system.prop")
+                if (MagiskExtend.updateProps(file)) {
                     magisk_props.setText(MagiskExtend.getProps())
                     Toast.makeText(context, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                    File(file).delete()
                 } else {
                     Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
                 }
@@ -81,9 +84,11 @@ class ActivityMagisk : ActivityBase() {
         }
         magisk_beforestart_save.setOnClickListener {
             if (FileWrite.writePrivateFile((magisk_beforestart.text.toString() + "\n").toByteArray(), "magisk_post-fs-data.sh", context)) {
-                if (MagiskExtend.updateFsPostDataSH(FileWrite.getPrivateFilePath(context, "magisk_post-fs-data.sh"))) {
+                val file = FileWrite.getPrivateFilePath(context, "magisk_post-fs-data.sh")
+                if (MagiskExtend.updateFsPostDataSH(file)) {
                     magisk_beforestart.setText(MagiskExtend.getFsPostDataSH())
                     Toast.makeText(context, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                    File(file).delete()
                 } else {
                     Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
                 }
@@ -99,9 +104,11 @@ class ActivityMagisk : ActivityBase() {
         }
         magisk_afterstart_save.setOnClickListener {
             if (FileWrite.writePrivateFile((magisk_afterstart.text.toString() + "\n").toByteArray(), "magisk_service.sh", context)) {
-                if (MagiskExtend.updateServiceSH(FileWrite.getPrivateFilePath(context, "magisk_service.sh"))) {
+                val file = FileWrite.getPrivateFilePath(context, "magisk_service.sh")
+                if (MagiskExtend.updateServiceSH(file)) {
                     magisk_afterstart.setText(MagiskExtend.getServiceSH())
                     Toast.makeText(context, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                    File(file).delete()
                 } else {
                     Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
                 }

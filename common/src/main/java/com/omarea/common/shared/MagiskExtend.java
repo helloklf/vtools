@@ -165,6 +165,7 @@ public class MagiskExtend {
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /data/adb/magisk_merge_tmnt\n" +
                     "$LOOP=`imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt`\n");
 
+            // 写入 模块_update 目录
             writeModuleFile(moduleProp, "module.prop", context);
             writeModuleFile("", "auto_mount", context);
             writeModuleFile("", "update", context);
@@ -175,6 +176,7 @@ public class MagiskExtend {
             writeModuleFile("", "update", context);
         }
 
+        // 写入模块目录
         writeModuleFile(moduleProp, "module.prop", context);
         writeModuleFile(systemProp, "system.prop", context);
         writeModuleFile(service, "service.sh", context);

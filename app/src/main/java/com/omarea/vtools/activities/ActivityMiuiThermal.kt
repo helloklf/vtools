@@ -97,7 +97,7 @@ class ActivityMiuiThermal : ActivityBase() {
         val currentContent = thermal_config.text.toString().trim()
         val bytes = currentContent.toByteArray(Charset.forName("UTF-8"))
         val data = if (encrypted) MiuiThermalAESUtil.encrypt(bytes) else bytes
-        val file_path = filesDir.path + File.separator + "temp.conf"
+        val file_path = filesDir.path + File.separator + "thermal-temp.conf"
         File(file_path).writeBytes(data)
         // TODO:
         val result = KeepShellPublic.doCmdSync(
@@ -111,6 +111,7 @@ class ActivityMiuiThermal : ActivityBase() {
                         "cp \"$file_path\" \"$currentFile\"\n" +
                         "chmod 664 \"$currentFile\""
         )
+        File(file_path).delete()
         if (result == "error") {
             Toast.makeText(this, "保存失败，请检查是否已授予ROOT权限，以及文件是否被锁定！", Toast.LENGTH_LONG).show()
         } else {

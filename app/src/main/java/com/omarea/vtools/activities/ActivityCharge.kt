@@ -6,13 +6,14 @@ import android.os.Handler
 import android.os.Looper
 import com.omarea.data.GlobalStatus
 import com.omarea.store.BatteryHistoryStore
+import com.omarea.store.ChargeSpeedStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.activity_charge.*
 import java.util.*
 
 class ActivityCharge : ActivityBase() {
-    private lateinit var storage: BatteryHistoryStore
+    private lateinit var storage: ChargeSpeedStore
     private var timer: Timer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +21,7 @@ class ActivityCharge : ActivityBase() {
 
         setBackArrow()
 
-        storage = BatteryHistoryStore(this)
+        storage = ChargeSpeedStore(this)
         electricity_adj_unit.setOnClickListener {
             DialogElectricityUnit().showDialog(this)
         }
@@ -34,7 +35,7 @@ class ActivityCharge : ActivityBase() {
                 override fun run() {
                     updateUI()
                 }
-            }, 0, 200)
+            }, 0, 1000)
         }
     }
 
@@ -44,13 +45,24 @@ class ActivityCharge : ActivityBase() {
         super.onPause()
     }
 
+    private val sumInfo:String
+    get () {
+        val sum = storage.sum
+        var sumInfo = ""
+        if (sum != 0) {
+            sumInfo = getString(R.string.battery_status_sum).format((if (sum > 0) ("+" + sum) else (sum.toString())))
+        }
+        return sumInfo
+    }
+
     private val hander = Handler(Looper.getMainLooper())
     private fun updateUI() {
         hander.post {
             view_speed.invalidate()
             view_time.invalidate()
             view_temperature.invalidate()
-            charge_state.text = when (GlobalStatus.batteryStatus) {
+
+            charge_state.text = (when (GlobalStatus.batteryStatus) {
                 BatteryManager.BATTERY_STATUS_DISCHARGING -> {
                     getString(R.string.battery_status_discharging)
                 }
@@ -67,7 +79,7 @@ class ActivityCharge : ActivityBase() {
                     getString(R.string.battery_status_not_charging)
                 }
                 else -> getString(R.string.battery_status_unknown)
-            }
+            }) + sumInfo
         }
     }
 }

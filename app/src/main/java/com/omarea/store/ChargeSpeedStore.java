@@ -35,6 +35,23 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+    // 获取总充入电量
+    public int getSum() {
+        int total = 0;
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select sum(io) as total from charge_history", new String[]{});
+            while (cursor.moveToNext()) {
+                total = (int)(cursor.getLong(cursor.getColumnIndex("total")) / 3600);
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return total;
+    }
+
     public ArrayList<ChargeSpeedHistory> statistics() {
         ArrayList<ChargeSpeedHistory> histories = new ArrayList<>();
         try {

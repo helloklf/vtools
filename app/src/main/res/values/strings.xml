@@ -152,11 +152,12 @@
     </string-array>
     <string name="battery_exec_desc">Scene会根据你的选择在不同时机执行速度变更，具体差异如下\n\n降低速度：只在充电器连接和电量百分比变化时重新设置充电速度\n加速充电：电池状态发生变化、充电器连接时重新设置充电速度\n往死里充：在[充电加速]的逻辑基础上，每秒自动重新设置充电速度</string>
 
-    <string name="battery_status_discharging">当前状态：未充电</string>
-    <string name="battery_status_charging">当前状态：充电中</string>
-    <string name="battery_status_full">当前状态：已充满</string>
-    <string name="battery_status_not_charging">当前状态：未充电</string>
-    <string name="battery_status_unknown">当前状态：未知</string>
+    <string name="battery_status_discharging">【未充电】</string>
+    <string name="battery_status_charging">【充电中】</string>
+    <string name="battery_status_full">【已充满】</string>
+    <string name="battery_status_not_charging">【未充电】</string>
+    <string name="battery_status_unknown">【状态未知】</string>
+    <string name="battery_status_sum">（共充入 %smAh）</string>
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>
