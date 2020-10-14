@@ -27,7 +27,6 @@ public class GpuUtils {
     }
 
     private static boolean kgsGM = true;
-    private static long kgsGMMAX = -1;
     public static String getMemoryUsage() {
         // MTK cat /proc/mali/memory_usage | grep "Total" | cut -f2 -d "(" | cut -f1 -d " "
         if (isMTK()) {
@@ -42,19 +41,7 @@ public class GpuUtils {
             String bytes = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/virtual/kgsl/kgsl/page_alloc");
             try {
                 long b = (Long.parseLong(bytes));
-                if (kgsGMMAX == -1) {
-                    try {
-                        String maxBytes = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/virtual/kgsl/kgsl/page_alloc_max");
-                        kgsGMMAX = Long.parseLong(maxBytes);
-                    } catch (Exception ex) {
-                        kgsGMMAX = 0;
-                    }
-                }
-                if (kgsGMMAX > 0) {
-                    return (b / 1024 / 1024) + "M " + ((int)(100f * b / kgsGMMAX)) + "%";
-                } else {
-                    return (b / 1024 / 1024) + "MB";
-                }
+                return (b / 1024 / 1024) + "MB";
             } catch (Exception ex) {
                 kgsGM = false;
             }
