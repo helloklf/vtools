@@ -20,6 +20,9 @@ function min_freq() {
     policy hard_userlimit_min_cpu_freq "1 $2"
 }
 
+# GPU FREQ
+# 902000 890000 878000 866000 855000 843000 831000 819000 807000 795000 783000 772000 760000 748000 736000 724000 712000
+# 700000 688000 667000 647000 626000 605000 585000 564000 543000 523000 502000 482000 461000 440000 420000 399000 378000 358000
 function gpu_dvfs() {
     echo $1 > /sys/module/ged/parameters/gpu_dvfs_enable
     echo $1 > /proc/mali/dvfs_enable
@@ -51,6 +54,12 @@ function cpufreq() {
 }
 
 action=$1
+
+for i in 0 1 2 3 4 5 6 7
+do
+  echo 1 > /sys/devices/system/cpu/cpu$i/online
+done
+
 if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
 	exit 0
@@ -86,16 +95,17 @@ if [[ "$action" = "powersave" ]]; then
   ppm policy_status "9 0"
 
   min_freq 500000 774000
-  max_freq 1500000 1383000
+  # max_freq 1500000 1383000
+  max_freq 1812000 1933000
 
-  gpu_dvfs 1
+  gpu_dvfs 0
   echo 358000 > /proc/gpufreq/gpufreq_opp_freq
 
-  cpuset 0-2 0-3 0-7 0-7 0-3
+  cpuset 3 2-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 0 20
-  cpufreq 1 0
+  eas 0 2
+  # cpufreq 1 0
   echo 0 > /proc/ufs_perf
 
 	exit 0
@@ -111,15 +121,15 @@ elif [[ "$action" = "balance" ]]; then
   ppm policy_status "9 0"
 
   min_freq 500000 774000
-  max_freq 2000000 1933000
+  max_freq 2000000 2266000
 
   gpu_dvfs 1
 
   cpuset 1-3 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 0 10
-  cpufreq 0 0
+  eas 0 0
+  # cpufreq 0 0
   echo 0 > /proc/ufs_perf
 
 	exit 0
@@ -139,11 +149,11 @@ elif [[ "$action" = "performance" ]]; then
 
   gpu_dvfs 1
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 2-3 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
-  eas 50 0
-  cpufreq 3 1
+  eas 10 0
+  # cpufreq 3 1
   echo 2 > /proc/ufs_perf
 
 	exit 0
@@ -166,8 +176,8 @@ elif [[ "$action" = "fast" ]]; then
   cpuset 1 0-3 0-7 0-7 0-3
 
   echo 0 > /proc/cpuidle/enable
-  eas 100 0
-  cpufreq 3 1
+  eas 20 0
+  # cpufreq 3 1
   echo 2 > /proc/ufs_perf
 
   exit 0
