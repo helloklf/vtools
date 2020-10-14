@@ -116,9 +116,9 @@ class ActivityMagisk : ActivityBase() {
                 Toast.makeText(context, "保存失败!_*", Toast.LENGTH_LONG).show()
             }
         }
-        adapterFileSelector = AdapterRootFileSelector(RootFileInfo(MagiskExtend.MAGISK_PATH + "system"), Runnable {
+        adapterFileSelector = AdapterRootFileSelector(RootFileInfo(MagiskExtend.MAGISK_PATH + "system"), {
             val file: RootFileInfo? = adapterFileSelector!!.selectedFile
-        }, ProgressBarDialog(context), null, false, true, Runnable {
+        }, ProgressBarDialog(context), null, false, true, {
             val file: RootFileInfo? = adapterFileSelector!!.selectedFile
             if (file != null) {
                 RootFile.deleteDirOrFile(file.absolutePath)
