@@ -157,7 +157,7 @@
     <string name="battery_status_full">【已充满】</string>
     <string name="battery_status_not_charging">【未充电】</string>
     <string name="battery_status_unknown">【状态未知】</string>
-    <string name="battery_status_sum">（共充入 %smAh）</string>
+    <string name="battery_status_sum">（大约充入 %smAh）</string>
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>

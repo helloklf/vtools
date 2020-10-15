@@ -73,7 +73,7 @@ else
         MemMemFree=${MemMemFreeStr:16:8}
 
         # 如果内存已经回收足够，提前结束
-        if [[ $MemMemFree -gt $TargetRecycle ]]; then
+        if [[ $(($TargetRecycle - $MemMemFree)) -lt 100 ]]; then
           break
         fi
 

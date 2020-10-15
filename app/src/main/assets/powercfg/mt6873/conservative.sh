@@ -24,7 +24,7 @@ function min_freq() {
 # 902000 890000 878000 866000 855000 843000 831000 819000 807000 795000 783000 772000 760000 748000 736000 724000 712000
 # 700000 688000 667000 647000 626000 605000 585000 564000 543000 523000 502000 482000 461000 440000 420000 399000 378000 358000
 function gpu_dvfs() {
-    echo $1 > /sys/module/ged/parameters/gpu_dvfs_enable
+    # echo $1 > /sys/module/ged/parameters/gpu_dvfs_enable
     echo $1 > /proc/mali/dvfs_enable
     if [[ "$1" == "1" ]]; then
       echo 0 > /proc/gpufreq/gpufreq_opp_freq
