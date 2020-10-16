@@ -51,7 +51,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     }
 
     private lateinit var spf: SharedPreferences
-    private var modeList = ModeSwitcher()
     private var myHandler = Handler(Looper.getMainLooper())
     private var cpuLoadUtils = CpuLoadUtils()
 
@@ -374,9 +373,10 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     }
 
     private fun installConfig(action: String, message: String) {
+        val modeSwitcher = ModeSwitcher()
         val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        if (!dynamic && modeList.getCurrentPowerMode() == action) {
-            modeList.setCurrent("", "")
+        if (!dynamic && modeSwitcher.getCurrentPowerMode() == action) {
+            modeSwitcher.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("提示")
@@ -389,11 +389,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             setModeState()
             return
         }
-        if (modeList.modeConfigCompleted()) {
-            modeList.executePowercfgMode(action, context!!.packageName)
+        if (modeSwitcher.modeConfigCompleted()) {
+            modeSwitcher.executePowercfgMode(action, context!!.packageName)
         } else {
             CpuConfigInstaller().installOfficialConfig(context!!)
-            modeList.executePowercfgMode(action)
+            modeSwitcher.executePowercfgMode(action)
         }
         setModeState()
         showMsg(message)

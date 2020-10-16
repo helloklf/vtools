@@ -55,7 +55,7 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
-                android:paddingRight="0dp"
+                android:paddingEnd="0dp"
                 android:paddingBottom="4dp">
 
                 <TextView
@@ -72,7 +72,7 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
-                android:paddingRight="0dp"
+                android:paddingEnd="0dp"
                 android:paddingBottom="4dp">
 
                 <TextView
@@ -89,7 +89,7 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
-                android:paddingRight="0dp"
+                android:paddingEnd="0dp"
                 android:paddingBottom="4dp">
 
                 <TextView
@@ -106,7 +106,7 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
-                android:paddingRight="0dp">
+                android:paddingEnd="0dp">
 
                 <TextView
                     style="@style/textTitle"

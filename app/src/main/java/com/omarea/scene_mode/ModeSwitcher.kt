@@ -182,4 +182,8 @@ open class ModeSwitcher {
                 storage.exists(PERFORMANCE) ||
                 storage.exists(FAST)
     }
+
+    public fun clearInitedState () {
+        inited = false
+    }
 }

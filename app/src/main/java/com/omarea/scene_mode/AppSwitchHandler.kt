@@ -57,6 +57,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
      * 更新设置
      */
     private fun updateConfig() {
+        clearInitedState()
         lastMode = ""
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
 
