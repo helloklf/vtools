@@ -28,6 +28,8 @@ function gpu_dvfs() {
     echo $1 > /proc/mali/dvfs_enable
     if [[ "$1" == "1" ]]; then
       echo 0 > /proc/gpufreq/gpufreq_opp_freq
+    elif [[ "$2" != "" ]]; then
+      echo "$2" > /proc/gpufreq/gpufreq_opp_freq
     else
       echo 902000 > /proc/gpufreq/gpufreq_opp_freq
     fi
@@ -147,7 +149,7 @@ elif [[ "$action" = "performance" ]]; then
   min_freq 500000 774000
   max_freq 2000000 2600000
 
-  gpu_dvfs 1
+  gpu_dvfs 0 807000
 
   cpuset 2-3 0-3 0-7 0-7 0-3
 
@@ -171,7 +173,7 @@ elif [[ "$action" = "fast" ]]; then
   min_freq 1812000 1633000
   max_freq 2000000 2600000
 
-  gpu_dvfs 0
+  gpu_dvfs 0 902000
 
   cpuset 1 0-3 0-7 0-7 0-3
 

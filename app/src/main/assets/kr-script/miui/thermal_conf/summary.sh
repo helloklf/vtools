@@ -41,6 +41,9 @@ case "$mode" in
     "danger")
         modename="丧心病狂 (danger)"
     ;;
+    "game")
+        modename="游戏模式 (game)"
+    ;;
     "")
         modename="未替换"
     ;;

@@ -11,7 +11,7 @@ function resource() {
     echo "  <resource dir=\"$1\" />"
 }
 function group_start() {
-    echo "  <group title=\"$1\">"
+    echo "  <group id=\"@$1\" title=\"$1\">"
 }
 function group_end() {
     echo "  </group>"
@@ -84,7 +84,7 @@ function gpu_render() {
     local freqs=`cat /proc/gpufreq/gpufreq_opp_dump | awk '{printf $4 "\n"}' | cut -f1 -d ","`
     local get_shell="cat /proc/gpufreq/gpufreq_opp_freq | grep freq | awk '{printf \$4 \"\\\\n\"}' | cut -f1 -d ','"
 
-    echo "      <picker title=\"固定频率\" shell=\"hidden\">"
+    echo "      <picker title=\"固定频率\" shell=\"hidden\" reload=\"@GPU\">"
     echo "          <options>"
     echo "            <option value=\"0\">不固定</option>"
     for freq in $freqs
@@ -93,8 +93,14 @@ function gpu_render() {
     done
     echo "          </options>"
     echo "          <get>$get_shell</get>"
-    echo "          <set>echo \$state &gt; /proc/gpufreq/gpufreq_opp_freq</set>"
+    echo "          <set>$import_utils gpu_freq</set>"
     echo "      </picker>"
+
+
+    local dvfs=/proc/mali/dvfs_enable
+    if [[ -f $dvfs ]]; then
+      switch_hidden "动态调频调压(DVFS)" "cat $dvfs" "echo \$state > $dvfs"
+    fi
 }
 
 function cpu_render() {
@@ -133,9 +139,9 @@ xml_start
         ppm_render
     group_end
 
-    group_start 'GED'
-        ged_render
-    group_end
+    # group_start 'GED'
+    #     ged_render
+    # group_end
 
 if [[ -f /proc/gpufreq/gpufreq_opp_freq ]]
 then

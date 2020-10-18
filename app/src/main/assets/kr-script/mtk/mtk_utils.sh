@@ -25,3 +25,15 @@ function eas_set() {
     echo 2 > /sys/devices/system/cpu/eas/enable
   fi
 }
+
+function gpu_freq() {
+  local dvfs=/proc/mali/dvfs_enable
+  if [[ -f $dvfs ]]; then
+    if [[ "$state" == "0" ]]; then
+      echo 1 > $dvfs
+    else
+      echo 0 > $dvfs
+    fi
+  fi
+  echo $state > /proc/gpufreq/gpufreq_opp_freq
+}
