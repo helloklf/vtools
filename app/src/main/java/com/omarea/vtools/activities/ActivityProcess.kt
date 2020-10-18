@@ -186,6 +186,27 @@ class ActivityProcess : ActivityBase() {
             }
             val dialog = AlertDialog.Builder(this).setView(view).create()
 
+            /*
+            # Android Q 可通过 /proc/[pid]/reclaim 手动回收内存
+            # 示例，回收当个应用的内存
+            pgrep -f com.tencent.mobileqq | while read line ; do
+              echo all > /proc/$line/reclaim
+            done
+
+            # 示例，回收所有第三方应用的内存（遍历效率低）
+            pm list packages | cut -f2 -d ':' |  while read app ; do
+              echo $app
+              pgrep -f $app | while read pid; do
+                echo all > /proc/$pid/reclaim
+              done
+            done
+
+            # 示例，回收所有后台应用的内存（遍历效率略高）
+            cat /dev/cpuset/background/tasks | while read line ; do
+              echo all > /proc/$line/reclaim 2>/dev/null
+            done
+            */
+
             view.run {
                 findViewById<TextView>(R.id.ProcessFriendlyName).text = detail.friendlyName
                 findViewById<TextView>(R.id.ProcessName).text = detail.name
