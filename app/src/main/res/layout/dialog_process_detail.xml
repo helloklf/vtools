@@ -36,12 +36,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="PID" />
 
@@ -54,7 +54,7 @@
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="User" />
 
@@ -69,12 +69,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="CPU占用" />
 
@@ -87,7 +87,7 @@
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="RSS" />
 
@@ -102,12 +102,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="应用名" />
 
@@ -122,12 +122,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="命令" />
 
@@ -142,12 +142,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:text="命令行" />
 
@@ -162,14 +162,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/textSmallTitle"
-                android:layout_width="55dp"
+                android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="CPUSET" />
+                android:text="cpuset" />
 
             <TextView
                 android:id="@+id/ProcessCpuSet"
@@ -182,7 +182,60 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:text="cgroup" />
+
+            <TextView
+                android:id="@+id/ProcessCGroup"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:text="oom_adj" />
+
+            <TextView
+                android:id="@+id/ProcessOOMADJ"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:text="oom_score" />
+
+            <TextView
+                android:id="@+id/ProcessOOMScore"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="end"
             android:orientation="horizontal">
 

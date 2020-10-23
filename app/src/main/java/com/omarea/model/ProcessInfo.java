@@ -12,4 +12,7 @@ public class ProcessInfo {
     public String friendlyName = "";
 
     public String cpuSet;
+    public String cGroup;
+    public String oomAdj;
+    public String oomScore;
 }

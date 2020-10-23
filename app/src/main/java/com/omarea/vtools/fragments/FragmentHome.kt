@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.CpuFrequencyUtil
@@ -100,14 +101,17 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
 
         home_clear_swap.setOnClickListener {
-            home_zramsize_text.text = getText(R.string.please_wait)
-            Thread(Runnable {
-                KeepShellPublic.doCmdSync("sync\n" +
-                        "echo 1 > /proc/sys/vm/compact_memory")
-                myHandler.post {
-                    Scene.toast("已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT)
-                }
-            }).start()
+            if (RootFile.fileExists("/proc/1/reclaim")) {
+                Thread {
+                    KeepShellPublic.doCmdSync(
+                            "sync\n" +
+                            "echo 1 > /proc/sys/vm/compact_memory")
+                    myHandler.post {
+                        Scene.toast("已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT)
+                    }
+                }.start()
+                home_zramsize_text.text = getText(R.string.please_wait)
+            }
         }
 
         home_clear_swap.setOnLongClickListener {

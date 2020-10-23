@@ -203,7 +203,14 @@ class ActivityProcess : ActivityBase() {
 
             # 示例，回收所有后台应用的内存（遍历效率略高）
             cat /dev/cpuset/background/tasks | while read line ; do
-              echo all > /proc/$line/reclaim 2>/dev/null
+              echo all > /proc/$line/reclaim 2>/dev/null 2> /dev/null
+            done
+
+            # 示例，回收所有后台应用的内存（加强 只过滤空进程）
+            cat /dev/cpuset/background/tasks | while read line ; do
+              if [[ -f /proc/$line/oom_adj ]] && [[ `cat /proc/$line/oom_adj` == 15 ]]; then
+                echo all > /proc/$line/reclaim 2>/dev/null
+              fi
             done
             */
 
@@ -214,7 +221,10 @@ class ActivityProcess : ActivityBase() {
                 findViewById<TextView>(R.id.ProcessCmdline).text = detail.cmdline
                 findViewById<TextView>(R.id.ProcessPID).text = detail.pid.toString()
                 findViewById<TextView>(R.id.ProcessCPU).text = detail.cpu.toString() + "%"
-                findViewById<TextView>(R.id.ProcessCpuSet).text = "" + detail.cpuSet
+                findViewById<TextView>(R.id.ProcessCpuSet).text = "" + detail.cpuSet.toString()
+                findViewById<TextView>(R.id.ProcessCGroup).text = "" + detail.cGroup
+                findViewById<TextView>(R.id.ProcessOOMADJ).text = "" + detail.oomAdj
+                findViewById<TextView>(R.id.ProcessOOMScore).text = "" + detail.oomScore
                 if (processInfo.rss > 8192) {
                     findViewById<TextView>(R.id.ProcessRSS).text = (detail.rss / 1024).toInt().toString() + "MB"
                 } else {
