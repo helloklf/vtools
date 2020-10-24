@@ -331,6 +331,21 @@
         <item>系统应用</item>
         <item>所有应用</item>
     </string-array>
+
+    <string name="cgroup_mem_title">cgroup</string>
+    <string-array name="cgroup_mem_options">
+        <item>应用级(默认)</item>
+        <item>游戏级(禁止SWAP)</item>
+        <item>常驻级(常驻内存)</item>
+        <item>系统级(常驻内存+禁止SWAP)</item>
+    </string-array>
+    <string-array name="cgroup_mem_values">
+        <item></item>
+        <item>scene_perf</item>
+        <item>scene_lock</item>
+        <item>scene_sys</item>
+    </string-array>
+
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>
     <string name="title_activity_file_selector">请选择文件</string>

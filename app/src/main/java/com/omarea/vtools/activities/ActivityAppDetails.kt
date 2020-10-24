@@ -20,6 +20,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.permissions.NotificationListener
+import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.model.SceneConfigInfo
 import com.omarea.permissions.WriteSettings
 import com.omarea.scene_mode.ImmersivePolicyControl
@@ -306,7 +307,7 @@ class ActivityAppDetails : ActivityBase() {
                 addAll(resources.getStringArray(R.array.powercfg_options_values))
             }
             val index = values.indexOf(currentMode)
-            var selectedIndex = index
+            var selectedIndex = if (index < 0) 0 else index
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
                     .setSingleChoiceItems(R.array.powercfg_options_menu, index) { dialog, which ->
@@ -322,12 +323,42 @@ class ActivityAppDetails : ActivityBase() {
                                     putString(app, modeName)
                                 }
                             }.apply()
-                            app_details_dynamic.text = ModeSwitcher.getModName(modeName)
+                            (it as TextView).text = ModeSwitcher.getModName(modeName)
                             _result = RESULT_OK
                             notifyService(app, modeName)
                         }
                     }
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
+        }
+
+        val groupNames = ArrayList<String>().apply {
+            addAll(resources.getStringArray(R.array.cgroup_mem_options))
+        }
+        val groupValues = ArrayList<String>().apply {
+            addAll(resources.getStringArray(R.array.cgroup_mem_values))
+        }
+        app_details_cgroup_mem.setOnClickListener {
+            val utlis = CGroupMemoryUtlis(this)
+            if (!utlis.isSupported) {
+                DialogHelper.helpInfo(this, "", "抱歉，您的内核不支持该功能特性~")
+                return@setOnClickListener
+            }
+
+            val index = groupValues.indexOf(sceneConfigInfo.fgCGroupMem)
+            var selectedIndex = if (index < 0) 0 else index
+            DialogHelper.animDialog(AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.cgroup_mem_title))
+                    .setSingleChoiceItems(R.array.cgroup_mem_options, index) { dialog, which ->
+                        selectedIndex = which
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                        if (index != selectedIndex) {
+                            sceneConfigInfo.fgCGroupMem = groupValues[selectedIndex]
+                            (it as TextView).text = groupNames[selectedIndex]
+                            _result = RESULT_OK
+                        }
+                    }
+                    .setNegativeButton(R.string.btn_cancel, { dialog, which -> }))
         }
 
         app_details_hidenav.setOnClickListener {
@@ -527,6 +558,14 @@ class ActivityAppDetails : ActivityBase() {
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
         app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
+        val groupNames = ArrayList<String>().apply {
+            addAll(resources.getStringArray(R.array.cgroup_mem_options))
+        }
+        val groupValues = ArrayList<String>().apply {
+            addAll(resources.getStringArray(R.array.cgroup_mem_values))
+        }
+        app_details_cgroup_mem.text = if (groupValues.contains(sceneConfigInfo.fgCGroupMem)) groupNames[groupValues.indexOf(sceneConfigInfo.fgCGroupMem)] else groupNames.first()
+
         if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true
             app_details_hidestatus.isChecked = true
@@ -594,7 +633,9 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.dpi != originConfig.dpi ||
                 sceneConfigInfo.excludeRecent != originConfig.excludeRecent ||
                 sceneConfigInfo.smoothScroll != originConfig.smoothScroll ||
-                sceneConfigInfo.freeze != originConfig.freeze
+                sceneConfigInfo.freeze != originConfig.freeze ||
+                sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
+                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem
         ) {
             setResult(RESULT_OK, this.intent)
         } else {

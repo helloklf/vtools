@@ -1,17 +1,24 @@
 if [[ -d /dev/memcg ]]; then
-    scene_fg="/dev/memcg/scene_fg"
+    scene_memcg="/dev/memcg"
 elif [[ -d /sys/fs/cgroup ]]; then
-    scene_fg="/sys/fs/cgroup/scene_fg"
+    scene_memcg="/sys/fs/cgroup/memory"
 fi
 
-if [[ "$scene_fg" != "" ]]; then
-    if [[ ! -d $scene_fg ]]; then
-      mkdir $scene_fg
-      echo 0 > $scene_fg/memory.swappiness
-      echo 1 > $scene_fg/memory.oom_control
+function init_group() {
+    local g=$scene_memcg/$1
+    if [[ ! -d $g ]]; then
+      mkdir $g
     fi
+    echo $2 > $g/memory.swappiness
+    echo $3 > $g/memory.oom_control
+}
+
+if [[ "$scene_memcg" != "" ]]; then
+    init_group scene_lock 100 1
+    init_group scene_perf 0 0
+    init_group scene_sys 0 1
 
     pgrep -f %s | while read pid; do
-        echo $pid > $scene_fg/tasks
+        echo $pid > $scene_memcg/%s/tasks
     done
 fi

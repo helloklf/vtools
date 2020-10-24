@@ -33,7 +33,7 @@ class FloatMonitor(private val mContext: Context) {
     private var timer: Timer? = null
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
-    private var CpuFrequencyUtil = CpuFrequencyUtil()
+    private var CpuFrequencyUtil = CpuFrequencyUtils()
 
     private val globalSPF = mContext.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 

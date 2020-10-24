@@ -10,7 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     public SceneConfigStore(Context context) {
         super(context, "scene3_config", null, DB_VERSION);
@@ -19,7 +19,8 @@ public class SceneConfigStore extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            db.execSQL("create table scene_config3(" +
+            db.execSQL(
+                "create table scene_config3(" +
                     "id text primary key, " + // id
                     "alone_light int default(0), " + // 独立亮度
                     "light int default(-1), " + // 亮度
@@ -27,8 +28,10 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     "dis_button int default(0)," + // 停用按键
                     "gps_on int default(0)," + // 打开GPS
                     "freeze int default(0)," + // 休眠
-                    "screen_orientation int default(-1)" + // 屏幕旋转方向
-                    ")");
+                    "screen_orientation int default(-1)," + // 屏幕旋转方向
+                    "fg_cgroup_mem text default('')," + // cgroup
+                    "bg_cgroup_mem text default('')" + // cgroup
+                ")");
         } catch (Exception ignored) {
         }
     }
@@ -39,6 +42,15 @@ public class SceneConfigStore extends SQLiteOpenHelper {
             // 屏幕方向
             try {
                 db.execSQL("alter table scene_config3 add column screen_orientation int default(-1)");
+            } catch (Exception ignored) {
+            }
+        }
+
+        if (oldVersion == 3) {
+            // 屏幕方向
+            try {
+                db.execSQL("alter table scene_config3 add column fg_cgroup_mem text default('')");
+                db.execSQL("alter table scene_config3 add column bg_cgroup_mem text default('')");
             } catch (Exception ignored) {
             }
         }
@@ -58,6 +70,8 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                 sceneConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
                 sceneConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
                 sceneConfigInfo.screenOrientation = cursor.getInt(cursor.getColumnIndex("screen_orientation"));
+                sceneConfigInfo.fgCGroupMem = cursor.getString(cursor.getColumnIndex("fg_cgroup_mem"));
+                sceneConfigInfo.bgCGroupMem = cursor.getString(cursor.getColumnIndex("bg_cgroup_mem"));
             }
             cursor.close();
             sqLiteDatabase.close();
@@ -72,7 +86,7 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         getWritableDatabase().beginTransaction();
         try {
             database.execSQL("delete from  scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
-            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation) values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation, fg_cgroup_mem, bg_cgroup_mem) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     sceneConfigInfo.packageName,
                     sceneConfigInfo.aloneLight ? 1 : 0,
                     sceneConfigInfo.aloneLightValue,
@@ -80,7 +94,9 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     sceneConfigInfo.disButton ? 1 : 0,
                     sceneConfigInfo.gpsOn ? 1 : 0,
                     sceneConfigInfo.freeze ? 1 : 0,
-                    sceneConfigInfo.screenOrientation
+                    sceneConfigInfo.screenOrientation,
+                    sceneConfigInfo.fgCGroupMem,
+                    sceneConfigInfo.bgCGroupMem
             });
             database.setTransactionSuccessful();
             return true;

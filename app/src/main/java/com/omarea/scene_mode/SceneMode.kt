@@ -7,14 +7,13 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.Scene
-import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.library.shell.GAppsUtilis
 import com.omarea.library.shell.LocationHelper
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatScreenRotation
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
@@ -22,14 +21,6 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-    // 是否启用正在试验中的功能特性
-    private val labsFeature = false // Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-
-    // 热门游戏
-    private val hotGame = arrayListOf<String>().apply {
-        addAll(Scene.context.resources.getStringArray(R.array.hot_game))
-    }
 
     // 偏见应用解冻数量限制
     private val freezAppLimit: Int
@@ -336,6 +327,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         if (sceneConfigInfo.freeze) {
             setFreezeAppLeaveTime(sceneConfigInfo.packageName)
         }
+
         if (sceneConfigInfo.aloneLight) {
             // 独立亮度 记录最后的亮度值
             try {
@@ -345,6 +337,18 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                     store.setAppConfig(sceneConfigInfo)
                 }
             } catch (ex: java.lang.Exception) {
+            }
+        }
+
+        // 实验性新特性（cgroup/memory自动配置）
+        if (currentSceneConfig?.bgCGroupMem?.isNotEmpty() == true && currentSceneConfig?.fgCGroupMem != currentSceneConfig?.bgCGroupMem) {
+            CGroupMemoryUtlis(Scene.context).run {
+                if (isSupported) {
+                    setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.bgCGroupMem)
+                    Scene.toast(currentSceneConfig!!.packageName!! + "退出，cgroup调为[${currentSceneConfig!!.bgCGroupMem}]\n(Scene试验性功能)")
+                } else {
+                    Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                }
             }
         }
     }
@@ -411,19 +415,15 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         }
 
         // 实验性新特性（cgroup/memory自动配置）
-        if (labsFeature && hotGame.contains(packageName) && config.getBoolean(SpfConfig.GLOBAL_SPF_SWAP_FG_OPT, true)) {
-            memcgConfig(packageName)
-        }
-    }
-
-    private var memcgShell: String? = null
-    private fun memcgConfig(packageName: String) {
-        if (memcgShell == null) {
-            memcgShell = RawText.getRawText(Scene.context, R.raw.memcg_set)
-        }
-        if (memcgShell != null) {
-            KeepShellPublic.doCmdSync(String.format(memcgShell!!, packageName))
-            Scene.toast("已为游戏进程优化部分配置(Scene试验性功能)")
+        if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
+            CGroupMemoryUtlis(Scene.context).run {
+                if (isSupported) {
+                    setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
+                    Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                } else {
+                    Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                }
+            }
         }
     }
 

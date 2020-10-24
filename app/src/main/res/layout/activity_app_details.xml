@@ -101,6 +101,27 @@
                             android:paddingBottom="8dp" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/scene_config_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="内存管理(cgroup)" />
+
+                        <TextView
+                            android:id="@+id/app_details_cgroup_mem"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical|end"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="8dp" />
+                    </LinearLayout>
+
                     <Switch
                         android:id="@+id/app_details_aloowlight"
                         style="@style/scene_config_item"

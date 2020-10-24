@@ -20,7 +20,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data.GlobalStatus
-import com.omarea.library.shell.CpuFrequencyUtil
+import com.omarea.library.shell.CpuFrequencyUtils
 import com.omarea.library.shell.CpuLoadUtils
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.SwapUtils
@@ -44,7 +44,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    private var CpuFrequencyUtil = CpuFrequencyUtil()
+    private var CpuFrequencyUtil = CpuFrequencyUtils()
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
     private fun showMsg(msg: String) {

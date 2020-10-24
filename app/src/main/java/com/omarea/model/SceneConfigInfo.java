@@ -20,6 +20,10 @@ public class SceneConfigInfo {
     // 屏幕旋转方向
     public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
+    // cgroup - memory
+    public String fgCGroupMem = "";
+    public String bgCGroupMem = "";
+
     // Xposed
     public int dpi = -1;
     public boolean excludeRecent = false;

@@ -4,7 +4,7 @@ import android.content.Context
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.ObjectStorage
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.library.shell.CpuFrequencyUtil
+import com.omarea.library.shell.CpuFrequencyUtils
 import com.omarea.model.CpuStatus
 import java.io.File
 
@@ -36,7 +36,7 @@ class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(
             KeepShellPublic.doCmdSync(FileWrite.getPrivateFilePath(context, configFile + ".sh"))
         } else if (exists(name)) {
             load(name)?.run {
-                val commands = CpuFrequencyUtil().buikdShell(this).joinToString("\n")
+                val commands = CpuFrequencyUtils().buikdShell(this).joinToString("\n")
                 saveCache(commands, name)
                 KeepShellPublic.doCmdSync(commands)
             }

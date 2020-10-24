@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CpuFrequencyUtil {
+public class CpuFrequencyUtils {
     private static String platform;
     private final String cpu_dir = "/sys/devices/system/cpu/cpu0/";
     private final String cpufreq_sys_dir = "/sys/devices/system/cpu/cpu0/cpufreq/";

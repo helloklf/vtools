@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
-import com.omarea.library.shell.CpuFrequencyUtil
+import com.omarea.library.shell.CpuFrequencyUtils
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.ThermalControlUtils
 import com.omarea.model.CpuClusterStatus
@@ -47,7 +47,7 @@ class ActivityCpuControl : ActivityBase() {
     val cluterGovernors: HashMap<Int, Array<String>> = HashMap()
 
     private val thermalControlUtils = ThermalControlUtils()
-    private val CpuFrequencyUtil = CpuFrequencyUtil()
+    private val CpuFrequencyUtil = CpuFrequencyUtils()
     var qualcommThermalSupported: Boolean = false
 
     private fun initData() {
@@ -602,13 +602,13 @@ class ActivityCpuControl : ActivityBase() {
         return cores.toTypedArray()
     }
 
-    class OnSeekBarChangeListener(private var up: Boolean, private var cpuFrequencyUtil: CpuFrequencyUtil) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var up: Boolean, private var cpuFrequencyUtils: CpuFrequencyUtils) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             if (seekBar != null) {
                 if (up)
-                    cpuFrequencyUtil.setExynosHmpUP(seekBar.progress)
+                    cpuFrequencyUtils.setExynosHmpUP(seekBar.progress)
                 else
-                    cpuFrequencyUtil.setExynosHmpDown(seekBar.progress)
+                    cpuFrequencyUtils.setExynosHmpDown(seekBar.progress)
             }
         }
 
