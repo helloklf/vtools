@@ -15,7 +15,6 @@ import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.vtools.R
-import java.lang.StringBuilder
 import java.nio.charset.Charset
 import java.util.*
 

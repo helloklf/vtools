@@ -5,19 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.omarea.data.customer.BatteryReceiver
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.customer.BatteryReceiver
 
 class BatteryState(private val applicationContext: Context) : BroadcastReceiver() {
 
     // 最后的电量百分比（用于判断是否有电量变化）
     private var lastCapacity = 0
+
     // 最后的充电状态（用于判断是否有状态）
     private var lastStatus = BatteryManager.BATTERY_STATUS_UNKNOWN
+
     // bms
-    private var batteryManager:BatteryManager? = null
+    private var batteryManager: BatteryManager? = null
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action

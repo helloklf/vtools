@@ -8,8 +8,8 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
-import com.omarea.data.customer.ChargeCurve
 import com.omarea.data.EventBus
+import com.omarea.data.customer.ChargeCurve
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
@@ -27,19 +27,23 @@ class Scene : Application() {
                 Toast.makeText(context, message, time).show()
             }
         }
+
         public fun toast(message: String) {
             handler.post {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
+
         public fun toast(message: Int, time: Int) {
             handler.post {
                 Toast.makeText(context, message, time).show()
             }
         }
+
         public fun post(runnable: Runnable) {
             handler.post(runnable)
         }
+
         public fun postDelayed(runnable: Runnable, delayMillis: Long) {
             handler.postDelayed(runnable, delayMillis)
         }

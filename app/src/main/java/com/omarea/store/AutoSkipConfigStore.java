@@ -5,11 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.omarea.model.ChargeSpeedHistory;
-import com.omarea.model.ChargeTimeHistory;
-
-import java.util.ArrayList;
-
 public class AutoSkipConfigStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
@@ -52,14 +47,15 @@ public class AutoSkipConfigStore extends SQLiteOpenHelper {
                     activity
             });
             try {
-                if(cursor.moveToNext()) {
+                if (cursor.moveToNext()) {
                     return cursor.getString(0);
                 }
             } finally {
                 cursor.close();
                 sqLiteDatabase.close();
             }
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 

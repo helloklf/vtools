@@ -7,8 +7,9 @@ package com.omarea.library.shell
 
 class PlatformUtils {
     companion object {
-        private var cpu:String? = null
+        private var cpu: String? = null
     }
+
     //获取CPU型号，如msm8996
     fun getCPUName(): String {
         if (cpu == null) {

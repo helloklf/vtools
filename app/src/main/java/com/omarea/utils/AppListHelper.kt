@@ -134,7 +134,7 @@ class AppListHelper(context: Context) {
             Appinfo.AppType.SYSTEM
         } else if ((appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) {
             Appinfo.AppType.USER
-        } else  {
+        } else {
             Appinfo.AppType.SYSTEM
         })
 

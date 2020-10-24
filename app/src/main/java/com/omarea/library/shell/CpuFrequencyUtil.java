@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CpuFrequencyUtil {
+    private static String platform;
     private final String cpu_dir = "/sys/devices/system/cpu/cpu0/";
     private final String cpufreq_sys_dir = "/sys/devices/system/cpu/cpu0/cpufreq/";
     private final String scaling_min_freq = cpufreq_sys_dir + "scaling_min_freq";
@@ -20,18 +21,17 @@ public class CpuFrequencyUtil {
     // private  final  String scaling_cur_freq = cpufreq_sys_dir + "cpuinfo_cur_freq";
     private final String scaling_max_freq = cpufreq_sys_dir + "scaling_max_freq";
     private final String scaling_governor = cpufreq_sys_dir + "scaling_governor";
-
+    private final Object cpuClusterInfoLoading = true;
     private ArrayList<String[]> cpuClusterInfo;
+    private SceneJNI JNI = new SceneJNI();
+    private int coreCount = -1;
 
-    private static String platform;
     private boolean isMTK() {
         if (platform == null) {
             platform = new PlatformUtils().getCPUName();
         }
         return platform.startsWith("mt");
     }
-
-    private SceneJNI JNI = new SceneJNI();
 
     private String getCpuFreqValue(String path) {
         long freqValue = JNI.getKernelPropLong(path);
@@ -157,6 +157,32 @@ public class CpuFrequencyUtil {
         }
     }
 
+    /*
+    public String getInputBoosterFreq() {
+        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_freq");
+    }
+
+    public void setInputBoosterFreq(String freqs) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
+        commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
+
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public String getInputBoosterTime() {
+        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_ms");
+    }
+
+    public void setInputBoosterTime(String time) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
+        commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
+
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+    */
+
     public void setMaxFrequency(String maxFrequency, Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return;
@@ -205,27 +231,8 @@ public class CpuFrequencyUtil {
     }
 
     /*
-    public String getInputBoosterFreq() {
-        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_freq");
-    }
-
-    public void setInputBoosterFreq(String freqs) {
+    public void setCoresOnlineState(boolean[] coreStates) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
-        commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
-
-        KeepShellPublic.INSTANCE.doCmdSync(commands);
-    }
-
-    public String getInputBoosterTime() {
-        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_ms");
-    }
-
-    public void setInputBoosterTime(String time) {
-        ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
-        commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
-
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
     */
@@ -243,13 +250,6 @@ public class CpuFrequencyUtil {
         commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
-
-    /*
-    public void setCoresOnlineState(boolean[] coreStates) {
-        ArrayList<String> commands = new ArrayList<>();
-        KeepShellPublic.INSTANCE.doCmdSync(commands);
-    }
-    */
 
     public int getExynosHmpUP() {
         String up = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/up_threshold").trim();
@@ -313,7 +313,6 @@ public class CpuFrequencyUtil {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    private int coreCount = -1;
     public int getCoreCount() {
         if (coreCount > -1) {
             return coreCount;
@@ -331,7 +330,6 @@ public class CpuFrequencyUtil {
         return coreCount;
     }
 
-    private final Object cpuClusterInfoLoading = true;
     public ArrayList<String[]> getClusterInfo() {
         if (cpuClusterInfo != null) {
             return cpuClusterInfo;
@@ -420,8 +418,8 @@ public class CpuFrequencyUtil {
                     if (isMTK()) {
                         for (int cluster = 0; cluster < params.size(); cluster++) {
                             CpuClusterStatus config = params.get(cluster);
-                            commands.add(String.format(Locale.getDefault(),"echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.min_freq));
-                            commands.add(String.format(Locale.getDefault(),"echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.max_freq));
+                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.min_freq));
+                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.max_freq));
                         }
                     } else {
                         for (int cluster = 0; cluster < params.size(); cluster++) {

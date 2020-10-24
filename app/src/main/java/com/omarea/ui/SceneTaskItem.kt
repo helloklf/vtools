@@ -38,7 +38,7 @@ class SceneTaskItem : LinearLayout {
         }
 
         val timePrefix = if (taskInfo.expireDate < 1) ("每天，") else ""
-        system_scene_task_time.text = (if(taskInfo.enabled) "● " else "○ ") + timePrefix + getTimeStr(taskInfo)
+        system_scene_task_time.text = (if (taskInfo.enabled) "● " else "○ ") + timePrefix + getTimeStr(taskInfo)
         system_scene_task_content.text = getTaskContentText(taskInfo)
     }
 

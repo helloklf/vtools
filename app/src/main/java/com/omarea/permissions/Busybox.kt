@@ -6,7 +6,6 @@ import android.os.Build
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.library.shell.PropsUtils
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*

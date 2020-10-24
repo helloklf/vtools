@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.omarea.vtools.R
 
 class FloatLogView(mContext: Context) {
-    private var view: View = LayoutInflater.from(mContext).inflate(R.layout.fw_logview,null)
+    private var view: View = LayoutInflater.from(mContext).inflate(R.layout.fw_logview, null)
     private var logView: TextView = view.findViewById(R.id.fw_logs)
 
     private var params: WindowManager.LayoutParams = WindowManager.LayoutParams().apply {
@@ -24,7 +24,7 @@ class FloatLogView(mContext: Context) {
         type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         if (mContext is AccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {
             type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT

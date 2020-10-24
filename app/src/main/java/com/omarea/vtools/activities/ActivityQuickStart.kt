@@ -114,6 +114,7 @@ class ActivityQuickStart : Activity() {
     }
 
     private var hasRoot = false
+
     @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     private fun checkRoot(next: Runnable) {
         val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

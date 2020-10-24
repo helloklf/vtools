@@ -247,7 +247,7 @@ class ActivityCpuControl : ActivityBase() {
                             }
                         })
             }
-            if(adrenoGPU) {
+            if (adrenoGPU) {
                 adreno_gpu_min_pl.setOnClickListener {
                     var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
                     if (currentIndex < 0) {
@@ -420,7 +420,7 @@ class ActivityCpuControl : ActivityBase() {
         }
     }
 
-    private fun getClusterFreqs(cluster: Int) : Array<String> {
+    private fun getClusterFreqs(cluster: Int): Array<String> {
         val freqs = cluterFreqs[cluster]
         if (freqs == null || freqs.size < 2) {
             cluterFreqs[cluster] = CpuFrequencyUtil.getAvailableFrequencies(cluster)
@@ -428,7 +428,7 @@ class ActivityCpuControl : ActivityBase() {
         return cluterFreqs[cluster]!!
     }
 
-    private fun getClusterGovernors(cluster: Int) : Array<String> {
+    private fun getClusterGovernors(cluster: Int): Array<String> {
         val freqs = cluterGovernors[cluster]
         if (freqs == null || freqs.size < 2) {
             cluterFreqs[cluster] = CpuFrequencyUtil.getAvailableGovernors(cluster)
@@ -876,6 +876,7 @@ class ActivityCpuControl : ActivityBase() {
 
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cpu_control)

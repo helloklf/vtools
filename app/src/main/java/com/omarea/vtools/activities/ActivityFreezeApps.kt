@@ -16,7 +16,10 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.Filterable
+import android.widget.SeekBar
+import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -137,12 +140,14 @@ class ActivityFreezeApps : ActivityBase() {
         freeze_time_limit.run {
             progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2)
             freeze_time_limit_text.text = progress.toString()
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     freeze_time_limit_text.text = progress.toString()
                 }
+
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 }
+
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     seekBar?.run {
                         config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress).apply()
@@ -153,13 +158,15 @@ class ActivityFreezeApps : ActivityBase() {
 
         freeze_item_limit.run {
             progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
-            freeze_item_limit_text.text =  progress.toString()
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            freeze_item_limit_text.text = progress.toString()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     freeze_item_limit_text.text = progress.toString()
                 }
+
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 }
+
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     seekBar?.run {
                         config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, seekBar.progress).apply()
@@ -170,13 +177,15 @@ class ActivityFreezeApps : ActivityBase() {
 
         freeze_screen_delay.run {
             progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0)
-            freeze_screen_delay_text.text =  progress.toString()
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            freeze_screen_delay_text.text = progress.toString()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     freeze_screen_delay_text.text = progress.toString()
                 }
+
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 }
+
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     seekBar?.run {
                         config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, seekBar.progress).apply()
@@ -235,7 +244,7 @@ class ActivityFreezeApps : ActivityBase() {
                 freezeApps = store.freezeAppList
                 val checkShortcuts = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)
                 // 已添加到桌面的快捷方式
-                val pinnedShortcuts = if(checkShortcuts) FreezeAppShortcutHelper().getPinnedShortcuts(context) else arrayListOf()
+                val pinnedShortcuts = if (checkShortcuts) FreezeAppShortcutHelper().getPinnedShortcuts(context) else arrayListOf()
 
                 val lostedShortcuts = ArrayList<Appinfo>()
                 val lostedShortcutsName = StringBuilder()
@@ -314,7 +323,7 @@ class ActivityFreezeApps : ActivityBase() {
                                 getString(R.string.freeze_open),
                                 getString(R.string.freeze_shortcut_rebuild),
                                 getString(R.string.freeze_remove),
-                                if (appInfo.suspended || !appInfo.enabled) getString(R.string.freeze_enable)  else getString(R.string.freeze_diasble),
+                                if (appInfo.suspended || !appInfo.enabled) getString(R.string.freeze_enable) else getString(R.string.freeze_diasble),
                                 getString(R.string.freeze_remove_uninstall))) { _, which ->
 
                     when (which) {

@@ -59,14 +59,14 @@ object ThemeSwitch {
             val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
             themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
 
-            val themeId = when(theme) {
+            val themeId = when (theme) {
                 -1 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     if (themeMode.isDarkMode) {
-                        themeMode.isLightStatusBar  = false
+                        themeMode.isLightStatusBar = false
                         R.style.AppThemeNoActionBarNight
                     } else {
-                        themeMode.isLightStatusBar  = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         R.style.AppThemeWhite
                     }
                 }
@@ -78,12 +78,12 @@ object ThemeSwitch {
                 }
                 -3 -> {
                     themeMode.isDarkMode = false
-                    themeMode.isLightStatusBar  = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     R.style.AppThemeWhite
                 }
                 else -> {
-                    themeMode.isLightStatusBar  = false
+                    themeMode.isLightStatusBar = false
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     themeMap[theme]
                 }

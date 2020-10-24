@@ -2,12 +2,10 @@ package com.omarea.scene_mode
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShellPublic
@@ -26,7 +24,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     // 是否启用正在试验中的功能特性
-    private val labsFeature = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P // true
+    private val labsFeature = false // Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
 
     // 热门游戏
     private val hotGame = arrayListOf<String>().apply {
@@ -34,24 +32,25 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     // 偏见应用解冻数量限制
-    private val freezAppLimit:Int
+    private val freezAppLimit: Int
         get() {
-            return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
+            return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
         }
 
     // 偏见应用后台超时时间
-    private val freezAppTimeLimit:Int
+    private val freezAppTimeLimit: Int
         get() {
             return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
         }
 
     // 是否使用suspend命令冻结应用，不隐藏图标
     private val suspendMode: Boolean
-        get () {
+        get() {
             return config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
         }
 
     private val floatScreenRotation = FloatScreenRotation(context)
+
     private class FreezeAppThread(private val context: Context) : Thread() {
         override fun run() {
             val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -165,7 +164,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
     // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
     fun clearFreezeAppCountLimit() {
-        if (freezAppLimit > 0 ) {
+        if (freezAppLimit > 0) {
             while (freezList.size > freezAppLimit) {
                 freezeApp(freezList.first())
             }
@@ -282,6 +281,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     private var locationMode = "none"
+
     // 备份定位设置
     private fun backupLocationModeState() {
         if (locationMode == "none") {
@@ -304,6 +304,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     private var headsup = -1
+
     // 备份悬浮通知
     private fun backupHeadUp() {
         if (headsup < 0) {
@@ -416,7 +417,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     private var memcgShell: String? = null
-    private fun memcgConfig (packageName: String) {
+    private fun memcgConfig(packageName: String) {
         if (memcgShell == null) {
             memcgShell = RawText.getRawText(Scene.context, R.raw.memcg_set)
         }

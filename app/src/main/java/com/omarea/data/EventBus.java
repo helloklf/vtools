@@ -1,6 +1,7 @@
 package com.omarea.data;
 
 import android.util.Log;
+
 import java.util.ArrayList;
 
 public class EventBus {
@@ -31,21 +32,6 @@ public class EventBus {
         }
     }
 
-    static class HandlerThread extends Thread {
-        private IEventReceiver eventReceiver;
-        private EventType eventType;
-
-        HandlerThread(IEventReceiver eventReceiver, EventType eventType) {
-            this.eventReceiver = eventReceiver;
-            this.eventType = eventType;
-        }
-
-        @Override
-        public void run() {
-            eventReceiver.onReceive(eventType);
-        }
-    }
-
     /**
      * 订阅事件
      *
@@ -65,6 +51,21 @@ public class EventBus {
     public static void unsubscibe(IEventReceiver eventReceiver) {
         if (eventReceivers.indexOf(eventReceiver) > -1) {
             eventReceivers.remove(eventReceiver);
+        }
+    }
+
+    static class HandlerThread extends Thread {
+        private IEventReceiver eventReceiver;
+        private EventType eventType;
+
+        HandlerThread(IEventReceiver eventReceiver, EventType eventType) {
+            this.eventReceiver = eventReceiver;
+            this.eventType = eventType;
+        }
+
+        @Override
+        public void run() {
+            eventReceiver.onReceive(eventType);
         }
     }
 }

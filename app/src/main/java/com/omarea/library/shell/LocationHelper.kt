@@ -12,7 +12,7 @@ class LocationHelper {
      */
     fun enableGPS() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
-            // 1:GPS      2:GPRS WIFI      3: ALL
+        // 1:GPS      2:GPRS WIFI      3: ALL
             KeepShellPublic.doCmdSync("settings put secure location_mode 3")
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed +gps")

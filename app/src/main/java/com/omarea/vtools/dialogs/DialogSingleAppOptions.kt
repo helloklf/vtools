@@ -14,7 +14,6 @@ import android.widget.Toast
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.Appinfo
-import com.omarea.permissions.CheckRootStatus
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File

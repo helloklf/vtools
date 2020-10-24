@@ -2,9 +2,9 @@ package com.omarea.data.customer
 
 import android.content.Context
 import android.os.BatteryManager
-import com.omarea.data.IEventReceiver
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import java.util.*

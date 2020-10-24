@@ -12,7 +12,7 @@ import com.omarea.common.shell.RootFile
 
 class LMKUtils {
     private val path = "/sys/module/lowmemorykiller/parameters/minfree"
-    fun supported (): Boolean {
+    fun supported(): Boolean {
         return RootFile.fileExists(path)
     }
 

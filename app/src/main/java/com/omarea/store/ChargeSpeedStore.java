@@ -42,7 +42,7 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             final Cursor cursor = sqLiteDatabase.rawQuery("select sum(io) as total from charge_history", new String[]{});
             while (cursor.moveToNext()) {
-                total = (int)(cursor.getLong(cursor.getColumnIndex("total")) / 3600);
+                total = (int) (cursor.getLong(cursor.getColumnIndex("total")) / 3600);
             }
             cursor.close();
             sqLiteDatabase.close();
@@ -134,14 +134,15 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             final Cursor cursor = sqLiteDatabase.rawQuery("select max(capacity) AS capacity from charge_history", new String[]{});
             try {
-                if(cursor.moveToNext()) {
+                if (cursor.moveToNext()) {
                     return cursor.getInt(0);
                 }
             } finally {
                 cursor.close();
                 sqLiteDatabase.close();
             }
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         return 0;
     }
 

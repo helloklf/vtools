@@ -1,6 +1,5 @@
 package com.omarea.vtools.activities
 
-import android.content.Context
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +8,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.omarea.store.BatteryHistoryStore
-import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterBatteryStats
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_battery_stats.*

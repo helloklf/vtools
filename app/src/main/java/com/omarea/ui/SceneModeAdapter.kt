@@ -26,7 +26,7 @@ import kotlin.collections.HashMap
  * Created by Hello on 2018/01/26.
  */
 
-class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, private val firstMode:String) : BaseAdapter() {
+class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, private val firstMode: String) : BaseAdapter() {
     private var keywords: String = ""
     private val list: ArrayList<Appinfo>?
 

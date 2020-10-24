@@ -44,6 +44,7 @@ class ActivitySystemScene : ActivityBase() {
         setBackArrow()
         onViewCreated()
     }
+
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {

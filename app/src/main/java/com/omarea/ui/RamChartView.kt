@@ -15,22 +15,30 @@ class RamChartView : View {
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
+
     //圆的直径
     private var mRadius = 300f
+
     //圆的粗细
     private var mStrokeWidth = 40f
+
     //文字大小
     private var textSize = 20
+
     //-------------画笔相关-------------
     //圆环的画笔
     private var cyclePaint: Paint? = null
+
     //文字的画笔
     private var textPaint: Paint? = null
+
     //标注的画笔
     private var labelPaint: Paint? = null
+
     // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     //文字颜色
     private val textColor = -0x777778
+
     //-------------View相关-------------
     //View自身的宽和高
     private var mHeight: Int = 0

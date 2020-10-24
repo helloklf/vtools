@@ -15,8 +15,6 @@ import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.NetworkUtils
 import com.omarea.library.shell.ZenModeUtils
 import com.omarea.model.TaskAction
-import com.omarea.store.SceneConfigStore
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import java.util.*
 
@@ -25,10 +23,10 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
 
     private lateinit var mPowerManager: PowerManager
     private lateinit var mWakeLock: PowerManager.WakeLock
-    private var currentShell:KeepShell? = null
+    private var currentShell: KeepShell? = null
     private var isCommonShell = false
     private val keepShell: KeepShell
-        get () {
+        get() {
             if (currentShell == null) {
                 val commonInstance = KeepShellPublic.getInstance("TaskActionsExecutor", true)
                 if (commonInstance.isIdle) {

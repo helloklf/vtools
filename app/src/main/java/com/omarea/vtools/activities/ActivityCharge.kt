@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.omarea.data.GlobalStatus
-import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
@@ -45,15 +44,15 @@ class ActivityCharge : ActivityBase() {
         super.onPause()
     }
 
-    private val sumInfo:String
-    get () {
-        val sum = storage.sum
-        var sumInfo = ""
-        if (sum != 0) {
-            sumInfo = getString(R.string.battery_status_sum).format((if (sum > 0) ("+" + sum) else (sum.toString())))
+    private val sumInfo: String
+        get() {
+            val sum = storage.sum
+            var sumInfo = ""
+            if (sum != 0) {
+                sumInfo = getString(R.string.battery_status_sum).format((if (sum > 0) ("+" + sum) else (sum.toString())))
+            }
+            return sumInfo
         }
-        return sumInfo
-    }
 
     private val hander = Handler(Looper.getMainLooper())
     private fun updateUI() {

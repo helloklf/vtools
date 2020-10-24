@@ -6,9 +6,9 @@ import android.content.Intent
 import android.os.BatteryManager
 import android.widget.Toast
 import com.omarea.data.EventBus
-import com.omarea.data.IEventReceiver
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.library.basic.ScreenState
 import com.omarea.store.TimingTaskStorage
 

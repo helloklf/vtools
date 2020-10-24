@@ -24,13 +24,13 @@ class AutoSkipAd(private val service: AccessibilityService) {
             get() {
                 return lastClickedNodeValue
             }
-            set (value) {
+            set(value) {
                 lastClickedNodeValue = value
                 lastClickedNodeText = value?.text
             }
         private var lastClickedNodeText: CharSequence? = null
         private var lastClickedApp: String? = null
-        private var lastActivity:String? = null
+        private var lastActivity: String? = null
     }
 
     private val autoClickBase = AutoClickBase()
@@ -68,7 +68,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
     // 根据元素位置判断是否要当做广告跳过按钮点击
     // 一般来说，广告跳过按钮都在屏幕四角区域
     // 因此过滤掉非四角区域的按钮有助于降低误点率
-    private fun pointFilter(rect: Rect):Boolean {
+    private fun pointFilter(rect: Rect): Boolean {
         val top = rect.top.toFloat()
         val bottom = displayHeight - rect.bottom.toFloat()
         val left = rect.left.toFloat()

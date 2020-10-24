@@ -32,10 +32,10 @@ class BatteryUtils {
                         stringBuilder.append("小时");
                     }*/
 
-    private fun str2voltage(str:String): String {
+    private fun str2voltage(str: String): String {
         val value = str.substring(0, if (str.length > 4) 4 else str.length).toDouble()
 
-        return (if(value > 3000) {
+        return (if (value > 3000) {
             value / 1000
         } else if (value > 300) {
             value / 100
@@ -296,7 +296,7 @@ class BatteryUtils {
         KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
 
-    private var useMainConstant:Boolean? = false // null
+    private var useMainConstant: Boolean? = false // null
     fun getqcLimit(): String {
         if (useMainConstant == null) {
             useMainConstant = RootFile.fileExists("/sys/class/power_supply/main/constant_charge_current_max")
@@ -457,8 +457,9 @@ class BatteryUtils {
     }
 
     private var kernelCapacitySupported: Boolean? = null
+
     // 从内核读取可以精确到0.01的电量，但有些内核数值是错的，所以需要和系统反馈的电量(approximate)比对，如果差距太大则认为内核数值无效，不再读取
-    public fun getKernelCapacity(approximate:Int): Float {
+    public fun getKernelCapacity(approximate: Int): Float {
         if (kernelCapacitySupported == null) {
             kernelCapacitySupported = RootFile.fileExists("/sys/class/power_supply/bms/capacity_raw")
         }
@@ -475,7 +476,7 @@ class BatteryUtils {
                 // 如果和系统反馈的电量差距超过5%，则认为数值无效，不再读取
                 if (Math.abs(valueMA - approximate) > 5) {
                     kernelCapacitySupported = false;
-                    return  -1f
+                    return -1f
                 } else {
                     return valueMA
                 }

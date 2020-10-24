@@ -51,7 +51,7 @@ class SwapModuleUtils {
     private val extraFreeKbytes = "extra_free_kbytes"
     private val watermarkScaleFactor = "watermark_scale_factor"
 
-    private fun getProp(prop: String):String {
+    private fun getProp(prop: String): String {
         return KeepShellPublic.doCmdSync("cat /data/swap_config.conf | grep -v '^#' | grep \"^${prop}=\" | cut -f2 -d '='")
     }
 
@@ -59,7 +59,7 @@ class SwapModuleUtils {
         KeepShellPublic.doCmdSync("busybox sed -i 's/^$prop=.*/$prop=$value/' /data/swap_config.conf")
     }
 
-    fun saveModuleConfig(spf:SharedPreferences) {
+    fun saveModuleConfig(spf: SharedPreferences) {
         setProp(swapEnable, spf.getBoolean(SpfConfig.SWAP_SPF_SWAP, false))
         setProp(swapSize, spf.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0))
         setProp(swapPriority, spf.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, 0))
@@ -74,9 +74,9 @@ class SwapModuleUtils {
         setProp(watermarkScaleFactor, spf.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100))
     }
 
-    fun loadModuleConfig(spf:SharedPreferences) {
+    fun loadModuleConfig(spf: SharedPreferences) {
         // 如果模块没有安装，就不要再去读取配置了
-        if(!magiskModuleInstalled) {
+        if (!magiskModuleInstalled) {
             return
         }
 
@@ -87,23 +87,25 @@ class SwapModuleUtils {
             editor.putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, getProp(swapSize).toInt())
             editor.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, getProp(swapPriority).toInt())
             editor.putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, getProp(swapUseLoop) == "true")
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
         }
 
         try {
             editor.putBoolean(SpfConfig.SWAP_SPF_ZRAM, getProp(zramEnable) == "true")
             editor.putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, getProp(zramSize).toInt())
             editor.putString(SpfConfig.SWAP_SPF_ALGORITHM, getProp(zramCompAlgorithm))
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
         }
 
         try {
             editor.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, getProp(swappiness).toInt())
             editor.putInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, getProp(extraFreeKbytes).toInt())
-        } catch (ex: Exception) {}
+        } catch (ex: Exception) {
+        }
         try {
             editor.putInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, getProp(watermarkScaleFactor).toInt())
-        } catch (ex: Exception) {}
+        } catch (ex: Exception) {
+        }
 
         editor.apply()
     }

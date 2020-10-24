@@ -11,9 +11,9 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data.EventBus
-import com.omarea.data.IEventReceiver
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.ScreenState
 import com.omarea.library.calculator.GetUpTime
@@ -43,6 +43,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var screenOn = false
     private var lastScreenOnOff: Long = 0
+
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
     private var handler = Handler(Looper.getMainLooper())
@@ -333,7 +334,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         sceneConfigChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 updateConfig()
-                Scene.toast( "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
+                Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
             }
         }
 

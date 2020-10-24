@@ -22,6 +22,8 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class AppFreezeInjector {
+    private PackageManager packageManager;
+
     private String getHomeLauncher(Context context) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
@@ -72,8 +74,6 @@ public class AppFreezeInjector {
             // Toast.makeText(context, "应用偏见处理异常\nAction: " + intent.getAction() + "\ngetPackage: " + intent.getPackage() + "\nComponentName: " + (component != null ? component.getClassName() : null), Toast.LENGTH_LONG).show();
         }
     }
-
-    private PackageManager packageManager;
 
     void appFreezeInject(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

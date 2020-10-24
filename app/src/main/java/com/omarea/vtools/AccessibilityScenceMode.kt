@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -21,10 +20,10 @@ import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
+import com.omarea.scene_mode.AutoClickInstall
+import com.omarea.scene_mode.AutoSkipAd
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.scene_mode.AutoSkipAd
-import com.omarea.scene_mode.AutoClickInstall
 import com.omarea.vtools.popup.FloatLogView
 import java.util.*
 
@@ -301,7 +300,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private var lastWindowChanged = 0L
-    private var autoSkipAd:AutoSkipAd? = null
+    private var autoSkipAd: AutoSkipAd? = null
     private fun trySkipAD(event: AccessibilityEvent) {
         if (autoSkipAd == null) {
             autoSkipAd = AutoSkipAd(this)

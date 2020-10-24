@@ -95,7 +95,8 @@ class DialogElectricityUnit {
                         try {
                             val currentMA = currentNow / unit
                             electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")
-                        } catch (ex: Exception) {}
+                        } catch (ex: Exception) {
+                        }
                     }
                 }
             }, 10, 1000)

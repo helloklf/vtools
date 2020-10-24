@@ -1,7 +1,5 @@
 package com.omarea.library.shell;
 
-import android.util.Log;
-
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
@@ -19,6 +17,13 @@ public class GpuUtils {
     private static String GPU_MEMORY_CMD2 = null;
 
     private static String platform;
+    private static boolean kgsGM = true;
+    private static Boolean $isAdrenoGPU = null;
+    private static Boolean $isMaliGPU = null;
+    private static String gpuParamsDirAdreno = "/sys/class/kgsl/kgsl-3d0";
+    private static String gpuParamsDirMali = "/sys/class/devfreq/gpufreq";
+    private static String gpuParamsDir = null;
+
     private static boolean isMTK() {
         if (platform == null) {
             platform = new PlatformUtils().getCPUName();
@@ -26,13 +31,12 @@ public class GpuUtils {
         return platform.startsWith("mt");
     }
 
-    private static boolean kgsGM = true;
     public static String getMemoryUsage() {
         // MTK cat /proc/mali/memory_usage | grep "Total" | cut -f2 -d "(" | cut -f1 -d " "
         if (isMTK()) {
             String bytes = KeepShellPublic.INSTANCE.doCmdSync(GPU_MEMORY_CMD1);
             try {
-                return (Long.parseLong(bytes) / 1024 /1024) + "MB";
+                return (Long.parseLong(bytes) / 1024 / 1024) + "MB";
             } catch (Exception ex) {
                 return "?MB";
             }
@@ -121,8 +125,6 @@ public class GpuUtils {
         return isAdrenoGPU() || isMaliGPU();
     }
 
-    private static Boolean $isAdrenoGPU = null;
-
     public static boolean isAdrenoGPU() {
         if ($isAdrenoGPU == null) {
             $isAdrenoGPU = new File(gpuParamsDirAdreno).exists() || RootFile.INSTANCE.dirExists(gpuParamsDirAdreno);
@@ -130,18 +132,12 @@ public class GpuUtils {
         return $isAdrenoGPU;
     }
 
-    private static Boolean $isMaliGPU = null;
-
     private static boolean isMaliGPU() {
         if ($isMaliGPU == null) {
             $isMaliGPU = new File(gpuParamsDirMali).exists() || RootFile.INSTANCE.dirExists(gpuParamsDirMali);
         }
         return $isMaliGPU;
     }
-
-    private static String gpuParamsDirAdreno = "/sys/class/kgsl/kgsl-3d0";
-    private static String gpuParamsDirMali = "/sys/class/devfreq/gpufreq";
-    private static String gpuParamsDir = null;
 
     private static String getGpuParamsDir() {
         if (gpuParamsDir == null) {

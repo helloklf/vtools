@@ -27,6 +27,7 @@ import kotlin.Comparator
 
 class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<Appinfo>?
+
     @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
 
@@ -184,11 +185,10 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         }
 
         viewHolder!!.enabledStateText?.run {
-            if (item.enabledState.isNullOrEmpty()){
+            if (item.enabledState.isNullOrEmpty()) {
                 text = ""
                 visibility = View.GONE
-            }
-            else {
+            } else {
                 text = item.enabledState
                 visibility = View.VISIBLE
             }

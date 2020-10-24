@@ -8,7 +8,6 @@ import com.omarea.common.shell.RootFile
 import com.omarea.library.shell.PlatformUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
-import com.omarea.vtools.R
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*

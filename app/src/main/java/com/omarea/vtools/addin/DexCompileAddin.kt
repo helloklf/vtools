@@ -45,7 +45,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     } else {
                         try {
                             val service = Intent(context, CompileService::class.java)
-                            service.action = context.getString(when(index) {
+                            service.action = context.getString(when (index) {
                                 0 -> R.string.scene_speed_compile
                                 1 -> R.string.scene_everything_compile
                                 else -> R.string.scene_reset_compile

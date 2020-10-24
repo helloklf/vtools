@@ -2,8 +2,8 @@ package com.omarea.scene_mode
 
 import android.content.Context
 import android.content.Intent
-import com.omarea.data.IEventReceiver
 import com.omarea.data.EventType
+import com.omarea.data.IEventReceiver
 import com.omarea.library.calculator.GetUpTime
 import com.omarea.store.TriggerStorage
 
@@ -31,8 +31,8 @@ class TriggerIEventMonitor(private val context: Context, override val isAsync: B
                     val inTimeSection =
                             // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
                             (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
-                            // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
-                            (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
+                                    // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
+                                    (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
                     if (!inTimeSection) {
                         return
                     }

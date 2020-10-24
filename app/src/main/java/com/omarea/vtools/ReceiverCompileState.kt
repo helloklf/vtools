@@ -7,10 +7,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.omarea.Scene
-import com.omarea.vtools.services.BootService
 
 
 class ReceiverCompileState : BroadcastReceiver() {
