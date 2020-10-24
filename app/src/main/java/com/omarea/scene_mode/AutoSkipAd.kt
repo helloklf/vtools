@@ -75,7 +75,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
         val right = displayWidth - rect.right.toFloat()
         val minSide = if (displayHeight > displayWidth) displayWidth else displayHeight
         val xMax = minSide * 0.3f
-        val yMax = minSide * 0.5f
+        val yMax = minSide * 0.28f
         if (top > yMax && bottom > yMax) {
             Log.d("@Scene", "Y Filter ${top} ${bottom} ${yMax}")
             return false
@@ -84,6 +84,8 @@ class AutoSkipAd(private val service: AccessibilityService) {
             Log.d("@Scene", "X Filter ${left} ${right} ${xMax}")
             return false
         }
+        // Log.d("@Scene", "Y Filter ${top} ${bottom} ${yMax}")
+        // Log.d("@Scene", "X Filter ${left} ${right} ${xMax}")
         return true
     }
 
