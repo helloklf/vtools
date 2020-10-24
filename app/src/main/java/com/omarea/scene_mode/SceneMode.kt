@@ -7,12 +7,16 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
+import com.omarea.Scene
+import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.GAppsUtilis
 import com.omarea.library.shell.LocationHelper
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatScreenRotation
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
@@ -20,6 +24,14 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+    // 是否启用正在试验中的功能特性
+    private val labsFeature = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P // true
+
+    // 热门游戏
+    private val hotGame = arrayListOf<String>().apply {
+        addAll(Scene.context.resources.getStringArray(R.array.hot_game))
+    }
 
     // 偏见应用解冻数量限制
     private val freezAppLimit:Int
@@ -395,6 +407,22 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             lastAppPackageName = packageName
         } catch (ex: Exception) {
             Log.e(">>>>", "" + ex.message)
+        }
+
+        // 实验性新特性（cgroup/memory自动配置）
+        if (labsFeature && hotGame.contains(packageName) && config.getBoolean(SpfConfig.GLOBAL_SPF_SWAP_FG_OPT, true)) {
+            memcgConfig(packageName)
+        }
+    }
+
+    private var memcgShell: String? = null
+    private fun memcgConfig (packageName: String) {
+        if (memcgShell == null) {
+            memcgShell = RawText.getRawText(Scene.context, R.raw.memcg_set)
+        }
+        if (memcgShell != null) {
+            KeepShellPublic.doCmdSync(String.format(memcgShell!!, packageName))
+            Scene.toast("已为游戏进程优化部分配置(Scene试验性功能)")
         }
     }
 

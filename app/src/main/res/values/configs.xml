@@ -49,16 +49,17 @@
         <item>com.niksoftware.snapseed</item>
         <item>com.goseet.vidtrim</item>
         <item>com.netease.hyxd</item>
-        <item>com.mihoyo.bh3</item>
-        <item>com.mihoyo.bh3.mi</item>
-        <item>com.mihoyo.bh3.uc</item>
         <item>com.pinguo.edit.sdk</item>
         <item>com.ak.mi</item>
         <item>com.tencent.cldts</item>
+        <item>com.mihoyo.bh3</item>
+        <item>com.mihoyo.bh3.mi</item>
+        <item>com.mihoyo.bh3.uc</item>
         <item>com.miHoYo.bh3.wdj</item>
         <item>com.netease.dwrg</item>
         <item>com.netease.mrzh</item>
         <item>com.netease.mrzh.aligames</item>
+        <item>com.miHoYo.Yuanshen</item>
     </string-array>
     <string-array name="powercfg_fast">
         <item>com.ludashi.benchmark</item>
@@ -77,6 +78,17 @@
         <item>com.android.camera</item>
         <item>com.futuremark.dmandroid.application</item>
         <item>com.miui.huanji</item>
+    </string-array>
+    <string-array name="hot_game">
+        <item>com.mihoyo.bh3</item>
+        <item>com.mihoyo.bh3.mi</item>
+        <item>com.mihoyo.bh3.uc</item>
+        <item>com.miHoYo.bh3.wdj</item>
+        <item>com.tencent.tmgp.speedmobile</item>
+        <item>com.tencent.tmgp.pubgm</item>
+        <item>com.tencent.tmgp.pubgmhd</item>
+        <item>com.miHoYo.Yuanshen</item>
+        <item>com.tencent.tmgp.sgame</item>
     </string-array>
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
