@@ -14,6 +14,7 @@ class ZenModeUtils(private val context: Context) {
 
     // 从 Settings.Global 复制的
     val ZEN_MODE_OFF = 0
+
     // val ZEN_MODE_IMPORTANT_INTERRUPTIONS = 1
     val ZEN_MODE_NO_INTERRUPTIONS = 2
     // val ZEN_MODE_ALARMS = 3

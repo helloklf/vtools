@@ -48,7 +48,7 @@ public class ProcessUtils {
             String outsideCmd = outsideToybox + " " + insideCmd;
             Log.d(">>>>", outsideCmd);
 
-            for (String cmd : new String[]{ insideCmd, outsideCmd }) {
+            for (String cmd : new String[]{insideCmd, outsideCmd}) {
                 String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
                 String result = rows[0];
                 if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {

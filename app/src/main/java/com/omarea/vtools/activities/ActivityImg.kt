@@ -19,7 +19,7 @@ import java.io.File
 import java.util.*
 
 
-class ActivityImg :  ActivityBase() {
+class ActivityImg : ActivityBase() {
     fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)

@@ -8,9 +8,9 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
-import com.omarea.data.IEventReceiver
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.library.calculator.GetUpTime
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils

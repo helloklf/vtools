@@ -11,11 +11,8 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.appcompat.widget.SwitchCompat
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -31,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_battery.*
 import java.util.*
 
 
-class ActivityBattery:  ActivityBase() {
+class ActivityBattery : ActivityBase() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_battery)
@@ -40,14 +37,16 @@ class ActivityBattery:  ActivityBase() {
 
         onViewCreated()
     }
+
     private fun onViewCreated() {
 
         battery_exec_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val defaultValue = spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
-                val currentValue = when(position) {
+                val currentValue = when (position) {
                     0 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN
                     1 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP
                     2 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE
@@ -223,7 +222,7 @@ class ActivityBattery:  ActivityBase() {
         }
     }
 
-    private fun minutes2Str(minutes:Int): String {
+    private fun minutes2Str(minutes: Int): String {
         return String.format(getString(R.string.battery_night_mode_time), minutes / 60, minutes % 60)
     }
 
@@ -251,7 +250,7 @@ class ActivityBattery:  ActivityBase() {
         battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), bpLevel, bpLevel - 20)
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) + "mA"
-        battery_exec_options.setSelection(when(spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)) {
+        battery_exec_options.setSelection(when (spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)) {
             SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN -> 0
             SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP -> 1
             SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE -> 2

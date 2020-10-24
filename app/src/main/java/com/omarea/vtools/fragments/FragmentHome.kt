@@ -105,7 +105,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 Thread {
                     KeepShellPublic.doCmdSync(
                             "sync\n" +
-                            "echo 1 > /proc/sys/vm/compact_memory")
+                                    "echo 1 > /proc/sys/vm/compact_memory")
                     myHandler.post {
                         Scene.toast("已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT)
                     }

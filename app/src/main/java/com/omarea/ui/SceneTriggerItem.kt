@@ -70,7 +70,8 @@ class SceneTriggerItem : LinearLayout {
                     EventType.POWER_CONNECTED -> {
                         buffer.append("充电器连接")
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
                 buffer.append(", ")
             }

@@ -173,7 +173,7 @@ class ActionPage : ActivityBase() {
         }
     }
 
-    private var menuOptions:ArrayList<PageMenuOption>? = null
+    private var menuOptions: ArrayList<PageMenuOption>? = null
 
     // 右上角菜单的创建
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -229,7 +229,7 @@ class ActionPage : ActivityBase() {
     }
 
     private fun onMenuItemClick(menuOption: PageMenuOption) {
-        when(menuOption.type) {
+        when (menuOption.type) {
             "refresh", "reload" -> {
                 recreate()
             }
@@ -240,7 +240,7 @@ class ActionPage : ActivityBase() {
                 menuItemChooseFile(menuOption)
             }
             else -> {
-                menuItemExecute(menuOption, HashMap<String, String>().apply{
+                menuItemExecute(menuOption, HashMap<String, String>().apply {
                     put("state", menuOption.key)
                     put("menu_id", menuOption.key)
                 })
@@ -262,7 +262,7 @@ class ActionPage : ActivityBase() {
         val darkMode = themeMode.isDarkMode
         val dialog = DialogLogFragment.create(
                 menuOption,
-                Runnable {  },
+                Runnable { },
                 onDismiss,
                 currentPageConfig.pageHandlerSh,
                 params,
@@ -272,11 +272,11 @@ class ActionPage : ActivityBase() {
     }
 
     private fun menuItemChooseFile(menuOption: PageMenuOption) {
-        chooseFilePath(object: ParamsFileChooserRender.FileSelectedInterface{
+        chooseFilePath(object : ParamsFileChooserRender.FileSelectedInterface {
             override fun onFileSelected(path: String?) {
                 if (path != null) {
                     handler.post {
-                        menuItemExecute(menuOption, HashMap<String, String>().apply{
+                        menuItemExecute(menuOption, HashMap<String, String>().apply {
                             put("state", menuOption.key)
                             put("menu_id", menuOption.key)
                             put("file", path)
@@ -296,7 +296,7 @@ class ActionPage : ActivityBase() {
             }
 
             override fun type(): Int {
-                return when(menuOption.type) {
+                return when (menuOption.type) {
                     "folder" -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FOLDER
                     "file" -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FILE
                     else -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FILE

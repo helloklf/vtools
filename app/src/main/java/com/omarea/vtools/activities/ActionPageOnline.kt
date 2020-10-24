@@ -289,6 +289,7 @@ class ActionPageOnline : ActivityBase() {
     }
 
     var progressPolling: Timer? = null
+
     /**
      * 监视下载进度
      */

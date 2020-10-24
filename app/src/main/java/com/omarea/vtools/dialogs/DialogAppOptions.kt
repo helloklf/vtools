@@ -248,7 +248,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                             try {
                                 alert.dismiss()
                                 alert.hide()
-                            } catch (ex: Exception) {}
+                            } catch (ex: Exception) {
+                            }
                             if (error.isNotEmpty()) {
                                 DialogHelper.animDialog(AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()))
                             }

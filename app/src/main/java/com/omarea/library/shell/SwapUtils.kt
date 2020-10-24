@@ -84,7 +84,7 @@ class SwapUtils(context: Context) {
         } else {
             sb.append("0")
         }
-        if (priority >-2) {
+        if (priority > -2) {
             sb.append(" ")
             sb.append(priority)
         }

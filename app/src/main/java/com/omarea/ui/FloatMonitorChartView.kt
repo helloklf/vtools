@@ -17,25 +17,34 @@ class FloatMonitorChartView : View {
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
+
     //圆的直径
     private var mRadius = 300f
+
     //圆的粗细
     private var mStrokeWidth = 40f
+
     //文字大小
     private var textSize = 20
+
     //-------------画笔相关-------------
     //圆环的画笔
     private var cyclePaint: Paint? = null
+
     //文字的画笔
     private var textPaint: Paint? = null
+
     //标注的画笔
     private var labelPaint: Paint? = null
+
     //-------------颜色相关-------------
     //边框颜色和标注颜色
     private val mColor = intArrayOf(-0xec712a, 0x55888888, -0x1a8c8d, -0xb03c09, -0xe8a, -0x7e387c)
+
     // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     //文字颜色
     private val textColor = -0x777778
+
     //-------------View相关-------------
     //View自身的宽和高
     private var mHeight: Int = 0

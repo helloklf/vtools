@@ -22,7 +22,7 @@ open class ActivityBase : AppCompatActivity() {
     }
 
     protected val context: Context
-        get () {
+        get() {
             return this
         }
 

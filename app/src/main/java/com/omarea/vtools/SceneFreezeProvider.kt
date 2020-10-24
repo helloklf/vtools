@@ -17,7 +17,7 @@ class SceneFreezeProvider : ContentProvider() {
 
     private var config: SharedPreferences? = null
     private fun allowXposedOpen(): Boolean {
-        if(config == null) {
+        if (config == null) {
             config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
         return config!!.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, false)
