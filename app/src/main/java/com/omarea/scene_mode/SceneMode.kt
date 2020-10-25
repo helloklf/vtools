@@ -341,16 +341,18 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         }
 
         // 实验性新特性（cgroup/memory自动配置）
-        if (currentSceneConfig?.bgCGroupMem?.isNotEmpty() == true && currentSceneConfig?.fgCGroupMem != currentSceneConfig?.bgCGroupMem) {
+        if (sceneConfigInfo.bgCGroupMem?.isNotEmpty() == true && sceneConfigInfo.fgCGroupMem != sceneConfigInfo.bgCGroupMem) {
             CGroupMemoryUtlis(Scene.context).run {
                 if (isSupported) {
-                    setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.bgCGroupMem)
-                    Scene.toast(currentSceneConfig!!.packageName!! + "退出，cgroup调为[${currentSceneConfig!!.bgCGroupMem}]\n(Scene试验性功能)")
+                    setGroup(sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
+                    Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
                 } else {
                     Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
                 }
             }
         }
+
+        // KeepShellPublic.doCmdSync("pm suspend ${sceneConfigInfo.packageName}")
     }
 
     /**
@@ -408,22 +410,22 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                 }
             }
 
+            // 实验性新特性（cgroup/memory自动配置）
+            if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
+                CGroupMemoryUtlis(Scene.context).run {
+                    if (isSupported) {
+                        setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
+                        Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                    } else {
+                        Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                    }
+                }
+            }
+
             updateScreenRotation()
             lastAppPackageName = packageName
         } catch (ex: Exception) {
             Log.e(">>>>", "" + ex.message)
-        }
-
-        // 实验性新特性（cgroup/memory自动配置）
-        if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
-            CGroupMemoryUtlis(Scene.context).run {
-                if (isSupported) {
-                    setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
-                    Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
-                } else {
-                    Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
-                }
-            }
         }
     }
 
