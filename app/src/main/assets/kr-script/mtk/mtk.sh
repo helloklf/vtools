@@ -99,7 +99,7 @@ function gpu_render() {
 
     local dvfs=/proc/mali/dvfs_enable
     if [[ -f $dvfs ]]; then
-      switch_hidden "动态调频调压(DVFS)" "cat $dvfs" "echo \$state > $dvfs"
+      switch_hidden "动态调频调压(DVFS)" "cat $dvfs | cut -f2 -d ' '" "echo \$state > $dvfs"
     fi
 }
 
