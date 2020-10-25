@@ -552,26 +552,44 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TableLayout
+            <LinearLayout
                 style="@style/ListCardItem"
-                android:showDividers="beginning"
-                android:stretchColumns="0">
+                android:orientation="vertical">
 
                 <TextView
                     style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/swap_vmstat" />
+
+
+                <TextView
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_vmstat"
+                    style="@style/textSmall"
+                    android:typeface="monospace" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="@string/swap_memory_info" />
 
-                <TableRow
+                <TextView
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
-
-                    <TextView
-                        android:id="@+id/txt_mem"
-                        style="@style/textSmall"
-                        android:typeface="monospace" />
-                </TableRow>
-            </TableLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_mem"
+                    style="@style/textSmall"
+                    android:typeface="monospace" />
+            </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
 </RelativeLayout>

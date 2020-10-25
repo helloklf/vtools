@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.omarea.Scene
@@ -23,6 +24,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_swap.*
+import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
@@ -394,6 +396,31 @@ class ActivitySwap : ActivityBase() {
         list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
+        val vmstat = KernelProrp.getProp("/proc/vmstat")
+        vmstat.run {
+            val text = StringBuilder()
+            try {
+                var prop = "";
+                var value = "";
+                for (row in split("\n")) {
+                    if (row.startsWith("pswpin")) {
+                        prop="SWAP/ZRAM换入："
+                        value = row.split(" ")[1]
+                    } else if (row.startsWith("pswpout")) {
+                        prop="SWAP/ZRAM换出："
+                        value = row.split(" ")[1]
+                    } else {
+                        continue
+                    }
+                    text.append(prop)
+                    text.append((value.toLong() * 4 / 1024))
+                    text.append("MB\n")
+                }
+            } catch (ex: Exception) {}
+
+            txt_vmstat.text = text.toString().trim()
+        }
+
         val swapFileExists = swapUtils.swapExists
         btn_swap_create.visibility = if (swapFileExists) View.GONE else View.VISIBLE
         if (swapFileExists) {
@@ -457,9 +484,18 @@ class ActivitySwap : ActivityBase() {
             // 最大压缩流
             // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
             // 存储在此磁盘中的未压缩数据大小
-            val origDataSize = KernelProrp.getProp("/sys/block/zram0/orig_data_size")
+            var origDataSize = KernelProrp.getProp("/sys/block/zram0/orig_data_size")
             // 存储在此磁盘中的压缩数据大小
-            val comprDataSize = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
+            var comprDataSize = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
+            if (origDataSize.isBlank() || comprDataSize.isBlank()) {
+                val mmStat = KernelProrp.getProp("/sys/block/zram0/mm_stat").split("[ ]+".toRegex())
+                Log.d("Scene", "Swap - " + mmStat)
+                if (mmStat.size > 1) {
+                    origDataSize = mmStat[0]
+                    comprDataSize = mmStat[1]
+                }
+            }
+
             // 为此磁盘分配的内存量
             val memUsedTotal = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
             // 可用于存储的最大内存量
