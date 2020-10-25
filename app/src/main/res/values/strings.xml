@@ -334,10 +334,10 @@
 
     <string name="cgroup_mem_title">cgroup</string>
     <string-array name="cgroup_mem_options">
-        <item>应用级(默认)</item>
-        <item>游戏级(禁止SWAP)</item>
-        <item>常驻级(常驻内存)</item>
-        <item>系统级(常驻内存+禁止SWAP)</item>
+        <item>应用组(默认)</item>
+        <item>游戏组(禁止SWAP)</item>
+        <item>常驻组(常驻内存)</item>
+        <item>系统组(常驻内存+禁止SWAP)</item>
     </string-array>
     <string-array name="cgroup_mem_values">
         <item></item>

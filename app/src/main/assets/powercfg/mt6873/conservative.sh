@@ -103,7 +103,7 @@ if [[ "$action" = "powersave" ]]; then
   gpu_dvfs 0
   echo 358000 > /proc/gpufreq/gpufreq_opp_freq
 
-  cpuset 3 2-3 0-7 0-7 0-3
+  cpuset 3 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
   eas 0 2

@@ -250,7 +250,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 alert.hide()
                             } catch (ex: Exception) {
                             }
-                            if (error.isNotEmpty()) {
+                            if (error.isNotBlank()) {
                                 DialogHelper.animDialog(AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()))
                             }
                         }, 1200)
