@@ -405,16 +405,21 @@ class ActivitySwap : ActivityBase() {
                 for (row in split("\n")) {
                     if (row.startsWith("pswpin")) {
                         prop="SWAP/ZRAM换入："
-                        value = row.split(" ")[1]
                     } else if (row.startsWith("pswpout")) {
                         prop="SWAP/ZRAM换出："
-                        value = row.split(" ")[1]
                     } else {
                         continue
                     }
+                    value = row.split(" ")[1]
                     text.append(prop)
-                    text.append((value.toLong() * 4 / 1024))
-                    text.append("MB\n")
+                    val mb = (value.toLong() * 4 / 1024)
+                    if (mb > 10240) {
+                        text.append(String.format("%.2f", (mb / 1024f)))
+                        text.append("GB\n")
+                    } else {
+                        text.append(mb)
+                        text.append("MB\n")
+                    }
                 }
             } catch (ex: Exception) {}
 
