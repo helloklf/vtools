@@ -134,7 +134,7 @@ if [ "$action" = "powersave" ]; then
     echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 89 99 380 500
+    sched_config 75 92 380 500
 
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -152,7 +152,7 @@ elif [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 84 96 300 400
+    sched_config 70 87 300 400
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -170,7 +170,7 @@ elif [ "$action" = "performance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 82 95 300 400
+    sched_config 60 80 300 400
 
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -193,5 +193,5 @@ elif [ "$action" = "fast" ]; then
     echo 300 > /proc/sys/kernel/sched_group_downmigrate
     echo 400 > /proc/sys/kernel/sched_group_upmigrate
 
-    sched_config 70 82 300 400
+    sched_config 50 78 300 400
 fi

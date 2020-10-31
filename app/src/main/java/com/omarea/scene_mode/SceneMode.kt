@@ -358,74 +358,75 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     /**
      * 前台应用切换
      */
-    fun onAppEnter(packageName: String, foceUpdateConfig: Boolean = false) {
-        try {
-            if (lastAppPackageName == packageName && !foceUpdateConfig) {
-                return
-            }
-
-            if (currentSceneConfig != null) {
-                onAppLeave(currentSceneConfig!!)
-            }
-
-            currentSceneConfig = store.getAppConfig(packageName)
-            if (currentSceneConfig == null) {
-                restoreLocationModeState()
-                resumeBrightnessState()
-                restoreHeaddUp()
-            } else {
-                if (currentSceneConfig!!.aloneLight) {
-                    backupBrightnessState()
-                    autoLightOff(currentSceneConfig!!.aloneLightValue)
-                } else {
-                    resumeBrightnessState()
+    fun onAppEnter(packageName: String, forceUpdateConfig: Boolean = false) {
+        if (lastAppPackageName == packageName && !forceUpdateConfig) {
+            return
+        }
+        synchronized(this) {
+            try {
+                lastAppPackageName = packageName
+                if (currentSceneConfig != null) {
+                    onAppLeave(currentSceneConfig!!)
                 }
 
-                if (currentSceneConfig!!.gpsOn) {
-                    backupLocationModeState()
-                    val mode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
-                    if (!mode.contains("gps")) {
-                        LocationHelper().enableGPS()
-                    }
-                } else {
+                currentSceneConfig = store.getAppConfig(packageName)
+                if (currentSceneConfig == null) {
                     restoreLocationModeState()
-                }
-
-                if (currentSceneConfig!!.disNotice) {
-                    try {
-                        val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
-                        backupHeadUp()
-                        if (mode != 0) {
-                            Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
-                            contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
-                        }
-                    } catch (ex: Exception) {
-                    }
-                } else {
+                    resumeBrightnessState()
                     restoreHeaddUp()
-                }
-
-                if (currentSceneConfig!!.freeze) {
-                    setFreezeAppStartTime(packageName)
-                }
-            }
-
-            // 实验性新特性（cgroup/memory自动配置）
-            if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
-                CGroupMemoryUtlis(Scene.context).run {
-                    if (isSupported) {
-                        setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
-                        Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                } else {
+                    if (currentSceneConfig!!.aloneLight) {
+                        backupBrightnessState()
+                        autoLightOff(currentSceneConfig!!.aloneLightValue)
                     } else {
-                        Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                        resumeBrightnessState()
+                    }
+
+                    if (currentSceneConfig!!.gpsOn) {
+                        backupLocationModeState()
+                        val mode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+                        if (!mode.contains("gps")) {
+                            LocationHelper().enableGPS()
+                        }
+                    } else {
+                        restoreLocationModeState()
+                    }
+
+                    if (currentSceneConfig!!.disNotice) {
+                        try {
+                            val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+                            backupHeadUp()
+                            if (mode != 0) {
+                                Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
+                                contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                            }
+                        } catch (ex: Exception) {
+                        }
+                    } else {
+                        restoreHeaddUp()
+                    }
+
+                    if (currentSceneConfig!!.freeze) {
+                        setFreezeAppStartTime(packageName)
                     }
                 }
-            }
 
-            updateScreenRotation()
-            lastAppPackageName = packageName
-        } catch (ex: Exception) {
-            Log.e(">>>>", "" + ex.message)
+                // 实验性新特性（cgroup/memory自动配置）
+                if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
+                    CGroupMemoryUtlis(Scene.context).run {
+                        if (isSupported) {
+                            setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
+                            Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                        } else {
+                            Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                        }
+                    }
+                }
+
+                updateScreenRotation()
+            } catch (ex: Exception) {
+                Log.e(">>>>", "" + ex.message)
+            }
         }
     }
 
