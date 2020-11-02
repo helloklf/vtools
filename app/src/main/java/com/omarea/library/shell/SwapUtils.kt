@@ -203,10 +203,11 @@ class SwapUtils(context: Context) {
         }
 
     // 强制触发内存回收
-    fun forceKswapd(): String {
+    // level    1:轻微    2:更重    3:极端
+    fun forceKswapd(level: Int): String {
         if (swapForceKswapdScript != null) {
             val keepShell = KeepShell()
-            val result = keepShell.doCmdSync("sh $swapForceKswapdScript")
+            val result = keepShell.doCmdSync("sh $swapForceKswapdScript $level")
             keepShell.tryExit()
             return result
         }
