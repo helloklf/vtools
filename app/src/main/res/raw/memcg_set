@@ -15,7 +15,7 @@ function init_group() {
 
 if [[ "$scene_memcg" != "" ]]; then
     init_group scene_lock 100 1
-    init_group scene_perf 0 0
+    init_group scene_perf 10 0
     init_group scene_sys 0 1
 
     pgrep -f %s | while read pid; do

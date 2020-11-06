@@ -30,33 +30,6 @@
                 android:visibility="gone" />
 
             <LinearLayout
-                android:id="@+id/zram_stat"
-                style="@style/ListCardItem">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_zram_stat" />
-
-                <TextView
-                    android:id="@+id/zram0_stat"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:fontFamily="monospace"
-                    android:text="" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/swap_zram_stat_desc" />
-            </LinearLayout>
-
-            <LinearLayout
                 style="@style/ListCardItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -416,6 +389,59 @@
 
             </TableLayout>
 
+            <LinearLayout
+                android:id="@+id/swap_auto_lmk_wrap"
+                style="@style/ListCardItem">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/low_memory_killer" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        app:text="@string/lmk_optimize_desc" />
+
+                    <Switch
+                        android:id="@+id/swap_auto_lmk"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/lmk_optimize" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/swap_current_state" />
+
+                    <TextView
+                        android:id="@+id/swap_lmk_current"
+                        style="@style/textSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
+            </LinearLayout>
+
             <TableLayout
                 style="@style/ListCardItem"
                 android:showDividers="beginning"
@@ -500,56 +526,30 @@
             </TableLayout>
 
             <LinearLayout
-                android:id="@+id/swap_auto_lmk_wrap"
+                android:id="@+id/zram_stat"
                 style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/low_memory_killer" />
+                    android:text="@string/swap_zram_stat" />
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/zram0_stat"
+                    style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:fontFamily="monospace"
+                    android:text="" />
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="@string/lmk_optimize_desc" />
-
-                    <Switch
-                        android:id="@+id/swap_auto_lmk"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/lmk_optimize" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/swap_current_state" />
-
-                    <TextView
-                        android:id="@+id/swap_lmk_current"
-                        style="@style/textSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="" />
-                </LinearLayout>
+                    android:text="@string/swap_zram_stat_desc" />
             </LinearLayout>
 
             <LinearLayout
