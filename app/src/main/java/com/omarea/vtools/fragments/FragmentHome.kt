@@ -101,27 +101,24 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
 
         home_clear_swap.setOnClickListener {
-            if (RootFile.fileExists("/proc/1/reclaim")) {
-                Thread {
-                    KeepShellPublic.doCmdSync(
-                            "sync\n" +
-                                    "echo 1 > /proc/sys/vm/compact_memory")
-                    myHandler.post {
-                        Scene.toast("已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT)
-                    }
-                }.start()
-                home_zramsize_text.text = getText(R.string.please_wait)
-            }
+            home_zramsize_text.text = getText(R.string.please_wait)
+            Scene.toast("开始回收少量内存(长按回收更多~)", Toast.LENGTH_SHORT)
+            Thread {
+                val result = SwapUtils(context!!).forceKswapd(1)
+                myHandler.post {
+                    Scene.toast(result, Toast.LENGTH_SHORT)
+                }
+            }.start()
         }
 
         home_clear_swap.setOnLongClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
-            Thread(Runnable {
-                val result = SwapUtils(context!!).forceKswapd()
+            Thread {
+                val result = SwapUtils(context!!).forceKswapd(2)
                 myHandler.post {
                     Scene.toast(result, Toast.LENGTH_SHORT)
                 }
-            }).start()
+            }.start()
             true
         }
 

@@ -1,5 +1,6 @@
+level="$1" # 清理级别（1：轻微，2：更重，3：极端）
+
 echo 3 > /proc/sys/vm/drop_caches
-echo 1 > /proc/sys/vm/compact_memory
 
 modify_path=''
 friendly=false
@@ -29,10 +30,24 @@ MemMemFree=${MemMemFreeStr:16:8}
 SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
 SwapFree=${SwapFreeStr:16:8}
 
-if [[ $friendly == "true" ]]; then
-  TargetRecycle=$(($MemTotal / 100 * 45))
+if [[ "$level" == "3" ]]; then
+  if [[ $friendly == "true" ]]; then
+    TargetRecycle=$(($MemTotal / 100 * 55))
+  else
+    TargetRecycle=$(($MemTotal / 100 * 26))
+  fi
+elif [[ "$level" == "2" ]]; then
+  if [[ $friendly == "true" ]]; then
+    TargetRecycle=$(($MemTotal / 100 * 45))
+  else
+    TargetRecycle=$(($MemTotal / 100 * 18))
+  fi
 else
-  TargetRecycle=$(($MemTotal / 100 * 20))
+  if [[ $friendly == "true" ]]; then
+    TargetRecycle=$(($MemTotal / 100 * 25))
+  else
+    TargetRecycle=$(($MemTotal / 100 * 10))
+  fi
 fi
 
 # 如果可用内存大于目标可用内存大小，则不需要回收了
@@ -98,3 +113,4 @@ else
     echo '操作失败，计算容量出错!'
   fi
 fi
+echo 1 > /proc/sys/vm/compact_memory
