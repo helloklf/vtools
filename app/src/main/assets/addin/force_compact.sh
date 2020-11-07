@@ -38,15 +38,15 @@ if [[ "$level" == "3" ]]; then
   fi
 elif [[ "$level" == "2" ]]; then
   if [[ $friendly == "true" ]]; then
-    TargetRecycle=$(($MemTotal / 100 * 45))
+    TargetRecycle=$(($MemTotal / 100 * 35))
   else
     TargetRecycle=$(($MemTotal / 100 * 18))
   fi
 else
   if [[ $friendly == "true" ]]; then
-    TargetRecycle=$(($MemTotal / 100 * 25))
+    TargetRecycle=$(($MemTotal / 100 * 20))
   else
-    TargetRecycle=$(($MemTotal / 100 * 10))
+    TargetRecycle=$(($MemTotal / 100 * 12))
   fi
 fi
 

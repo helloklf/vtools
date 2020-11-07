@@ -223,11 +223,12 @@
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:enabled="false"
             android:noHistory="true"
+            android:multiprocess="true"
             android:excludeFromRecents="true"
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
             android:screenOrientation="behind"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:roundIcon="@drawable/freeze_logo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -240,6 +241,10 @@
         <activity-alias
             android:name=".activities.ActivityFreezeApps2"
             android:enabled="true"
+            android:multiprocess="false"
+            android:launchMode="singleTop"
+            android:noHistory="false"
+            android:excludeFromRecents="false"
             android:targetActivity=".activities.ActivityFreezeApps" />
 
         <activity
