@@ -76,10 +76,10 @@ public class ProcessUtils {
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {
-                Log.e("Scene-Process", "" + ex.getMessage());
+                Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
             }
         } else {
-            Log.e("Scene-Process", "" + row);
+            Log.e("Scene-ProcessUtils", "" + row);
         }
         return null;
     }
@@ -134,7 +134,7 @@ public class ProcessUtils {
     public void killProcess(ProcessInfo processInfo) {
         if (isAndroidProcess(processInfo)) {
             String packageName = processInfo.name.contains(":") ? processInfo.name.substring(0, processInfo.name.indexOf(":")) : processInfo.name;
-            KeepShellPublic.INSTANCE.doCmdSync(String.format("killall -9 %s;am force-stop %s", packageName, packageName));
+            KeepShellPublic.INSTANCE.doCmdSync(String.format("killall -9 %s;am force-stop %s;am kill %s", packageName, packageName, packageName));
         } else {
             killProcess(processInfo.pid);
         }
