@@ -419,7 +419,7 @@ public class CpuFrequencyUtils {
                         for (int cluster = 0; cluster < params.size(); cluster++) {
                             CpuClusterStatus config = params.get(cluster);
                             commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.min_freq));
-                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.max_freq));
+                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_max_cpu_freq", cluster, config.max_freq));
                         }
                     } else {
                         for (int cluster = 0; cluster < params.size(); cluster++) {
