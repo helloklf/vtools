@@ -65,6 +65,7 @@ governor_performance () {
 }
 
 governor_restore () {
+  local governor_backup=/cache/governor_backup.prop
   local dir=/sys/class/devfreq
   if [[ -f "$governor_backup" ]]; then
       while read line; do
