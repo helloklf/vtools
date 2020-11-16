@@ -22,7 +22,43 @@ if [ ! "$governor6" = "schedutil" ]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
 fi
 
-function set_value()
+governor_backup () {
+  local governor_backup=/cache/governor_backup.prop
+  if [[ ! -f $governor_backup ]]; then
+    echo '' > $governor_backup
+    local dir=/sys/class/devfreq
+    for file in `ls $dir`; do
+      if [ -f $dir/$file/governor ]; then
+        governor=`cat $dir/$file/governor`
+        echo "$file#$governor" >> $governor_backup
+      fi
+    done
+  fi
+}
+
+governor_performance () {
+  governor_backup
+  local dir=/sys/class/devfreq
+  for file in `ls $dir`; do
+    if [ -f $dir/$file/governor ]; then
+      echo $dir/$file/governor
+      echo performance > $dir/$file/governor
+    fi
+  done
+}
+
+governor_restore () {
+  local dir=/sys/class/devfreq
+  if [[ -f "$governor_backup" ]]; then
+      while read line; do
+        if [[ "$line" != "" ]]; then
+            echo ${line#*#} > $dir/${line%#*}/governor
+        fi
+      done < /cache/governor_backup.prop
+  fi
+}
+
+set_value()
 {
     value=$1
     path=$2
@@ -88,7 +124,7 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 # echo 93 > /proc/sys/kernel/sched_group_downmigrate
 # echo 100 > /proc/sys/kernel/sched_group_upmigrate
 
-function set_cpu_freq()
+set_cpu_freq()
 {
     echo $1 $2 $3 $4
 	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
@@ -98,7 +134,7 @@ function set_cpu_freq()
 	echo $4 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq
 }
 
-function set_input_boost_freq() {
+set_input_boost_freq() {
     local c0="$1"
     local c1="$2"
     local ms="$3"
@@ -106,7 +142,7 @@ function set_input_boost_freq() {
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
-function sched_config() {
+sched_config() {
     echo "$1" > /proc/sys/kernel/sched_downmigrate
     echo "$2" > /proc/sys/kernel/sched_upmigrate
     echo "$1" > /proc/sys/kernel/sched_downmigrate
@@ -122,8 +158,8 @@ if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1612800 5000 5000
 	set_input_boost_freq 0 0 0
 
-    echo 0 > /sys/devices/system/cpu/cpu6/online
-    echo 0 > /sys/devices/system/cpu/cpu7/online
+  echo 0 > /sys/devices/system/cpu/cpu6/online
+  echo 0 > /sys/devices/system/cpu/cpu7/online
 
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 806400 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
@@ -131,14 +167,16 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
-    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 85 96 380 500
+  sched_config 85 96 380 500
+
+  governor_restore
 
 elif [ "$action" = "balance" ]; then
-    echo 1 > /sys/devices/system/cpu/cpu6/online
-    echo 1 > /sys/devices/system/cpu/cpu7/online
+  echo 1 > /sys/devices/system/cpu/cpu6/online
+  echo 1 > /sys/devices/system/cpu/cpu7/online
 
 	set_cpu_freq 5000 1708800 5000 1708800
 	set_input_boost_freq 1248000 0 40
@@ -149,32 +187,36 @@ elif [ "$action" = "balance" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
-    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 78 92 300 400
+  sched_config 78 89 300 400
+
+  governor_restore
 
 elif [ "$action" = "performance" ]; then
-    echo 1 > /sys/devices/system/cpu/cpu6/online
-    echo 1 > /sys/devices/system/cpu/cpu7/online
+  echo 1 > /sys/devices/system/cpu/cpu6/online
+  echo 1 > /sys/devices/system/cpu/cpu7/online
 
 	set_cpu_freq 300000 1804800 300000 2208000
 	set_input_boost_freq 1497600 1555200 40
 
-    echo 1708800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 1209600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
+  echo 1708800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+  echo 1209600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
-    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 60 82 300 400
+  sched_config 60 80 300 400
+
+  governor_restore
 
 elif [ "$action" = "fast" ]; then
-    echo 1 > /sys/devices/system/cpu/cpu6/online
-    echo 1 > /sys/devices/system/cpu/cpu7/online
+  echo 1 > /sys/devices/system/cpu/cpu6/online
+  echo 1 > /sys/devices/system/cpu/cpu7/online
 
 	set_cpu_freq 1708800 2500000 1209600 2750000
 	set_input_boost_freq 1804800 1939200 120
@@ -185,9 +227,10 @@ elif [ "$action" = "fast" ]; then
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
-    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 57 80 300 400
+  sched_config 57 78 300 400
 
+  governor_performance
 fi

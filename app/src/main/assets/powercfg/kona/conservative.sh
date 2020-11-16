@@ -38,7 +38,44 @@ if [[ ! "$governor7" = "schedutil" ]]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
 fi
 
-function set_value()
+
+governor_backup () {
+  local governor_backup=/cache/governor_backup.prop
+  if [[ ! -f $governor_backup ]]; then
+    echo '' > $governor_backup
+    local dir=/sys/class/devfreq
+    for file in `ls $dir`; do
+      if [ -f $dir/$file/governor ]; then
+        governor=`cat $dir/$file/governor`
+        echo "$file#$governor" >> $governor_backup
+      fi
+    done
+  fi
+}
+
+governor_performance () {
+  governor_backup
+  local dir=/sys/class/devfreq
+  for file in `ls $dir`; do
+    if [ -f $dir/$file/governor ]; then
+      echo $dir/$file/governor
+      echo performance > $dir/$file/governor
+    fi
+  done
+}
+
+governor_restore () {
+  local dir=/sys/class/devfreq
+  if [[ -f "$governor_backup" ]]; then
+      while read line; do
+        if [[ "$line" != "" ]]; then
+            echo ${line#*#} > $dir/${line%#*}/governor
+        fi
+      done < /cache/governor_backup.prop
+  fi
+}
+
+set_value()
 {
     value=$1
     path=$2
@@ -97,7 +134,7 @@ echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 
-function set_input_boost_freq() {
+set_input_boost_freq() {
     local c0="$1"
     local c1="$2"
     local c2="$3"
@@ -106,7 +143,7 @@ function set_input_boost_freq() {
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
-function set_cpu_freq()
+set_cpu_freq()
 {
     echo $1 $2 $3 $4
 	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
@@ -118,7 +155,7 @@ function set_cpu_freq()
 	echo $6 > /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq
 }
 
-function sched_config() {
+sched_config() {
     echo "$1" > /proc/sys/kernel/sched_downmigrate
     echo "$2" > /proc/sys/kernel/sched_upmigrate
     echo "$1" > /proc/sys/kernel/sched_downmigrate
@@ -151,6 +188,8 @@ if [[ "$action" = "powersave" ]]; then
 	sched_config "85 85" "96 96" "160" "260"
   echo 0 > /sys/devices/system/cpu/cpu7/online
 
+  governor_restore
+
 	exit 0
 fi
 
@@ -174,6 +213,8 @@ if [[ "$action" = "balance" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "96 96" "120" "200"
+
+  governor_restore
 
 	exit 0
 fi
@@ -199,6 +240,8 @@ if [[ "$action" = "performance" ]]; then
 
 	sched_config "85 85" "95 95" "85" "100"
 
+  governor_restore
+
 	exit 0
 fi
 
@@ -222,6 +265,8 @@ if [[ "$action" = "fast" ]]; then
   echo 0-1 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
+
+  governor_performance
 
 	exit 0
 fi
