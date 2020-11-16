@@ -345,7 +345,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             CGroupMemoryUtlis(Scene.context).run {
                 if (isSupported) {
                     setGroup(sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
-                    Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
+                    // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
                 } else {
                     Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
                 }
@@ -416,7 +416,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                     CGroupMemoryUtlis(Scene.context).run {
                         if (isSupported) {
                             setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
-                            Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                            // Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
                         } else {
                             Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
                         }
