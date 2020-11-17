@@ -97,16 +97,16 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 
 function set_input_boost_freq() {
-    local c0="$1"
-    local c1="$2"
-    local ms="$3"
-    echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c1" > /sys/module/cpu_boost/parameters/input_boost_freq
+  local c0="$1"
+  local c1="$2"
+  local ms="$3"
+  echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c1" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
 function set_cpu_freq()
 {
-    echo $1 $2 $3 $4
+  echo $1 $2 $3 $4
 	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
@@ -117,7 +117,7 @@ function set_cpu_freq()
 
 if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1420800 5000 1459200
-    set_input_boost_freq 0 0 0
+  set_input_boost_freq 0 0 0
 
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 652800 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
@@ -127,7 +127,7 @@ if [ "$action" = "powersave" ]; then
 
 elif [ "$action" = "balance" ]; then
 	set_cpu_freq 5000 1516800 5000 1612800
-    set_input_boost_freq 1228800 0 40
+  set_input_boost_freq 1228800 0 40
 
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
@@ -137,17 +137,17 @@ elif [ "$action" = "balance" ]; then
 
 elif [ "$action" = "performance" ]; then
 	set_cpu_freq 5000 1766400 5000 2323200
-    set_input_boost_freq 1689600 1459200 80
+  set_input_boost_freq 1689600 1459200 80
 
-    echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
+  echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+  echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
 elif [ "$action" = "fast" ]; then
 	set_cpu_freq 5000 2500000 1267200 3500000
-    set_input_boost_freq 1689600 1804800 80
+  set_input_boost_freq 1689600 1804800 80
 
 	echo 1036800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 1420800 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq

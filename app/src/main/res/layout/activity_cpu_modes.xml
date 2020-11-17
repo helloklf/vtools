@@ -235,150 +235,178 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/cpu_config_p0"
-                    style="@style/InCardListItem"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shortcut_p1" />
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/powercfg_powersave"
+                        android:id="@+id/cpu_config_p0"
+                        style="@style/InCardListItem"
+                        android:layout_marginEnd="4dp"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            style="@style/textDefault"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/powersave" />
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/shortcut_p1" />
 
-                        <TextView
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="适用于阅读、视频播放等场景" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/textTitle"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/powersave" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="老年人用了都说好" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/powercfg_balance"
+                        android:id="@+id/cpu_config_p1"
+                        style="@style/InCardListItem"
+                        android:layout_marginStart="4dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/shortcut_p2" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/textTitle"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/balance" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="慢下来 世界赏心悦目" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
-
                 <LinearLayout
-                    android:id="@+id/cpu_config_p1"
-                    style="@style/InCardListItem"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shortcut_p2" />
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/powercfg_performance"
+                        android:layout_marginEnd="4dp"
+                        android:id="@+id/cpu_config_p2"
+                        style="@style/InCardListItem"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            style="@style/textDefault"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/balance" />
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/shortcut_p3" />
 
-                        <TextView
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="适用于绝大多数的场景" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/textTitle"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/performance" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="打一把游戏压压惊" />
+                        </LinearLayout>
+
                     </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/cpu_config_p2"
-                    style="@style/InCardListItem"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shortcut_p3" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/powercfg_fast"
+                        android:id="@+id/cpu_config_p3"
+                        android:layout_marginStart="4dp"
+                        style="@style/InCardListItem"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            style="@style/textDefault"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/performance" />
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/shortcut_p4" />
 
-                        <TextView
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="充分释放性能，适用于游戏" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/textTitle"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/fast" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:textColor="@android:color/white"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="快乐总是短暂的" />
+                        </LinearLayout>
+
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/cpu_config_p3"
-                    style="@style/InCardListItemLast"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/shortcut_p4" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/textDefault"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fast" />
-
-                        <TextView
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="适用于跑分、压缩解压" />
-                    </LinearLayout>
-
-                </LinearLayout>
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/dynamic_control_opts"

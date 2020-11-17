@@ -134,8 +134,8 @@ if [[ "$action" = "powersave" ]]; then
 	echo 825600 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 940800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -155,8 +155,8 @@ if [[ "$action" = "balance" ]]; then
 	echo 1056000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 1286400 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -176,8 +176,8 @@ if [[ "$action" = "performance" ]]; then
     echo 1708800 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
     echo 2016000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -197,8 +197,8 @@ if [[ "$action" = "fast" ]]; then
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi

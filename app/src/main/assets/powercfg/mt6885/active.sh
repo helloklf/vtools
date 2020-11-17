@@ -77,7 +77,7 @@ if [[ "$action" = "powersave" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 0
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
@@ -90,7 +90,7 @@ elif [[ "$action" = "balance" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 0
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
@@ -103,7 +103,7 @@ elif [[ "$action" = "performance" ]]; then
   ged gx_3d_benchmark_on 0
   ged gx_game_mode 1
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
@@ -116,7 +116,7 @@ elif [[ "$action" = "fast" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 1
 
-  cpuset 1 0-3 0-7 0-7 0-3
+  cpuset 0 0-3 0-7 0-7 0-3
 
 	exit 0
 fi

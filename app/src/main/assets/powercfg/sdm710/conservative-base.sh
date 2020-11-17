@@ -81,8 +81,8 @@ echo 2000 > /proc/sys/vm/dirty_writeback_centisecs
 #echo 0 > /sys/zte_power_debug/switch
 #echo N > /sys/kernel/debug/debug_enabled
 
-echo 1-2 > /dev/cpuset/background/cpus
-echo 1-4 > /dev/cpuset/system-background/cpus
+echo 0-1 > /dev/cpuset/background/cpus
+echo 0-3 > /dev/cpuset/system-background/cpus
 echo 6-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus

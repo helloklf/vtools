@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
 
@@ -18,7 +19,11 @@ class HelpIcon : RelativeLayout {
                     val attrValue = getAttributeValue(i)
                     val text = if (attrValue.startsWith("@")) context!!.getString(attrValue.replace("@", "").toInt()) else attrValue
                     view.findViewById<ImageButton>(android.R.id.button1).setOnClickListener {
-                        DialogHelper.helpInfo(context!!, text)
+                        if (text.length < 50) {
+                            Snackbar.make(it, text, Snackbar.LENGTH_LONG).show()
+                        } else {
+                            DialogHelper.helpInfo(context!!, text)
+                        }
                     }
                 }
             }
