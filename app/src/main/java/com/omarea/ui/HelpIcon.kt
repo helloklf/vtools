@@ -19,11 +19,14 @@ class HelpIcon : RelativeLayout {
                     val attrValue = getAttributeValue(i)
                     val text = if (attrValue.startsWith("@")) context!!.getString(attrValue.replace("@", "").toInt()) else attrValue
                     view.findViewById<ImageButton>(android.R.id.button1).setOnClickListener {
+                        /*
                         if (text.length < 50) {
                             Snackbar.make(it, text, Snackbar.LENGTH_LONG).show()
                         } else {
                             DialogHelper.helpInfo(context!!, text)
                         }
+                        */
+                        DialogHelper.helpInfo(context!!, text)
                     }
                 }
             }

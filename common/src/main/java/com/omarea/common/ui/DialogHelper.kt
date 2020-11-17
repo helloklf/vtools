@@ -32,7 +32,9 @@ class DialogHelper {
     companion object {
         fun animDialog(dialog: AlertDialog?): DialogWrap? {
             if (dialog != null && !dialog.isShowing) {
-                dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                dialog.window?.run {
+                    setWindowAnimations(R.style.windowAnim)
+                }
                 dialog.show()
             }
             return if (dialog != null) DialogWrap(dialog) else null
