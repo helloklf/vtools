@@ -25,13 +25,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
             android:src="@drawable/source_1"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:colorAccent" />
+            app:tint="#888888" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -65,13 +65,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
             android:src="@drawable/source_2"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:colorAccent" />
+            app:tint="#888888" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -105,13 +105,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
             android:src="@drawable/source_import"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:colorAccent" />
+            app:tint="#888888" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -145,13 +145,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
             android:src="@drawable/source_network"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:colorAccent" />
+            app:tint="#888888" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -185,13 +185,13 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
             android:src="@drawable/source_custom"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:colorAccent" />
+            app:tint="#888888" />
 
         <LinearLayout
             android:layout_width="0dp"

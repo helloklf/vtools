@@ -165,6 +165,8 @@ class ActivityCpuModes : ActivityBase() {
 
         view.findViewById<View>(R.id.source_import).setOnClickListener {
             chooseLocalConfig()
+
+            dialog.dismiss()
         }
         view.findViewById<View>(R.id.source_download).setOnClickListener {
             // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
@@ -173,12 +175,16 @@ class ActivityCpuModes : ActivityBase() {
             }
 
             getOnlineConfig()
+
+            dialog.dismiss()
         }
         view.findViewById<View>(R.id.source_custom).setOnClickListener {
             // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
             if (outsideOverrided()) {
                 configInstaller.removeOutsideConfig()
             }
+
+            dialog.dismiss()
         }
     }
 
