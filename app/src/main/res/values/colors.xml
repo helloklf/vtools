@@ -13,6 +13,11 @@
     <color name="color_performance">#6ECB00</color>
     <color name="color_fast">#FF7E00</color>
 
+    <color name="color_powersave_bg">#C00091D5</color>
+    <color name="color_balance_bg">#C000B78A</color>
+    <color name="color_performance_bg">#C06ECB00</color>
+    <color name="color_fast_bg">#C0FF7E00</color>
+
     <color name="color_load_none">#00d5d9</color>
     <color name="color_load_low">#02d98d</color>
     <color name="color_load_mid">#87cb00</color>

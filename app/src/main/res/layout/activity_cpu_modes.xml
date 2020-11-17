@@ -199,14 +199,23 @@
                         android:text="@string/app_name"
                         android:textColor="?android:colorAccent" />
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        app:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入Magisk模块创建了[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh\n\n疑问：我刷了yc9559的Uperf以后，还需要做什么操作吗？\n说明：Uperf本身不依赖Scene运行，但你可以配合Scene使用，当[来源/作者]显示为“外部配置”表示已经就绪！" />
+                    <ImageButton
+                        android:id="@+id/config_author_icon"
+                        android:src="@drawable/source_switch"
+                        android:scaleType="centerInside"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingEnd="0dp"
+                        android:paddingStart="5dp"
+                        android:background="@null"
+                        android:tint="?android:colorAccent"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="70dp">
@@ -225,7 +234,8 @@
                             android:layout_height="40dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerInside"
-                            android:src="@drawable/shortcut_p1" />
+                            android:padding="6dp"
+                            android:src="@drawable/mode_powersave" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -243,10 +253,11 @@
 
                             <TextView
                                 style="@style/textSmall"
+                                android:alpha="0.6"
                                 android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="老年人用了都说好" />
+                                android:text="老年人直呼内行" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -263,9 +274,10 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:padding="8dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerInside"
-                            android:src="@drawable/shortcut_p2" />
+                            android:src="@drawable/mode_balance" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -283,6 +295,7 @@
 
                             <TextView
                                 style="@style/textSmall"
+                                android:alpha="0.6"
                                 android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -293,6 +306,8 @@
 
                 </LinearLayout>
                 <LinearLayout
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="70dp">
@@ -309,9 +324,10 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:padding="6dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerInside"
-                            android:src="@drawable/shortcut_p3" />
+                            android:src="@drawable/mode_performance" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -329,10 +345,11 @@
 
                             <TextView
                                 style="@style/textSmall"
+                                android:alpha="0.6"
                                 android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="打一把游戏压压惊" />
+                                android:text="玩把游戏压压惊" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -349,9 +366,10 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:padding="9dp"
                             android:layout_gravity="center_vertical"
                             android:scaleType="centerInside"
-                            android:src="@drawable/shortcut_p4" />
+                            android:src="@drawable/mode_fast" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -369,6 +387,7 @@
 
                             <TextView
                                 style="@style/textSmall"
+                                android:alpha="0.6"
                                 android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

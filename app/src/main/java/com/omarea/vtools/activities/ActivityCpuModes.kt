@@ -116,13 +116,17 @@ class ActivityCpuModes : ActivityBase() {
             reStartService()
         }
 
-        config_author.setOnClickListener {
-            if (configInstaller.outsideConfigInstalled()) {
-                Snackbar.make(it, "你需要删除外部配置，才能选择其它配置源", Snackbar.LENGTH_LONG).show()
-            } else {
-                chooseConfigSource()
+        val sourceClick = object : View.OnClickListener {
+            override fun onClick(it: View) {
+                if (configInstaller.outsideConfigInstalled()) {
+                    Snackbar.make(it, "你需要删除外部配置，才能选择其它配置源", Snackbar.LENGTH_LONG).show()
+                } else {
+                    chooseConfigSource()
+                }
             }
         }
+        config_author_icon.setOnClickListener(sourceClick)
+        config_author.setOnClickListener(sourceClick)
 
         home_quick_switch.isChecked = globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true)
         home_quick_switch.setOnClickListener {
