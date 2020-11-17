@@ -1,219 +1,238 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/in_card_item"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        style="@style/textTitle"
-        android:text="选择配置源"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/in_card_item"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="65dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:id="@+id/source_official_conservative"
-        style="@style/ListCardItemSmall"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@drawable/source_1"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:textColorPrimary" />
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            style="@style/textTitle"
+            android:text="选择配置源"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/source_official_conservative"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
 
-            <TextView
-                style="@style/textTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="经典配置" />
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/source_1"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/source_icon_bg"
+                app:tint="#ffffff" />
 
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Scene提供的预设，各个模式泾渭分明" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="经典配置" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Scene提供的预设，各个模式泾渭分明" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/source_official_active"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/source_2"
+                android:background="@drawable/source_icon_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="偏重性能" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Scene提供的预设，整体上更关注性能释放" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/source_import"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/source_import"
+                android:background="@drawable/source_icon_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="选取配置文件" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="选取你自行编写或从别处下载的配置文件" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/source_download"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/source_network"
+                android:background="@drawable/source_icon_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="在线下载" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="访问互联网获取配置文件(由yc9559提供)" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/source_custom"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/source_custom"
+                android:background="@drawable/source_icon_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="自定义" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="通过图形界面自己设定各个模式的参数" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="65dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:id="@+id/source_official_active"
-        style="@style/ListCardItemSmall"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@drawable/source_2"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:textColorPrimary" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/textTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="偏重性能" />
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Scene提供的预设，整体上更关注性能释放" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="65dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:id="@+id/source_import"
-        style="@style/ListCardItemSmall"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@drawable/source_import"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:textColorPrimary" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/textTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="选取配置文件" />
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="选取你自行编写或从别处下载的配置文件" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="65dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:id="@+id/source_download"
-        style="@style/ListCardItemSmall"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@drawable/source_network"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:textColorPrimary" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/textTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="在线下载" />
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="访问互联网获取配置文件(由yc9559提供)" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_height="65dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:id="@+id/source_custom"
-        style="@style/ListCardItemSmall"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@drawable/source_custom"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            app:tint="?android:textColorPrimary" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/textTitle"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="自定义" />
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="通过图形界面自己设定各个模式的参数" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</com.omarea.common.ui.OverScrollView>
