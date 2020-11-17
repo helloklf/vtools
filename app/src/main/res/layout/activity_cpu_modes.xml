@@ -21,29 +21,7 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <LinearLayout
-                style="@style/ListCardItem"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:orientation="vertical">
-
-                <Switch
-                    android:id="@+id/dynamic_control"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="4dp"
-                    android:switchPadding="4dp"
-                    android:text="性能调节" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
-                    android:textAlignment="center" />
-            </LinearLayout>
-
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout style="@style/ListCardItem" android:visibility="gone">
                 <LinearLayout
                     android:id="@+id/config_cfg_select"
                     android:layout_width="match_parent"
@@ -208,16 +186,10 @@
 
                     <TextView
                         style="@style/textTitle"
+                        android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="模式信息" />
-
-                    <TextView
-                        style="@style/textDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="来源/作者：" />
+                        android:text="配置源/作者：" />
 
                     <TextView
                         android:id="@+id/config_author"
@@ -314,7 +286,7 @@
                                 android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="慢下来 世界赏心悦目" />
+                                android:text="慢点 世界赏心悦目" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -409,85 +381,130 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/dynamic_control_opts"
+                android:id="@+id/quick_switch"
+                style="@style/ListCardItem"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/home_quick_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="快捷切换" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="在应用(Scene)首页显示四个模式的切换按钮" />
+            </LinearLayout>
+
+            <LinearLayout
                 style="@style/ListCardItem">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
+                    android:orientation="vertical">
+
+                    <Switch
+                        android:id="@+id/dynamic_control"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="没有单独设置模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请返回上一级页面进入“应用场景”。" />
+                        android:layout_marginBottom="4dp"
+                        android:text="动态响应" />
 
                     <TextView
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:text="全局默认" />
-
-                    <Spinner
-                        android:id="@+id/first_mode"
-                        style="@style/SceneSpinner"
-                        android:layout_width="110dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|right"
-                        android:entries="@array/default_powercfg_mode_options"
-                        android:paddingRight="0dp" />
+                        android:text="激活[场景模式]后，可根据前台应用，自动切换模式" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/dynamic_control_opts"
+                    android:background="@drawable/in_card_item"
+                    android:padding="10dp"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingEnd="8dp">
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="正常情况下，Scene会尽可能的减少模式切换\n\n例如：在几个同为“省电模式”的应用之前来回切换，是不会重复运行模式切换代码的\n\n除非是你发现每次切换应用，调度参数就会被系统重置，那才需要开启这个选项~" />
-
-                    <Switch
-                        android:id="@+id/strict_mode"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="重复执行" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingEnd="8dp">
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="前台应用发生变化后，延迟5s再执行调度模式切换" />
+                        android:orientation="horizontal">
+                        <com.omarea.ui.HelpIcon
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            app:text="没有单独设置模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请返回上一级页面进入“应用场景”。" />
 
-                    <Switch
-                        android:id="@+id/delay_switch"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="全局默认" />
+
+                        <Spinner
+                            android:id="@+id/first_mode"
+                            style="@style/SceneSpinner"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|right"
+                            android:entries="@array/default_powercfg_mode_options"
+                            android:paddingRight="0dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="延迟切换" />
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingEnd="8dp">
+                        <com.omarea.ui.HelpIcon
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            app:text="正常情况下，Scene会尽可能的减少模式切换\n\n例如：在几个同为“省电模式”的应用之前来回切换，是不会重复运行模式切换代码的\n\n除非是你发现每次切换应用，调度参数就会被系统重置，那才需要开启这个选项~" />
 
+                        <Switch
+                            android:id="@+id/strict_mode"
+                            style="@style/textTitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="重复执行" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingEnd="8dp">
+                        <com.omarea.ui.HelpIcon
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            app:text="前台应用发生变化后，延迟5s再执行调度模式切换" />
+
+                        <Switch
+                            android:id="@+id/delay_switch"
+                            style="@style/textTitle"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="延迟切换" />
+
+                    </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>

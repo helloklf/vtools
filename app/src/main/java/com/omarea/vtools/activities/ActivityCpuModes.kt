@@ -7,11 +7,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
@@ -64,7 +66,11 @@ class ActivityCpuModes : ActivityBase() {
             val value = (it as Switch).isChecked
             if (value && !(modeSwitcher.modeConfigCompleted())) {
                 it.isChecked = false
-                DialogHelper.helpInfo(context, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
+                DialogHelper.helpInfo(context,
+                        "设置向导",
+                        "在使用此功能前，你需要先完成一些配置~") {
+                    chooseConfigSource()
+                }
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
@@ -108,6 +114,71 @@ class ActivityCpuModes : ActivityBase() {
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF) {
             reStartService()
+        }
+
+        config_author.setOnClickListener {
+            if (configInstaller.outsideConfigInstalled()) {
+                Snackbar.make(it, "你需要删除外部配置，才能选择其它配置源", Snackbar.LENGTH_LONG).show()
+            } else {
+                chooseConfigSource()
+            }
+        }
+
+        home_quick_switch.isChecked = globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true)
+        home_quick_switch.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.HOME_QUICK_SWITCH, (it as CompoundButton).isChecked).apply()
+        }
+    }
+
+    // 选择配置来源
+    private fun chooseConfigSource () {
+        val view = layoutInflater.inflate(R.layout.layout_powercfg_source, null)
+        val dialog = DialogHelper.customDialog(this, view)
+
+        val conservative = view.findViewById<View>(R.id.source_official_conservative)
+        val active = view.findViewById<View>(R.id.source_official_active)
+
+        val cpuConfigInstaller = CpuConfigInstaller()
+        if (cpuConfigInstaller.dynamicSupport(this)) {
+            conservative.setOnClickListener {
+                // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
+                if (outsideOverrided()) {
+                    configInstaller.removeOutsideConfig()
+                }
+                installConfig(false)
+
+                dialog.dismiss()
+            }
+            active.setOnClickListener {
+                // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
+                if (outsideOverrided()) {
+                    configInstaller.removeOutsideConfig()
+                }
+                installConfig(true)
+
+                dialog.dismiss()
+            }
+        } else {
+            conservative.visibility = View.GONE
+            active.visibility = View.GONE
+        }
+
+        view.findViewById<View>(R.id.source_import).setOnClickListener {
+            chooseLocalConfig()
+        }
+        view.findViewById<View>(R.id.source_download).setOnClickListener {
+            // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
+            if (outsideOverrided()) {
+                configInstaller.removeOutsideConfig()
+            }
+
+            getOnlineConfig()
+        }
+        view.findViewById<View>(R.id.source_custom).setOnClickListener {
+            // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
+            if (outsideOverrided()) {
+                configInstaller.removeOutsideConfig()
+            }
         }
     }
 
@@ -153,7 +224,11 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun bindMode(button: View, mode: String) {
         button.setOnClickListener {
-            modifyCpuConfig(mode)
+            if (modeSwitcher.anyModeReplaced()) {
+                modifyCpuConfig(mode)
+            } else {
+                Snackbar.make(it, "如需自定义各个模式的参数，请先将配置源切换为“自定义”", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -169,6 +244,12 @@ class ActivityCpuModes : ActivityBase() {
             author = globalSPF.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")!!
         } else {
             author = "none"
+        }
+
+        if (author == "none") {
+            quick_switch.visibility = View.GONE
+        } else {
+            quick_switch.visibility = View.VISIBLE
         }
 
         if (outsideInstalled) {
@@ -339,13 +420,13 @@ class ActivityCpuModes : ActivityBase() {
     }
 
     //安装调频文件
-    private fun installConfig(useBigCore: Boolean) {
+    private fun installConfig(active: Boolean) {
         if (!configInstaller.dynamicSupport(context)) {
             Scene.toast(R.string.not_support_config, Toast.LENGTH_LONG)
             return
         }
 
-        configInstaller.installOfficialConfig(context, "", useBigCore)
+        configInstaller.installOfficialConfig(context, "", active)
         configInstalled()
     }
 
@@ -357,7 +438,7 @@ class ActivityCpuModes : ActivityBase() {
             reStartService()
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setMessage("配置脚本已安装，是否开启 [性能调节] ？")
+                    .setMessage("配置脚本已安装，是否开启 [动态响应] ？")
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         dynamic_control.isChecked = true
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()

@@ -62,12 +62,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (ModeSwitcher().modeConfigCompleted() || CpuConfigInstaller().dynamicSupport(Scene.context)) {
-            powermode_toggles.visibility = View.VISIBLE
-        } else {
-            powermode_toggles.visibility = View.GONE
-        }
-
         btn_powersave.setOnClickListener {
             installConfig(ModeSwitcher.POWERSAVE, getString(R.string.power_change_powersave))
         }
@@ -177,6 +171,13 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             return
         }
         activity!!.title = getString(R.string.app_name)
+
+        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (ModeSwitcher().modeConfigCompleted() || CpuConfigInstaller().dynamicSupport(Scene.context))) {
+            powermode_toggles.visibility = View.VISIBLE
+        } else {
+            powermode_toggles.visibility = View.GONE
+        }
+
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()
@@ -407,7 +408,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     AlertDialog
                             .Builder(context)
                             .setTitle("提示")
-                            .setMessage("“场景模式-性能调节”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“性能调节”！")
+                            .setMessage("“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“动态响应”！")
                             .setNegativeButton(R.string.btn_confirm) { _, _ ->
                             }
                             .setCancelable(false))

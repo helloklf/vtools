@@ -170,6 +170,13 @@
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
+    <style name="ListCardItemSmall" parent="ListCardItem">
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
 
     <style name="ListItem">
         <item name="android:background">?attr/listChoiceBackgroundIndicator</item>

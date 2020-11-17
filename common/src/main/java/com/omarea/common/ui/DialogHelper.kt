@@ -44,11 +44,11 @@ class DialogHelper {
             return DialogWrap(dialog)
         }
 
-        fun helpInfo(context: Context, message: String): DialogWrap {
-            return helpInfo(context, "", message)
+        fun helpInfo(context: Context, message: String, onDismiss: Runnable? = null): DialogWrap {
+            return helpInfo(context, "", message, onDismiss)
         }
 
-        fun helpInfo(context: Context, title: String, message: String): DialogWrap {
+        fun helpInfo(context: Context, title: String, message: String, onDismiss: Runnable? = null): DialogWrap {
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
             val alert = AlertDialog.Builder(context).setView(dialog)
@@ -71,8 +71,26 @@ class DialogHelper {
                     visibility = View.GONE
                 }
             }
+            if (onDismiss != null) {
+                alert.setPositiveButton(R.string.btn_confirm) { d, _ ->
+                    d.dismiss()
+                }
+                alert.setCancelable(false)
+            }
+            alert.setOnDismissListener {
+                onDismiss?.run()
+            }
 
             return animDialog(alert)
+        }
+
+        fun customDialog (context: Context, view: View): DialogWrap {
+            return animDialog(
+                    AlertDialog
+                        .Builder(context)
+                        .setView(view)
+                        .setCancelable(true)
+            )
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {

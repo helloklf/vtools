@@ -34,13 +34,13 @@ class CpuConfigInstaller {
     }
 
     // 安装应用内自带的配置
-    fun installOfficialConfig(context: Context, afterCmds: String = "", biCore: Boolean = false): Boolean {
+    fun installOfficialConfig(context: Context, afterCmds: String = "", active: Boolean = false): Boolean {
         if (!dynamicSupport(context)) {
             return false
         }
         try {
-            val powercfg = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/active.sh" else "/conservative.sh"), "powercfg.sh", context)
-            val powercfgBase = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/active-base.sh" else "/conservative-base.sh"), "powercfg-base.sh", context)
+            val powercfg = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (active) "/active.sh" else "/conservative.sh"), "powercfg.sh", context)
+            val powercfgBase = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (active) "/active-base.sh" else "/conservative-base.sh"), "powercfg-base.sh", context)
 
             if (powercfg == null) {
                 return false

@@ -171,7 +171,7 @@ class ActivityAppConfig : ActivityBase() {
             }
         } else {
             scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
-                DialogHelper.helpInfo(context, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
+                DialogHelper.helpInfo(context, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [动态响应] 功能")
                 true
             }
         }
