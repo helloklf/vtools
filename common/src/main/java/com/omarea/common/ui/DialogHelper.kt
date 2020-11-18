@@ -121,6 +121,8 @@ class DialogHelper {
                 // decorView.setPadding(0, 0, 0, 0)
 
                 setBackgroundDrawable(BitmapDrawable(activity.getResources(), FastBlurUtility.getBlurBackgroundDrawer(activity)))
+                /*
+                // 隐藏状态栏和导航栏
                 decorView.run {
                     systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     setOnSystemUiVisibilityChangeListener {
@@ -133,10 +135,13 @@ class DialogHelper {
                         systemUiVisibility = uiOptions
                     }
                 }
+                */
+
+                // setWindowAnimations(R.style.windowAnim2)
             }
 
-
-            return animDialog(dialog)!!
+            dialog.show()
+            return DialogWrap(dialog)
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {

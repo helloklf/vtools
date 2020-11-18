@@ -2,15 +2,10 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="false"
     android:zAdjustment="top">
-    <translate
-        android:duration="@android:integer/config_mediumAnimTime"
-        android:fromYDelta="-10%p"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:toYDelta="0%p" />
     <scale
         android:duration="@android:integer/config_mediumAnimTime"
-        android:fromXScale="0.6"
-        android:fromYScale="0.6"
+        android:fromXScale="0.9"
+        android:fromYScale="0.9"
         android:interpolator="@android:anim/anticipate_overshoot_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"
