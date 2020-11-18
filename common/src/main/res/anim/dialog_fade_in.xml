@@ -6,13 +6,13 @@
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromXScale="0.9"
         android:fromYScale="0.9"
-        android:interpolator="@android:anim/anticipate_overshoot_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"
         android:toXScale="1"
         android:toYScale="1" />
     <alpha
         android:duration="@android:integer/config_mediumAnimTime"
+        android:interpolator="@android:anim/decelerate_interpolator"
         android:fromAlpha="0"
         android:toAlpha="1" />
 </set>
