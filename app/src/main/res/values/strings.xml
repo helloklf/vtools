@@ -245,6 +245,7 @@
     <string name="swap_outside_module_installed">外部附加(Magisk)模块已激活</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率　　　：%s</string>
+    <string name="swap_zram_stat_format2">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n压缩率　　　：%s</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="swap_state_undefined">未创建</string>
     <string name="swap_state_created">未启动</string>
@@ -319,18 +320,18 @@
         <item>极速模式</item>
     </string-array>
     <string-array name="powercfg_modes_filter">
-        <item>所有模式</item>
-        <item>省电模式（阅读）</item>
-        <item>均衡模式（日常）</item>
-        <item>性能模式（游戏）</item>
-        <item>极速模式（跑分）</item>
-        <item>全局默认</item>
+        <item>全部</item>
+        <item>省电</item>
+        <item>均衡</item>
+        <item>性能</item>
+        <item>极速</item>
+        <item>未指定</item>
         <item>保持上个应用状态</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
-        <item>用户程序</item>
-        <item>系统应用</item>
-        <item>所有应用</item>
+        <item>用户</item>
+        <item>系统</item>
+        <item>全部</item>
     </string-array>
 
     <string name="cgroup_mem_title">cgroup</string>

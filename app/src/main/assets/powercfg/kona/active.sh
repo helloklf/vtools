@@ -221,7 +221,7 @@ fi
 
 if [[ "$action" = "performance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
@@ -247,7 +247,7 @@ fi
 
 if [[ "$action" = "fast" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 

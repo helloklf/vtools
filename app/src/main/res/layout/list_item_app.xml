@@ -16,6 +16,7 @@
 
     <ImageView
         android:id="@+id/ItemIcon"
+        android:layout_marginStart="8dp"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"

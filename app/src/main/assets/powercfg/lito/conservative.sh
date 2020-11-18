@@ -25,13 +25,13 @@ echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 
 governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
-governor4=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
+governor6=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
 governor7=`cat /sys/devices/system/cpu/cpufreq/policy7/scaling_governor`
 
 if [[ ! "$governor0" = "schedutil" ]]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
 fi
-if [[ ! "$governor4" = "schedutil" ]]; then
+if [[ ! "$governor6" = "schedutil" ]]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
 fi
 if [[ ! "$governor7" = "schedutil" ]]; then
@@ -134,16 +134,6 @@ echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
-
-set_input_boost_freq() {
-    local c0="$1"
-    local c1="$2"
-    local c2="$3"
-    local ms="$4"
-    echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
-	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
-}
-
 set_cpu_freq()
 {
     echo $1 $2 $3 $4
@@ -174,7 +164,6 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
 	set_cpu_freq 300000 1612800 710400 1286400 844800 1305600
-  set_input_boost_freq 1248000 0 0 40
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
@@ -201,7 +190,6 @@ if [[ "$action" = "balance" ]]; then
   echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
 	set_cpu_freq 300000 1708800 710400 1862400 844800 2073600
-  set_input_boost_freq 1478400 0 0 40
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
@@ -222,12 +210,11 @@ fi
 
 if [[ "$action" = "performance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
 	set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
-  set_input_boost_freq 1420800 1286400 1305600 40
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
@@ -248,12 +235,11 @@ fi
 
 if [[ "$action" = "fast" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
 	set_cpu_freq 1075200 1804800 1382400 2600000 1305600 3200000
-  set_input_boost_freq 1804800 1670400 1862400 80
 
 	echo 1612800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
 	echo 1670400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq

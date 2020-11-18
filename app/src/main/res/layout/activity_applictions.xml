@@ -23,11 +23,11 @@
             <EditText
                 android:id="@+id/apps_search_box"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="#33dddddd"
+                android:layout_height="50dp"
+                android:background="@drawable/filter_toolbar_bg"
                 android:hint="搜索 应用名或PackageName"
+                android:layout_margin="8dp"
                 android:inputType="textFilter"
-                android:padding="8dp"
                 android:singleLine="true"
                 android:textSize="16dp" />
 
@@ -47,7 +47,7 @@
                         android:id="@+id/fab_apps_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
+                        android:layout_gravity="bottom|end"
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
@@ -55,6 +55,9 @@
                         android:id="@+id/apps_userlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="8dp"
                         android:background="@drawable/list_view_bg"
                         android:divider="@null"
                         android:scrollbars="none" />
@@ -80,6 +83,9 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/list_view_bg"
                         android:divider="@null"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="8dp"
                         android:scrollbars="none" />
 
                 </FrameLayout>
@@ -104,6 +110,9 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/list_view_bg"
                         android:divider="@null"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginBottom="8dp"
                         android:scrollbars="none" />
 
                 </FrameLayout>

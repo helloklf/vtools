@@ -503,27 +503,36 @@ class ActivitySwap : ActivityBase() {
 
             // 为此磁盘分配的内存量
             val memUsedTotal = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
-            // 可用于存储的最大内存量
-            val memLimit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
-            // 消耗的最大内存量
-            val memUsedMax = KernelProrp.getProp("/sys/block/zram0/mem_used_max")
-            // 写入此磁盘的相同元素填充页面的数量 不占用内存
-            // val same_pages = KernelProrp.getProp("/sys/block/zram0/same_pages")
-            // 压缩期间释放的页数
-            // val pages_compacted = KernelProrp.getProp("/sys/block/zram0/pages_compacted")
-            // 不可压缩数据
-            // val huge_pages = KernelProrp.getProp("/sys/block/zram0/huge_pages")
 
-            zram0_stat.text = String.format(
-                    getString(R.string.swap_zram_stat_format),
-                    compAlgorithm,
-                    zramInfoValueParseMB(origDataSize),
-                    zramInfoValueParseMB(comprDataSize),
-                    zramInfoValueParseMB(memUsedTotal),
-                    zramInfoValueParseMB(memUsedMax),
-                    if (memLimit == "0") "" else memLimit,
-                    zramCompressionRatio(origDataSize, comprDataSize),
-                    zramCompressionRatio(origDataSize, memUsedTotal))
+            if (memUsedTotal.length > 0) {
+                // 可用于存储的最大内存量
+                val memLimit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
+                // 消耗的最大内存量
+                val memUsedMax = KernelProrp.getProp("/sys/block/zram0/mem_used_max")
+                // 写入此磁盘的相同元素填充页面的数量 不占用内存
+                // val same_pages = KernelProrp.getProp("/sys/block/zram0/same_pages")
+                // 压缩期间释放的页数
+                // val pages_compacted = KernelProrp.getProp("/sys/block/zram0/pages_compacted")
+                // 不可压缩数据
+                // val huge_pages = KernelProrp.getProp("/sys/block/zram0/huge_pages")
+
+                zram0_stat.text = String.format(
+                        getString(R.string.swap_zram_stat_format),
+                        compAlgorithm,
+                        zramInfoValueParseMB(origDataSize),
+                        zramInfoValueParseMB(comprDataSize),
+                        zramInfoValueParseMB(memUsedTotal),
+                        zramInfoValueParseMB(memUsedMax),
+                        if (memLimit == "0") "" else memLimit,
+                        zramCompressionRatio(origDataSize, comprDataSize))
+            } else {
+                zram0_stat.text = String.format(
+                        getString(R.string.swap_zram_stat_format2),
+                        compAlgorithm,
+                        zramInfoValueParseMB(origDataSize),
+                        zramInfoValueParseMB(comprDataSize),
+                        zramCompressionRatio(origDataSize, comprDataSize))
+            }
         }
 
         zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)

@@ -18,9 +18,10 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#22dddddd">
+            android:background="@drawable/filter_toolbar_bg">
 
             <EditText
                 android:id="@+id/process_search"
@@ -57,6 +58,9 @@
             android:layout_height="match_parent"
             android:background="@drawable/list_view_bg"
             android:divider="@null"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="8dp"
             android:fastScrollAlwaysVisible="true"
             android:fastScrollEnabled="true" />
     </LinearLayout>
