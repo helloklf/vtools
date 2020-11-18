@@ -16,6 +16,22 @@
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
 
+    <style name="custom_alert_dialog">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
+
     <style name="SceneSpinner">
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>

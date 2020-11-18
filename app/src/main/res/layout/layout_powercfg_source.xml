@@ -6,9 +6,9 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:alpha="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/in_card_item"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="8dp"
@@ -18,7 +18,7 @@
         <TextView
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            style="@style/textTitle"
+            style="@style/textDefault"
             android:text="选择配置源"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

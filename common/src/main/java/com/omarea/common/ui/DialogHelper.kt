@@ -1,7 +1,9 @@
 package com.omarea.common.ui
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -86,13 +88,55 @@ class DialogHelper {
             return animDialog(alert)
         }
 
-        fun customDialog (context: Context, view: View): DialogWrap {
-            return animDialog(
-                    AlertDialog
-                        .Builder(context)
-                        .setView(view)
-                        .setCancelable(true)
-            )
+        fun customDialog(context: Context, view: View): DialogWrap {
+            val dialog = AlertDialog
+                    .Builder(context)
+                    .setView(view)
+                    .setCancelable(true)
+                    .create()
+
+            dialog.window?.run {
+                setBackgroundDrawableResource(android.R.color.transparent)
+            }
+
+            return animDialog(dialog)!!
+        }
+
+        fun customDialogBlurBg(activity: Activity, view: View): DialogWrap {
+            val dialog = AlertDialog
+                    .Builder(activity, R.style.custom_alert_dialog)
+                    .setView(view)
+                    .setCancelable(true)
+                    .create()
+
+            dialog.window?.run {
+                setBackgroundDrawableResource(android.R.color.transparent)
+
+                // TODO:处理模糊背景
+                // BlurBackground(activity).setScreenBgLight(dialog)
+
+                // val attrs = attributes
+                // attrs.alpha = 0.1f
+                // attributes =attrs
+                // decorView.setPadding(0, 0, 0, 0)
+
+                setBackgroundDrawable(BitmapDrawable(activity.getResources(), FastBlurUtility.getBlurBackgroundDrawer(activity)))
+                decorView.run {
+                    systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    setOnSystemUiVisibilityChangeListener {
+                        var uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
+                                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or  //全屏
+                                View.SYSTEM_UI_FLAG_FULLSCREEN or  //隐藏导航栏
+                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        uiOptions = uiOptions or 0x00001000
+                        systemUiVisibility = uiOptions
+                    }
+                }
+            }
+
+
+            return animDialog(dialog)!!
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {
