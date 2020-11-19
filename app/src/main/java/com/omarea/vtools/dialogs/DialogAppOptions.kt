@@ -282,14 +282,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun confirm(title: String, msg: String, next: Runnable?) {
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(title)
-                .setMessage(msg)
-                .setNegativeButton("确定") { _, _ ->
-                    next?.run()
-                }
-                .setNeutralButton("取消") { _, _ ->
-                })
+        DialogHelper.confirm(context, title, msg, next)
     }
 
     /**

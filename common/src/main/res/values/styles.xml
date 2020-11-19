@@ -140,4 +140,22 @@
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:alpha">0.5</item>
     </style>
+
+    <style name="dialogLargeBtn">
+        <item name="android:alpha">0.8</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+    <style name="dialogConfirmBtn" parent="dialogCancelBtn">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/btn_bg_active_large</item>
+    </style>
+
+    <style name="dialogCancelBtn" parent="dialogLargeBtn">
+        <item name="android:background">@drawable/btn_bg_large_secondary</item>
+    </style>
 </resources>

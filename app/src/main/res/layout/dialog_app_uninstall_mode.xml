@@ -141,41 +141,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
+            <Button
                 android:id="@+id/btn_cancel"
-                android:alpha="0.8"
-                android:orientation="horizontal"
-                android:background="@drawable/btn_bg_large_secondary"
+                style="@style/dialogCancelBtn"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:gravity="center">
-
-                <TextView
-                    android:textSize="16dp"
-                    android:text="取消"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:alpha="0.8"
+                android:text="取消">
+            </Button>
+            <Button
                 android:id="@+id/btn_confirm"
-                android:orientation="horizontal"
-                android:background="@drawable/btn_bg_active_large"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:gravity="center">
-
-                <TextView
-                    android:textSize="16dp"
-                    android:textColor="#ffffff"
-                    android:text="确定"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                style="@style/dialogConfirmBtn"
+                android:text="确定">
+            </Button>
         </LinearLayout>
 
     </LinearLayout>
