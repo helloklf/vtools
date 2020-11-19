@@ -22,9 +22,8 @@
         android:toXScale="0.9"
         android:toYScale="0.9" />-->
     <alpha
-        android:startOffset="@android:integer/config_shortAnimTime"
-        android:duration="@android:integer/config_longAnimTime"
-        android:interpolator="@android:anim/accelerate_interpolator"
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:interpolator="@android:anim/linear_interpolator"
         android:fromAlpha="1"
         android:toAlpha="0" />
 </set>

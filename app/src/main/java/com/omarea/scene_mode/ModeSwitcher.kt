@@ -1,6 +1,7 @@
 package com.omarea.scene_mode
 
 import android.content.Context
+import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -155,13 +156,15 @@ open class ModeSwitcher {
     private var configProvider: String = ""
 
     // init
+    // TODO:看什么时候清空缓存
     internal fun initPowercfg(): ModeSwitcher {
         if (configProvider.isEmpty()) {
             val installer = CpuConfigInstaller()
+            val source = getCurrentSource()
             if (installer.outsideConfigInstalled()) {
                 configProvider = OUTSIDE_POWER_CFG_PATH
             } else {
-                if (installer.insideConfigInstalled() && !innerConfigUpdated && !anyModeReplaced()) {
+                if (source != SOURCE_SCENE_CUSTOM && installer.insideConfigInstalled() && !innerConfigUpdated) {
                     installer.applyConfigNewVersion(Scene.context)
                     innerConfigUpdated = true
                 }
@@ -180,19 +183,43 @@ open class ModeSwitcher {
 
     // 切换模式
     internal fun executePowercfgMode(mode: String): ModeSwitcher {
-        if (!inited) {
-            initPowercfg()
+        val source = getCurrentSource()
+        when (source) {
+            SOURCE_SCENE_CUSTOM -> {
+                val cpuConfigStorage = CpuConfigStorage(Scene.context)
+                if (cpuConfigStorage.exists(mode)) {
+                    cpuConfigStorage.applyCpuConfig(Scene.context, mode)
+                    setCurrentPowercfg(mode)
+                } else {
+                    Log.e("Scene", "" + mode + "Profile lost!")
+                }
+            }
+            SOURCE_OUTSIDE -> {
+                if (!inited) {
+                    initPowercfg()
+                }
+
+                if (configProvider.isNotEmpty()) {
+                    keepShellExec("sh $configProvider $mode")
+                    setCurrentPowercfg(mode)
+                } else {
+                    Log.e("Scene", "" + mode + "Profile lost!")
+                }
+            }
+            else -> {
+                if (!inited) {
+                    initPowercfg()
+                }
+
+                if (configProvider.isNotEmpty()) {
+                    keepShellExec("sh $configProvider $mode")
+                    setCurrentPowercfg(mode)
+                } else {
+                    Log.e("Scene", "" + mode + "Profile lost!")
+                }
+            }
         }
 
-        val cpuConfigStorage = CpuConfigStorage(Scene.context)
-        if (cpuConfigStorage.exists(mode)) {
-            cpuConfigStorage.applyCpuConfig(Scene.context, mode)
-        } else if (configProvider.isNotEmpty()) {
-            keepShellExec("sh $configProvider $mode")
-        } else {
-            return this
-        }
-        setCurrentPowercfg(mode)
         return this
     }
 
@@ -212,8 +239,8 @@ open class ModeSwitcher {
         if (CpuConfigInstaller().outsideConfigInstalled()) {
             return true
         } else {
-            val config = getCurrentSource()
-            when (config) {
+            val source = getCurrentSource()
+            when (source) {
                 SOURCE_SCENE_CUSTOM -> {
                     return allModeReplaced()
                 }
@@ -235,15 +262,6 @@ open class ModeSwitcher {
         return storage.exists(POWERSAVE) &&
                 storage.exists(BALANCE) &&
                 storage.exists(PERFORMANCE) &&
-                storage.exists(FAST)
-    }
-
-    public fun anyModeReplaced(): Boolean {
-        val storage = CpuConfigStorage(Scene.context)
-
-        return storage.exists(POWERSAVE) ||
-                storage.exists(BALANCE) ||
-                storage.exists(PERFORMANCE) ||
                 storage.exists(FAST)
     }
 

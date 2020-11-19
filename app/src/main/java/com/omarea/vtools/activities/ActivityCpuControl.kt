@@ -793,7 +793,6 @@ class ActivityCpuControl : ActivityBase() {
     private fun onViewCreated() {
         if (intent.hasExtra("cpuModeName")) {
             cpuModeName = intent.getStringExtra("cpuModeName")
-            title = ModeSwitcher.getModName("" + cpuModeName)
         }
 
         Thread(Runnable {
@@ -818,19 +817,24 @@ class ActivityCpuControl : ActivityBase() {
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
         if (cpuModeName != null) {
+            cpu_apply_boot.visibility = View.GONE
+
             ModeSwitcher().executePowercfgMode(cpuModeName!!)
 
-            val modeName = ModeSwitcher.getModName(cpuModeName!!)
-            cpu_apply_onboot.setText("自定义 $modeName ")
-            cpu_apply_onboot_desc.setText("自定义 [$modeName] 的具体参数，覆盖Scene原始设定")
             cpu_help_text.visibility = View.GONE
         }
     }
 
     private fun saveBootConfig() {
-        if (!CpuConfigStorage(context).saveCpuConfig(if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
-            Toast.makeText(context, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
-            cpu_apply_onboot.isChecked = false
+        if (cpuModeName != null) {
+            if (!CpuConfigStorage(context).saveCpuConfig(status)) {
+                Toast.makeText(context, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            if (!CpuConfigStorage(context).saveCpuConfig(if (cpu_apply_onboot.isChecked) status else null)) {
+                Toast.makeText(context, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
+                cpu_apply_onboot.isChecked = false
+            }
         }
     }
 
@@ -839,6 +843,8 @@ class ActivityCpuControl : ActivityBase() {
         super.onResume()
         if (cpuModeName == null) {
             title = getString(R.string.menu_core_control)
+        } else {
+            title = "自定义[" + ModeSwitcher.getModName("" + cpuModeName)+ "]"
         }
 
         loadBootConfig()
@@ -858,15 +864,15 @@ class ActivityCpuControl : ActivityBase() {
     override fun onPause() {
         super.onPause()
         saveBootConfig()
-        cancel()
+        stopStatusUpdate()
     }
 
     override fun onDestroy() {
-        cancel()
+        stopStatusUpdate()
         super.onDestroy()
     }
 
-    private fun cancel() {
+    private fun stopStatusUpdate() {
         try {
             if (timer != null) {
                 timer!!.cancel()
