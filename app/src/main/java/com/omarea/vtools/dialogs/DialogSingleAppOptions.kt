@@ -203,7 +203,7 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
         */
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAll()
+            uninstallAllSystem(app.updated)
         }
 
         dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
@@ -230,7 +230,6 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
         }
 
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
-
 
         if (app.enabled) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE

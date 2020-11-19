@@ -11,49 +11,49 @@
         android:padding="16dp">
 
         <LinearLayout
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/app_logo"
-                android:src="@drawable/in_card_item"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
-            <LinearLayout
-                android:layout_marginStart="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/app_options_title"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="应用名称" />
-                <TextView
-                    android:id="@+id/app_version_name"
-                    style="@style/textSecondary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Version Name: " />
-                <TextView
-                    android:id="@+id/app_version_code"
-                    style="@style/textSecondary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Version Code: " />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/app_options_single_only"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:orientation="vertical">
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/app_logo"
+                    android:src="@drawable/in_card_item"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+                <LinearLayout
+                    android:layout_marginStart="8dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/app_options_title"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="应用名称" />
+                    <TextView
+                        android:id="@+id/app_version_name"
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Version Name: " />
+                    <TextView
+                        android:id="@+id/app_version_code"
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Version Code: " />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_marginTop="6dp"
@@ -69,6 +69,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="6dp">
 
@@ -92,8 +93,9 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:padding="5dp"
+                            android:alpha="0.5"
                             android:src="@drawable/app_options_copy"
-                            app:tint="?android:colorAccent" />
+                            app:tint="@android:color/darker_gray" />
                     </LinearLayout>
                 </LinearLayout>
                 <!--复制应用包名-->
@@ -104,6 +106,7 @@
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="6dp">
 
@@ -127,12 +130,12 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:padding="5dp"
+                            android:alpha="0.5"
                             android:src="@drawable/app_options_copy"
-                            app:tint="?android:colorAccent" />
+                            app:tint="@android:color/darker_gray" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_marginTop="6dp"
@@ -167,14 +170,13 @@
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:padding="6dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="MinSDKVersion" />
+                        android:text="MinSDK" />
                     <TextView
                         style="@style/textSecondary"
                         android:id="@+id/app_min_sdk"
@@ -182,12 +184,51 @@
                         android:layout_height="wrap_content"
                         android:text="" />
                 </LinearLayout>
+
+                <!--查看应用详情-->
+                <LinearLayout
+                    android:id="@+id/app_options_open_detail"
+                    android:layout_marginStart="6dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="4dp"
+                        android:src="@drawable/app_options_details"
+                        app:tint="?android:colorAccent" />
+                </LinearLayout>
+
+                <!--在应用商店查看-->
+                <LinearLayout
+                    android:id="@+id/app_options_app_store"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="6dp"
+                        android:src="@drawable/app_options_appstore"
+                        app:tint="?android:colorAccent" />
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -204,72 +245,33 @@
                     android:padding="6dp">
 
                     <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#00BCD4"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:padding="6dp"
-                        android:layout_marginRight="6dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
                         android:src="@drawable/app_options_as_system"
-                        app:tint="?android:colorAccent" />
+                        app:tint="@android:color/white" />
 
-                    <TextView
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="转为系统应用" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent">
-
-                    <!--查看应用详情-->
-                    <LinearLayout
-                        android:id="@+id/app_options_open_detail"
-                        android:layout_marginStart="6dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/krscript_item_ripple"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="6dp">
-
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:padding="4dp"
-                            android:src="@drawable/app_options_details"
-                            app:tint="?android:colorAccent" />
-                    </LinearLayout>
-
-                    <!--在应用商店查看-->
-                    <LinearLayout
-                        android:id="@+id/app_options_app_store"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="6dp"
-                        android:background="@drawable/krscript_item_ripple"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="6dp">
-
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:padding="6dp"
-                            android:src="@drawable/app_options_appstore"
-                            app:tint="?android:colorAccent" />
-
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="转为系统应用" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="将应用复制到系统目录\n如果有Magisk则会自动创建模块，免于直接修改系统" />
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
             </LinearLayout>
         </LinearLayout>
 
@@ -314,21 +316,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="备份应用安装包及数据" />
+                        android:text="备份应用安装包文件，及应用数据" />
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="删除/卸载" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="70dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <!--清空数据-->
@@ -412,16 +408,10 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="冻结/隐藏" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -610,8 +600,8 @@
                         android:backgroundTint="#B3CA6E"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
                         android:src="@drawable/app_options_disable"
                         app:tint="@android:color/white" />
 
@@ -636,15 +626,9 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="dex2oat" />
         <!--dex2oat-->
         <LinearLayout
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:id="@+id/app_options_dex2oat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -663,12 +647,14 @@
                 android:padding="6dp">
 
                 <ImageView
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#B3CA6E"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:padding="6dp"
+                    android:padding="8dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_dex2oat"
-                    app:tint="?android:colorAccent" />
+                    app:tint="@android:color/white" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -699,12 +685,14 @@
                 android:padding="6dp">
 
                 <ImageView
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#B3CA6E"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:padding="6dp"
+                    android:padding="8dp"
                     android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_dex2oat"
-                    app:tint="?android:colorAccent" />
+                    app:tint="@android:color/white" />
 
                 <LinearLayout
                     android:orientation="vertical"

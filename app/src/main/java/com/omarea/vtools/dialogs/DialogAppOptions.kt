@@ -120,7 +120,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAllSystem(false)
+            uninstallAllSystem(false) // TODO:xxx
         }
         dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
