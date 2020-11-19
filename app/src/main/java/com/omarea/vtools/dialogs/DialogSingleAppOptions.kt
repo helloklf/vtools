@@ -5,10 +5,8 @@ import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
@@ -86,10 +84,6 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
             dialog.dismiss()
             showInMarket()
         }
-        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog.dismiss()
-            hideAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
             clearAll()
@@ -116,38 +110,9 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
 
-        if (app.enabled) {
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog.dismiss()
-                toggleEnable()
-            }
-        } else {
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog.dismiss()
-                toggleEnable()
-            }
-        }
-
-        // suspend
-        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (app.suspended) {
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                    dialog.dismiss()
-                    unsuspendAll()
-                }
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).alpha = 0.3f
-            } else {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                    dialog.dismiss()
-                    suspendAll()
-                }
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).alpha = 0.3f
-            }
+        dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+            dialog.dismiss()
+            modifyStateAll()
         }
     }
 
@@ -182,10 +147,6 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
         dialogView.findViewById<View>(R.id.app_options_app_store).setOnClickListener {
             dialog.dismiss()
             showInMarket()
-        }
-        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog.dismiss()
-            hideAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
@@ -231,38 +192,9 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
 
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
 
-        if (app.enabled) {
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog.dismiss()
-                toggleEnable()
-            }
-        } else {
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog.dismiss()
-                toggleEnable()
-            }
-        }
-
-        // suspend
-        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (app.suspended) {
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                    dialog.dismiss()
-                    unsuspendAll()
-                }
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).alpha = 0.3f
-            } else {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                    dialog.dismiss()
-                    suspendAll()
-                }
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).alpha = 0.3f
-            }
+        dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+            dialog.dismiss()
+            modifyStateAll()
         }
     }
 
@@ -288,14 +220,6 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
                         5 -> showInMarket()
                     }
                 })
-    }
-
-    private fun toggleEnable() {
-        if (app.enabled) {
-            disableAll()
-        } else {
-            enableAll()
-        }
     }
 
     private fun openDetails() {

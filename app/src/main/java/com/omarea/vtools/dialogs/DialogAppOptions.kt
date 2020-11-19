@@ -1,6 +1,5 @@
 package com.omarea.vtools.dialogs
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -18,7 +17,6 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.Appinfo
-import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
@@ -43,10 +41,6 @@ open class DialogAppOptions(protected final var context: Activity, protected var
 
         val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
-        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog.dismiss()
-            hideAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
             clearAll()
@@ -75,33 +69,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
 
-        // suspend
-        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog.dismiss()
-                suspendAll()
-            }
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog.dismiss()
-                unsuspendAll()
-            }
-        }
-
-        if (apps.any { it.enabled }) {
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
-                dialog.dismiss()
-                disableAll()
-            }
-        } else {
-            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
-            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-                dialog.dismiss()
-                enableAll()
-            }
+        dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+            dialog.dismiss()
+            modifyStateAll()
         }
     }
 
@@ -110,10 +80,6 @@ open class DialogAppOptions(protected final var context: Activity, protected var
 
         val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
-        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
-            dialog.dismiss()
-            hideAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
             clearAll()
@@ -139,28 +105,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
 
         dialogView.findViewById<TextView>(R.id.app_options_title).setText("请选择操作")
 
-        dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
-            dialog.dismiss()
-            enableAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
             dialog.dismiss()
-            disableAll()
-        }
-
-        // suspend
-        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog.dismiss()
-                suspendAll()
-            }
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog.dismiss()
-                unsuspendAll()
-            }
+            modifyStateAll()
         }
     }
 
@@ -440,107 +387,65 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     /**
      * 禁用所选的应用
      */
-    protected fun disableAll() {
-        confirm("冻结应用", "确定冻结选中的 ${apps.size} 个应用？") {
-            _disableAll()
+    protected fun modifyStateAll() {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_disable_mode, null)
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        view.findViewById<TextView>(R.id.confirm_message).text = "选中了 ${apps.size} 个应用，你希望把它们的状态改成？"
+
+        val switchSuspend = view.findViewById<CompoundButton>(R.id.disable_suspend)
+        val switchFreeze = view.findViewById<CompoundButton>(R.id.disable_freeze)
+        val switchHide = view.findViewById<CompoundButton>(R.id.disable_hide)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            switchSuspend.isEnabled = false
+            switchSuspend.isEnabled = true
+        }
+        if (apps.size == 1) {
+            val app = apps.first()
+            switchSuspend.isChecked = app.suspended
+            switchFreeze.isChecked = !app.enabled
+        }
+
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            val suspend = switchSuspend.isChecked
+            val freeze = switchFreeze.isChecked
+            val hide = switchHide.isChecked
+            _modifyStateAll(suspend, freeze, hide)
+        }
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
         }
     }
 
-    private fun _disableAll() {
+    private fun _modifyStateAll(suspend: Boolean, freeze: Boolean, hide: Boolean) {
+        val androidP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[disable ${item.appName}]'\n")
+            if (suspend) {
+                sb.append("echo '[suspend ${item.appName}]'\n")
+                sb.append("pm suspend $packageName\n")
+            } else if (androidP) {
+                sb.append("echo '[unsuspend ${item.appName}]'\n")
+                sb.append("pm unsuspend $packageName\n")
+            }
 
-            sb.append("pm disable ${packageName}\n")
+            if (freeze) {
+                sb.append("echo '[disable ${item.appName}]'\n")
+                sb.append("pm disable ${packageName}\n")
+            } else {
+                sb.append("echo '[enable ${item.appName}]'\n")
+                sb.append("pm enable ${packageName}\n")
+            }
+
+            if (hide) {
+                sb.append("echo '[hide ${item.appName}]'\n")
+                sb.append("pm hide ${packageName}\n")
+            }
+
         }
 
         sb.append("echo '[operation completed]'\n")
         execShell(sb)
-    }
-
-    /**
-     * 启用所选的应用
-     */
-    protected fun enableAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[enable ${item.appName}]'\n")
-
-            sb.append("pm enable $packageName\n")
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-    }
-
-    /**
-     * 隐藏所选的应用
-     */
-    protected fun hideAll() {
-        confirm("隐藏应用", "确定隐藏选中的 ${apps.size} 个应用？") {
-            _hideAll()
-        }
-    }
-
-    /**
-     * 暂停使用所选的应用
-     */
-    protected fun _suspendAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[suspend ${item.appName}]'\n")
-
-            sb.append("pm suspend $packageName\n")
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-    }
-
-    /**
-     * 暂停使用所选的应用
-     */
-    protected fun suspendAll() {
-        confirm("暂停使用", "确定暂停使用选中的 ${apps.size} 个应用？\n应用停用后，将在桌面上显示为灰色图标，需要恢复使用后才能打开", Runnable {
-            _suspendAll()
-        })
-    }
-
-    /**
-     * 恢复使用所选的应用
-     */
-    protected fun unsuspendAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[unsuspend ${item.appName}]'\n")
-
-            sb.append("pm unsuspend $packageName\n")
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-    }
-
-    @SuppressLint("ApplySharedPref")
-    private fun _hideAll() {
-        val spf = context.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE).edit()
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[hide ${item.appName}]'\n")
-
-            sb.append("pm hide $packageName\n")
-
-            spf.putString(packageName, if (item.appName != null) item.appName as String? else packageName)
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-        spf.commit()
     }
 
     /**
