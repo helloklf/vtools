@@ -65,20 +65,20 @@
 
             <LinearLayout
                 android:id="@+id/scene_mode_config"
-                style="@style/ListCardItem"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/app_details_auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/app_details_perf"
+                    style="@style/ListCardItem"
                     android:orientation="vertical">
 
                     <TextView
                         style="@style/scene_config_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="基本设置" />
+                        android:text="性能调节" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -121,7 +121,18 @@
                             android:paddingEnd="8dp"
                             android:paddingBottom="8dp" />
                     </LinearLayout>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/app_details_auto"
+                    style="@style/ListCardItem"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/scene_config_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="基本设置" />
                     <Switch
                         android:id="@+id/app_details_aloowlight"
                         style="@style/scene_config_item"
@@ -185,9 +196,7 @@
 
                 <LinearLayout
                     android:id="@+id/app_details_assist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    style="@style/ListCardItem"
                     android:orientation="vertical">
 
                     <TextView
@@ -247,39 +256,60 @@
                         android:text="屏蔽通知时Scene会自动清除新通知，可能错失消息。按键屏蔽状态下，将使用长按替代短按操作" />
                 </LinearLayout>
 
-                <TextView
-                    style="@style/scene_config_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="应用偏见" />
+                <LinearLayout
+                    style="@style/ListCardItem">
+                    <TextView
+                        style="@style/scene_config_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="应用偏见" />
 
-                <Switch
-                    android:id="@+id/app_details_freeze"
-                    style="@style/scene_config_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="自动冻结" />
+                    <Switch
+                        android:id="@+id/app_details_freeze"
+                        style="@style/scene_config_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="自动冻结" />
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="锁屏之后，将此应用冻结(禁用)，适用于后台非常耗电但又偶尔需要打开的应用" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="锁屏之后，将此应用冻结(禁用)，适用于后台非常耗电但又偶尔需要打开的应用" />
+
+                </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/app_details_vaddins_notinstall"
-                style="@style/ListCardItem"
-                android:text="高级设定组件未安装，请先点击此处安装！" />
-
-            <TextView
-                android:id="@+id/app_details_vaddins_notactive"
-                style="@style/ListCardItem"
-                android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！"
-                android:visibility="gone" />
-
             <LinearLayout style="@style/ListCardItemLast">
+                <TextView
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:id="@+id/app_details_vaddins_notinstall"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/in_card_item"
+                    android:text="高级设定组件未安装，请先点击此处安装！" />
+
+                <TextView
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
+                    android:id="@+id/app_details_vaddins_notactive"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/in_card_item"
+                    android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！"
+                    android:visibility="gone" />
 
                 <TextView
                     style="@style/scene_config_title"

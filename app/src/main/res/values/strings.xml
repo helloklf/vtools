@@ -336,10 +336,10 @@
 
     <string name="cgroup_mem_title">cgroup</string>
     <string-array name="cgroup_mem_options">
-        <item>普通(默认)</item>
-        <item>性能(减少SWAP)</item>
-        <item>常驻(常驻内存)</item>
-        <item>系统(常驻+禁止SWAP)</item>
+        <item>普通·默认</item>
+        <item>性能·减少SWAP</item>
+        <item>常驻·常驻内存</item>
+        <item>系统·常驻+禁止SWAP</item>
     </string-array>
     <string-array name="cgroup_mem_values">
         <item></item>

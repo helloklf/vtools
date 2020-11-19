@@ -272,6 +272,7 @@ class ActivityAppDetails : ActivityBase() {
         needKeyCapture = SceneConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
+            app_details_perf.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
             app_details_freeze.isEnabled = false
