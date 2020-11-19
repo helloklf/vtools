@@ -96,11 +96,7 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
         }
         dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
             dialog.dismiss()
-            backupAll(true, false)
-        }
-        dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
-            dialog.dismiss()
-            backupAll(true, true)
+            backupAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()

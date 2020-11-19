@@ -53,11 +53,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         }
         dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
             dialog.dismiss()
-            backupAll(true, false)
-        }
-        dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
-            dialog.dismiss()
-            backupAll(true, true)
+            backupAll()
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
@@ -297,17 +293,24 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     /**
      * 备份选中的应用
      */
-    protected fun backupAll(apk: Boolean = true, data: Boolean = true) {
-        if (data) {
-            if (!checkRestoreData()) {
-                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
-                return
-            }
-            confirm("备份应用和数据", "备份所选的${apps.size}个应用和数据？（很不推荐使用数据备份功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）", Runnable {
-                _backupAll(apk, data)
-            })
-        } else {
-            _backupAll(apk, data)
+    protected fun backupAll() {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_backup_mode, null)
+        view.findViewById<TextView>(R.id.confirm_message).text = "备份选中的 ${apps.size} 个应用和数据？"
+
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val includeData = view.findViewById<CompoundButton>(R.id.backup_include_data)
+
+        // 检测数据备份功能兼容性
+        if (!checkRestoreData()) {
+            includeData.isEnabled = false
+            includeData.isChecked = false
+        }
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            _backupAll(true, includeData.isChecked)
         }
     }
 
@@ -366,12 +369,12 @@ open class DialogAppOptions(protected final var context: Activity, protected var
                 return
             }
             confirm("还原应用和数据",
-                    "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）"
+                    "还原选中的 ${apps.size} 个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）"
             ) {
                 _restoreAll(apk, data)
             }
         } else {
-            confirm("还原应用", "还原所选的${apps.size}个应用和数据？") {
+            confirm("还原应用", "还原选中的 ${apps.size} 个应用和数据？") {
                 _restoreAll(apk, data)
             }
         }
@@ -438,7 +441,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 禁用所选的应用
      */
     protected fun disableAll() {
-        confirm("冻结应用", "确定冻结选中的${apps.size}个应用？") {
+        confirm("冻结应用", "确定冻结选中的 ${apps.size} 个应用？") {
             _disableAll()
         }
     }
@@ -476,7 +479,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 隐藏所选的应用
      */
     protected fun hideAll() {
-        confirm("隐藏应用", "确定隐藏选中的${apps.size}个应用？") {
+        confirm("隐藏应用", "确定隐藏选中的 ${apps.size} 个应用？") {
             _hideAll()
         }
     }
@@ -501,7 +504,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 暂停使用所选的应用
      */
     protected fun suspendAll() {
-        confirm("暂停使用", "确定暂停使用选中的${apps.size}个应用？\n应用停用后，将在桌面上显示为灰色图标，需要恢复使用后才能打开", Runnable {
+        confirm("暂停使用", "确定暂停使用选中的 ${apps.size} 个应用？\n应用停用后，将在桌面上显示为灰色图标，需要恢复使用后才能打开", Runnable {
             _suspendAll()
         })
     }
@@ -544,7 +547,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 删除选中的应用
      */
     protected fun deleteAll() {
-        confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
+        confirm("删除应用", "已选择 ${apps.size} 个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
             if (isMagisk() && !MagiskExtend.moduleInstalled() && (isTmpfs("/system/app") || isTmpfs("/system/priv-app"))) {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
@@ -622,7 +625,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 清除数据
      */
     protected fun clearAll() {
-        confirm("清空应用数据", "确定将选中的${apps.size}个应用数据清空？", Runnable {
+        confirm("清空应用数据", "确定将选中的 ${apps.size} 个应用数据清空？", Runnable {
             _clearAll()
         })
     }
@@ -645,7 +648,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      */
     protected fun uninstallAll() {
         val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
-        view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个应用？"
+        view.findViewById<TextView>(R.id.confirm_message).text = "确定卸载选中的 ${apps.size} 个应用？"
 
         val dialog = DialogHelper.customDialogBlurBg(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
@@ -666,7 +669,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      */
     protected fun uninstallAllSystem(updated: Boolean) {
         val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
-        view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个系统应用？"
+        view.findViewById<TextView>(R.id.confirm_message).text = "确定卸载选中的 ${apps.size} 个系统应用？"
 
         val dialog = DialogHelper.customDialogBlurBg(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
