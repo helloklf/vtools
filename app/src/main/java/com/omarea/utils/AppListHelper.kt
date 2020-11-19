@@ -137,6 +137,10 @@ class AppListHelper(context: Context) {
         } else {
             Appinfo.AppType.SYSTEM
         })
+        item.targetSdkVersion = applicationInfo.targetSdkVersion
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            item.minSdkVersion = applicationInfo.minSdkVersion
+        }
 
         try {
             val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)

@@ -5,10 +5,13 @@ import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.MagiskExtend
@@ -35,24 +38,46 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         }
     }
 
+    private fun loadAppIcon(app: Appinfo): Drawable? {
+        if (app.icon != null) {
+            return app.icon
+        } else {
+            var icon: Drawable? = null
+            try {
+                val installInfo = context.packageManager.getPackageInfo(app.packageName.toString(), 0)
+                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
+                return icon
+            } catch (ex: Exception) {
+            } finally {
+            }
+            return null
+        }
+    }
+
     /**
      * 显示用户应用选项
      */
     private fun showUserAppOptions(activity: Activity) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setCancelable(true)
-                .setView(dialogView))
+        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
+        dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
+        dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
+        dialogView.findViewById<TextView>(R.id.app_version_code).text = "Version Code: " + app.versionCode
+        dialogView.findViewById<ImageView>(R.id.app_logo).setImageDrawable(loadAppIcon(app))
+
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
             dialog.dismiss()
             copyPackageName()
         }
+        dialogView.findViewById<TextView>(R.id.app_package_name).setText(app.packageName)
         dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
             dialog.dismiss()
             copyInstallPath()
         }
+        dialogView.findViewById<TextView>(R.id.app_install_path).setText(app.path)
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
             dialog.dismiss()
             openDetails()
@@ -79,23 +104,19 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
-            uninstallAll()
-        }
-        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog.dismiss()
-            uninstallAllOnlyUser()
+            uninstallAll(activity)
         }
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
             dialog.dismiss()
             moveToSystem()
         }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
-            dex2oatBuild()
+            buildAllSpeed()
         }
-        dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
             dialog.dismiss()
-            uninstallKeepDataAll()
+            buildAllEverything()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
 
@@ -116,15 +137,20 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog.dismiss()
-                unsuspendAll()
-            }
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog.dismiss()
-                suspendAll()
+            if (app.suspended) {
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                    dialog.dismiss()
+                    unsuspendAll()
+                }
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).alpha = 0.3f
+            } else {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                    dialog.dismiss()
+                    suspendAll()
+                }
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).alpha = 0.3f
             }
         }
     }
@@ -135,18 +161,24 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     private fun showSystemAppOptions(activity: Activity) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setCancelable(true)
-                .setView(dialogView))
+        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
+        dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
+        dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
+        dialogView.findViewById<TextView>(R.id.app_version_code).text = "Version Code: " + app.versionCode
+        dialogView.findViewById<ImageView>(R.id.app_logo).setImageDrawable(loadAppIcon(app))
+
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
             dialog.dismiss()
             copyPackageName()
         }
+        dialogView.findViewById<TextView>(R.id.app_package_name).setText(app.packageName)
         dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
             dialog.dismiss()
             copyInstallPath()
         }
+        dialogView.findViewById<TextView>(R.id.app_install_path).setText(app.path)
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
             dialog.dismiss()
             openDetails()
@@ -175,18 +207,23 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         */
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAllOnlyUser()
+            uninstallAll(activity, )
         }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
-            dex2oatBuild()
+            buildAllSpeed()
+        }
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
+            dialog.dismiss()
+            buildAllEverything()
         }
 
         if (app.updated) {
             dialogView.findViewById<View>(R.id.app_options_delete).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
                 dialog.dismiss()
-                uninstallAll()
+                uninstallAllSystem(activity, app.updated)
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
@@ -216,15 +253,20 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog.dismiss()
-                unsuspendAll()
-            }
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog.dismiss()
-                suspendAll()
+            if (app.suspended) {
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                    dialog.dismiss()
+                    unsuspendAll()
+                }
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).alpha = 0.3f
+            } else {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                    dialog.dismiss()
+                    suspendAll()
+                }
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).alpha = 0.3f
             }
         }
     }
@@ -353,9 +395,5 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 }
                 .setNegativeButton(R.string.btn_cancel, null)
                 .setCancelable(true))
-    }
-
-    private fun dex2oatBuild() {
-        super.buildAll()
     }
 }

@@ -40,7 +40,7 @@ public class FastBlurUtility {
 
     private static Bitmap startBlurBackground(Bitmap bkg) {
         long startMs = System.currentTimeMillis();
-        float radius = 5; //模糊程度
+        float radius = 10; //模糊程度
 
         Bitmap overlay = fastblur(small(bkg), (int) radius);
 

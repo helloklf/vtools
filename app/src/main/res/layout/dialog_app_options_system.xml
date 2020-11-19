@@ -1,79 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#11888888"
-    android:orientation="vertical"
-    android:padding="12dp">
-
-    <TextView
-        android:id="@+id/app_options_title"
-        style="@style/textTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="请选择操作" />
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
         <LinearLayout
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!--清空数据-->
+            <ImageView
+                android:id="@+id/app_logo"
+                android:src="@drawable/in_card_item"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
             <LinearLayout
-                android:id="@+id/app_options_clear"
+                android:layout_marginStart="8dp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_clear2"
-                    android:tint="@android:color/holo_red_dark" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="清除数据" />
-            </LinearLayout>
-            <!--卸载应用更新-->
-            <LinearLayout
-                android:id="@+id/app_options_uninstall"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_uninstall"
-                    android:tint="@android:color/holo_red_dark" />
-
+                android:orientation="vertical">
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/app_options_title"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="卸载更新" />
+                    android:text="应用名称" />
+                <TextView
+                    android:id="@+id/app_version_name"
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="versionName: 0.0.0" />
+                <TextView
+                    android:id="@+id/app_version_code"
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="versionCode: 000" />
             </LinearLayout>
         </LinearLayout>
 
@@ -81,350 +51,683 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <!--删除应用程序文件-->
-            <LinearLayout
-                android:id="@+id/app_options_delete"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                style="@style/textSmall"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
+                android:text="删除/卸载" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_uninstall"
-                    android:tint="@android:color/holo_red_dark" />
-
-                <TextView
+                <!--清空数据-->
+                <LinearLayout
+                    android:id="@+id/app_options_clear"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="删除应用" />
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FF9800"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_clear2"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="清除数据" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="清空应用数据，回收存储空间" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--卸载应用更新-->
+                <LinearLayout
+                    android:id="@+id/app_options_uninstall"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FF9800"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_uninstall"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="卸载更新" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="回退为系统自带版本" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <!--从当前用户卸载应用-->
             <LinearLayout
-                android:id="@+id/app_options_uninstall_user"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_uninstall"
-                    android:tint="@android:color/holo_red_dark" />
-
-                <TextView
+                <!--从当前用户卸载应用-->
+                <LinearLayout
+                    android:id="@+id/app_options_uninstall_user"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="从当前用户卸载" />
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FF5722"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_uninstall_user"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="从当前用户卸载" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="只从当前用户卸载，其它用户可以继续使用" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!--删除应用应用文件-->
+                <LinearLayout
+                    android:id="@+id/app_options_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/holo_red_dark"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_uninstall"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="删除应用" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="删除该系统应用的安装包" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="冻结/隐藏" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--冻结应用-->
+                <LinearLayout
+                    android:id="@+id/app_options_app_freeze"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/holo_blue_light"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_freeze"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="冻结" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="从桌面隐藏此应用，并禁止启动" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--解冻-->
+                <LinearLayout
+                    android:id="@+id/app_options_app_unfreeze"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_freeze"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="解冻" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="恢复桌面图标显示" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--隐藏-->
+                <LinearLayout
+                    android:id="@+id/app_options_app_hide"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/holo_red_dark"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_hide"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="隐藏" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="从桌面和应用管理隐藏，并禁止启动" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/app_limit_p"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!--停用-->
+                <LinearLayout
+                    android:id="@+id/app_limit_p_suspend"
+                    android:layout_marginEnd="6dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/darker_gray"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_disable"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="暂停使用" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="使图标变灰不可启动" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--启用-->
+                <LinearLayout
+                    android:id="@+id/app_limit_p_unsuspend"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="@android:color/holo_green_light"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/app_options_disable"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="恢复使用" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="恢复可启动状态" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/app_options_single_only"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <!--冻结应用-->
-            <LinearLayout
-                android:id="@+id/app_options_app_freeze"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                style="@style/textSmall"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
+                android:text="应用信息" />
+            <LinearLayout
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_freeze"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
+                android:orientation="horizontal">
+                <!--复制应用包名-->
+                <LinearLayout
+                    android:id="@+id/app_options_copay_package"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="冻结" />
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="应用包名" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:id="@+id/app_package_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="" />
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="5dp"
+                            android:src="@drawable/app_options_copy"
+                            app:tint="?android:colorAccent" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--复制应用包名-->
+                <LinearLayout
+                    android:id="@+id/app_options_copay_path"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="安装路径" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:id="@+id/app_install_path"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="" />
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="5dp"
+                            android:src="@drawable/app_options_copy"
+                            app:tint="?android:colorAccent" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
-            <!--解冻-->
+
             <LinearLayout
-                android:id="@+id/app_options_app_unfreeze"
-                android:layout_width="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
+                android:minHeight="50dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_freeze"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
+                android:orientation="horizontal">
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="解冻" />
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="TargetSDK" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:id="@+id/app_target_sdk"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="MinSDKVersion" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:id="@+id/app_min_sdk"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </LinearLayout>
             </LinearLayout>
-            <!--隐藏-->
+
             <LinearLayout
-                android:id="@+id/app_options_app_hide"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_hide"
-                    android:tint="?android:colorAccent" />
+                <!--查看应用详情-->
+                <LinearLayout
+                    android:id="@+id/app_options_open_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="隐藏" />
-            </LinearLayout>
-        </LinearLayout>
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="4dp"
+                        android:src="@drawable/app_options_details"
+                        app:tint="?android:colorAccent" />
+                </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/app_limit_p"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                <!--在应用商店查看-->
+                <LinearLayout
+                    android:id="@+id/app_options_app_store"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="6dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
 
-            <!--停用-->
-            <LinearLayout
-                android:id="@+id/app_limit_p_suspend"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:padding="6dp"
+                        android:src="@drawable/app_options_appstore"
+                        app:tint="?android:colorAccent" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_freeze"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="暂停使用" />
-            </LinearLayout>
-            <!--启用-->
-            <LinearLayout
-                android:id="@+id/app_limit_p_unsuspend"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_freeze"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="恢复使用" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/app_options_single_only"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <!--复制应用包名-->
-            <LinearLayout
-                android:id="@+id/app_options_copay_package"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_copy"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="复制应用包名" />
-            </LinearLayout>
-            <!--复制应用包名-->
-            <LinearLayout
-                android:id="@+id/app_options_copay_path"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_copy"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="复制安装路径" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <!--查看应用详情-->
-            <LinearLayout
-                android:id="@+id/app_options_open_detail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_details"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="应用详情" />
-            </LinearLayout>
-
-            <!--在应用商店查看-->
-            <LinearLayout
-                android:id="@+id/app_options_app_store"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_appstore"
-                    android:tint="?android:colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="在应用商店查看" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!--dex2oat-->
-    <LinearLayout
-        android:id="@+id/app_options_dex2oat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="6dp"
-            android:src="@drawable/app_options_dex2oat"
-            android:tint="?android:colorAccent" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="dex2oat编译" />
+            android:text="dex2oat" />
+        <!--dex2oat-->
+        <LinearLayout
+            android:layout_marginTop="6dp"
+            android:id="@+id/app_options_dex2oat"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/app_options_dex2oat_speed"
+                android:layout_marginEnd="6dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/krscript_item_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/app_options_dex2oat"
+                    app:tint="?android:colorAccent" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="speed" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="以speed模式对此应用进行dex2oat处理" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/app_options_dex2oat_everything"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/krscript_item_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/app_options_dex2oat"
+                    app:tint="?android:colorAccent" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="everything" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="以everything模式对此应用进行dex2oat处理" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</com.omarea.common.ui.OverScrollView>

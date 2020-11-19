@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.*
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -40,9 +41,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     fun selectUserAppOptions(activity: Activity) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setCancelable(true)
-                .setView(dialogView))
+        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog.dismiss()
@@ -62,11 +61,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
-            uninstallAll()
-        }
-        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog.dismiss()
-            uninstallAllOnlyUser()
+            uninstallAll(activity)
         }
         /*
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
@@ -74,13 +69,13 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             moveToSystem()
         }
         */
-        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
-            buildAll()
+            buildAllSpeed()
         }
-        dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
             dialog.dismiss()
-            uninstallKeepDataAll()
+            buildAllEverything()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
 
@@ -117,9 +112,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     fun selectSystemAppOptions(activity: Activity) {
         val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setCancelable(true)
-                .setView(dialogView))
+        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog.dismiss()
@@ -131,11 +124,15 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAllOnlyUser()
+            uninstallAllSystem(activity, false)
         }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
-            buildAll()
+            buildAllSpeed()
+        }
+        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
+            dialog.dismiss()
+            buildAllEverything()
         }
 
         dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
@@ -653,45 +650,97 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     /**
      * 卸载选中
      */
-    protected fun uninstallAll() {
-        confirm("彻底卸载", "确定卸载选中的${apps.size}个应用？", Runnable {
-            _uninstallAll()
-        })
-    }
+    protected fun uninstallAll(activity: Activity) {
+        val view = activity.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
+        view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个应用？"
 
-    private fun _uninstallAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall ${item.appName}]'\n")
+        val dialog = DialogHelper.customDialogBlurBg(activity, view)
+        val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
+        val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
 
-            sb.append("pm uninstall $packageName\n")
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
         }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
 
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
+            _uninstallAll(userOnly.isChecked, keepData.isChecked)
+        }
     }
 
-    protected fun uninstallAllOnlyUser() {
-        val um = context.getSystemService(Context.USER_SERVICE) as UserManager?
-        val userHandle = android.os.Process.myUserHandle()
-        if (um != null) {
-            val uid = um.getSerialNumberForUser(userHandle)
-            confirm("从当前用户($uid)卸载", "确定从当前用户卸载选中的${apps.size}个应用？", Runnable {
-                _uninstallAllOnlyUser(uid)
-            })
+    /**
+     * 卸载选中
+     */
+    protected fun uninstallAllSystem(activity: Activity, updated: Boolean) {
+        val view = activity.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
+        view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个系统应用？"
+
+        val dialog = DialogHelper.customDialogBlurBg(activity, view)
+        val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
+        val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
+
+        userOnly.isEnabled = false
+        if (updated) {
+            userOnly.isEnabled = false
+            keepData.isEnabled = false
+
+            userOnly.isChecked = false
+            keepData.isChecked = false
         } else {
-            Toast.makeText(context, "获取用户ID失败！", Toast.LENGTH_SHORT).show()
+            userOnly.isEnabled = false
+            userOnly.isChecked = true
+        }
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            _uninstallAll(userOnly.isChecked, keepData.isChecked)
         }
     }
 
-    private fun _uninstallAllOnlyUser(uid: Long) {
+    private fun _uninstallAll(userOnly: Boolean, keepData: Boolean) {
+        if (userOnly) {
+            val um = context.getSystemService(Context.USER_SERVICE) as UserManager?
+            val userHandle = android.os.Process.myUserHandle()
+            if (um != null) {
+                val uid = um.getSerialNumberForUser(userHandle)
+                _uninstallAllOnlyUser(uid, keepData)
+            } else {
+                Toast.makeText(context, "获取用户ID失败！", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            val sb = StringBuilder()
+
+            for (item in apps) {
+                val packageName = item.packageName.toString()
+                sb.append("echo '[uninstall ${item.appName}]'\n")
+
+                if (keepData) {
+                    sb.append("pm uninstall -k $packageName\n")
+                } else {
+                    sb.append("pm uninstall $packageName\n")
+                }
+            }
+
+            sb.append("echo '[operation completed]'\n")
+            execShell(sb)
+        }
+    }
+
+    private fun _uninstallAllOnlyUser(uid: Long, keepData: Boolean) {
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
             sb.append("echo '[uninstall ${item.appName}]'\n")
 
-            sb.append("pm uninstall --user $uid $packageName\n")
+            if (keepData) {
+                sb.append("pm uninstall -k --user $uid $packageName\n")
+            } else {
+                sb.append("pm uninstall --user $uid $packageName\n")
+            }
         }
 
         sb.append("echo '[operation completed]'\n")
@@ -720,7 +769,15 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         execShell(sb)
     }
 
-    protected fun buildAll() {
+    protected fun buildAllSpeed() {
+        buildAll("speed")
+    }
+
+    protected fun buildAllEverything() {
+        buildAll("everything")
+    }
+
+    private fun buildAll(mode: String) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "该功能只支持Android N（7.0）以上的系统！", Toast.LENGTH_SHORT).show()
             return
@@ -730,7 +787,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             val packageName = item.packageName.toString()
             sb.append("echo '[compile ${item.appName}]'\n")
 
-            sb.append("cmd package compile -m speed $packageName\n\n")
+            sb.append("cmd package compile -m $mode $packageName\n\n")
         }
 
         sb.append("echo '[operation completed]'\n\n")

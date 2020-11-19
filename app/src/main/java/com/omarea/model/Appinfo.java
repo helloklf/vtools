@@ -24,6 +24,8 @@ public class Appinfo {
     public AppType appType = AppType.UNKNOW;
     public SceneConfigInfo sceneConfigInfo;
     public CharSequence desc;
+    public int targetSdkVersion;
+    public int minSdkVersion;
 
     public static Appinfo getItem() {
         return new Appinfo();
