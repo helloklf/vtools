@@ -28,7 +28,7 @@ import java.util.*
  * Created by helloklf on 2017/12/04.
  */
 
-open class DialogAppOptions(protected final var context: Context, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
+open class DialogAppOptions(protected final var context: Activity, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
     private var allowPigz = false
     private var backupPath = CommonCmds.AbsBackUpDir
     private var userdataPath = ""
@@ -38,10 +38,10 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         userdataPath = userdataPath.substring(0, userdataPath.indexOf(context.packageName) - 1)
     }
 
-    fun selectUserAppOptions(activity: Activity) {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
+    fun selectUserAppOptions() {
+        val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog.dismiss()
@@ -61,7 +61,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
-            uninstallAll(activity)
+            uninstallAll()
         }
         /*
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
@@ -109,10 +109,10 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
     }
 
-    fun selectSystemAppOptions(activity: Activity) {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
+    fun selectSystemAppOptions() {
+        val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog.dismiss()
@@ -124,7 +124,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAllSystem(activity, false)
+            uninstallAllSystem(false)
         }
         dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
             dialog.dismiss()
@@ -282,7 +282,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun confirm(title: String, msg: String, next: Runnable?) {
-        DialogHelper.confirm(context, title, msg, next)
+        DialogHelper.confirmBlur(context, title, msg, next)
     }
 
     /**
@@ -366,14 +366,14 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 return
             }
             confirm("还原应用和数据",
-                    "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）",
-                    Runnable {
-                        _restoreAll(apk, data)
-                    })
-        } else {
-            confirm("还原应用", "还原所选的${apps.size}个应用和数据？", Runnable {
+                    "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）"
+            ) {
                 _restoreAll(apk, data)
-            })
+            }
+        } else {
+            confirm("还原应用", "还原所选的${apps.size}个应用和数据？") {
+                _restoreAll(apk, data)
+            }
         }
     }
 
@@ -438,9 +438,9 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 禁用所选的应用
      */
     protected fun disableAll() {
-        confirm("冻结应用", "确定冻结选中的${apps.size}个应用？", Runnable {
+        confirm("冻结应用", "确定冻结选中的${apps.size}个应用？") {
             _disableAll()
-        })
+        }
     }
 
     private fun _disableAll() {
@@ -476,9 +476,9 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 隐藏所选的应用
      */
     protected fun hideAll() {
-        confirm("隐藏应用", "确定隐藏选中的${apps.size}个应用？", Runnable {
+        confirm("隐藏应用", "确定隐藏选中的${apps.size}个应用？") {
             _hideAll()
-        })
+        }
     }
 
     /**
@@ -643,11 +643,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     /**
      * 卸载选中
      */
-    protected fun uninstallAll(activity: Activity) {
-        val view = activity.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
+    protected fun uninstallAll() {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
         view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个应用？"
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, view)
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
         val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
 
@@ -664,11 +664,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     /**
      * 卸载选中
      */
-    protected fun uninstallAllSystem(activity: Activity, updated: Boolean) {
-        val view = activity.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
+    protected fun uninstallAllSystem(updated: Boolean) {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
         view.findViewById<TextView>(R.id.uninstall_info).text = "确定卸载选中的 ${apps.size} 个系统应用？"
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, view)
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
         val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
 
@@ -734,28 +734,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             } else {
                 sb.append("pm uninstall --user $uid $packageName\n")
             }
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-    }
-
-    /**
-     * 卸载且保留数据
-     */
-    protected fun uninstallKeepDataAll() {
-        confirm("卸载（保留数据）", "已选中${apps.size}个应用，卸载后，这些应用的数据会被保留，这会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
-            _uninstallKeepDataAll()
-        })
-    }
-
-    private fun _uninstallKeepDataAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall ${item.appName}]'\n")
-
-            sb.append("pm uninstall -k $packageName\n")
         }
 
         sb.append("echo '[operation completed]'\n")

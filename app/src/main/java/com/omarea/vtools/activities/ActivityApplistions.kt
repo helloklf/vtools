@@ -84,7 +84,7 @@ class ActivityApplistions : ActivityBase() {
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             val app = adapter.getItem(position - 1) as Appinfo
-            DialogSingleAppOptions(context, app, myHandler!!).showSingleAppOptions(activity)
+            DialogSingleAppOptions(context, app, myHandler!!).showSingleAppOptions()
             true
         }
 
@@ -220,9 +220,9 @@ class ActivityApplistions : ActivityBase() {
 
         when (apptype) {
             Appinfo.AppType.SYSTEM ->
-                DialogAppOptions(this, selectedItems, myHandler!!).selectSystemAppOptions(activity)
+                DialogAppOptions(this, selectedItems, myHandler!!).selectSystemAppOptions()
             Appinfo.AppType.USER ->
-                DialogAppOptions(this, selectedItems, myHandler!!).selectUserAppOptions(activity)
+                DialogAppOptions(this, selectedItems, myHandler!!).selectUserAppOptions()
             Appinfo.AppType.BACKUPFILE ->
                 DialogAppOptions(this, selectedItems, myHandler!!).selectBackupOptions()
             else -> {

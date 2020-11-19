@@ -3,7 +3,7 @@
     android:shareInterpolator="false"
     android:zAdjustment="top">
     <scale
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_shortAnimTime"
         android:fromXScale="0.9"
         android:fromYScale="0.9"
         android:pivotX="50%"
@@ -11,7 +11,7 @@
         android:toXScale="1"
         android:toYScale="1" />
     <alpha
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_shortAnimTime"
         android:interpolator="@android:anim/linear_interpolator"
         android:fromAlpha="0"
         android:toAlpha="1" />

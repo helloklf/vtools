@@ -109,6 +109,27 @@ class DialogHelper {
             return dialog
         }
 
+        fun confirmBlur(context: Activity,
+                    title: String = "",
+                    message: String = "",
+                    onConfirm: Runnable? = null,
+                    onCancel: Runnable? = null): DialogWrap {
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
+            view.findViewById<TextView>(R.id.confirm_title).setText(title)
+            view.findViewById<TextView>(R.id.confirm_message).setText(message)
+            val dialog = customDialogBlurBg(context, view)
+            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+                onCancel?.run()
+            }
+            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+                dialog.dismiss()
+                onConfirm?.run()
+            }
+
+            return dialog
+        }
+
         fun customDialog(context: Context, view: View): DialogWrap {
             val dialog = AlertDialog
                     .Builder(context)
@@ -118,9 +139,11 @@ class DialogHelper {
 
             dialog.window?.run {
                 setBackgroundDrawableResource(android.R.color.transparent)
+                setWindowAnimations(R.style.windowAnim2)
             }
+            dialog.show()
 
-            return animDialog(dialog)!!
+            return DialogWrap(dialog)
         }
 
         fun customDialogBlurBg(activity: Activity, view: View): DialogWrap {

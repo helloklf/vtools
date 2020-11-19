@@ -25,12 +25,12 @@ import java.io.File
  * Created by Hello on 2018/01/26.
  */
 
-class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
+class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
 
-    fun showSingleAppOptions(activity: Activity) {
+    fun showSingleAppOptions() {
         when (app.appType) {
-            Appinfo.AppType.USER -> showUserAppOptions(activity)
-            Appinfo.AppType.SYSTEM -> showSystemAppOptions(activity)
+            Appinfo.AppType.USER -> showUserAppOptions()
+            Appinfo.AppType.SYSTEM -> showSystemAppOptions()
             Appinfo.AppType.BACKUPFILE -> showBackupAppOptions()
             else -> {
                 Toast.makeText(context, "UNSupport！", Toast.LENGTH_SHORT).show()
@@ -57,10 +57,10 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     /**
      * 显示用户应用选项
      */
-    private fun showUserAppOptions(activity: Activity) {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
+    private fun showUserAppOptions() {
+        val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
@@ -104,7 +104,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
-            uninstallAll(activity)
+            uninstallAll()
         }
         dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
             dialog.dismiss()
@@ -158,10 +158,10 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     /**
      * 显示系统应用选项
      */
-    private fun showSystemAppOptions(activity: Activity) {
-        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
+    private fun showSystemAppOptions() {
+        val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(activity, dialogView)
+        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
         dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
@@ -207,7 +207,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         */
         dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
             dialog.dismiss()
-            uninstallAll(activity, )
+            uninstallAll()
         }
 
         dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
@@ -223,7 +223,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             dialogView.findViewById<View>(R.id.app_options_delete).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
                 dialog.dismiss()
-                uninstallAllSystem(activity, app.updated)
+                uninstallAllSystem(app.updated)
             }
         } else {
             dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
@@ -376,24 +376,18 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
 
     private fun moveToSystem() {
         if (isMagisk() && isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("Magisk 副作用警告")
-                    .setMessage("检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！")
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    })
+            DialogHelper.helpInfo(context,
+                    "Magisk 副作用警告",
+                    "检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！"
+            )
             return
         }
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(app.appName)
-                .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    if (MagiskExtend.magiskSupported()) {
-                        moveToSystemMagisk()
-                    } else {
-                        moveToSystemExec()
-                    }
-                }
-                .setNegativeButton(R.string.btn_cancel, null)
-                .setCancelable(true))
+        confirm("" + app.appName, "转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！", Runnable {
+            if (MagiskExtend.magiskSupported()) {
+                moveToSystemMagisk()
+            } else {
+                moveToSystemExec()
+            }
+        })
     }
 }
