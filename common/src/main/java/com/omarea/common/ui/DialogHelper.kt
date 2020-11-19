@@ -60,7 +60,7 @@ class DialogHelper {
 
             (dialog.findViewById(R.id.dialog_help_title) as TextView).run {
                 if (title.isNotEmpty()) {
-                    text = message
+                    text = title
                     visibility = View.VISIBLE
                 } else {
                     visibility = View.GONE

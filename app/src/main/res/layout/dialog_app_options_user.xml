@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:gravity="center_vertical"
@@ -634,43 +634,49 @@
                         android:layout_weight="1"
                         android:text="转为系统应用" />
                 </LinearLayout>
-                <!--查看应用详情-->
                 <LinearLayout
-                    android:id="@+id/app_options_open_detail"
-                    android:layout_marginStart="6dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:padding="4dp"
-                        android:src="@drawable/app_options_details"
-                        app:tint="?android:colorAccent" />
-                </LinearLayout>
+                    <!--查看应用详情-->
+                    <LinearLayout
+                        android:id="@+id/app_options_open_detail"
+                        android:layout_marginStart="6dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/krscript_item_ripple"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="6dp">
 
-                <!--在应用商店查看-->
-                <LinearLayout
-                    android:id="@+id/app_options_app_store"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="6dp"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="4dp"
+                            android:src="@drawable/app_options_details"
+                            app:tint="?android:colorAccent" />
+                    </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:padding="6dp"
-                        android:src="@drawable/app_options_appstore"
-                        app:tint="?android:colorAccent" />
+                    <!--在应用商店查看-->
+                    <LinearLayout
+                        android:id="@+id/app_options_app_store"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/krscript_item_ripple"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="6dp">
 
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="6dp"
+                            android:src="@drawable/app_options_appstore"
+                            app:tint="?android:colorAccent" />
+
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 

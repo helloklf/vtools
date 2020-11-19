@@ -31,19 +31,19 @@
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="应用名称" />
+                    android:text="请选择操作" />
                 <TextView
                     android:id="@+id/app_version_name"
                     style="@style/textSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="versionName: 0.0.0" />
+                    android:text="VersionName: " />
                 <TextView
                     android:id="@+id/app_version_code"
                     style="@style/textSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="versionCode: 000" />
+                    android:text="Version Code: " />
             </LinearLayout>
         </LinearLayout>
 
@@ -503,7 +503,7 @@
                             android:layout_height="30dp"
                             android:padding="5dp"
                             android:src="@drawable/app_options_copy"
-                            app:tint="?android:colorAccent" />
+                            app:tint="@android:color/darker_gray" />
                     </LinearLayout>
                 </LinearLayout>
                 <!--复制应用包名-->
@@ -539,7 +539,7 @@
                             android:layout_height="30dp"
                             android:padding="5dp"
                             android:src="@drawable/app_options_copy"
-                            app:tint="?android:colorAccent" />
+                            app:tint="@android:color/darker_gray" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
