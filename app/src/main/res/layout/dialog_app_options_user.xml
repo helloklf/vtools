@@ -235,7 +235,7 @@
                     android:id="@+id/app_options_as_system"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="50dp"
+                    android:minHeight="70dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
