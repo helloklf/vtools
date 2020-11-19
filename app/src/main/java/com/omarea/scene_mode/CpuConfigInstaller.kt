@@ -62,7 +62,15 @@ class CpuConfigInstaller {
                 if (!afterCmds.isEmpty()) {
                     KeepShellPublic.doCmdSync(afterCmds)
                 }
-                context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "scene").apply()
+                val config =  context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit()
+                config.putString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, (
+                        if (active) {
+                            ModeSwitcher.SOURCE_SCENE_ACTIVE
+                        } else {
+                            ModeSwitcher.SOURCE_SCENE_CONSERVATIVE
+                        }
+                        )
+                ).apply()
                 removeCustomModes(context)
                 return true
             }
@@ -73,12 +81,17 @@ class CpuConfigInstaller {
 
     // 尝试更新调度配置文件（目前仅支持自动更新内置的调度文件）
     fun applyConfigNewVersion(context: Context) {
-        if (
-                (!outsideConfigInstalled()) &&
-                Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                        .getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")?.toLowerCase(Locale.getDefault()) == "scene"
-        ) {
-            installOfficialConfig(context)
+        if (!outsideConfigInstalled()) {
+            val config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            val source = config.getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, ModeSwitcher.SOURCE_UNKNOWN)?.toLowerCase(Locale.getDefault())
+            when (source) {
+                ModeSwitcher.SOURCE_SCENE_ACTIVE -> {
+                    installOfficialConfig(context, "", true)
+                }
+                ModeSwitcher.SOURCE_SCENE_CONSERVATIVE -> {
+                    installOfficialConfig(context, "", false)
+                }
+            }
         }
     }
 
@@ -94,7 +107,7 @@ class CpuConfigInstaller {
                 setReadable(true)
             }
             ModeSwitcher().setCurrentPowercfg("")
-            context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, author).apply()
+            context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, author).apply()
             removeCustomModes(context)
             return true
         } catch (ex: Exception) {

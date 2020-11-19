@@ -1,10 +1,12 @@
 package com.omarea.scene_mode
 
+import android.content.Context
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.PropsUtils
 import com.omarea.store.CpuConfigStorage
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 /**
@@ -15,6 +17,55 @@ open class ModeSwitcher {
     private var inited = false
 
     companion object {
+        const val SOURCE_UNKNOWN = "UNKNOWN"
+        const val SOURCE_SCENE_ACTIVE = "SOURCE_SCENE_ACTIVE"
+        const val SOURCE_SCENE_CONSERVATIVE = "SOURCE_SCENE_CONSERVATIVE"
+        const val SOURCE_SCENE_CUSTOM = "SOURCE_SCENE_CUSTOM"
+        const val SOURCE_SCENE_IMPORT = "SOURCE_SCENE_IMPORT"
+        const val SOURCE_SCENE_ONLINE = "SOURCE_SCENE_ONLINE"
+        const val SOURCE_OUTSIDE = "SOURCE_OUTSIDE"
+        const val SOURCE_NONE = "SOURCE_NONE"
+
+        fun getCurrentSource (): String {
+            if (CpuConfigInstaller().outsideConfigInstalled()) {
+                return SOURCE_OUTSIDE
+            }
+            val config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, SOURCE_UNKNOWN)
+            if (config == SOURCE_SCENE_CUSTOM || CpuConfigInstaller().insideConfigInstalled()) {
+                return config!!
+            }
+            return SOURCE_NONE
+        }
+        fun getCurrentSourceName (): String {
+            val source = getCurrentSource()
+            return (when (source) {
+                "SOURCE_OUTSIDE" -> {
+                    "外部来源"
+                }
+                "SOURCE_SCENE_CONSERVATIVE" -> {
+                    "Scene-经典"
+                }
+                "SOURCE_SCENE_ACTIVE" -> {
+                    "Scene-性能"
+                }
+                "SOURCE_SCENE_CUSTOM" -> {
+                    "自定义"
+                }
+                "SOURCE_SCENE_IMPORT" -> {
+                    "文件导入"
+                }
+                "SOURCE_SCENE_ONLINE" -> {
+                    "在线下载"
+                }
+                "SOURCE_NONE" -> {
+                    "未定义"
+                }
+                else -> {
+                    "未知"
+                }
+            })
+        }
+
         // 是否已经完成内置配置文件的自动更新（如果使用的是Scene自带的配置，每次切换调度前，先安装配置）
         private var innerConfigUpdated = false
 
@@ -158,7 +209,23 @@ open class ModeSwitcher {
 
     // 是否已完成四个模式的配置
     public fun modeConfigCompleted(): Boolean {
-        return ((CpuConfigInstaller().insideConfigInstalled() || CpuConfigInstaller().outsideConfigInstalled()) && !anyModeReplaced()) || allModeReplaced()
+        if (CpuConfigInstaller().outsideConfigInstalled()) {
+            return true
+        } else {
+            val config = getCurrentSource()
+            when (config) {
+                SOURCE_SCENE_CUSTOM -> {
+                    return allModeReplaced()
+                }
+                SOURCE_SCENE_ACTIVE,
+                SOURCE_SCENE_CONSERVATIVE,
+                SOURCE_SCENE_IMPORT,
+                SOURCE_SCENE_ONLINE -> {
+                    return CpuConfigInstaller().insideConfigInstalled()
+                }
+            }
+        }
+        return false
     }
 
     // 是否已经完成所有模式的自定义

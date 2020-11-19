@@ -24,6 +24,7 @@ import com.omarea.krscript.WebViewInjector
 import com.omarea.krscript.ui.ParamsFileChooserRender
 import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.CpuConfigInstaller
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
@@ -263,7 +264,7 @@ class ActivityAddinOnline : ActivityBase() {
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
                 val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "downloader")) {
+                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, ModeSwitcher.SOURCE_SCENE_ONLINE)) {
                     vtools_online.post {
                         DialogHelper.animDialog(AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
@@ -313,7 +314,7 @@ class ActivityAddinOnline : ActivityBase() {
                         } else if (zipEntry.name == "powercfg.sh") {
                             val byteArray = zipInputStream.readBytes()
                             val powercfg = byteArray.toString(Charset.defaultCharset())
-                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "online")) {
+                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, ModeSwitcher.SOURCE_SCENE_ONLINE)) {
                                 vtools_online.post {
                                     DialogHelper.animDialog(AlertDialog.Builder(this)
                                             .setTitle("配置文件已安装")

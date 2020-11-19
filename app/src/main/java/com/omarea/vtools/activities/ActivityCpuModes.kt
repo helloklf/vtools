@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
@@ -187,6 +186,8 @@ class ActivityCpuModes : ActivityBase() {
             if (outsideOverrided()) {
                 configInstaller.removeOutsideConfig()
             }
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, ModeSwitcher.SOURCE_SCENE_CUSTOM).apply()
+            updateState()
 
             dialog.dismiss()
         }
@@ -234,7 +235,7 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun bindMode(button: View, mode: String) {
         button.setOnClickListener {
-            if (modeSwitcher.anyModeReplaced()) {
+            if (author == ModeSwitcher.SOURCE_SCENE_CUSTOM) {
                 modifyCpuConfig(mode)
             } else {
                 Snackbar.make(it, "如需自定义各个模式的参数，请先将配置源切换为“自定义”", Snackbar.LENGTH_SHORT).show()
@@ -245,18 +246,9 @@ class ActivityCpuModes : ActivityBase() {
     private fun updateState() {
         val outsideInstalled = configInstaller.outsideConfigInstalled()
         configFileInstalled = outsideInstalled || configInstaller.insideConfigInstalled()
+        author = ModeSwitcher.getCurrentSource()
 
-        if (ModeSwitcher().anyModeReplaced()) {
-            author = "custom"
-        } else if (outsideInstalled) {
-            author = "outside"
-        } else if (configFileInstalled) {
-            author = globalSPF.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")!!
-        } else {
-            author = "none"
-        }
-
-        if (author == "none") {
+        if (author == ModeSwitcher.SOURCE_NONE) {
             quick_switch.visibility = View.GONE
         } else {
             quick_switch.visibility = View.VISIBLE
@@ -268,7 +260,7 @@ class ActivityCpuModes : ActivityBase() {
             cpu_mode_outside.visibility = View.GONE
         }
 
-        config_author.text = getProviderName(author)
+        config_author.text = ModeSwitcher.getCurrentSourceName()
 
         updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
         updateState(cpu_config_p1, ModeSwitcher.BALANCE)
@@ -282,20 +274,8 @@ class ActivityCpuModes : ActivityBase() {
         }
     }
 
-    private fun getProviderName(name: String): String {
-        return when (name.toLowerCase(Locale.getDefault())) {
-            "scene" -> "Scene自带"
-            "downloader" -> "在线下载"
-            "outside" -> "外部配置"
-            "custom" -> "自定义"
-            "import-file" -> "外部导入"
-            "none" -> "未配置"
-            else -> name
-        }
-    }
-
     private fun updateState(button: View, mode: String) {
-        button.alpha = if ((configFileInstalled && author != "custom") || modeSwitcher.modeReplaced(mode)) 1f else 0.4f
+        button.alpha = if ((configFileInstalled && author != ModeSwitcher.SOURCE_SCENE_CUSTOM) || modeSwitcher.modeReplaced(mode)) 1f else 0.4f
     }
 
     override fun onResume() {
@@ -307,7 +287,7 @@ class ActivityCpuModes : ActivityBase() {
         updateState()
 
         // 如果开启了动态响应 并且配置作者变了，重启后台服务
-        if (dynamic_control.isChecked && !currentAuthor.isNullOrEmpty() && currentAuthor != author) {
+        if (dynamic_control.isChecked && !currentAuthor.isEmpty() && currentAuthor != author) {
             reStartService()
         }
     }
@@ -338,7 +318,7 @@ class ActivityCpuModes : ActivityBase() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context, lines, "import-file")) {
+                        if (configInstaller.installCustomConfig(context, lines, ModeSwitcher.SOURCE_SCENE_IMPORT)) {
                             configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
