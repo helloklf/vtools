@@ -443,13 +443,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="冻结" />
+                            android:text="冻结/解冻" />
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="从桌面隐藏此应用，并禁止启动" />
+                            android:text="更改应用的禁用、隐藏状态" />
                     </LinearLayout>
                 </LinearLayout>
                 <!--解冻-->
