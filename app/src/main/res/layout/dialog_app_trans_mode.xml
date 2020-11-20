@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/krscript_item_ripple_inactive"
             android:orientation="vertical">
 
             <TextView
@@ -44,7 +44,6 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:id="@+id/app_options_uninstall_keep"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:gravity="center_vertical"
@@ -58,7 +57,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_marginEnd="6dp"
-                        android:src="@drawable/app_magisk"
+                        android:src="@drawable/app_options_magisk"
                         app:tint="@android:color/white" />
 
                     <LinearLayout

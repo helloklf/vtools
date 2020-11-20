@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/activity_horizontal_margin">
 
         <LinearLayout
             android:id="@+id/app_options_single_only"
@@ -56,7 +56,7 @@
 
 
             <LinearLayout
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="70dp"
@@ -73,6 +73,7 @@
                     android:padding="6dp">
 
                     <TextView
+                        style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="应用包名" />
@@ -82,7 +83,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            style="@style/textSecondary"
+                            style="@style/textSmall"
                             android:id="@+id/app_package_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -109,6 +110,7 @@
                     android:padding="6dp">
 
                     <TextView
+                        style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="安装路径" />
@@ -118,7 +120,7 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            style="@style/textSecondary"
+                            style="@style/textSmall"
                             android:id="@+id/app_install_path"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -152,11 +154,13 @@
                     android:padding="6dp">
 
                     <TextView
+                        style="@style/textSecondary"
+                        android:layout_marginBottom="6dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="TargetSDK" />
                     <TextView
-                        style="@style/textSecondary"
+                        style="@style/textSmall"
                         android:id="@+id/app_target_sdk"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -172,11 +176,13 @@
                     android:padding="6dp">
 
                     <TextView
+                        style="@style/textSecondary"
+                        android:layout_marginBottom="6dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="MinSDK" />
                     <TextView
-                        style="@style/textSecondary"
+                        style="@style/textSmall"
                         android:id="@+id/app_min_sdk"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -187,10 +193,10 @@
                 <LinearLayout
                     android:id="@+id/app_options_open_detail"
                     android:layout_marginStart="6dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
@@ -205,11 +211,11 @@
                 <!--在应用商店查看-->
                 <LinearLayout
                     android:id="@+id/app_options_app_store"
-                    android:layout_width="wrap_content"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
@@ -247,8 +253,8 @@
                         android:backgroundTint="#00BCD4"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="8dp"
                         android:src="@drawable/app_options_as_system"
                         app:tint="@android:color/white" />
 
@@ -283,7 +289,9 @@
             <LinearLayout
                 android:id="@+id/app_options_backup_apk"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_marginBottom="6dp"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -294,7 +302,7 @@
                     android:backgroundTint="@android:color/holo_green_dark"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="8dp"
                     android:src="@drawable/app_options_apk"
                     app:tint="@android:color/white" />
@@ -318,99 +326,94 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!--清空数据-->
             <LinearLayout
+                android:id="@+id/app_options_clear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="70dp"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <!--清空数据-->
-                <LinearLayout
-                    android:id="@+id/app_options_clear"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
+                android:orientation="horizontal"
+                android:padding="6dp">
 
-                    <ImageView
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FF9800"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
+                <ImageView
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#FF9800"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="8dp"
-                        android:src="@drawable/app_options_clear2"
-                        app:tint="@android:color/white" />
+                    android:src="@drawable/app_options_clear2"
+                    app:tint="@android:color/white" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="清除数据" />
-                        <TextView
-                            style="@style/textSecondary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="清空应用数据，回收存储空间" />
-                    </LinearLayout>
+                        android:text="清除数据" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="清空应用数据，回收存储空间" />
                 </LinearLayout>
-                <!--卸载应用-->
-                <LinearLayout
-                    android:id="@+id/app_options_uninstall"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
+            </LinearLayout>
 
-                    <ImageView
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FF5722"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
+            <!--卸载应用-->
+            <LinearLayout
+                android:id="@+id/app_options_uninstall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/krscript_item_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#FF5722"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="8dp"
-                        android:src="@drawable/app_options_uninstall"
-                        app:tint="@android:color/white" />
+                    android:src="@drawable/app_options_uninstall"
+                    app:tint="@android:color/white" />
 
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="卸载" />
-                        <TextView
-                            style="@style/textSecondary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="卸载选中的应用" />
-                    </LinearLayout>
+                        android:text="卸载" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="卸载选中的应用" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/app_options_app_freeze"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:layout_marginBottom="6dp"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -421,7 +424,7 @@
                     android:backgroundTint="@android:color/holo_blue_light"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_marginStart="8dp"
                     android:src="@drawable/app_options_freeze"
                     app:tint="@android:color/white" />
@@ -449,91 +452,43 @@
 
         <!--dex2oat-->
         <LinearLayout
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:id="@+id/app_options_dex2oat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="70dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <ImageView
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#B3CA6E"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/app_options_dex2oat"
+                app:tint="@android:color/white" />
+
             <LinearLayout
-                android:id="@+id/app_options_dex2oat_speed"
-                android:layout_marginEnd="6dp"
+                android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#B3CA6E"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:padding="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/app_options_dex2oat"
-                    app:tint="@android:color/white" />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="speed" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="以speed模式对此应用进行dex2oat处理" />
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/app_options_dex2oat_everything"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#B3CA6E"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:padding="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/app_options_dex2oat"
-                    app:tint="@android:color/white" />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
+                    android:text="dex2oat" />
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="everything" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="以everything模式对此应用进行dex2oat处理" />
-                </LinearLayout>
+                    android:text="对此应用进行dex2oat处理" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

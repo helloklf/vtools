@@ -7,5 +7,10 @@
         <item name="colorAccent">@color/lightPink</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="cardBg">@color/cardBgDarkTransparent</item>
+        <item name="android:switchStyle">@style/SceneSwitch</item>
+        <item name="android:seekBarStyle">@style/SceneSeekBar</item>
+        <item name="android:checkboxStyle">@style/SceneCheckBox</item>
+        <item name="android:radioButtonStyle">@style/SceneRadioBox</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 </resources>

@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/krscript_item_ripple_inactive"
             android:orientation="vertical">
 
             <TextView

@@ -59,13 +59,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             moveToSystem()
         }
         */
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
             dialog.dismiss()
-            buildAllSpeed()
-        }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
-            dialog.dismiss()
-            buildAllEverything()
+            buildAll()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
 
@@ -88,13 +84,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             dialog.dismiss()
             uninstallAllSystem(false) // TODO:xxx
         }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
             dialog.dismiss()
-            buildAllSpeed()
-        }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
-            dialog.dismiss()
-            buildAllEverything()
+            buildAll()
         }
 
         dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
@@ -648,15 +640,28 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         execShell(sb)
     }
 
-    protected fun buildAllSpeed() {
-        buildAll("speed")
+    protected fun buildAll() {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_dex2oat_mode, null)
+        view.findViewById<TextView>(R.id.confirm_message).text = "dex2oat编译可提升(低端机)运行应用时的响应速度，但会显著增加存储空间占用。\n\n确定为选中的 ${apps.size} 个应用进行dex2oat编译吗？"
+        val switchEverything = view.findViewById<CompoundButton>(R.id.dex2oat_everything)
+        val switchForce = view.findViewById<CompoundButton>(R.id.dex2oat_force)
+
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+            if (switchEverything.isChecked) {
+                buildAll("everything", switchForce.isChecked)
+            } else {
+                buildAll("speed", switchForce.isChecked)
+            }
+        }
+
     }
 
-    protected fun buildAllEverything() {
-        buildAll("everything")
-    }
-
-    private fun buildAll(mode: String) {
+    private fun buildAll(mode: String, forced: Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "该功能只支持Android N（7.0）以上的系统！", Toast.LENGTH_SHORT).show()
             return
@@ -666,7 +671,11 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             val packageName = item.packageName.toString()
             sb.append("echo '[compile ${item.appName}]'\n")
 
-            sb.append("cmd package compile -m $mode $packageName\n\n")
+            if (forced) {
+                sb.append("cmd package compile -f -m $mode $packageName\n\n")
+            } else {
+                sb.append("cmd package compile -m $mode $packageName\n\n")
+            }
         }
 
         sb.append("echo '[operation completed]'\n\n")

@@ -184,7 +184,7 @@ class ActivityProcess : ActivityBase() {
             } catch (ex: java.lang.Exception) {
                 detail.friendlyName = name
             }
-            val dialog = AlertDialog.Builder(this).setView(view).create()
+            val dialog = DialogHelper.customDialogBlurBg(this, view)
 
             /*
             # Android Q 可通过 /proc/[pid]/reclaim 手动回收内存
@@ -245,8 +245,6 @@ class ActivityProcess : ActivityBase() {
                     dialog.dismiss()
                 }
             }
-
-            DialogHelper.animDialog(dialog)
         } else {
             Toast.makeText(this, "无法获取详情，该进程可能已经退出!", Toast.LENGTH_SHORT).show()
         }

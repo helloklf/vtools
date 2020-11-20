@@ -155,7 +155,7 @@
     </style>
     <style name="dialogConfirmBtn" parent="dialogCancelBtn">
         <item name="android:textColor">#ffffff</item>
-        <item name="android:background">@drawable/btn_bg_active_large</item>
+        <item name="android:background">@drawable/btn_bg_large</item>
     </style>
 
     <style name="dialogCancelBtn" parent="dialogLargeBtn">

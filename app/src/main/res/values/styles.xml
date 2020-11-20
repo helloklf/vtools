@@ -35,7 +35,6 @@
         <item name="android:navigationBarColor">?android:windowBackground</item>
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="cardBg">@color/cardBgDark</item>
@@ -44,6 +43,7 @@
         <item name="android:seekBarStyle">@style/SceneSeekBar</item>
         <item name="android:checkboxStyle">@style/SceneCheckBox</item>
         <item name="android:radioButtonStyle">@style/SceneRadioBox</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">

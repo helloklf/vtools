@@ -101,13 +101,9 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
             dialog.dismiss()
             moveToSystem()
         }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
             dialog.dismiss()
-            buildAllSpeed()
-        }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
-            dialog.dismiss()
-            buildAllEverything()
+            buildAll()
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
 
@@ -172,13 +168,9 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
             }
         }
 
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
             dialog.dismiss()
-            buildAllSpeed()
-        }
-        dialogView.findViewById<View>(R.id.app_options_dex2oat_everything).setOnClickListener {
-            dialog.dismiss()
-            buildAllEverything()
+            buildAll()
         }
 
         if (app.updated) {
