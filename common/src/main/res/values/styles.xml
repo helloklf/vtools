@@ -21,7 +21,7 @@
     </style>
 
     <style name="custom_alert_dialog">
-        <item name="android:windowLightStatusBar">true</item>
+        <!--<item name="android:windowLightStatusBar">true</item>-->
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:layout_gravity">center_vertical</item>

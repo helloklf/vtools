@@ -165,6 +165,9 @@ class DialogHelper {
                 // decorView.setPadding(0, 0, 0, 0)
 
                 setBackgroundDrawable(BitmapDrawable(activity.getResources(), FastBlurUtility.getBlurBackgroundDrawer(activity)))
+                decorView.run {
+                    systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
                 /*
                 // 隐藏状态栏和导航栏
                 decorView.run {
