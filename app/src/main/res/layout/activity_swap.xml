@@ -61,12 +61,26 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
-                    <com.omarea.ui.RamChartView
-                        android:id="@+id/swap_usage"
-                        app:total="8192"
-                        app:free="3096"
+                    <FrameLayout
                         android:layout_width="70dp"
-                        android:layout_height="70dp" />
+                        android:layout_height="70dp">
+                        <com.omarea.ui.RamChartView
+                            android:id="@+id/swap_usage"
+                            app:total="2048"
+                            app:free="2048"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp" />
+
+                        <TextView
+                            android:id="@+id/swap_usage_ratio"
+                            android:text="0%"
+                            android:paddingLeft="3dp"
+                            android:alpha="0.6"
+                            style="@style/textTitle"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </FrameLayout>
                     <LinearLayout
                         android:paddingStart="@dimen/activity_horizontal_margin"
                         android:layout_weight="1"

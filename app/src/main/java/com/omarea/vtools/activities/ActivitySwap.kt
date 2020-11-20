@@ -421,6 +421,9 @@ class ActivitySwap : ActivityBase() {
         }
         list.add(thr)
 
+        var swapSize = 0f
+        var swapFree = 0f
+        txt_swap_size_display.text = "0MB"
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
@@ -440,10 +443,19 @@ class ActivitySwap : ActivityBase() {
             list.add(tr)
 
             if (path.startsWith("/swapfile") || path.equals("/data/swapfile")) {
+                txt_swap_size_display.text = size + "MB"
                 try {
-                    swap_usage.setData(size.toFloat(), size.toFloat() - used.toFloat())
+                    swapSize = size.toFloat()
+                    swapFree = size.toFloat() - used.toFloat()
                 } catch (ex: java.lang.Exception) {}
             }
+        }
+
+        swap_usage.setData(swapSize, swapFree)
+        if (swapSize > 0 && swapFree > 0) {
+            swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
+        } else {
+            swap_usage_ratio.text = "0%"
         }
 
         swap_swappiness_display.text = KernelProrp.getProp("/proc/sys/vm/swappiness")
