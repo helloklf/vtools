@@ -419,7 +419,7 @@ class ActivitySwap : ActivityBase() {
 
         var swapSize = 0f
         var swapFree = 0f
-        var zramSize = 0f
+        var zramSize = swapUtils.zramCurrentSizeMB
         var zramFree = 0f
         txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {
@@ -447,14 +447,14 @@ class ActivitySwap : ActivityBase() {
                 } catch (ex: java.lang.Exception) {}
             } else if (path.startsWith("/block/zram0") || path.startsWith("/dev/block/zram0")) {
                 try {
-                    zramSize = size.toFloat()
+                    // zramSize = size.toFloat()
                     zramFree = size.toFloat() - used.toFloat()
                 } catch (ex: java.lang.Exception) {}
             }
         }
 
         swap_usage.setData(swapSize, swapFree)
-        zram_usage.setData(zramSize, zramFree)
+        zram_usage.setData(zramSize.toFloat(), zramFree)
         if (swapSize > 0 && swapFree > 0) {
             swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
         } else {
@@ -599,7 +599,6 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
-        // val zramSize = swapUtils.zramCurrentSizeMB
         txt_zram_size_display.text = "${zramSize}MB"
 
         zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
