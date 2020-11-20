@@ -219,10 +219,20 @@ class ActivityApplistions : ActivityBase() {
         }
 
         when (apptype) {
-            Appinfo.AppType.SYSTEM ->
-                DialogAppOptions(this, selectedItems, myHandler!!).selectSystemAppOptions()
-            Appinfo.AppType.USER ->
-                DialogAppOptions(this, selectedItems, myHandler!!).selectUserAppOptions()
+            Appinfo.AppType.SYSTEM -> {
+                if (selectedItems.size == 1) {
+                    DialogSingleAppOptions(this, selectedItems.first(), myHandler!!).showSingleAppOptions()
+                } else {
+                    DialogAppOptions(this, selectedItems, myHandler!!).selectSystemAppOptions()
+                }
+            }
+            Appinfo.AppType.USER -> {
+                if (selectedItems.size == 1) {
+                    DialogSingleAppOptions(this, selectedItems.first(), myHandler!!).showSingleAppOptions()
+                } else {
+                    DialogAppOptions(this, selectedItems, myHandler!!).selectUserAppOptions()
+                }
+            }
             Appinfo.AppType.BACKUPFILE ->
                 DialogAppOptions(this, selectedItems, myHandler!!).selectBackupOptions()
             else -> {
