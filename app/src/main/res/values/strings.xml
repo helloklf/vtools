@@ -222,7 +222,7 @@
     <string name="swap_swappiness">Swappiness</string>
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
-    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据降低占用，会给CPU带来额外负担\n\n注意：不建议在处理器性能偏弱的设备上使用ZRAM，以免在内存不足时手机变得缓慢和严重耗电！</string>
+    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据降低占用，会给CPU带来额外负担。不建议在处理器性能偏弱的设备上使用ZRAM，以免在内存不足时手机变得缓慢和严重耗电！</string>
     <string name="swap_zram_comp_options">压缩算法</string>
     <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n lzo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
     </string>

@@ -22,12 +22,12 @@
             style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="创建SWAP" />
+            android:text="调整ZRAM" />
         <TextView
             android:id="@+id/confirm_message"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:paddingTop="8dp"
-            android:text="现在，拖动滑块调整Swap大小"
+            android:text="现在，拖动滑块调整ZRAM大小"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <SeekBar
-                android:id="@+id/swap_size"
+                android:id="@+id/zram_size"
                 style="@style/SceneSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:max="64" />
 
             <TextView
-                android:id="@+id/swap_size_text"
+                android:id="@+id/zram_size_text"
                 android:text="0MB"
                 style="@style/textSmall"
                 android:layout_gravity="center"
@@ -54,13 +54,39 @@
                 android:layout_height="wrap_content" />
         </FrameLayout>
 
+        <LinearLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:max="2048"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:text="@string/swap_zram_compact_algorithm" />
+
+            <TextView
+                android:id="@+id/zram_compact_algorithm"
+                android:text="LZO"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="textEnd" />
+        </LinearLayout>
+
         <TextView
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:background="@drawable/in_card_item"
             android:padding="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             style="@style/textSmall"
-            android:text="@string/swap_swap_desc"
+            android:text="@string/swap_zram_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -87,7 +113,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="6dp"
-                    android:src="@drawable/swap_data"
+                    android:src="@drawable/swap_auto_start"
                     app:tint="@android:color/white" />
 
                 <LinearLayout
@@ -99,18 +125,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="在/data下创建" />
+                        android:text="开机自启" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="默认位置为/data/swapfile，不可更改" />
+                        android:text="手机重新启动后，自动应用当前设置\n(需要允许Scene自启动)" />
                 </LinearLayout>
 
                 <Switch
-                    android:enabled="false"
-                    android:checked="true"
+                    android:id="@+id/zram_auto_start"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_width="wrap_content"
@@ -135,7 +160,7 @@
             android:layout_marginStart="8dp"
             android:id="@+id/btn_confirm"
             style="@style/dialogConfirmBtn"
-            android:text="下一步" />
+            android:text="确定" />
     </LinearLayout>
 
 </LinearLayout>

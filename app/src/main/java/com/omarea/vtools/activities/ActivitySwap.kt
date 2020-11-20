@@ -61,14 +61,9 @@ class ActivitySwap : ActivityBase() {
         val context = this
         processBarDialog = ProgressBarDialog(context)
 
-        chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
         swap_module_state.visibility = if (swapModuleUtils.magiskModuleInstalled) View.VISIBLE else View.GONE
 
-        seekbar_zram_size.max = totalMem / 128
-        var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-        if (zramSize > totalMem)
-            zramSize = totalMem
-        seekbar_zram_size.progress = zramSize / 128
+        val zramSize = swapUtils.zramCurrentSizeMB
         txt_zram_size_display.text = "${zramSize}MB"
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
@@ -81,9 +76,6 @@ class ActivitySwap : ActivityBase() {
             "$this(${this / 100F}%)"
         }
 
-        seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
-        }, null, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
         seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
@@ -136,7 +128,7 @@ class ActivitySwap : ActivityBase() {
 
         // 关闭swap
         btn_swap_close.setOnClickListener {
-            val usedSize = getSwapUsedSize()
+            val usedSize = swapUtils.swapUsedSize
             if (usedSize > 300) {
                 DialogHelper.confirm(this,
                         "确认重启手机？",
@@ -216,13 +208,56 @@ class ActivitySwap : ActivityBase() {
 
         // 调整zram大小操作
         btn_zram_resize.setOnClickListener {
-            val sizeVal = seekbar_zram_size.progress * 128
+            zramResizeDialog()
+        }
+    }
+
+    private fun zramResizeDialog () {
+        val view = layoutInflater.inflate(R.layout.dialog_zram_resize, null)
+        val zramSizeBar = view.findViewById<SeekBar>(R.id.zram_size)
+        val zramAutoStart = view.findViewById<CompoundButton>(R.id.zram_auto_start)
+        val compactAlgorithm = view.findViewById<TextView>(R.id.zram_compact_algorithm)
+        val zramSizeText = view.findViewById<TextView>(R.id.zram_size_text)
+
+        zramAutoStart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
+        compactAlgorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, swapUtils.compAlgorithm)
+
+        zramSizeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                zramSizeText.text = (progress * 128).toString() + "MB"
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+
+        zramSizeBar.max = totalMem / 128
+        var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+        if (zramSize > totalMem)
+            zramSize = totalMem
+        zramSizeBar.progress = zramSize / 128
+
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            val sizeVal = zramSizeBar.progress * 128
+            val autoStart = zramAutoStart.isChecked
+            val algorithm = "" + compactAlgorithm.text
 
             processBarDialog.showDialog(getString(R.string.zram_resizing))
+            swapConfig.edit()
+                    .putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal)
+                    .putBoolean(SpfConfig.SWAP_SPF_ZRAM, autoStart)
+                    .putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm)
+                    .apply()
 
             val run = Thread {
-                val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
-                swapUtils.resizeZram(sizeVal, algorithm!!)
+                swapUtils.resizeZram(sizeVal, algorithm)
 
                 myHandler.post(getSwaps)
                 myHandler.post {
@@ -230,23 +265,11 @@ class ActivitySwap : ActivityBase() {
                 }
             }
             Thread(run).start()
-            swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).apply()
-        }
-
-        // zram 自启动开关
-        chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
-            if (swapModuleUtils.magiskModuleInstalled) {
-                // TODO
-            } else if (isChecked) {
-                Toast.makeText(context, R.string.swap_auto_start_desc, Toast.LENGTH_SHORT).show()
-            }
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).apply()
         }
     }
 
     private fun swapCreateDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_swap_create, null)
-        // TODO: swapUtils.swapExists
         val swapSize = view.findViewById<SeekBar>(R.id.swap_size)
         val swapSizeText = view.findViewById<TextView>(R.id.swap_size_text)
 
@@ -382,35 +405,8 @@ class ActivitySwap : ActivityBase() {
         }
     }
 
-    private fun procSwaps(): MutableList<String> {
-        val ret = KernelProrp.getProp("/proc/swaps")
-        var txt = ret.replace("\t\t", "\t").replace("\t", " ")
-        while (txt.contains("  ")) {
-            txt = txt.replace("  ", " ")
-        }
-        val rows = txt.split("\n").toMutableList()
-        return rows
-    }
-
-    private fun getSwapUsedSize (): Int {
-        for (row in procSwaps()) {
-            if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
-                val cols = row.split(" ").toMutableList()
-                val sizeStr = cols[2]
-                val usedStr = cols[3]
-
-                try {
-                    return usedStr.toInt() / 1024
-                } catch (ex: java.lang.Exception) {
-                    break
-                }
-            }
-        }
-        return -1
-    }
-
     internal var getSwaps = {
-        val rows = procSwaps()
+        val rows = swapUtils.procSwaps
         val list = ArrayList<HashMap<String, String>>()
         val thr = LinkedHashMap<String, String>().apply {
             put("path", getString(R.string.path))
@@ -590,9 +586,13 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
+        val zramSize = swapUtils.zramCurrentSizeMB
+        txt_zram_size_display.text = "${zramSize}MB"
+
         zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
 
         txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
+        txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后失效"
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {

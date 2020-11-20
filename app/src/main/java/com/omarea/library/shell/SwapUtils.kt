@@ -148,8 +148,8 @@ class SwapUtils(context: Context) {
     // 调整zram大小
     fun resizeZram(sizeVal: Int, algorithm: String = "") {
         val keepShell = KeepShell()
-        val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
-        if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
+        val currentSize = zramCurrentSizeMB
+        if (currentSize != sizeVal || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
             val sb = StringBuilder()
             sb.append("echo 4 > /sys/block/zram0/max_comp_streams\n")
             sb.append("sync\n")
@@ -175,6 +175,16 @@ class SwapUtils(context: Context) {
 
         keepShell.tryExit()
     }
+
+    val zramCurrentSizeMB: Int
+        get () {
+            val currentSize = KeepShellPublic.doCmdSync("cat /sys/block/zram0/disksize")
+            try {
+                return (currentSize.toLong() / 1024 /1024).toInt()
+            } catch (ex: java.lang.Exception) {
+                return 0
+            }
+        }
 
     // 获取可用的ZRAM压缩算法
     val compAlgorithmOptions: Array<String>
@@ -212,5 +222,34 @@ class SwapUtils(context: Context) {
             return result
         }
         return "Fail!"
+    }
+
+    val procSwaps: MutableList<String>
+        get() {
+            val ret = KernelProrp.getProp("/proc/swaps")
+            var txt = ret.replace("\t\t", "\t").replace("\t", " ")
+            while (txt.contains("  ")) {
+                txt = txt.replace("  ", " ")
+            }
+            val rows = txt.split("\n").toMutableList()
+            return rows
+        }
+
+    val swapUsedSize: Int
+        get() {
+        for (row in procSwaps) {
+            if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
+                val cols = row.split(" ").toMutableList()
+                val sizeStr = cols[2]
+                val usedStr = cols[3]
+
+                try {
+                    return usedStr.toInt() / 1024
+                } catch (ex: java.lang.Exception) {
+                    break
+                }
+            }
+        }
+        return -1
     }
 }
