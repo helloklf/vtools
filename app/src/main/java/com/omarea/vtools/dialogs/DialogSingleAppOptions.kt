@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -162,9 +163,13 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
             backupAll(true, true)
         }
         */
-        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
-            dialog.dismiss()
-            uninstallAllSystem(app.updated)
+        if (app.updated) {
+            dialogView.findViewById<View>(R.id.app_options_uninstall_user).visibility = View.GONE
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
+                dialog.dismiss()
+                uninstallAllSystem(app.updated)
+            }
         }
 
         dialogView.findViewById<View>(R.id.app_options_dex2oat_speed).setOnClickListener {
@@ -294,19 +299,32 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
     }
 
     private fun moveToSystem() {
-        if (isMagisk() && isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
+        val magiskSupported = MagiskExtend.magiskSupported()
+        if (!magiskSupported && isMagisk() && isTmpfs("/system/app")) {
             DialogHelper.helpInfo(context,
                     "Magisk 副作用警告",
                     "检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！"
             )
             return
         }
-        confirm("" + app.appName, "转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！", Runnable {
-            if (MagiskExtend.magiskSupported()) {
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_trans_mode, null)
+        view.findViewById<TextView>(R.id.confirm_message).text = "部分应用迁移到系统目录会无法运行。\n\n此外，你需要解锁System分区，或安装Magisk(19.3+)。\n\n转换完成后，请重启手机！"
+        val switchCreateModule = view.findViewById<CompoundButton>(R.id.trans_create_module)
+        switchCreateModule.isEnabled = magiskSupported
+        switchCreateModule.isChecked = magiskSupported
+
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            if (switchCreateModule.isChecked && magiskSupported) {
                 moveToSystemMagisk()
             } else {
                 moveToSystemExec()
             }
-        })
+        }
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
     }
 }
