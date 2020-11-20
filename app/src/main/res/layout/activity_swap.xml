@@ -53,131 +53,69 @@
                         android:layout_height="wrap_content"
                         android:text="@string/swap_swap" />
 
-                    <TextView
-                        android:id="@+id/swap_state"
-                        style="@style/textDefault"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/swap_state_undefined"
-                        android:textAlignment="textEnd"
-                        android:textColor="?android:colorAccent" />
-
-                    <TextView
-                        android:id="@+id/txt_swap_size_display"
-                        android:layout_width="71dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:text="8192MB"
-                        android:textAlignment="textEnd" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
-
-                    <SeekBar
-                        android:id="@+id/seekbar_swap_size"
-                        style="@style/SceneSeekBar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="64" />
-
-                    <Button
-                        android:id="@+id/btn_swap_create"
-                        style="@style/SceneButton"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/swap_create" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
+                    <com.omarea.ui.RamChartView
+                        android:id="@+id/swap_usage"
+                        app:total="8192"
+                        app:free="3096"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/activity_horizontal_margin"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <RadioGroup
-                            android:id="@+id/chk_swap_order"
-                            android:layout_width="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/swap_state"
+                            android:layout_marginBottom="4dp"
+                            style="@style/textDefault"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:text="@string/swap_state_undefined"
+                            android:textColor="?android:colorAccent" />
 
-                            <RadioButton
-                                android:id="@+id/swap_zram_preferred"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:text="@string/swap_zram_preferred" />
-
-                            <RadioButton
-                                android:id="@+id/swap_zram_equitable"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/swap_zram_equitable" />
-
-                            <RadioButton
-                                android:id="@+id/swap_swap_preferred"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/swap_swap_preferred" />
-                        </RadioGroup>
-
-                        <CheckBox
-                            android:id="@+id/chk_swap_use_loop"
-                            android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/txt_swap_size_display"
+                            style="@style/textSmall"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/swap_use_loop" />
+                            android:text="8192MB" />
+
+                        <TextView
+                            android:id="@+id/txt_swap_auto_start"
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="重启后失效" />
                     </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <Button
-                            android:id="@+id/btn_swap_start"
+                            android:id="@+id/btn_swap_create"
                             style="@style/SceneButton"
-                            android:layout_marginStart="6dp"
-                            android:text="@string/swap_start" />
-
-
+                            android:layout_marginStart="8dp"
+                            android:text="@string/swap_create" />
                         <Button
-                            android:id="@+id/btn_swap_delete"
+                            android:id="@+id/btn_swap_close"
                             style="@style/SceneButton"
                             android:layout_marginStart="6dp"
-                            android:text="@string/swap_delete" />
+                            android:text="@string/swap_stop" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/chk_swap_autostart"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/swap_auto_start" />
-
-                    <Button
-                        android:id="@+id/btn_swap_close"
-                        style="@style/SceneButton"
-                        android:layout_marginStart="6dp"
-                        android:text="@string/swap_stop" />
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

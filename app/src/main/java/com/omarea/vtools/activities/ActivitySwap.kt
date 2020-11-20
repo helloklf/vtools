@@ -17,6 +17,7 @@ import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.SwapModuleUtils
 import com.omarea.library.shell.SwapUtils
@@ -60,33 +61,9 @@ class ActivitySwap : ActivityBase() {
         val context = this
         processBarDialog = ProgressBarDialog(context)
 
-        val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
-        when (swapPriority) {
-            5 -> {
-                swap_swap_preferred.isChecked = true
-            }
-            0 -> {
-                swap_zram_equitable.isChecked = true
-            }
-            else -> {
-                swap_zram_preferred.isChecked = true
-            }
-        }
-
-        chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
-        chk_swap_use_loop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
         swap_module_state.visibility = if (swapModuleUtils.magiskModuleInstalled) View.VISIBLE else View.GONE
 
-        var swapSize = 0
-        if (swapUtils.swapExists) {
-            swapSize = swapUtils.swapFileSize
-        } else {
-            swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
-        }
-
-        seekbar_swap_size.progress = swapSize / 128
-        txt_swap_size_display.text = "${swapSize}MB"
         seekbar_zram_size.max = totalMem / 128
         var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
         if (zramSize > totalMem)
@@ -104,9 +81,6 @@ class ActivitySwap : ActivityBase() {
             "$this(${this / 100F}%)"
         }
 
-        seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
-        }, null, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 128))
         seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
         }, null, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
@@ -162,29 +136,26 @@ class ActivitySwap : ActivityBase() {
 
         // 关闭swap
         btn_swap_close.setOnClickListener {
-            processBarDialog.showDialog(getString(R.string.swap_on_close))
-            val run = Runnable {
-                swapUtils.swapOff()
-                myHandler.post {
-                    processBarDialog.hideDialog()
-                    getSwaps()
+            val usedSize = getSwapUsedSize()
+            if (usedSize > 300) {
+                DialogHelper.confirm(this,
+                        "确认重启手机？",
+                        "Swap被大量使用(${usedSize}MB)，短时间内很难完成回收。\n因此需要重启手机来完成此操作，请确保你的重要数据都已保存！！！", {
+                    swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, false).apply()
+                    swapModuleUtils.saveModuleConfig(swapConfig)
+                    KeepShellPublic.doCmdSync("sync\nsleep 2\nsvc power reboot || reboot")
+                })
+            } else {
+                processBarDialog.showDialog(getString(R.string.swap_on_close))
+                val run = Runnable {
+                    swapUtils.swapOff()
+                    myHandler.post {
+                        processBarDialog.hideDialog()
+                        getSwaps()
+                    }
                 }
+                Thread(run).start()
             }
-            Thread(run).start()
-        }
-
-        // swap删除
-        btn_swap_delete.setOnClickListener {
-            processBarDialog.showDialog(getString(R.string.swap_on_close))
-            val run = Runnable {
-                swapUtils.swapDelete()
-
-                myHandler.post {
-                    processBarDialog.hideDialog()
-                    getSwaps()
-                }
-            }
-            Thread(run).start()
         }
 
         // 自动lmk调节
@@ -240,59 +211,7 @@ class ActivitySwap : ActivityBase() {
 
         // swap启动
         btn_swap_create.setOnClickListener {
-            val size = seekbar_swap_size.progress * 128
-            if (size < 1) {
-                Scene.toast("请先设定SWAP大小！")
-                return@setOnClickListener
-            }
-
-            val run = Runnable {
-                val startTime = System.currentTimeMillis()
-                myHandler.post {
-                    processBarDialog.showDialog(getString(R.string.file_creating))
-                }
-                swapUtils.mkswap(size)
-                myHandler.post(getSwaps)
-                val time = System.currentTimeMillis() - startTime
-                myHandler.post {
-                    processBarDialog.hideDialog()
-                    Toast.makeText(context, "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s", Toast.LENGTH_LONG).show()
-                }
-            }
-            Thread(run).start()
-        }
-
-        // swap启动
-        btn_swap_start.setOnClickListener {
-            val autostart = chk_swap_autostart.isChecked
-            val priority = when {
-                swap_swap_preferred.isChecked -> {
-                    5
-                }
-                swap_zram_equitable.isChecked -> {
-                    0
-                }
-                else -> {
-                    -2
-                }
-            }
-            swapConfig.edit()
-                    .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
-                    .putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
-                    .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
-                    .apply()
-
-            processBarDialog.showDialog("稍等...")
-            Thread {
-                val result = swapUtils.swapOn(priority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
-                if (result.isNotEmpty()) {
-                    Scene.toast(result, Toast.LENGTH_LONG)
-                }
-
-                myHandler.post(getSwaps)
-                myHandler.post(showSwapOpened)
-                processBarDialog.hideDialog()
-            }.start()
+            swapCreateDialog()
         }
 
         // 调整zram大小操作
@@ -323,45 +242,176 @@ class ActivitySwap : ActivityBase() {
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).apply()
         }
-        // swap 自启动开关
-        chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
-            if (swapModuleUtils.magiskModuleInstalled) {
-                // TODO
-            } else if (isChecked) {
-                Toast.makeText(context, R.string.swap_auto_start_desc, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun swapCreateDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_swap_create, null)
+        // TODO: swapUtils.swapExists
+        val swapSize = view.findViewById<SeekBar>(R.id.swap_size)
+        val swapSizeText = view.findViewById<TextView>(R.id.swap_size_text)
+
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
+
+        swapSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                swapSizeText.text = (progress * 128).toString() + "MB"
             }
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).apply()
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+
+        var swapCurrentSize = 0
+        if (swapUtils.swapExists) {
+            swapCurrentSize = swapUtils.swapFileSize
+        } else {
+            swapCurrentSize = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
         }
 
-        // 挂载回环设备开关
-        chk_swap_use_loop.setOnClickListener {
-            if ((it as CheckBox).isChecked) {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(R.string.swap_use_loop)
-                        .setMessage(R.string.swap_use_loop_desc)
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            it.isChecked = true
-                            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, true).apply()
-                        }
-                        .setNeutralButton(R.string.btn_cancel) { _, _ ->
-                            it.isChecked = false
-                            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
-                        }
-                        .setCancelable(false))
+        swapSize.progress = swapCurrentSize / 128
+        swapSizeText.text = (swapSize.progress * 128).toString() + "MB"
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            val size = swapSize.progress * 128
+            if (size < 1) {
+                Scene.toast("请先设定SWAP大小！")
+                return@setOnClickListener
+            } else if (size == swapUtils.swapFileSize) {
+                // 如果大小和已经创建的文件一致，跳过创建
+
+                // 保存设置
+                swapConfig.edit().putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, size).apply()
+
+                swapActiveDialog()
             } else {
-                swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
+                val run = Runnable {
+                    val startTime = System.currentTimeMillis()
+                    myHandler.post {
+                        processBarDialog.showDialog(getString(R.string.file_creating))
+                    }
+                    swapUtils.mkswap(size)
+
+                    // 保存设置
+                    swapConfig.edit().putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, size).apply()
+
+                    myHandler.post(getSwaps)
+                    val time = System.currentTimeMillis() - startTime
+                    myHandler.post {
+                        processBarDialog.hideDialog()
+                        Toast.makeText(
+                                context,
+                                "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s",
+                                Toast.LENGTH_LONG
+                        ).show()
+                        swapActiveDialog()
+                    }
+                }
+                Thread(run).start()
             }
         }
     }
 
-    internal var getSwaps = {
+    private fun swapActiveDialog () {
+        val view = layoutInflater.inflate(R.layout.dialog_swap_active, null)
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
+
+        val priorityHight = view.findViewById<CompoundButton>(R.id.swap_priority_high)
+        val priorityMiddle = view.findViewById<CompoundButton>(R.id.swap_priority_middle)
+        val priorityLow = view.findViewById<CompoundButton>(R.id.swap_priority_low)
+        val autoStart = view.findViewById<CompoundButton>(R.id.swap_auto_start)
+        val mountLoop = view.findViewById<CompoundButton>(R.id.swap_mount_loop)
+
+        // 设置选中状态
+        val radioGroupSimulator = RadioGroupSimulator(priorityHight, priorityMiddle, priorityLow)
+        when (swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)) {
+            5 -> priorityHight.isChecked = true
+            0 -> priorityMiddle.isChecked = true
+            else -> priorityLow.isChecked = true
+        }
+        mountLoop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
+        autoStart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            val priority: Int
+            when(radioGroupSimulator.checked) {
+                priorityHight -> {
+                    priority = 5
+                }
+                priorityMiddle -> {
+                    priority = 0
+                }
+                priorityLow -> {
+                    priority = -2
+                }
+                else -> {
+                    return@setOnClickListener
+                }
+            }
+            // 保存配置
+            swapConfig.edit()
+                    .putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, mountLoop.isChecked)
+                    .putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
+                    .putBoolean(SpfConfig.SWAP_SPF_SWAP, autoStart.isChecked)
+                    .apply()
+
+            processBarDialog.showDialog("稍等...")
+            Thread {
+                val result = swapUtils.swapOn(
+                    swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2),
+                    swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
+                )
+                if (result.isNotEmpty()) {
+                    Scene.toast(result, Toast.LENGTH_LONG)
+                }
+
+                myHandler.post(getSwaps)
+                myHandler.post(showSwapOpened)
+                processBarDialog.hideDialog()
+            }.start()
+        }
+    }
+
+    private fun procSwaps(): MutableList<String> {
         val ret = KernelProrp.getProp("/proc/swaps")
         var txt = ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
             txt = txt.replace("  ", " ")
         }
-        val list = ArrayList<HashMap<String, String>>()
         val rows = txt.split("\n").toMutableList()
+        return rows
+    }
+
+    private fun getSwapUsedSize (): Int {
+        for (row in procSwaps()) {
+            if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
+                val cols = row.split(" ").toMutableList()
+                val sizeStr = cols[2]
+                val usedStr = cols[3]
+
+                try {
+                    return usedStr.toInt() / 1024
+                } catch (ex: java.lang.Exception) {
+                    break
+                }
+            }
+        }
+        return -1
+    }
+
+    internal var getSwaps = {
+        val rows = procSwaps()
+        val list = ArrayList<HashMap<String, String>>()
         val thr = LinkedHashMap<String, String>().apply {
             put("path", getString(R.string.path))
             put("type", getString(R.string.type))
@@ -374,19 +424,26 @@ class ActivitySwap : ActivityBase() {
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
-            tr["path"] = params[0]
+            val path = params[0]
+            tr["path"] = path
             tr["type"] = params[1].replace("file", "文件").replace("partition", "分区")
 
-            val size = params[2]
+            val size = swapUsedSizeParseMB(params[2])
             // tr.put("size", if (size.length > 3) (size.substring(0, size.length - 3) + "m") else "0")
-            tr["size"] = swapUsedSizeParseMB(size)
+            tr["size"] = size
 
-            val used = params[3]
+            val used = swapUsedSizeParseMB(params[3])
             // tr.put("used", if (used.length > 3) (used.substring(0, used.length - 3) + "m") else "0")
-            tr["used"] = swapUsedSizeParseMB(used)
+            tr["used"] = used
 
             tr["priority"] = params[4]
             list.add(tr)
+
+            if (path.startsWith("/swapfile") || path.equals("/data/swapfile")) {
+                try {
+                    swap_usage.setData(size.toFloat(), size.toFloat() - used.toFloat())
+                } catch (ex: java.lang.Exception) {}
+            }
         }
 
         swap_swappiness_display.text = KernelProrp.getProp("/proc/sys/vm/swappiness")
@@ -427,28 +484,15 @@ class ActivitySwap : ActivityBase() {
         }
 
         val swapFileExists = swapUtils.swapExists
-        btn_swap_create.visibility = if (swapFileExists) View.GONE else View.VISIBLE
-        if (swapFileExists) {
-            seekbar_swap_size.visibility = View.GONE
-        } else {
-            seekbar_swap_size.visibility = View.VISIBLE
-        }
 
         val currentSwap = swapUtils.sceneSwaps
         if (currentSwap.isNotEmpty()) {
-            btn_swap_start.visibility = View.GONE
-            btn_swap_delete.visibility = View.GONE
             btn_swap_close.visibility = View.VISIBLE
-            chk_swap_use_loop.visibility = View.GONE
-            chk_swap_order.visibility = View.GONE
+            btn_swap_create.visibility = View.GONE
             swap_state.text = getString(R.string.swap_state_using)
         } else {
-            btn_swap_start.visibility = if (swapFileExists) View.VISIBLE else View.GONE
-            btn_swap_delete.visibility = if (swapFileExists) View.VISIBLE else View.GONE
-
             btn_swap_close.visibility = View.GONE
-            chk_swap_use_loop.visibility = if (swapFileExists) View.VISIBLE else View.GONE
-            chk_swap_order.visibility = if (swapFileExists) View.VISIBLE else View.GONE
+            btn_swap_create.visibility = View.VISIBLE
             if (swapFileExists) {
                 swap_state.text = getString(R.string.swap_state_created)
             } else {

@@ -12,10 +12,6 @@ import android.widget.Toast
 import com.omarea.common.R
 import com.omarea.common.shell.AsynSuShellUnit
 
-/**
- * Loading弹窗
- * Created by Hello on 2018/02/27.
- */
 open class ProgressBarDialog(private var context: Context) {
     private var alert: AlertDialog? = null
     private var textView: TextView? = null

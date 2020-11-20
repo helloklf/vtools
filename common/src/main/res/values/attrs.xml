@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="cardBg" format="color"/>
+    <declare-styleable name="ProgressState">
+        <attr name="total" format="integer" />
+        <attr name="current" format="integer" />
+    </declare-styleable>
     <attr name="showHints">
         <!-- Visible on screen; the default value. -->
         <enum name="visible" value="0" />
