@@ -54,6 +54,16 @@
                 android:layout_height="wrap_content" />
         </FrameLayout>
 
+        <TextView
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:background="@drawable/in_card_item"
+            android:padding="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            style="@style/textSecondary"
+            android:text="@string/swap_swap_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_marginStart="@dimen/activity_horizontal_margin"

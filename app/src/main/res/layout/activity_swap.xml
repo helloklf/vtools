@@ -41,12 +41,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="@string/swap_swap_desc" />
-
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="wrap_content"

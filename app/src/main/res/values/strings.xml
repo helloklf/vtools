@@ -238,7 +238,7 @@
     <string name="swap_swap_preferred">优先于ZRAM使用</string>
     <string name="swap_use_loop">挂载为回环设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米的SDM845机型在Android9.0，需要勾选此项才能正常使用SWAP</string>
-    <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差。\n\n注意：避免在小容量或空间不足的手机上使用此功能，以免闪存老化过快！</string>
+    <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差。请勿在小容量或空间不足的手机上使用此功能，以防闪存老化过快！</string>
     <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_auto_start_desc">注意：你需要允许Scene自启动，下次开机才会生效！</string>
     <string name="swap_zram_stat">ZRAM 统计</string>

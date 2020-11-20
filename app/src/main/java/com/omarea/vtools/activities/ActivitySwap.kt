@@ -423,7 +423,7 @@ class ActivitySwap : ActivityBase() {
 
         var swapSize = 0f
         var swapFree = 0f
-        txt_swap_size_display.text = "0MB"
+        txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
@@ -443,7 +443,6 @@ class ActivitySwap : ActivityBase() {
             list.add(tr)
 
             if (path.startsWith("/swapfile") || path.equals("/data/swapfile")) {
-                txt_swap_size_display.text = size + "MB"
                 try {
                     swapSize = size.toFloat()
                     swapFree = size.toFloat() - used.toFloat()
@@ -592,6 +591,8 @@ class ActivitySwap : ActivityBase() {
         }
 
         zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
+
+        txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
