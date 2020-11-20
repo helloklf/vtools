@@ -419,6 +419,8 @@ class ActivitySwap : ActivityBase() {
 
         var swapSize = 0f
         var swapFree = 0f
+        var zramSize = 0f
+        var zramFree = 0f
         txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
@@ -443,14 +445,25 @@ class ActivitySwap : ActivityBase() {
                     swapSize = size.toFloat()
                     swapFree = size.toFloat() - used.toFloat()
                 } catch (ex: java.lang.Exception) {}
+            } else if (path.startsWith("/block/zram0") || path.startsWith("/dev/block/zram0")) {
+                try {
+                    zramSize = size.toFloat()
+                    zramFree = size.toFloat() - used.toFloat()
+                } catch (ex: java.lang.Exception) {}
             }
         }
 
         swap_usage.setData(swapSize, swapFree)
+        zram_usage.setData(zramSize, zramFree)
         if (swapSize > 0 && swapFree > 0) {
             swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
         } else {
             swap_usage_ratio.text = "0%"
+        }
+        if (zramSize > 0 && zramFree > 0) {
+            zram_usage_ratio.text = (100 - (zramFree * 100 / zramSize).toInt()).toString() + "%"
+        } else {
+            zram_usage_ratio.text = "0%"
         }
 
         swap_swappiness_display.text = KernelProrp.getProp("/proc/sys/vm/swappiness")
@@ -586,7 +599,7 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
-        val zramSize = swapUtils.zramCurrentSizeMB
+        // val zramSize = swapUtils.zramCurrentSizeMB
         txt_zram_size_display.text = "${zramSize}MB"
 
         zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
