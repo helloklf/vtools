@@ -320,16 +320,16 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="6dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <!--从当前用户卸载应用-->
                 <LinearLayout
                     android:id="@+id/app_options_uninstall_user"
+                    android:layout_marginTop="6dp"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
@@ -368,8 +368,9 @@
                 <!--删除应用应用文件-->
                 <LinearLayout
                     android:id="@+id/app_options_delete"
+                    android:layout_marginTop="6dp"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="70dp"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
