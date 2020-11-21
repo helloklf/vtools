@@ -172,7 +172,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="使ZRAM和SWAP的使用顺序相同，数据交换过程中二者等量使用" />
+                            android:text="使ZRAM和Swapfile的使用顺序相同，数据交换过程中等量使用" />
                     </LinearLayout>
                     <Switch
                         android:id="@+id/swap_priority_middle"

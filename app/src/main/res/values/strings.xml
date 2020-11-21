@@ -222,7 +222,7 @@
     <string name="swap_swappiness">Swappiness</string>
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
-    <string name="swap_zram_desc">说明：\nZRAM即内存压缩技术，是SWAP的一种实现，通过压缩RAM中的数据降低占用，会给CPU带来额外负担。不建议在处理器性能偏弱的设备上使用ZRAM，以免在内存不足时手机变得缓慢和严重耗电！</string>
+    <string name="swap_zram_desc">说明： ZRAM是SWAP的一种实现。可用内存变得不足时，会对内存中的部分数据进行压缩。但CPU会因此变得繁忙~</string>
     <string name="swap_zram_comp_options">压缩算法</string>
     <string name="swap_zram_comp_algorithm_wran">更改未生效</string>
     <string name="swap_zram_comp_algorithm_wran_desc">ZRAM正在使用中，现在无法更改压缩算法。\n\n如需让设置生效，请点击下方的“调整”按钮</string>
@@ -236,7 +236,7 @@
     <string name="swap_swap_preferred">优先于ZRAM使用</string>
     <string name="swap_use_loop">挂载为回环设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米的SDM845机型在Android9.0，需要勾选此项才能正常使用SWAP</string>
-    <string name="swap_swap_desc">说明：\nSwapfile类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差。请勿在小容量或空间不足的手机上使用此功能，以防闪存老化过快！</string>
+    <string name="swap_swap_desc">说明： Swapfile类似于Windows的虚拟内存，交换效率受限于磁盘性能。请勿在小容量或空间不足的手机上使用此功能，以防闪存老化过快！</string>
     <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_auto_start_desc">注意：你需要允许Scene自启动，下次开机才会生效！</string>
     <string name="swap_zram_stat">ZRAM 统计</string>

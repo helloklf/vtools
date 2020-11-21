@@ -16,6 +16,11 @@ class RadioGroupSimulator {
                     this.autoCheck(it)
                 }
             }
+            it.setOnCheckedChangeListener { compoundButton, b ->
+                if (b) {
+                    autoUnChecked(compoundButton)
+                }
+            }
         }
 
         // 如果发现有多个选中，自动取消多余的选中（只保留最后一个）
