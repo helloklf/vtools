@@ -45,7 +45,6 @@ class ActivitySwap : ActivityBase() {
 
         swapConfig = getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
-        val time = System.currentTimeMillis()
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val info = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(info)
@@ -54,7 +53,6 @@ class ActivitySwap : ActivityBase() {
 
         // 进入界面时 加载Magisk模块的配置
         swapModuleUtils.loadModuleConfig(swapConfig)
-        Log.d("Scene-SWAP", "" + (System.currentTimeMillis() - time))
 
         setView()
     }
@@ -432,6 +430,7 @@ class ActivitySwap : ActivityBase() {
     }
 
     internal var getSwaps = {
+        val zramEnabled = swapUtils.zramEnabled
         val rows = swapUtils.procSwaps
         val list = ArrayList<HashMap<String, String>>()
         val thr = LinkedHashMap<String, String>().apply {
@@ -445,7 +444,8 @@ class ActivitySwap : ActivityBase() {
 
         var swapSize = 0f
         var swapFree = 0f
-        var zramSize = swapUtils.zramCurrentSizeMB
+        // 按理说ZRAM的虚拟磁盘大小不取决于是否启用，但是为了避免引起误会，未启用还是刻意显示为0比较好
+        var zramSize = if (zramEnabled) swapUtils.zramCurrentSizeMB else 0
         var zramFree = 0f
         txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {
@@ -546,7 +546,7 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
-        if (swapUtils.zramEnabled) {
+        if (zramEnabled) {
             zram_state.text = getString(R.string.swap_state_using)
         } else {
             zram_state.text = getString(R.string.swap_state_created)

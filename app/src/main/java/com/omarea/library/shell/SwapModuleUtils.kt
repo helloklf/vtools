@@ -56,7 +56,11 @@ class SwapModuleUtils {
     }
 
     private fun getProp(config: List<String>, prop: String): String {
-        return config.find { it.startsWith("$prop=") }!!
+        val result = config.find { it.startsWith("$prop=") }
+        if (result != null) {
+            return result.subSequence(prop.length + 1, result.length).toString()
+        }
+        return ""
     }
 
     private fun setProp(prop: String, value: Any) {
