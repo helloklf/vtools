@@ -22,12 +22,12 @@
             style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="创建SWAP" />
+            android:text="创建Swapfile" />
         <TextView
             android:id="@+id/confirm_message"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:paddingTop="8dp"
-            android:text="现在，拖动滑块调整Swap大小"
+            android:text="现在，拖动滑块调整Swapfile大小"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

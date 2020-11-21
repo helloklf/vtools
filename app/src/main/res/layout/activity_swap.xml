@@ -56,7 +56,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
                     <FrameLayout
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:layout_width="70dp"
                         android:layout_height="70dp">
                         <com.omarea.ui.RamChartView
@@ -154,7 +153,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
                     <FrameLayout
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:layout_width="70dp"
                         android:layout_height="70dp">
                         <com.omarea.ui.RamChartView
@@ -206,6 +204,7 @@
                                 android:id="@+id/zram_compact_algorithm"
                                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                                 style="@style/textSmall"
+                                android:text="lzo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center" />
@@ -238,109 +237,89 @@
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="@string/swap_swappiness_desc" />
-
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/swap_swappiness" />
-
-                    <TextView
-                        android:id="@+id/txt_zramstus_swappiness"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_weight="1"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/seekbar_swap_swappiness"
-                    style="@style/SceneSeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/activity_vertical_margin" />
+                <TextView
+                    style="@style/textTitle"
+                    android:text="VM Parameters" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
 
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="@string/extra_free_kbytes_desc" />
-
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/extra_free_kbytes" />
-
-                    <TextView
-                        android:id="@+id/text_extra_free_kbytes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_weight="1"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/seekbar_extra_free_kbytes"
-                    style="@style/SceneSeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="524288" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.omarea.ui.HelpIcon
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        app:text="@string/watermark_scale_factor_desc" />
-
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/watermark_scale_factor" />
-
-                    <TextView
-                        android:id="@+id/text_watermark_scale_factor"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_weight="1"
-                        android:textAlignment="textEnd" />
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="swappiness : " />
+
+                            <TextView
+                                android:id="@+id/swap_swappiness_display"
+                                style="@style/textSmall"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="extra_free_kbytes : " />
+
+                            <TextView
+                                android:id="@+id/extra_free_kbytes_display"
+                                style="@style/textSmall"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_vertical_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="watermark_scale_factor : " />
+
+                            <TextView
+                                android:id="@+id/watermark_scale_factor_display"
+                                style="@style/textSmall"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <Button style="@style/SceneButton" android:id="@+id/swappiness_adj" android:text="调整" android:layout_gravity="center_vertical" />
                 </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/seekbar_watermark_scale_factor"
-                    style="@style/SceneSeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="1000" />
-
             </TableLayout>
 
             <LinearLayout
@@ -396,88 +375,25 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TableLayout
+            <LinearLayout
+                android:orientation="vertical"
                 style="@style/ListCardItem"
-                android:showDividers="beginning"
-                android:stretchColumns="0">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    style="@style/textTitle"
-                    android:text="当前状态" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="/proc/sys/vm/swappiness : " />
-
-                    <TextView
-                        android:id="@+id/swap_swappiness_display"
-                        style="@style/textSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="/proc/sys/vm/extra_free_kbytes : " />
-
-                    <TextView
-                        android:id="@+id/extra_free_kbytes_display"
-                        style="@style/textSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="/proc/sys/vm/watermark_scale_factor : " />
-
-                    <TextView
-                        android:id="@+id/watermark_scale_factor_display"
-                        style="@style/textSmall"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="" />
-                </LinearLayout>
+                    style="@style/textTitle"
+                    android:text="已开启的SWAP" />
 
                 <ListView
                     android:id="@+id/list_swaps2"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:textSize="10dp" />
-            </TableLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/zram_stat"

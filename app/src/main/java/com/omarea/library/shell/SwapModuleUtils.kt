@@ -55,6 +55,10 @@ class SwapModuleUtils {
         return KeepShellPublic.doCmdSync("cat /data/swap_config.conf | grep -v '^#' | grep \"^${prop}=\" | cut -f2 -d '='")
     }
 
+    private fun getProp(config: List<String>, prop: String): String {
+        return config.find { it.startsWith("$prop=") }!!
+    }
+
     private fun setProp(prop: String, value: Any) {
         KeepShellPublic.doCmdSync("busybox sed -i 's/^$prop=.*/$prop=$value/' /data/swap_config.conf")
     }
@@ -81,29 +85,30 @@ class SwapModuleUtils {
         }
 
         val editor = spf.edit()
+        val savedConfig = KeepShellPublic.doCmdSync("cat /data/swap_config.conf").split("\n")
 
         try {
-            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP, getProp(swapEnable) == "true")
-            editor.putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, getProp(swapSize).toInt())
-            editor.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, getProp(swapPriority).toInt())
-            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, getProp(swapUseLoop) == "true")
+            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP, getProp(savedConfig, swapEnable) == "true")
+            editor.putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, getProp(savedConfig, swapSize).toInt())
+            editor.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, getProp(savedConfig, swapPriority).toInt())
+            editor.putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, getProp(savedConfig, swapUseLoop) == "true")
         } catch (ex: Exception) {
         }
 
         try {
-            editor.putBoolean(SpfConfig.SWAP_SPF_ZRAM, getProp(zramEnable) == "true")
-            editor.putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, getProp(zramSize).toInt())
-            editor.putString(SpfConfig.SWAP_SPF_ALGORITHM, getProp(zramCompAlgorithm))
+            editor.putBoolean(SpfConfig.SWAP_SPF_ZRAM, getProp(savedConfig, zramEnable) == "true")
+            editor.putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, getProp(savedConfig, zramSize).toInt())
+            editor.putString(SpfConfig.SWAP_SPF_ALGORITHM, getProp(savedConfig, zramCompAlgorithm))
         } catch (ex: Exception) {
         }
 
         try {
-            editor.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, getProp(swappiness).toInt())
-            editor.putInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, getProp(extraFreeKbytes).toInt())
+            editor.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, getProp(savedConfig, swappiness).toInt())
+            editor.putInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, getProp(savedConfig, extraFreeKbytes).toInt())
         } catch (ex: Exception) {
         }
         try {
-            editor.putInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, getProp(watermarkScaleFactor).toInt())
+            editor.putInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, getProp(savedConfig, watermarkScaleFactor).toInt())
         } catch (ex: Exception) {
         }
 

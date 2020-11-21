@@ -75,7 +75,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="如果开启Swap后出现死机情况，可尝试开启此选项。正常情况下不需要" />
+                            android:text="如果开启Swapfile后出现死机情况，可尝试开启此选项。正常情况下不需要" />
                     </LinearLayout>
 
                     <Switch
@@ -128,7 +128,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="ZRAM用尽之后，再使用SWAP。推荐使用此优先级" />
+                            android:text="ZRAM用尽之后，再使用Swapfile。推荐使用此优先级" />
                     </LinearLayout>
 
                     <Switch
@@ -213,7 +213,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="SWAP效率远不及ZRAM，不推荐使用此优先级" />
+                            android:text="Swapfile效率远不及ZRAM，不推荐使用此优先级" />
                     </LinearLayout>
                     <Switch
                         android:id="@+id/swap_priority_high"

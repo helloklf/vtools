@@ -45,6 +45,7 @@ class ActivitySwap : ActivityBase() {
 
         swapConfig = getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
+        val time = System.currentTimeMillis()
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val info = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(info)
@@ -53,6 +54,7 @@ class ActivitySwap : ActivityBase() {
 
         // 进入界面时 加载Magisk模块的配置
         swapModuleUtils.loadModuleConfig(swapConfig)
+        Log.d("Scene-SWAP", "" + (System.currentTimeMillis() - time))
 
         setView()
     }
@@ -62,69 +64,6 @@ class ActivitySwap : ActivityBase() {
         processBarDialog = ProgressBarDialog(context)
 
         swap_module_state.visibility = if (swapModuleUtils.magiskModuleInstalled) View.VISIBLE else View.GONE
-
-        val zramSize = swapUtils.zramCurrentSizeMB
-        txt_zram_size_display.text = "${zramSize}MB"
-        seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
-        txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
-
-        seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
-        text_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
-
-        seekbar_watermark_scale_factor.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
-        text_watermark_scale_factor.text = seekbar_watermark_scale_factor.progress.run {
-            "$this(${this / 100F}%)"
-        }
-
-        seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
-            txt_zramstus_swappiness.text = swappiness.toString()
-        }, {
-            val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
-            txt_zramstus_swappiness.text = swappiness.toString()
-            KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness")
-            swap_swappiness_display.text = "/proc/sys/vm/swappiness :  " + KernelProrp.getProp("/proc/sys/vm/swappiness")
-        }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
-
-        // extra_free_kbytes设置
-        seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
-            text_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
-        }, {
-            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
-            text_extra_free_kbytes.text = value.toString() + "(" + (value / 1024) + "MB)"
-            processBarDialog.showDialog()
-            val run = Runnable {
-                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/extra_free_kbytes")
-                myHandler.post {
-                    processBarDialog.hideDialog()
-                    getSwaps()
-                }
-            }
-            Thread(run).start()
-        }, swapConfig, SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES))
-
-        seekbar_watermark_scale_factor.isEnabled = RootFile.fileExists("/proc/sys/vm/watermark_scale_factor")
-        seekbar_watermark_scale_factor.setOnSeekBarChangeListener(OnSeekBarChangeListener({
-            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
-            text_watermark_scale_factor.text = value.run {
-                "$this(${this / 100F}%)"
-            }
-        }, {
-            val value = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
-            text_watermark_scale_factor.text = value.run {
-                "$this(${this / 100F}%)"
-            }
-            processBarDialog.showDialog()
-            val run = Runnable {
-                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/watermark_scale_factor")
-                myHandler.post {
-                    processBarDialog.hideDialog()
-                    getSwaps()
-                }
-            }
-            Thread(run).start()
-        }, swapConfig, SpfConfig.SWAP_SPF_WATERMARK_SCALE))
 
         // 关闭swap
         btn_swap_close.setOnClickListener {
@@ -166,35 +105,6 @@ class ActivitySwap : ActivityBase() {
             }
         }
 
-        // 压缩算法
-        zram_compact_algorithm.setOnClickListener {
-            val current = swapUtils.compAlgorithm
-            val options = swapUtils.compAlgorithmOptions
-            var selectedIndex = options.indexOf(current)
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle(R.string.swap_zram_comp_options)
-                    .setSingleChoiceItems(options, selectedIndex) { _, index ->
-                        selectedIndex = index
-                    }
-                    .setNeutralButton(R.string.btn_help) { _, _ ->
-                        DialogHelper.helpInfo(context, R.string.help, R.string.swap_zram_comp_algorithm_desc)
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        val algorithm = options[selectedIndex]
-                        swapUtils.compAlgorithm = algorithm
-                        swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm).apply()
-
-                        if (swapUtils.zramEnabled) {
-                            DialogHelper.helpInfo(
-                                    context, R.string.swap_zram_comp_algorithm_wran, R.string.swap_zram_comp_algorithm_wran_desc)
-                            (it as TextView).text = algorithm
-                        } else {
-                            (it as TextView).text = swapUtils.compAlgorithm
-                        }
-                        //
-                    })
-        }
-
         // 是否支持zram
         if (!swapUtils.zramSupport) {
             swap_config_zram.visibility = View.GONE
@@ -210,6 +120,105 @@ class ActivitySwap : ActivityBase() {
         btn_zram_resize.setOnClickListener {
             zramResizeDialog()
         }
+
+        swappiness_adj.setOnClickListener {
+            swappinessAdjDialog()
+        }
+    }
+
+    private fun swappinessAdjDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_swappines, null)
+
+        val swappinessSeekBar = view.findViewById<SeekBar>(R.id.seekbar_swap_swappiness)
+        val swappinessText = view.findViewById<TextView>(R.id.txt_zramstus_swappiness)
+        val extraFreeSeekBar = view.findViewById<SeekBar>(R.id.seekbar_extra_free_kbytes)
+        val extraFreeText = view.findViewById<TextView>(R.id.text_extra_free_kbytes)
+        val watermarkScaleSeekBar = view.findViewById<SeekBar>(R.id.seekbar_watermark_scale_factor)
+        val watermarkScaleText = view.findViewById<TextView>(R.id.text_watermark_scale_factor)
+
+
+        swappinessSeekBar.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
+        swappinessText.text = swappinessSeekBar.progress.toString()
+
+        val extraFreeKbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
+        try {
+            val bytes = extraFreeKbytes.toInt()
+            extraFreeSeekBar.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, bytes)
+        } catch (ex: Exception) {
+            extraFreeSeekBar.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)
+        }
+
+        extraFreeText.text = extraFreeSeekBar.progress.toString() + "(" + (extraFreeSeekBar.progress / 1024) + "MB)"
+
+        watermarkScaleSeekBar.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)
+        watermarkScaleText.text = watermarkScaleSeekBar.progress.run {
+            "$this(${this / 100F}%)"
+        }
+
+        swappinessSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                swappinessText.text = p1.toString()
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+        })
+
+        // extra_free_kbytes设置
+        extraFreeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                extraFreeText.text = p1.toString() + "(" + (p1 / 1024) + "MB)"
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+        })
+
+        watermarkScaleSeekBar.isEnabled = RootFile.fileExists("/proc/sys/vm/watermark_scale_factor")
+        watermarkScaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                watermarkScaleText.text = p1.run {
+                    "$p1(${p1 / 100F}%)"
+                }
+            }
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+        })
+
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            val swappiness = swappinessSeekBar.progress
+            val extraFree = extraFreeSeekBar.progress
+            val watermarkScale = watermarkScaleSeekBar.progress
+
+
+
+            val config = swapConfig.edit()
+                    .putInt(SpfConfig.SWAP_SPF_SWAPPINESS, swappiness)
+                    .putInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, extraFree)
+
+            KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness")
+            KeepShellPublic.doCmdSync("echo $extraFree > /proc/sys/vm/extra_free_kbytes")
+            if (watermarkScaleSeekBar.isEnabled) {
+                KeepShellPublic.doCmdSync("echo $watermarkScale > /proc/sys/vm/watermark_scale_factor")
+
+                config.putInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, watermarkScale)
+            }
+            config.apply()
+
+            myHandler.post {
+                getSwaps()
+            }
+        }
     }
 
     private fun zramResizeDialog () {
@@ -221,6 +230,23 @@ class ActivitySwap : ActivityBase() {
 
         zramAutoStart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
         compactAlgorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, swapUtils.compAlgorithm)
+        compactAlgorithm.setOnClickListener {
+                    val current = swapUtils.compAlgorithm
+                    val options = swapUtils.compAlgorithmOptions
+                    var selectedIndex = options.indexOf(current)
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle(R.string.swap_zram_comp_options)
+                            .setSingleChoiceItems(options, selectedIndex) { _, index ->
+                                selectedIndex = index
+                            }
+                            .setNeutralButton(R.string.btn_cancel) { _, _ ->
+                            }
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                val algorithm = options[selectedIndex]
+                                (it as TextView).text = algorithm
+                                //
+                            })
+                }
 
         zramSizeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -537,13 +563,6 @@ class ActivitySwap : ActivityBase() {
 
         val extraFreeKbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
         extra_free_kbytes_display.text = extraFreeKbytes
-        try {
-            val bytes = extraFreeKbytes.toInt()
-            if (seekbar_extra_free_kbytes.max < bytes) {
-                seekbar_extra_free_kbytes.max = bytes
-            }
-        } catch (ex: Exception) {
-        }
 
         // 压缩算法
         val compAlgorithm = swapUtils.compAlgorithm
