@@ -227,10 +227,16 @@ class ActivitySwap : ActivityBase() {
         val zramSizeText = view.findViewById<TextView>(R.id.zram_size_text)
 
         zramAutoStart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
-        compactAlgorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, swapUtils.compAlgorithm)
+        val compAlgorithmOptions = swapUtils.compAlgorithmOptions
+        var currentAlgorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, swapUtils.compAlgorithm)
+        if (!compAlgorithmOptions.contains(currentAlgorithm!!)) {
+            currentAlgorithm = swapUtils.compAlgorithm
+            swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, currentAlgorithm).apply()
+        }
+        compactAlgorithm.text = currentAlgorithm
         compactAlgorithm.setOnClickListener {
-                    val current = swapUtils.compAlgorithm
-                    val options = swapUtils.compAlgorithmOptions
+                    val current = currentAlgorithm
+                    val options = compAlgorithmOptions
                     var selectedIndex = options.indexOf(current)
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle(R.string.swap_zram_comp_options)
@@ -620,7 +626,7 @@ class ActivitySwap : ActivityBase() {
 
         txt_zram_size_display.text = "${zramSize}MB"
 
-        zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, compAlgorithm)
+        zram_compact_algorithm.text = compAlgorithm
 
         txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
         txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后失效"
