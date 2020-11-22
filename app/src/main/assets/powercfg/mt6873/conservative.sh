@@ -101,7 +101,7 @@ if [[ "$action" = "powersave" ]]; then
   max_freq 1812000 1933000
 
   gpu_dvfs 0
-  echo 358000 > /proc/gpufreq/gpufreq_opp_freq
+  echo 502000 > /proc/gpufreq/gpufreq_opp_freq
 
   cpuset 0 0-3 0-7 0-7 0-3
 
