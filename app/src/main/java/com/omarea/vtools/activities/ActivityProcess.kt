@@ -225,10 +225,10 @@ class ActivityProcess : ActivityBase() {
                 findViewById<TextView>(R.id.ProcessCGroup).text = "" + detail.cGroup
                 findViewById<TextView>(R.id.ProcessOOMADJ).text = "" + detail.oomAdj
                 findViewById<TextView>(R.id.ProcessOOMScore).text = "" + detail.oomScore
-                if (processInfo.rss > 8192) {
-                    findViewById<TextView>(R.id.ProcessRSS).text = (detail.rss / 1024).toInt().toString() + "MB"
+                if (processInfo.uss > 8192) {
+                    findViewById<TextView>(R.id.ProcessMEM).text = (detail.uss / 1024).toInt().toString() + "MB"
                 } else {
-                    findViewById<TextView>(R.id.ProcessRSS).text = detail.rss.toString() + "KB"
+                    findViewById<TextView>(R.id.ProcessMEM).text = detail.uss.toString() + "KB"
                 }
                 findViewById<TextView>(R.id.ProcessUSER).text = processInfo.user
                 if (isAndroidProcess(processInfo)) {

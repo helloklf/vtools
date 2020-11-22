@@ -64,7 +64,7 @@
                 android:layout_weight="4" />
 
             <TextView
-                android:id="@+id/ProcessRSS"
+                android:id="@+id/ProcessMEM"
                 style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

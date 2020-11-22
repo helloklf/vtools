@@ -4,7 +4,10 @@ public class ProcessInfo {
     public int pid;
     public String name;
     public float cpu;
-    public float rss;
+    public long rss;
+    public long shr;
+    public long uss;
+
     public String user;
     public String command;
     public String cmdline;

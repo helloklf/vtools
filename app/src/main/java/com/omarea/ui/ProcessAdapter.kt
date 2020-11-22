@@ -83,7 +83,7 @@ class ProcessAdapter(private val context: Context,
             when (sortMode) {
                 SORT_MODE_DEFAULT -> it.pid
                 SORT_MODE_CPU -> -(it.cpu * 10).toInt()
-                SORT_MODE_MEM -> -(it.rss * 100).toInt()
+                SORT_MODE_MEM -> -(it.uss * 100).toInt()
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }
@@ -215,10 +215,10 @@ class ProcessAdapter(private val context: Context,
             findViewById<TextView>(R.id.ProcessName).text = keywordHightLight(processInfo.name)
             findViewById<TextView>(R.id.ProcessPID).text = "PID: " + processInfo.pid
             findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.cpu + "%"
-            if (processInfo.rss > 8192) {
-                findViewById<TextView>(R.id.ProcessRSS).text = "RSS: " + (processInfo.rss / 1024).toInt() + "MB"
+            if (processInfo.uss > 8192) {
+                findViewById<TextView>(R.id.ProcessMEM).text = "USS: " + (processInfo.uss / 1024).toInt() + "MB"
             } else {
-                findViewById<TextView>(R.id.ProcessRSS).text = "RSS: " + processInfo.rss + "KB"
+                findViewById<TextView>(R.id.ProcessMEM).text = "USS: " + processInfo.uss + "KB"
             }
             findViewById<TextView>(R.id.ProcessUSER).text = keywordHightLight(processInfo.user)
             loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)

@@ -44,9 +44,8 @@ public class ProcessUtils {
                 FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
             }
 
-            String insideCmd = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
+            String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
             String outsideCmd = outsideToybox + " " + insideCmd;
-            Log.d(">>>>", outsideCmd);
 
             for (String cmd : new String[]{insideCmd, outsideCmd}) {
                 String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
@@ -61,6 +60,18 @@ public class ProcessUtils {
         return !PS_COMMAND.isEmpty();
     }
 
+    private long str2Long(String str) {
+        if (str.contains("K")) {
+            return Long.parseLong(str.substring(0, str.indexOf("K")));
+        } else if (str.contains("M")) {
+            return Long.parseLong(str.substring(0, str.indexOf("M"))) * 1024;
+        } else if (str.contains("G")) {
+            return Long.parseLong(str.substring(0, str.indexOf("G"))) * 1048576;
+        } else {
+            return Long.parseLong(str) / 1024;
+        }
+    }
+
     // 解析单行数据
     private ProcessInfo readRow(String row) {
         String[] columns = row.split(" +");
@@ -68,12 +79,14 @@ public class ProcessUtils {
             try {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
-                processInfo.rss = Integer.parseInt(columns[1]);
-                processInfo.name = columns[2];
-                processInfo.pid = Integer.parseInt(columns[3]);
-                processInfo.user = columns[4];
-                processInfo.command = columns[5];
+                processInfo.rss = Long.parseLong(columns[1]);
+                processInfo.shr = str2Long(columns[2]);
+                processInfo.name = columns[3];
+                processInfo.pid = Integer.parseInt(columns[4]);
+                processInfo.user = columns[5];
+                processInfo.command = columns[6];
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
+                processInfo.uss = processInfo.rss - processInfo.shr;
                 return processInfo;
             } catch (Exception ex) {
                 Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);

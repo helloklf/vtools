@@ -445,7 +445,7 @@ class ActivitySwap : ActivityBase() {
         var swapSize = 0f
         var swapFree = 0f
         // 按理说ZRAM的虚拟磁盘大小不取决于是否启用，但是为了避免引起误会，未启用还是刻意显示为0比较好
-        var zramSize = if (zramEnabled) swapUtils.zramCurrentSizeMB else 0
+        val zramSize = if (zramEnabled) swapUtils.zramCurrentSizeMB else 0
         var zramFree = 0f
         txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {

@@ -94,10 +94,10 @@
                     style="@style/textSmallTitle"
                     android:layout_width="65dp"
                     android:layout_height="wrap_content"
-                    android:text="RSS" />
+                    android:text="USS" />
 
                 <TextView
-                    android:id="@+id/ProcessRSS"
+                    android:id="@+id/ProcessMEM"
                     style="@style/textSmall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
