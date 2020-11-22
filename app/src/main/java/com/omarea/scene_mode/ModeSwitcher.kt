@@ -160,11 +160,10 @@ open class ModeSwitcher {
     internal fun initPowercfg(): ModeSwitcher {
         if (configProvider.isEmpty()) {
             val installer = CpuConfigInstaller()
-            val source = getCurrentSource()
             if (installer.outsideConfigInstalled()) {
                 configProvider = OUTSIDE_POWER_CFG_PATH
             } else {
-                if (source != SOURCE_SCENE_CUSTOM && installer.insideConfigInstalled() && !innerConfigUpdated) {
+                if (!(innerConfigUpdated)) {
                     installer.applyConfigNewVersion(Scene.context)
                     innerConfigUpdated = true
                 }

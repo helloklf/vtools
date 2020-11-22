@@ -1,6 +1,7 @@
 package com.omarea.scene_mode
 
 import android.content.Context
+import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -83,7 +84,7 @@ class CpuConfigInstaller {
     fun applyConfigNewVersion(context: Context) {
         if (!outsideConfigInstalled()) {
             val config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            val source = config.getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, ModeSwitcher.SOURCE_UNKNOWN)?.toLowerCase(Locale.getDefault())
+            val source = config.getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, ModeSwitcher.SOURCE_UNKNOWN)
             when (source) {
                 ModeSwitcher.SOURCE_SCENE_ACTIVE -> {
                     installOfficialConfig(context, "", true)

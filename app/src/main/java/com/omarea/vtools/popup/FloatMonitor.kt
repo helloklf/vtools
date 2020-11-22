@@ -326,7 +326,7 @@ class FloatMonitor(private val mContext: Context) {
                 fpsUtils.currentFps?.run {
                     otherInfo?.append("\n")
 
-                    val fpsInfo = "#FPS  " + this
+                    val fpsInfo = "#FPS  $this"
                     val fpsSpannable = SpannableString(fpsInfo);
                     fpsSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     fpsSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
