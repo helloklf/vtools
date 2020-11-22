@@ -629,7 +629,7 @@ class ActivitySwap : ActivityBase() {
         zram_compact_algorithm.text = compAlgorithm
 
         txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
-        txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后失效"
+        txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后还原系统设定"
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
