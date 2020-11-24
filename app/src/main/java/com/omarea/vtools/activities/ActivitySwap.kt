@@ -513,9 +513,9 @@ class ActivitySwap : ActivityBase() {
                 var value = "";
                 for (row in split("\n")) {
                     if (row.startsWith("pswpin")) {
-                        prop="SWAP/ZRAM换入："
+                        prop="从SWAP读出："
                     } else if (row.startsWith("pswpout")) {
-                        prop="SWAP/ZRAM换出："
+                        prop="写入到SWAP："
                     } else {
                         continue
                     }
@@ -532,7 +532,7 @@ class ActivitySwap : ActivityBase() {
                 }
             } catch (ex: Exception) {}
 
-            txt_vmstat.text = text.toString().trim()
+            txt_swap_io.text = text.toString().trim()
         }
 
         val swapFileExists = swapUtils.swapExists

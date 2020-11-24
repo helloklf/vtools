@@ -49,38 +49,58 @@ case "$target" in
     echo "schedutil" > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
     echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
     echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-    if [ `cat /sys/devices/soc0/revision` == "2.0" ]; then
-      echo 1248000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-    else
-		  echo 1228800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	  fi
-    echo 691200 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+    echo 1516800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+    echo 300000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
     echo 1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/pl
 
     # configure input boost settings
-    echo "0:1324800" > /sys/devices/system/cpu/cpu_boost/input_boost_freq
+    echo "0:1516800" > /sys/devices/system/cpu/cpu_boost/input_boost_freq
     echo 120 > /sys/devices/system/cpu/cpu_boost/input_boost_ms
-    echo "0:0 1:0 2:0 3:0 4:2342400 5:0 6:0 7:2361600" > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_freq
+    echo "0:1804800 1:0 2:0 3:0 4:0 5:0 6:2208000 7:2400000" > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_freq
     echo 400 > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_ms
 
     # configure governor settings for gold cluster
     echo "schedutil" > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
     echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
     echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
-    echo 1574400 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/hispeed_freq
+    echo 1478400 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/hispeed_freq
     echo 1 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/pl
 
     # configure governor settings for gold+ cluster
     echo "schedutil" > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
     echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
     echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
-    if [ `cat /sys/devices/soc0/revision` == "2.0" ]; then
-        echo 1632000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
-    else
-      echo 1612800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
-    fi
+    echo 1766400 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 	  echo 1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
 
     echo N > /sys/module/lpm_levels/parameters/sleep_disabled
   ;;
 esac
+
+set_top_app()
+{
+  echo -n "  + top-app $1 "
+  # pgrep 精确度有点差
+  pgrep -f $1 | while read pid; do
+    echo -n "$pid "
+    echo $pid > /dev/cpuset/top-app/tasks
+    echo $pid > /dev/stune/top-app/tasks
+  done
+  echo ""
+}
+
+set_apps() {
+  set_top_app android.hardware.audio
+  set_top_app android.hardware.bluetooth
+  set_top_app com.android.permissioncontroller
+  set_top_app vendor.qti.hardware.display.composer-service
+  set_top_app android.hardware.graphics.composer
+  set_top_app surfaceflinger
+  set_top_app system_server
+  set_top_app audioserver
+  set_top_app servicemanager
+  set_top_app com.android.systemui
+  set_top_app com.miui.home
+}
+
+set_apps

@@ -1,8 +1,17 @@
 #!/system/bin/sh
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
-  sh /data/powercfg-base.sh
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -189,7 +198,7 @@ if [ "$action" = "performance" ]; then
   echo 30 > /proc/sys/kernel/sched_init_task_load
 
   echo 0-1 > /dev/cpuset/background/cpus
-  echo 0-1 > /dev/cpuset/system-background/cpus
+  echo 0-3 > /dev/cpuset/system-background/cpus
 
   set_value "73 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
   set_value 1478400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
@@ -217,7 +226,7 @@ if [ "$action" = "fast" ]; then
   echo 30 > /proc/sys/kernel/sched_init_task_load
 
   echo 0 > /dev/cpuset/background/cpus
-  echo 0-1 > /dev/cpuset/system-background/cpus
+  echo 0-3 > /dev/cpuset/system-background/cpus
 
   set_value "72 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
 	set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq

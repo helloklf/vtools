@@ -62,8 +62,16 @@ do
   echo 1 > /sys/devices/system/cpu/cpu$i/online
 done
 
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 

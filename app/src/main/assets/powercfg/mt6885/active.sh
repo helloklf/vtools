@@ -33,8 +33,17 @@ function cpuset() {
 }
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
-  sh /data/powercfg-base.sh
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 

@@ -1,8 +1,17 @@
 #!/system/bin/sh
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -156,11 +165,8 @@ sched_config() {
 }
 
 if [ "$action" = "powersave" ]; then
-	set_cpu_freq 5000 1612800 5000 5000
+	set_cpu_freq 5000 1612800 5000 1555200
 	set_input_boost_freq 0 0 0
-
-  echo 0 > /sys/devices/system/cpu/cpu6/online
-  echo 0 > /sys/devices/system/cpu/cpu7/online
 
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 825600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
@@ -173,12 +179,14 @@ if [ "$action" = "powersave" ]; then
 
   sched_config 75 92 380 500
 
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
+  echo 500 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
+
   governor_restore
 
 elif [ "$action" = "balance" ]; then
-  echo 1 > /sys/devices/system/cpu/cpu6/online
-  echo 1 > /sys/devices/system/cpu/cpu7/online
-
 	set_cpu_freq 5000 1708800 5000 1843200
 	set_input_boost_freq 1324800 0 40
 
@@ -191,14 +199,16 @@ elif [ "$action" = "balance" ]; then
   echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-  sched_config 70 87 300 400
+  sched_config 68 82 300 400
+
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
   governor_restore
 
 elif [ "$action" = "performance" ]; then
-  echo 1 > /sys/devices/system/cpu/cpu6/online
-  echo 1 > /sys/devices/system/cpu/cpu7/online
-
 	set_cpu_freq 300000 2500000 300000 2750000
 	set_input_boost_freq 1324800 1555200 40
 
@@ -213,12 +223,14 @@ elif [ "$action" = "performance" ]; then
 
   sched_config 60 80 300 400
 
+  echo 2000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
+
   governor_restore
 
 elif [ "$action" = "fast" ]; then
-  echo 1 > /sys/devices/system/cpu/cpu6/online
-  echo 1 > /sys/devices/system/cpu/cpu7/online
-
 	set_cpu_freq 1708800 2500000 1209600 2750000
 	set_input_boost_freq 1804800 1939200 120
 
@@ -231,12 +243,12 @@ elif [ "$action" = "fast" ]; then
   echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-  echo 80 > /proc/sys/kernel/sched_downmigrate
-  echo 92 > /proc/sys/kernel/sched_upmigrate
-  echo 300 > /proc/sys/kernel/sched_group_downmigrate
-  echo 400 > /proc/sys/kernel/sched_group_upmigrate
-
   sched_config 50 78 300 400
+
+  echo 5000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo 2000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
   governor_performance
 fi

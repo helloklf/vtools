@@ -430,14 +430,14 @@
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/swap_vmstat" />
+                    android:text="@string/swap_io" />
 
 
                 <TextView
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txt_vmstat"
+                    android:id="@+id/txt_swap_io"
                     style="@style/textSmall"
                     android:typeface="monospace" />
             </LinearLayout>
