@@ -172,7 +172,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (ModeSwitcher().modeConfigCompleted() || CpuConfigInstaller().dynamicSupport(Scene.context))) {
+        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (CpuConfigInstaller().dynamicSupport(Scene.context) || ModeSwitcher().modeConfigCompleted())) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -188,7 +188,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 updateInfo()
             }
         }, 0, 1500)
-        updateRamInfo()
     }
 
     private var coreCount = -1
@@ -210,27 +209,33 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             activityManager.getMemoryInfo(info)
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
-            home_raminfo_text.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
-            home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
+
             val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
+            var swapTotal = 0
+            var swaoUse = 0
             if (swapInfo.contains("Swap")) {
                 try {
                     val swapInfos = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
                     if (Regex("[\\d]+[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
-                        val total = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
-                        val use = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
-                        val free = total - use
-                        home_swapstate_chat.setData(total.toFloat(), free.toFloat())
-                        if (total > 99) {
-                            home_zramsize_text.text = "${(use * 100.0 / total).toInt()}% (${format1(total / 1024.0)}GB)"
-                        } else {
-                            home_zramsize_text.text = "${(use * 100.0 / total).toInt()}% (${total}MB)"
-                        }
+                        swapTotal = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
+                        swaoUse = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                     }
                 } catch (ex: java.lang.Exception) {
                 }
                 // home_swapstate.text = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
-            } else {
+            }
+
+            myHandler.post {
+                home_raminfo_text?.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
+                home_raminfo?.setData(totalMem.toFloat(), availMem.toFloat())
+                home_swapstate_chat?.setData(swapTotal.toFloat(), (swapTotal - swaoUse).toFloat())
+                home_zramsize_text?.text = (
+                        if (swapTotal > 99) {
+                            "${(swaoUse * 100.0 / swapTotal).toInt()}% (${format1(swapTotal / 1024.0)}GB)"
+                        } else {
+                            "${(swaoUse * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
+                        }
+                        )
             }
         } catch (ex: Exception) {
         }
@@ -295,9 +300,9 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         // 电量
         val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 
+        updateRamInfo()
         myHandler.post {
             try {
-                updateRamInfo()
                 home_running_time.text = elapsedRealtimeStr()
                 home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
                 home_battery_capacity.text = "$batteryCapacity%"

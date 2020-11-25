@@ -52,7 +52,7 @@
                             android:id="@+id/home_raminfo"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            app:free="0"
+                            app:free="1"
                             app:total="1" />
                     </FrameLayout>
 
@@ -135,7 +135,7 @@
                             android:id="@+id/home_swapstate_chat"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            app:free="0"
+                            app:free="1"
                             app:total="1" />
                     </FrameLayout>
                 </LinearLayout>
