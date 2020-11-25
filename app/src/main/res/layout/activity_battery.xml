@@ -381,18 +381,14 @@
                     <Button
                         android:id="@+id/bp_disable_charge"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
+                        style="@style/SceneButton"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:background="@drawable/btn_bg"
-                        android:elevation="2dp"
                         android:text="@string/battery_charge_disable" />
 
                     <Button
                         android:id="@+id/bp_enable_charge"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/btn_bg"
-                        android:elevation="2dp"
+                        style="@style/SceneButton"
                         android:text="@string/battery_charge_resume" />
                 </LinearLayout>
             </LinearLayout>
@@ -533,21 +529,15 @@
 
                     <Button
                         android:id="@+id/btn_battery_history"
-                        style="?android:buttonBarStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
+                        style="@style/SceneButton"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:background="@drawable/btn_bg"
-                        android:elevation="2dp"
                         android:text="@string/battery_view_history" />
 
                     <Button
                         android:id="@+id/btn_battery_history_del"
-                        style="?android:buttonBarStyle"
                         android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:background="@drawable/btn_bg"
-                        android:elevation="2dp"
+                        style="@style/SceneButton"
                         android:text="@string/battery_delete_history" />
                 </LinearLayout>
             </LinearLayout>

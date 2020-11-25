@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.omarea.common.R
 
@@ -96,8 +97,51 @@ class DialogHelper {
                     onConfirm: Runnable? = null,
                     onCancel: Runnable? = null): DialogWrap {
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
-            view.findViewById<TextView>(R.id.confirm_title).setText(title)
-            view.findViewById<TextView>(R.id.confirm_message).setText(message)
+
+            if (title.isEmpty()) {
+                view.findViewById<TextView>(R.id.confirm_title).visibility = View.GONE
+            } else {
+                view.findViewById<TextView>(R.id.confirm_title).setText(title)
+            }
+            if (message.isEmpty()) {
+                view.findViewById<TextView>(R.id.confirm_message).visibility = View.GONE
+            } else {
+                view.findViewById<TextView>(R.id.confirm_message).setText(message)
+            }
+
+            val dialog = customDialog(context, view)
+            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+                onCancel?.run()
+            }
+            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+                dialog.dismiss()
+                onConfirm?.run()
+            }
+
+            return dialog
+        }
+
+        fun confirm(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    contentView: View? = null,
+                    onConfirm: Runnable? = null,
+                    onCancel: Runnable? = null): DialogWrap {
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
+            if (title.isEmpty()) {
+                view.findViewById<TextView>(R.id.confirm_title).visibility = View.GONE
+            } else {
+                view.findViewById<TextView>(R.id.confirm_title).setText(title)
+            }
+            if (message.isEmpty()) {
+                view.findViewById<TextView>(R.id.confirm_message).visibility = View.GONE
+            } else {
+                view.findViewById<TextView>(R.id.confirm_message).setText(message)
+            }
+            if (contentView != null) {
+                view.findViewById<FrameLayout>(R.id.confirm_custom_view).addView(contentView)
+            }
             val dialog = customDialog(context, view)
             view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                 dialog.dismiss()
