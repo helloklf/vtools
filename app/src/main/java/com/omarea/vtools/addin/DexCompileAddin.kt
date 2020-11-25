@@ -1,5 +1,6 @@
 package com.omarea.vtools.addin
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -16,7 +17,7 @@ import com.omarea.vtools.services.CompileService
  * Created by Hello on 2018/02/20.
  */
 
-class DexCompileAddin(private var context: Context) : AddinBase(context) {
+class DexCompileAddin(private var context: Activity) : AddinBase(context) {
     fun isSupport(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()

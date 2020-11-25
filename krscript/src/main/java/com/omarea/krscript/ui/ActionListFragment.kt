@@ -67,7 +67,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     private lateinit var rootGroup: ListItemGroup
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.progressBarDialog = ProgressBarDialog(this.context!!)
+        this.progressBarDialog = ProgressBarDialog(this.activity!!)
 
         rootGroup = ListItemGroup(this.context!!, true, GroupNode(""))
 

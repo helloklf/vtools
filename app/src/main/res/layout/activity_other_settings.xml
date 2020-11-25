@@ -230,14 +230,12 @@
 
                     <Button
                         android:id="@+id/settings_logcat"
-                        style="@style/Widget.AppCompat.ActionButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        style="@style/SceneButton"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="10dp"
-                        android:background="@drawable/btn_bg"
+                        android:layout_width="wrap_content"
                         android:text="@string/settings_logcat_title"
-                        android:textSize="9dp" />
+                        android:textSize="11dp" />
                 </LinearLayout>
 
                 <EditText

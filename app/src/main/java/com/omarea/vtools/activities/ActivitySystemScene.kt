@@ -89,7 +89,7 @@ class ActivitySystemScene : ActivityBase() {
 
     private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
-        processBarDialog = ProgressBarDialog(context)
+        processBarDialog = ProgressBarDialog(this)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
 

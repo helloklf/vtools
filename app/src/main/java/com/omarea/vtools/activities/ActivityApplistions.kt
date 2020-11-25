@@ -37,9 +37,9 @@ class ActivityApplistions : ActivityBase() {
     private var installedList: ArrayList<Appinfo>? = null
     private var systemList: ArrayList<Appinfo>? = null
     private var backupedList: ArrayList<Appinfo>? = null
-    private var myHandler: Handler? = UpdateHandler(Runnable {
+    private var myHandler: Handler? = UpdateHandler {
         setList()
-    })
+    }
 
     class UpdateHandler(private var updateList: Runnable?) : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -102,8 +102,6 @@ class ActivityApplistions : ActivityBase() {
             getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE, activity)
         }
 
-        appListHelper = AppListHelper(context)
-        setList()
         apps_search_box.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 setList()
@@ -114,90 +112,14 @@ class ActivityApplistions : ActivityBase() {
             searchApp()
         }))
 
-        app_btn_hide.setOnClickListener {
-            showHideAppDialog()
-        }
         app_btn_hide2.setOnClickListener {
             val intent = Intent(context, ActivityHiddenApps::class.java)
             startActivity(intent)
         }
-    }
 
-    @SuppressLint("ApplySharedPref")
-    private fun showHideAppDialog() {
-        // pm list -u
-        val spf = getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
+        appListHelper = AppListHelper(context)
 
-        val all = spf.all
-        val apps = ArrayList<String>()
-        val selected = ArrayList<Boolean>()
-        for (item in all.values) {
-            apps.add(item as String)
-            selected.add(false)
-        }
-
-        DialogHelper.animDialog(AlertDialog.Builder(this).setTitle("应用隐藏记录")
-                .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray()) { _, which, isChecked ->
-                    selected[which] = isChecked
-                }
-                .setNeutralButton(R.string.btn_again_hide) { _, _ ->
-                    val keys = all.keys.toList()
-                    val cmds = StringBuffer()
-                    val edit = spf.edit()
-                    for (i in selected.indices) {
-                        if (selected[i]) {
-                            cmds.append("pm disable ")
-                            cmds.append(keys.get(i))
-                            cmds.append("\n")
-                            cmds.append("pm hide ")
-                            cmds.append(keys[i])
-                            cmds.append("\n")
-                            edit.remove(keys.get(i))
-                        }
-                    }
-                    if (cmds.isNotEmpty()) {
-                        processBarDialog.showDialog("正在隐藏应用，稍等...")
-                        Thread(Runnable {
-                            KeepShellPublic.doCmdSync(cmds.toString())
-                            if (myHandler != null) {
-                                myHandler!!.post {
-                                    processBarDialog.hideDialog()
-                                    setList()
-                                    edit.commit()
-                                }
-                            }
-                        }).start()
-                    }
-                }
-                .setPositiveButton(R.string.btn_resume) { _, _ ->
-                    val keys = all.keys.toList()
-                    val cmds = StringBuffer()
-                    val edit = spf.edit()
-                    for (i in selected.indices) {
-                        if (selected[i]) {
-                            cmds.append("pm unhide ")
-                            cmds.append(keys.get(i))
-                            cmds.append("\n")
-                            cmds.append("pm enable ")
-                            cmds.append(keys.get(i))
-                            cmds.append("\n")
-                            edit.remove(keys.get(i))
-                        }
-                    }
-                    if (cmds.isNotEmpty()) {
-                        processBarDialog.showDialog("正在恢复应用，稍等...")
-                        Thread(Runnable {
-                            KeepShellPublic.doCmdSync(cmds.toString())
-                            if (myHandler != null) {
-                                myHandler!!.post {
-                                    processBarDialog.hideDialog()
-                                    setList()
-                                    edit.commit()
-                                }
-                            }
-                        }).start()
-                    }
-                })
+        setList()
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType, activity: Activity) {

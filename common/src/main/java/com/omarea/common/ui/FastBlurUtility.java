@@ -29,16 +29,22 @@ public class FastBlurUtility {
         view.buildDrawingCache();
         Bitmap b1 = view.getDrawingCache();
 
-        // 获取屏幕长和高
-        int width = activity.getResources().getDisplayMetrics().widthPixels;
-        int height = activity.getResources().getDisplayMetrics().heightPixels;
+        if (b1 != null) {
+            // 获取屏幕长和高
+            int width = activity.getResources().getDisplayMetrics().widthPixels;
+            int height = activity.getResources().getDisplayMetrics().heightPixels;
 
-        Bitmap bmp = Bitmap.createBitmap(b1, 0, 0, width, height);
-        view.destroyDrawingCache();
-        return bmp;
+            Bitmap bmp = Bitmap.createBitmap(b1, 0, 0, width, height);
+            view.destroyDrawingCache();
+            return bmp;
+        }
+        return null;
     }
 
     private static Bitmap startBlurBackground(Bitmap bkg) {
+        if (bkg == null) {
+            return null;
+        }
         long startMs = System.currentTimeMillis();
         float radius = 10; //模糊程度
 

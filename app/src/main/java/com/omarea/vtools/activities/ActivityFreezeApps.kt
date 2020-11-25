@@ -194,7 +194,7 @@ class ActivityFreezeApps : ActivityBase() {
             })
         }
 
-        processBarDialog = ProgressBarDialog(context)
+        processBarDialog = ProgressBarDialog(this)
 
         processBarDialog.showDialog()
 

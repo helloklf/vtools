@@ -19,6 +19,7 @@
         android:id="@+id/dialog_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minLines="2"
         android:text="@string/execute_wait"
         android:textAlignment="center"
         android:textSize="16dp" />

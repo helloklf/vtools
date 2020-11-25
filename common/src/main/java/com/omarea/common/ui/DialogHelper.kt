@@ -11,6 +11,8 @@ import com.omarea.common.R
 
 class DialogHelper {
     class DialogWrap(private val dialog: AlertDialog) {
+        public val context = dialog.context
+
         public fun dismiss() {
             try {
                 dialog.dismiss()
@@ -147,10 +149,14 @@ class DialogHelper {
         }
 
         fun customDialogBlurBg(activity: Activity, view: View): DialogWrap {
+            return customDialogBlurBg(activity, view, true)
+        }
+
+        fun customDialogBlurBg(activity: Activity, view: View, cancelable: Boolean): DialogWrap {
             val dialog = AlertDialog
                     .Builder(activity, R.style.custom_alert_dialog)
                     .setView(view)
-                    .setCancelable(true)
+                    .setCancelable(cancelable)
                     .create()
 
             dialog.window?.run {

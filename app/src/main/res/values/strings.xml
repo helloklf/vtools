@@ -19,7 +19,6 @@
     <string name="btn_retry">重试</string>
     <string name="btn_reboot">重启</string>
     <string name="btn_resume_selected">恢复选中</string>
-    <string name="btn_again_hide">重新隐藏</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
     <string name="error_root">抱歉，没有获取到ROOT权限，很多功能将无法使用！</string>
@@ -164,7 +163,6 @@
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
     <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps</string>
-    <string name="applist_help">删除应用：\n从应用安装目录删除系统应用文件(如果有Magisk附加模块则通过附加模块实现删除)\n\n卸载：\n从手机上完全卸载应用(如果是系统应用则相当于卸载更新回退到原始版本)\n\n从当前用户卸载：\n只从当前用户卸载此应用，不影响其它用户继续使用此应用(Android系统有多用户机制，MIUI的手机分身也相当于是多用户)\n\n卸载(保留数据)：\n相当于只删除安装包和虚拟机缓存，但应用产生的数据会完全保留，这可能会导致你以后安装不同签的同包名应用无法正常安装(除非你破解了签名验证)\n\n暂停使用：\n使应用显示在桌面的图标变灰，并不可启动\n\n冻结：\n应用图标从桌面消失并，但仍可在系统的应用管理看到\n\n隐藏：\n应用图标从桌面和系统的应用管理列表消失，但仍可通过Scene找回</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>

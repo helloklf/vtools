@@ -118,7 +118,7 @@ class ActivityMagisk : ActivityBase() {
         }
         adapterFileSelector = AdapterRootFileSelector(RootFileInfo(MagiskExtend.MAGISK_PATH + "system"), {
             val file: RootFileInfo? = adapterFileSelector!!.selectedFile
-        }, ProgressBarDialog(context), null, false, true, {
+        }, ProgressBarDialog(this), null, false, true, {
             val file: RootFileInfo? = adapterFileSelector!!.selectedFile
             if (file != null) {
                 RootFile.deleteDirOrFile(file.absolutePath)

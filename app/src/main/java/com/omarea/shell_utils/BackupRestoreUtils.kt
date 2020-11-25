@@ -1,5 +1,6 @@
 package com.omarea.shell_utils
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +14,7 @@ import com.omarea.utils.CommonCmds
  * Created by Hello on 2017/11/01.
  */
 
-class BackupRestoreUtils(var context: Context) {
+class BackupRestoreUtils(var context: Activity) {
     val dialog: ProgressBarDialog = ProgressBarDialog(context)
     internal var myHandler: Handler = Handler(Looper.getMainLooper())
 

@@ -5,10 +5,10 @@
         android:angle="90"
         android:endColor="#0888"
         android:startColor="#0888" />-->
-    <solid android:color="#0888" />
+    <solid android:color="?android:colorPrimary" />
     <!-- 边框的颜色 ：不能和窗口背景色一样-->
     <stroke
-        android:width="1dp"
+        android:width="0dp"
         android:color="?android:colorAccent" />
     <!-- 设置按钮的四个角为弧形 -->
     <!-- android:radius 弧形的半径 -->

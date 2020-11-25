@@ -1,6 +1,7 @@
 package com.omarea.common.ui
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
@@ -12,11 +13,11 @@ import android.widget.Toast
 import com.omarea.common.R
 import com.omarea.common.shell.AsynSuShellUnit
 
-open class ProgressBarDialog(private var context: Context) {
-    private var alert: AlertDialog? = null
+open class ProgressBarDialog(private var context: Activity) {
+    private var alert: DialogHelper.DialogWrap? = null
     private var textView: TextView? = null
 
-    class DefaultHandler(private var alertDialog: AlertDialog?) : Handler(Looper.myLooper()!!) {
+    class DefaultHandler(private var alertDialog: DialogHelper.DialogWrap?) : Handler(Looper.myLooper()!!) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
 
@@ -52,13 +53,13 @@ open class ProgressBarDialog(private var context: Context) {
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = context.getString(R.string.execute_wait)
-        alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+        alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+        // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
             AsynSuShellUnit(DefaultHandler(alert)).exec(cmd).waitFor()
         } else {
             AsynSuShellUnit(handler).exec(cmd).waitFor()
         }
-        DialogHelper.animDialog(alert)
     }
 
     public fun execShell(sb: StringBuilder, handler: Handler? = null) {
@@ -81,7 +82,7 @@ open class ProgressBarDialog(private var context: Context) {
     }
 
     @SuppressLint("InflateParams")
-    public fun showDialog(text: String = "正在加载，请稍等..."): AlertDialog? {
+    public fun showDialog(text: String = "正在加载，请稍等..."): DialogHelper.DialogWrap? {
         if (textView != null && alert != null) {
             textView!!.text = text
         } else {
@@ -90,14 +91,8 @@ open class ProgressBarDialog(private var context: Context) {
             val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             textView = (dialog.findViewById(R.id.dialog_text) as TextView)
             textView!!.text = text
-            alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
-            alert!!.window!!.setWindowAnimations(R.style.windowAnim)
-
-            try {
-                alert!!.show()
-            } catch (ex: java.lang.Exception) {
-
-            }
+            alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+            // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         }
         return alert
     }

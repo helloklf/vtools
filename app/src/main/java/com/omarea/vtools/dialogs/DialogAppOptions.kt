@@ -143,12 +143,11 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = "正在获取权限"
-        val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+        val alert = DialogHelper.customDialogBlurBg(context, dialog, false)
         AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
-        DialogHelper.animDialog(alert)
     }
 
-    open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
+    open class ProgressHandler(dialog: View, protected var alert: DialogHelper.DialogWrap, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
         private var textView: TextView = (dialog.findViewById(R.id.dialog_text) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
         private var error = java.lang.StringBuilder()
@@ -391,13 +390,12 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             switchSuspend.isEnabled = false
             switchSuspend.isEnabled = true
         }
-        if (apps.size == 1) {
-            val app = apps.first()
-            switchSuspend.isChecked = app.suspended
-            switchFreeze.isChecked = !app.enabled
-        }
+        switchSuspend.isChecked = apps.filter { it.suspended }.size == apps.size
+        switchFreeze.isChecked = apps.filter { !it.enabled }.size == apps.size
 
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
             val suspend = switchSuspend.isChecked
             val freeze = switchFreeze.isChecked
             val hide = switchHide.isChecked
@@ -414,19 +412,28 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         for (item in apps) {
             val packageName = item.packageName.toString()
             if (suspend) {
-                sb.append("echo '[suspend ${item.appName}]'\n")
-                sb.append("pm suspend $packageName\n")
+                if (!item.suspended) {
+                    sb.append("echo '[suspend ${item.appName}]'\n")
+                    sb.append("pm suspend $packageName\n")
+                }
             } else if (androidP) {
-                sb.append("echo '[unsuspend ${item.appName}]'\n")
-                sb.append("pm unsuspend $packageName\n")
+                if (item.suspended) {
+                    sb.append("echo '[unsuspend ${item.appName}]'\n")
+                    sb.append("am kill $packageName 2>/dev/null\n")
+                    sb.append("pm unsuspend $packageName\n")
+                }
             }
 
             if (freeze) {
-                sb.append("echo '[disable ${item.appName}]'\n")
-                sb.append("pm disable ${packageName}\n")
+                if (item.enabled) {
+                    sb.append("echo '[disable ${item.appName}]'\n")
+                    sb.append("pm disable ${packageName}\n")
+                }
             } else {
-                sb.append("echo '[enable ${item.appName}]'\n")
-                sb.append("pm enable ${packageName}\n")
+                if (!item.enabled) {
+                    sb.append("echo '[enable ${item.appName}]'\n")
+                    sb.append("pm enable ${packageName}\n")
+                }
             }
 
             if (hide) {

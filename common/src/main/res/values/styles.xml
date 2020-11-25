@@ -103,7 +103,7 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="SceneButton" parent="Widget.AppCompat.ButtonBar">
+    <style name="SceneButton" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:background">@drawable/btn_bg</item>
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">32dp</item>
@@ -111,6 +111,7 @@
         <item name="android:paddingRight">12dp</item>
         <item name="android:textSize">13dp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?android:colorAccent</item>
     </style>
 
     <style name="textTitle" parent="@style/TextAppearance.AppCompat.Title">
