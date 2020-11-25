@@ -124,6 +124,23 @@ class ActivitySwap : ActivityBase() {
         }
     }
 
+    private var timer: Timer? = null
+    private fun startTimer () {
+        stopTimer()
+
+        timer = Timer()
+        timer!!.schedule(object : TimerTask() {
+            override fun run() {
+                getSwaps()
+            }
+        }, 0, 5000)
+    }
+
+    private fun stopTimer () {
+        timer?.cancel()
+        timer = null
+    }
+
     private fun swappinessAdjDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_swappines, null)
 
@@ -289,7 +306,7 @@ class ActivitySwap : ActivityBase() {
             val run = Thread {
                 swapUtils.resizeZram(sizeVal, algorithm)
 
-                myHandler.post(getSwaps)
+                getSwaps()
                 myHandler.post {
                     processBarDialog.hideDialog()
                 }
@@ -353,7 +370,7 @@ class ActivitySwap : ActivityBase() {
                     // 保存设置
                     swapConfig.edit().putInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, size).apply()
 
-                    myHandler.post(getSwaps)
+                    getSwaps()
                     val time = System.currentTimeMillis() - startTime
                     myHandler.post {
                         processBarDialog.hideDialog()
@@ -428,32 +445,52 @@ class ActivitySwap : ActivityBase() {
                     Scene.toast(result, Toast.LENGTH_LONG)
                 }
 
-                myHandler.post(getSwaps)
+                getSwaps()
+
                 myHandler.post(showSwapOpened)
                 processBarDialog.hideDialog()
             }.start()
         }
     }
 
-    internal var getSwaps = {
-        val zramEnabled = swapUtils.zramEnabled
-        val rows = swapUtils.procSwaps
-        val list = ArrayList<HashMap<String, String>>()
-        val thr = LinkedHashMap<String, String>().apply {
-            put("path", getString(R.string.path))
-            put("type", getString(R.string.type))
-            put("size", getString(R.string.size))
-            put("used", getString(R.string.used))
-            put("priority", getString(R.string.order)) // put("priority", getString(R.string.priority))
+    private var swapsTHRowCache: LinkedHashMap<String, String>? = null
+    private val swapsTHRow: LinkedHashMap<String, String>
+        get () {
+            if (swapsTHRowCache == null) {
+                swapsTHRowCache = LinkedHashMap<String, String>().apply {
+                    put("path", getString(R.string.path))
+                    put("type", getString(R.string.type))
+                    put("size", getString(R.string.size))
+                    put("used", getString(R.string.used))
+                    put("priority", getString(R.string.order)) // put("priority", getString(R.string.priority))
+                }
+            }
+            return swapsTHRowCache!!
         }
-        list.add(thr)
+
+    internal val getSwaps = {
+        val zramEnabled = swapUtils.zramEnabled
+        val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
+        val watermarkScale = KernelProrp.getProp("/proc/sys/vm/watermark_scale_factor")
+        val memInfo = KernelProrp.getProp("/proc/meminfo")
+        val swapFileExists = swapUtils.swapExists
+        val currentSwap = swapUtils.sceneSwaps
+        val rows = swapUtils.procSwaps
+        val extraFreeKbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
+        // 压缩算法
+        val compAlgorithm = swapUtils.compAlgorithm
+        // zram统计
+        val zramStatus = getZRamStatus(compAlgorithm)
+        val swapFileSize = swapUtils.swapFileSize
+
+        val list = ArrayList<HashMap<String, String>>()
+        list.add(swapsTHRow)
 
         var swapSize = 0f
         var swapFree = 0f
         // 按理说ZRAM的虚拟磁盘大小不取决于是否启用，但是为了避免引起误会，未启用还是刻意显示为0比较好
         val zramSize = if (zramEnabled) swapUtils.zramCurrentSizeMB else 0
         var zramFree = 0f
-        txt_swap_size_display.text = swapUtils.swapFileSize.toString() + "MB"
         for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
@@ -484,96 +521,111 @@ class ActivitySwap : ActivityBase() {
                 } catch (ex: java.lang.Exception) {}
             }
         }
+        val swaps = AdapterSwaplist(this, list)
 
-        swap_usage.setData(swapSize, swapFree)
-        zram_usage.setData(zramSize.toFloat(), zramFree)
-        if (swapSize > 0 && swapFree > 0) {
-            swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
-        } else {
-            swap_usage_ratio.text = "0%"
-        }
-        if (zramSize > 0 && zramFree > 0) {
-            zram_usage_ratio.text = (100 - (zramFree * 100 / zramSize).toInt()).toString() + "%"
-        } else {
-            zram_usage_ratio.text = "0%"
-        }
-
-        swap_swappiness_display.text = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        watermark_scale_factor_display.text = KernelProrp.getProp("/proc/sys/vm/watermark_scale_factor")
-
-        val datas = AdapterSwaplist(this, list)
-        list_swaps2.adapter = datas
-
-        txt_mem.text = KernelProrp.getProp("/proc/meminfo")
-        val vmstat = KernelProrp.getProp("/proc/vmstat")
-        vmstat.run {
-            val text = StringBuilder()
+        myHandler.post {
             try {
-                var prop = "";
-                var value = "";
-                for (row in split("\n")) {
-                    if (row.startsWith("pswpin")) {
-                        prop="从SWAP读出："
-                    } else if (row.startsWith("pswpout")) {
-                        prop="写入到SWAP："
+                txt_swap_size_display.text = swapFileSize.toString() + "MB"
+                swap_usage.setData(swapSize, swapFree)
+                zram_usage.setData(zramSize.toFloat(), zramFree)
+                if (swapSize > 0 && swapFree > 0) {
+                    swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
+                } else {
+                    swap_usage_ratio.text = "0%"
+                }
+                if (zramSize > 0 && zramFree > 0) {
+                    zram_usage_ratio.text = (100 - (zramFree * 100 / zramSize).toInt()).toString() + "%"
+                } else {
+                    zram_usage_ratio.text = "0%"
+                }
+
+                swap_swappiness_display.text = swappiness
+                watermark_scale_factor_display.text = watermarkScale
+
+                list_swaps.adapter = swaps
+
+                txt_mem.text = memInfo
+
+                if (currentSwap.isNotEmpty()) {
+                    btn_swap_close.visibility = View.VISIBLE
+                    btn_swap_create.visibility = View.GONE
+                    swap_state.text = getString(R.string.swap_state_using)
+                } else {
+                    btn_swap_close.visibility = View.GONE
+                    btn_swap_create.visibility = View.VISIBLE
+                    if (swapFileExists) {
+                        swap_state.text = getString(R.string.swap_state_created)
                     } else {
-                        continue
-                    }
-                    value = row.split(" ")[1]
-                    text.append(prop)
-                    val mb = (value.toLong() * 4 / 1024)
-                    if (mb > 10240) {
-                        text.append(String.format("%.2f", (mb / 1024f)))
-                        text.append("GB\n")
-                    } else {
-                        text.append(mb)
-                        text.append("MB\n")
+                        swap_state.text = getString(R.string.swap_state_undefined)
                     }
                 }
-            } catch (ex: Exception) {}
 
-            txt_swap_io.text = text.toString().trim()
+                if (zramEnabled) {
+                    zram_state.text = getString(R.string.swap_state_using)
+                } else {
+                    zram_state.text = getString(R.string.swap_state_created)
+                }
+
+                swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
+                val lmkUtils = LMKUtils()
+                if (lmkUtils.supported() && !swapModuleUtils.magiskModuleInstalled) {
+                    swap_lmk_current.text = lmkUtils.getCurrent()
+                    swap_auto_lmk_wrap.visibility = View.VISIBLE
+                } else {
+                    swap_auto_lmk_wrap.visibility = View.GONE
+                }
+
+                extra_free_kbytes_display.text = extraFreeKbytes
+
+                zram0_stat.text = zramStatus
+                txt_swap_io.text = vmStat
+
+                txt_zram_size_display.text = "${zramSize}MB"
+
+                zram_compact_algorithm.text = compAlgorithm
+
+                txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
+                txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后还原系统设定"
+            } catch (ex: java.lang.Exception) { }
         }
+    }
 
-        val swapFileExists = swapUtils.swapExists
+    private val vmStat: String
+        get () {
+            val vmstat = KernelProrp.getProp("/proc/vmstat")
+            vmstat.run {
+                val text = StringBuilder()
+                try {
+                    var prop = "";
+                    var value = "";
+                    for (row in split("\n")) {
+                        if (row.startsWith("pswpin")) {
+                            prop="从SWAP读出："
+                        } else if (row.startsWith("pswpout")) {
+                            prop="写入到SWAP："
+                        } else {
+                            continue
+                        }
+                        value = row.split(" ")[1]
+                        text.append(prop)
+                        val mb = (value.toLong() * 4 / 1024)
+                        if (mb > 10240) {
+                            text.append(String.format("%.2f", (mb / 1024f)))
+                            text.append("GB\n")
+                        } else {
+                            text.append(mb)
+                            text.append("MB\n")
+                        }
+                    }
+                } catch (ex: Exception) {}
 
-        val currentSwap = swapUtils.sceneSwaps
-        if (currentSwap.isNotEmpty()) {
-            btn_swap_close.visibility = View.VISIBLE
-            btn_swap_create.visibility = View.GONE
-            swap_state.text = getString(R.string.swap_state_using)
-        } else {
-            btn_swap_close.visibility = View.GONE
-            btn_swap_create.visibility = View.VISIBLE
-            if (swapFileExists) {
-                swap_state.text = getString(R.string.swap_state_created)
-            } else {
-                swap_state.text = getString(R.string.swap_state_undefined)
+                return text.toString().trim()
             }
         }
 
-        if (zramEnabled) {
-            zram_state.text = getString(R.string.swap_state_using)
-        } else {
-            zram_state.text = getString(R.string.swap_state_created)
-        }
-
-        swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
-        val lmkUtils = LMKUtils()
-        if (lmkUtils.supported() && !swapModuleUtils.magiskModuleInstalled) {
-            swap_lmk_current.text = lmkUtils.getCurrent()
-            swap_auto_lmk_wrap.visibility = View.VISIBLE
-        } else {
-            swap_auto_lmk_wrap.visibility = View.GONE
-        }
-
-        val extraFreeKbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
-        extra_free_kbytes_display.text = extraFreeKbytes
-
-        // 压缩算法
-        val compAlgorithm = swapUtils.compAlgorithm
-        if (RootFile.fileExists("/proc/zraminfo")) {
-            zram0_stat.text = KernelProrp.getProp("/proc/zraminfo")
+    private fun getZRamStatus(compAlgorithm: String): String {
+        return if (RootFile.fileExists("/proc/zraminfo")) {
+            KernelProrp.getProp("/proc/zraminfo")
         } else {
             // 最大压缩流
             // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
@@ -605,7 +657,7 @@ class ActivitySwap : ActivityBase() {
                 // 不可压缩数据
                 // val huge_pages = KernelProrp.getProp("/sys/block/zram0/huge_pages")
 
-                zram0_stat.text = String.format(
+                String.format(
                         getString(R.string.swap_zram_stat_format),
                         compAlgorithm,
                         zramInfoValueParseMB(origDataSize),
@@ -615,7 +667,7 @@ class ActivitySwap : ActivityBase() {
                         if (memLimit == "0") "" else memLimit,
                         zramCompressionRatio(origDataSize, comprDataSize))
             } else {
-                zram0_stat.text = String.format(
+                String.format(
                         getString(R.string.swap_zram_stat_format2),
                         compAlgorithm,
                         zramInfoValueParseMB(origDataSize),
@@ -623,13 +675,6 @@ class ActivitySwap : ActivityBase() {
                         zramCompressionRatio(origDataSize, comprDataSize))
             }
         }
-
-        txt_zram_size_display.text = "${zramSize}MB"
-
-        zram_compact_algorithm.text = compAlgorithm
-
-        txt_swap_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) "重启后保持当前设置" else "重启后失效"
-        txt_zram_auto_start.text = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) "重启后保持当前设置" else "重启后还原系统设定"
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
@@ -659,7 +704,7 @@ class ActivitySwap : ActivityBase() {
     override fun onResume() {
         super.onResume()
         title = getString(R.string.menu_swap)
-        getSwaps()
+        startTimer()
     }
 
     private var showSwapOpened = {
@@ -693,6 +738,7 @@ class ActivitySwap : ActivityBase() {
 
     // 离开界面时保存配置
     override fun onPause() {
+        stopTimer()
         swapModuleUtils.saveModuleConfig(swapConfig)
         super.onPause()
     }

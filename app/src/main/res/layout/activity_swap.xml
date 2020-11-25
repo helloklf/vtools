@@ -389,7 +389,7 @@
                     android:text="已开启的SWAP" />
 
                 <ListView
-                    android:id="@+id/list_swaps2"
+                    android:id="@+id/list_swaps"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:textSize="10dp" />
