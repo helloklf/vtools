@@ -522,18 +522,43 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 清除数据
      */
     protected fun clearAll() {
-        confirm("清空应用数据", "确定将选中的 ${apps.size} 个应用数据清空？", Runnable {
-            _clearAll()
-        })
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_clear_mode, null)
+        view.findViewById<TextView>(R.id.confirm_message).text = "确定将选中的 ${apps.size} 个应用数据清空？"
+
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val userOnly = view.findViewById<CompoundButton>(R.id.clear_user_only)
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+
+            _clearAll(userOnly.isChecked)
+        }
     }
 
-    private fun _clearAll() {
+    private fun _clearAll(userOnly: Boolean) {
+        val um = context.getSystemService(Context.USER_SERVICE) as UserManager?
+        val userHandle = android.os.Process.myUserHandle()
+        var uid = 0L
+        if (um != null) {
+            uid = um.getSerialNumberForUser(userHandle)
+        } else {
+            Toast.makeText(context, "获取用户ID失败！", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
             sb.append("echo '[clear ${item.appName}]'\n")
 
-            sb.append("pm clear $packageName\n")
+            if (userOnly) {
+                sb.append("pm clear --user $uid $packageName\n")
+            } else {
+                sb.append("pm clear $packageName\n")
+            }
         }
 
         sb.append("echo '[operation completed]'\n")
