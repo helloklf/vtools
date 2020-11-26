@@ -21,6 +21,7 @@ import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.SwapModuleUtils
 import com.omarea.library.shell.SwapUtils
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
@@ -57,6 +58,64 @@ class ActivitySwap : ActivityBase() {
         setView()
     }
 
+    private fun swapOffAwait(): Timer {
+        ModeSwitcher().run {
+            if (modeConfigCompleted()) {
+                executePowercfgMode(ModeSwitcher.FAST)
+            }
+        }
+
+        val timer = Timer()
+        val totalUsed = swapUtils.swapUsedSize
+        val startTime = System.currentTimeMillis()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val currentUsed = swapUtils.swapUsedSize
+                val avgSpeed = (totalUsed - currentUsed).toFloat() / (System.currentTimeMillis() - startTime) * 1000
+                val tipStr = StringBuilder()
+                tipStr.append(String.format("回收Swapfile ${currentUsed}/${totalUsed}MB (%.1fMB/s)\n", avgSpeed))
+                if (avgSpeed > 0) {
+                    tipStr.append("大约还需 " + (currentUsed / avgSpeed).toInt() + "秒")
+                } else {
+                    tipStr.append("请耐心等待~")
+                }
+                myHandler.post {
+                    processBarDialog.showDialog(tipStr.toString())
+                }
+            }
+        }, 0, 1000)
+        return timer
+    }
+
+    private fun zramOffAwait(): Timer {
+        ModeSwitcher().run {
+            if (modeConfigCompleted()) {
+                executePowercfgMode(ModeSwitcher.FAST)
+            }
+        }
+
+        val timer = Timer()
+        val totalUsed = swapUtils.zramUsedSize
+        val startTime = System.currentTimeMillis()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                val currentUsed = swapUtils.zramUsedSize
+                val avgSpeed = (totalUsed - currentUsed).toFloat() / (System.currentTimeMillis() - startTime) * 1000
+                val tipStr = StringBuilder()
+                tipStr.append(String.format("回收ZRAM ${currentUsed}/${totalUsed}MB (%.1fMB/s)\n", avgSpeed))
+                if (avgSpeed > 0) {
+                    tipStr.append("大约还需 " + (currentUsed / avgSpeed).toInt() + "秒")
+                } else {
+                    tipStr.append("请耐心等待~")
+                }
+                myHandler.post {
+                    processBarDialog.showDialog(tipStr.toString())
+                }
+            }
+        }, 0, 1000)
+        return timer
+    }
+
     private fun setView() {
         val context = this
         processBarDialog = ProgressBarDialog(context)
@@ -77,7 +136,9 @@ class ActivitySwap : ActivityBase() {
             } else {
                 processBarDialog.showDialog(getString(R.string.swap_on_close))
                 val run = Runnable {
+                    val timer = swapOffAwait()
                     swapUtils.swapOff()
+                    timer.cancel()
                     myHandler.post {
                         processBarDialog.hideDialog()
                         getSwaps()
@@ -265,7 +326,6 @@ class ActivitySwap : ActivityBase() {
                             .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                 val algorithm = options[selectedIndex]
                                 (it as TextView).text = algorithm
-                                //
                             })
                 }
 
@@ -304,6 +364,14 @@ class ActivitySwap : ActivityBase() {
                     .apply()
 
             val run = Thread {
+                if (swapUtils.zramEnabled && algorithm != swapUtils.compAlgorithm || sizeVal != swapUtils.zramCurrentSizeMB) {
+                    val timer = zramOffAwait()
+                    swapUtils.zramOff()
+                    timer.cancel()
+                }
+                myHandler.post {
+                    processBarDialog.showDialog(getString(R.string.zram_resizing))
+                }
                 swapUtils.resizeZram(sizeVal, algorithm)
 
                 getSwaps()
@@ -437,8 +505,17 @@ class ActivitySwap : ActivityBase() {
 
             processBarDialog.showDialog("稍等...")
             Thread {
+                val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
+                if (swapPriority == 0) {
+                    val zramPriority = swapUtils.zramPriority
+                    if (zramPriority != null && zramPriority < 0) {
+                        val timer = zramOffAwait()
+                        swapUtils.zramOff()
+                        timer.cancel()
+                    }
+                }
                 val result = swapUtils.swapOn(
-                    swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2),
+                    swapPriority,
                     swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
                 )
                 if (result.isNotEmpty()) {
@@ -451,6 +528,10 @@ class ActivitySwap : ActivityBase() {
                 processBarDialog.hideDialog()
             }.start()
         }
+    }
+
+    private fun useConfig() {
+
     }
 
     private var swapsTHRowCache: LinkedHashMap<String, String>? = null

@@ -256,7 +256,7 @@
     <string name="please_wait">请稍等…</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
-    <string name="zram_resizing">正在调整，这可能要很久…</string>
+    <string name="zram_resizing">正在调整，请耐心等候…</string>
     <string name="priority">优先级</string>
     <string name="order">顺序</string>
     <string name="used">已用</string>

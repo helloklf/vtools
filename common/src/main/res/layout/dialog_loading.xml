@@ -28,6 +28,6 @@
             android:minLines="2"
             android:text="@string/execute_wait"
             android:textAlignment="center"
-            android:textSize="16dp" />
+            android:textSize="15dp" />
     </LinearLayout>
 </FrameLayout>

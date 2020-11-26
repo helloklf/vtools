@@ -6,6 +6,7 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
+import com.omarea.scene_mode.ModeSwitcher
 import java.io.File
 
 /**
@@ -145,6 +146,16 @@ class SwapUtils(context: Context) {
             return KeepShellPublic.doCmdSync("cat /proc/swaps | grep /block/zram0").contains("/block/zram0")
         }
 
+    // 关闭zram
+    fun zramOff() {
+        val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
+
+        sb.append("swapoff /dev/block/zram0\n")
+        val keepShell = KeepShell()
+        keepShell.doCmdSync(sb.toString())
+        keepShell.tryExit()
+    }
+
     // 调整zram大小
     fun resizeZram(sizeVal: Int, algorithm: String = "") {
         val keepShell = KeepShell()
@@ -237,19 +248,53 @@ class SwapUtils(context: Context) {
 
     val swapUsedSize: Int
         get() {
-        for (row in procSwaps) {
-            if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
-                val cols = row.split(" ").toMutableList()
-                val sizeStr = cols[2]
-                val usedStr = cols[3]
+            for (row in procSwaps) {
+                if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
+                    val cols = row.split(" ").toMutableList()
+                    val sizeStr = cols[2]
+                    val usedStr = cols[3]
 
-                try {
-                    return usedStr.toInt() / 1024
-                } catch (ex: java.lang.Exception) {
-                    break
+                    try {
+                        return usedStr.toInt() / 1024
+                    } catch (ex: java.lang.Exception) {
+                        break
+                    }
                 }
             }
+            return -1
         }
-        return -1
-    }
+
+    val zramUsedSize: Int
+        get() {
+            for (row in procSwaps) {
+                if (row.startsWith("/block/zram0 ") || row.startsWith("/dev/block/zram0 ")) {
+                    val cols = row.split(" ").toMutableList()
+                    val sizeStr = cols[2]
+                    val usedStr = cols[3]
+
+                    try {
+                        return usedStr.toInt() / 1024
+                    } catch (ex: java.lang.Exception) {
+                        break
+                    }
+                }
+            }
+            return -1
+        }
+
+    val zramPriority: Int?
+        get() {
+            for (row in procSwaps) {
+                if (row.startsWith("/block/zram0 ") || row.startsWith("/dev/block/zram0 ")) {
+                    val cols = row.split(" ").toMutableList()
+
+                    try {
+                        return cols[4].toInt()
+                    } catch (ex: java.lang.Exception) {
+                        break
+                    }
+                }
+            }
+            return null
+        }
 }

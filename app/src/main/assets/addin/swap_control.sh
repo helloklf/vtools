@@ -51,9 +51,8 @@ else
     swap_mount=$swapfile
 fi
 
-
 # 关闭swap（如果正在使用，那可不是一般的慢）
-function diable_swap() {
+diable_swap() {
 	swapoff $swap_mount >/dev/null 2>&1
 
     if [[ $loop == "1" ]]; then
@@ -64,44 +63,50 @@ function diable_swap() {
 }
 
 # 开启SWAP
-function enable_swap() {
-    if [[ ! -f $swapfile ]]
-    then
-        if [[ "$swapsize" = "" ]]
-        then
-            swapsize=256
-        fi
-        dd if=/dev/zero of=$swapfile bs=1048576 count=$swapsize # 创建
+enable_swap() {
+  if [[ ! -f $swapfile ]]
+  then
+    if [[ "$swapsize" = "" ]]; then
+      swapsize=256
     fi
+    dd if=/dev/zero of=$swapfile bs=1048576 count=$swapsize # 创建
+  fi
 
-    if [[ $loop == "1" ]]; then
-        # losetup $swap_mount $swapfile # 挂载
-        if [[ -e $swap_mount ]]
-        then
-            losetup -d $swap_mount      # 删除loop设备
-        fi
-        losetup $swap_mount $swapfile   # 挂载为loop设备
-        setprop $loop_save $next_loop_path
+  if [[ $loop == "1" ]]; then
+    # losetup $swap_mount $swapfile # 挂载
+    if [[ -e $swap_mount ]]
+    then
+      losetup -d $swap_mount      # 删除loop设备
     fi
+    losetup $swap_mount $swapfile   # 挂载为loop设备
+    setprop $loop_save $next_loop_path
+  fi
 
 	mkswap $swap_mount >/dev/null 2>&1 # 初始化
-	if [[ "$priority" != "" ]]
-	then
-	    swapon $swap_mount -p "$priority" >/dev/null 2>&1   # 开启
+	if [[ "$priority" != "" ]]; then
 
-        if [[ "$priority" == '0' ]]; then
-            # zram_priority=`cat /proc/swaps | grep /zram0 | sed 's/[ \t][ ]*/,/g' | cut -f5 -d ','`
-            zram_info=`cat /proc/swaps | grep /zram0`
-            if [[ $zram_info != "" ]]; then
-                zram_priority=`echo $zram_info | sed 's/[ \t][ ]*/,/g' | cut -f5 -d ','`
-                if [[ $zram_priority != $priority ]]; then
-                    swapoff /dev/block/zram0
-                    swapon /dev/block/zram0 -p $priority
-                fi
-            fi
+    # zram_priority=`cat /proc/swaps | grep /zram0 | sed 's/[ \t][ ]*/,/g' | cut -f5 -d ','`
+    zram_info=`cat /proc/swaps | grep /zram0`
+    if [[ $zram_info != "" ]]; then
+      zram_priority=`echo $zram_info | sed 's/[ \t][ ]*/,/g' | cut -f5 -d ','`
+    fi
+
+    if [[ "$zram_priority" != "" ]]; then
+      if [[ "$priority" == '0' ]]; then
+        if [[ "$zram_priority" -lt 0 ]]; then
+          swapoff /dev/block/zram0
+          swapon /dev/block/zram0 -p $priority
+        else
+          priority="$zram_priority"
         fi
-    else
-	    swapon $swap_mount >/dev/null 2>&1                  # 开启
+      elif [[ "$priority" == '5' ]] && [[ "$zram_priority" -gt 5 ]]; then
+        priority="32767"
+      fi
+    fi
+
+    swapon $swap_mount -p "$priority" >/dev/null 2>&1   # 开启
+  else
+    swapon $swap_mount >/dev/null 2>&1                  # 开启
 	fi
 
 	echo 100 > /proc/sys/vm/overcommit_ratio
