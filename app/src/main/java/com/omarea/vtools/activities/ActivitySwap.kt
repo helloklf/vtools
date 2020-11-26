@@ -125,7 +125,7 @@ class ActivitySwap : ActivityBase() {
         // 关闭swap
         btn_swap_close.setOnClickListener {
             val usedSize = swapUtils.swapUsedSize
-            if (usedSize > 300) {
+            if (usedSize > 500) {
                 DialogHelper.confirm(this,
                         "确认重启手机？",
                         "Swap被大量使用(${usedSize}MB)，短时间内很难完成回收。\n因此需要重启手机来完成此操作，请确保你的重要数据都已保存！！！", {
@@ -134,17 +134,7 @@ class ActivitySwap : ActivityBase() {
                     KeepShellPublic.doCmdSync("sync\nsleep 2\nsvc power reboot || reboot")
                 })
             } else {
-                processBarDialog.showDialog(getString(R.string.swap_on_close))
-                val run = Runnable {
-                    val timer = swapOffAwait()
-                    swapUtils.swapOff()
-                    timer.cancel()
-                    myHandler.post {
-                        processBarDialog.hideDialog()
-                        getSwaps()
-                    }
-                }
-                Thread(run).start()
+                swapOffDialog()
             }
         }
 
@@ -182,6 +172,38 @@ class ActivitySwap : ActivityBase() {
 
         swappiness_adj.setOnClickListener {
             swappinessAdjDialog()
+        }
+    }
+
+    private fun swapOffDialog () {
+        val view = layoutInflater.inflate(R.layout.dialog_swap_delete, null)
+        val deleteFile = view.findViewById<CompoundButton>(R.id.swap_delete_file)
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
+
+        view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            dialog.dismiss()
+            val delete = deleteFile.isChecked
+
+            processBarDialog.showDialog(getString(R.string.swap_on_close))
+            val run = Runnable {
+                val timer = swapOffAwait()
+
+                if (delete) {
+                    swapUtils.swapDelete()
+                } else {
+                    swapUtils.swapOff()
+                }
+
+                timer.cancel()
+                myHandler.post {
+                    processBarDialog.hideDialog()
+                    getSwaps()
+                }
+            }
+            Thread(run).start()
         }
     }
 
@@ -442,9 +464,10 @@ class ActivitySwap : ActivityBase() {
                     val time = System.currentTimeMillis() - startTime
                     myHandler.post {
                         processBarDialog.hideDialog()
+                        val speed = (size * 1000.0 / time).toInt()
                         Toast.makeText(
                                 context,
-                                "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s",
+                                "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${speed}MB/s",
                                 Toast.LENGTH_LONG
                         ).show()
                         swapActiveDialog()

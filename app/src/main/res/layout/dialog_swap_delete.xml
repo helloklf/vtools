@@ -22,62 +22,15 @@
             style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="调整ZRAM" />
+            android:text="关闭Swapfile" />
         <TextView
             android:id="@+id/confirm_message"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:paddingTop="8dp"
-            android:text="现在，拖动滑块调整ZRAM大小"
+            android:text="请确认操作"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <SeekBar
-                android:id="@+id/zram_size"
-                style="@style/SceneSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:progress="8"
-                android:max="64" />
-
-            <TextView
-                android:id="@+id/zram_size_text"
-                android:text="0MB"
-                style="@style/textSmall"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:max="2048"
-                android:paddingStart="0dp"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
-                android:text="@string/swap_zram_compact_algorithm" />
-
-            <TextView
-                android:id="@+id/zram_compact_algorithm"
-                android:text="LZO"
-                android:textColor="?android:colorAccent"
-                android:layout_width="75dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
-        </LinearLayout>
 
         <TextView
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
@@ -85,7 +38,7 @@
             android:padding="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             style="@style/textSmall"
-            android:text="@string/swap_zram_desc"
+            android:text="说明：Android手机回收SWAP(包括ZRAM)的速度非常慢(1~5MB/s)，建议清空后台以减少SWAP占用，节省回收时间"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -108,11 +61,11 @@
                 <ImageView
                     android:layout_marginStart="10dp"
                     android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#2196F3"
+                    android:backgroundTint="#FF9800"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="6dp"
-                    android:src="@drawable/swap_auto_start"
+                    android:src="@drawable/swap_delete"
                     app:tint="@android:color/white" />
 
                 <LinearLayout
@@ -124,17 +77,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开机自启" />
+                        android:text="删除文件" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="手机重新启动后，自动应用当前设置\n(需要允许Scene自启动)" />
+                        android:text="删除/data/swapfile文件，回收存储空间。如果你打算不再使用Swapfile的话~" />
                 </LinearLayout>
 
                 <Switch
-                    android:id="@+id/zram_auto_start"
+                    android:id="@+id/swap_delete_file"
+                    android:enabled="false"
+                    android:checked="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_width="wrap_content"
