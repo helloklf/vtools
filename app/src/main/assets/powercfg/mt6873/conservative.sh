@@ -62,8 +62,16 @@ do
   echo 1 > /sys/devices/system/cpu/cpu$i/online
 done
 
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -101,9 +109,9 @@ if [[ "$action" = "powersave" ]]; then
   max_freq 1812000 1933000
 
   gpu_dvfs 0
-  echo 358000 > /proc/gpufreq/gpufreq_opp_freq
+  echo 502000 > /proc/gpufreq/gpufreq_opp_freq
 
-  cpuset 3 0-3 0-7 0-7 0-3
+  cpuset 0 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
   eas 0 2
@@ -127,7 +135,7 @@ elif [[ "$action" = "balance" ]]; then
 
   gpu_dvfs 1
 
-  cpuset 1-3 0-3 0-7 0-7 0-3
+  cpuset 0-2 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
   eas 0 0
@@ -151,7 +159,7 @@ elif [[ "$action" = "performance" ]]; then
 
   gpu_dvfs 0 807000
 
-  cpuset 2-3 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
   echo 1 > /proc/cpuidle/enable
   eas 10 0
@@ -175,7 +183,7 @@ elif [[ "$action" = "fast" ]]; then
 
   gpu_dvfs 0 902000
 
-  cpuset 1 0-3 0-7 0-7 0-3
+  cpuset 0 0-3 0-7 0-7 0-3
 
   echo 0 > /proc/cpuidle/enable
   eas 20 0

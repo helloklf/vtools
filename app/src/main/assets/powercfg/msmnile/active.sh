@@ -1,8 +1,17 @@
 #!/system/bin/sh
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -134,8 +143,8 @@ if [[ "$action" = "powersave" ]]; then
 	echo 825600 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 940800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -155,14 +164,14 @@ if [[ "$action" = "balance" ]]; then
 	echo 1056000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 1286400 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
 
 if [[ "$action" = "performance" ]]; then
-    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+    echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
     echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
@@ -176,14 +185,14 @@ if [[ "$action" = "performance" ]]; then
     echo 1708800 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
     echo 2016000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
 
 if [[ "$action" = "fast" ]]; then
-    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+    echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
     echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
@@ -197,8 +206,8 @@ if [[ "$action" = "fast" ]]; then
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 1-2 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi

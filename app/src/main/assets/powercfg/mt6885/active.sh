@@ -33,8 +33,17 @@ function cpuset() {
 }
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
-  sh /data/powercfg-base.sh
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -77,7 +86,7 @@ if [[ "$action" = "powersave" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 0
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "balance" ]]; then
@@ -90,7 +99,7 @@ elif [[ "$action" = "balance" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 0
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "performance" ]]; then
@@ -103,7 +112,7 @@ elif [[ "$action" = "performance" ]]; then
   ged gx_3d_benchmark_on 0
   ged gx_game_mode 1
 
-  cpuset 1-2 0-3 0-7 0-7 0-3
+  cpuset 0-1 0-3 0-7 0-7 0-3
 
 	exit 0
 elif [[ "$action" = "fast" ]]; then
@@ -116,7 +125,7 @@ elif [[ "$action" = "fast" ]]; then
   ged gx_game_mode 0
   ged gx_3d_benchmark_on 1
 
-  cpuset 1 0-3 0-7 0-7 0-3
+  cpuset 0 0-3 0-7 0-7 0-3
 
 	exit 0
 fi

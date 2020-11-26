@@ -13,8 +13,17 @@
 # 587000000 525000000 490000000 441600000 400000000 305000000
 
 action=$1
-if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+
+init () {
+  local dir=$(cd $(dirname $0); pwd)
+  if [[ -f "$dir/powercfg-base.sh" ]]; then
+    sh "$dir/powercfg-base.sh"
+  elif [[ -f '/data/powercfg-base.sh' ]]; then
     sh /data/powercfg-base.sh
+  fi
+}
+if [[ "$action" = "init" ]]; then
+  init
 	exit 0
 fi
 
@@ -222,7 +231,7 @@ fi
 
 if [[ "$action" = "performance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
@@ -237,7 +246,7 @@ if [[ "$action" = "performance" ]]; then
   echo 2073600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-1 > /dev/cpuset/background/cpus
-  echo 0-2 > /dev/cpuset/system-background/cpus
+  echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
 
@@ -248,7 +257,7 @@ fi
 
 if [[ "$action" = "fast" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/online
-  echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
@@ -263,7 +272,7 @@ if [[ "$action" = "fast" ]]; then
 	echo 1 > /proc/sys/kernel/sched_boost
 
   echo 0 > /dev/cpuset/background/cpus
-  echo 0-1 > /dev/cpuset/system-background/cpus
+  echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
 

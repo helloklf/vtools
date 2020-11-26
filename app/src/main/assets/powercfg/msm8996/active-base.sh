@@ -90,26 +90,26 @@ case "$target" in
         done
         echo "cpufreq" > /sys/class/devfreq/soc:qcom,mincpubw/governor
 
-	soc_revision=`cat /sys/devices/soc0/revision`
-	if [ "$soc_revision" == "2.0" ]; then
-		#Disable suspend for v1.0 and v2.0
-		echo pwr_dbg > /sys/power/wake_lock
-	elif [ "$soc_revision" == "2.1" ]; then
-		# Enable C4.D4.E4.M3 LPM modes
-		# Disable D3 state
-		echo 0 > /sys/module/lpm_levels/system/pwr/pwr-l2-gdhs/idle_enabled
-		echo 0 > /sys/module/lpm_levels/system/perf/perf-l2-gdhs/idle_enabled
-		# Disable DEF-FPC mode
-		echo N > /sys/module/lpm_levels/system/pwr/cpu0/fpc-def/idle_enabled
-		echo N > /sys/module/lpm_levels/system/pwr/cpu1/fpc-def/idle_enabled
-		echo N > /sys/module/lpm_levels/system/perf/cpu2/fpc-def/idle_enabled
-		echo N > /sys/module/lpm_levels/system/perf/cpu3/fpc-def/idle_enabled
-	else
-		# Enable all LPMs by default
-		# This will enable C4, D4, D3, E4 and M3 LPMs
-		echo N > /sys/module/lpm_levels/parameters/sleep_disabled
-	fi
-	echo N > /sys/module/lpm_levels/parameters/sleep_disabled
+        soc_revision=`cat /sys/devices/soc0/revision`
+        if [ "$soc_revision" == "2.0" ]; then
+          #Disable suspend for v1.0 and v2.0
+          echo pwr_dbg > /sys/power/wake_lock
+        elif [ "$soc_revision" == "2.1" ]; then
+          # Enable C4.D4.E4.M3 LPM modes
+          # Disable D3 state
+          echo 0 > /sys/module/lpm_levels/system/pwr/pwr-l2-gdhs/idle_enabled
+          echo 0 > /sys/module/lpm_levels/system/perf/perf-l2-gdhs/idle_enabled
+          # Disable DEF-FPC mode
+          echo N > /sys/module/lpm_levels/system/pwr/cpu0/fpc-def/idle_enabled
+          echo N > /sys/module/lpm_levels/system/pwr/cpu1/fpc-def/idle_enabled
+          echo N > /sys/module/lpm_levels/system/perf/cpu2/fpc-def/idle_enabled
+          echo N > /sys/module/lpm_levels/system/perf/cpu3/fpc-def/idle_enabled
+        else
+          # Enable all LPMs by default
+          # This will enable C4, D4, D3, E4 and M3 LPMs
+          echo N > /sys/module/lpm_levels/parameters/sleep_disabled
+        fi
+        echo N > /sys/module/lpm_levels/parameters/sleep_disabled
         # Starting io prefetcher service
     ;;
 esac
@@ -174,4 +174,32 @@ echo 0 > /proc/sys/kernel/sched_boost
 stop thermanager
 stop thermal-engine
 killall -9 vendor.qti.hardware.perf@1.0-service
+
+set_top_app()
+{
+  echo -n "  + top-app $1 "
+  # pgrep 精确度有点差
+  pgrep -f $1 | while read pid; do
+    echo -n "$pid "
+    echo $pid > /dev/cpuset/top-app/tasks
+    echo $pid > /dev/stune/top-app/tasks
+  done
+  echo ""
+}
+
+set_apps() {
+  set_top_app android.hardware.audio
+  set_top_app android.hardware.bluetooth
+  set_top_app com.android.permissioncontroller
+  set_top_app vendor.qti.hardware.display.composer-service
+  set_top_app android.hardware.graphics.composer
+  set_top_app surfaceflinger
+  set_top_app system_server
+  set_top_app audioserver
+  set_top_app servicemanager
+  set_top_app com.android.systemui
+  set_top_app com.miui.home
+}
+
+set_apps
 
