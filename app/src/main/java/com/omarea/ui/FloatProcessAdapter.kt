@@ -100,7 +100,7 @@ class FloatProcessAdapter(private val context: Context,
             when (sortMode) {
                 SORT_MODE_DEFAULT -> it.pid
                 SORT_MODE_CPU -> -(it.cpu * 10).toInt()
-                SORT_MODE_MEM -> -(it.uss * 100).toInt()
+                SORT_MODE_MEM -> -(it.rss * 100).toInt()
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }

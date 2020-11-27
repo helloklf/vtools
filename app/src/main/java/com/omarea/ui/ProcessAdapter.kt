@@ -82,8 +82,8 @@ class ProcessAdapter(private val context: Context,
         }.sortedBy {
             when (sortMode) {
                 SORT_MODE_DEFAULT -> it.pid
-                SORT_MODE_CPU -> -(it.cpu * 10).toInt()
-                SORT_MODE_MEM -> -(it.uss * 100).toInt()
+                SORT_MODE_CPU -> -(it.getCpu() * 10).toInt()
+                SORT_MODE_MEM -> -(it.rss * 100).toInt()
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }
@@ -214,7 +214,7 @@ class ProcessAdapter(private val context: Context,
             findViewById<TextView>(R.id.ProcessFriendlyName).text = keywordHightLight(processInfo.friendlyName)
             findViewById<TextView>(R.id.ProcessName).text = keywordHightLight(processInfo.name)
             findViewById<TextView>(R.id.ProcessPID).text = "PID: " + processInfo.pid
-            findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.cpu + "%"
+            findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.getCpu() + "%"
             if (processInfo.rss > 8192) {
                 findViewById<TextView>(R.id.ProcessMEM).text = "RSS: " + (processInfo.rss / 1024).toInt() + "MB"
             } else {

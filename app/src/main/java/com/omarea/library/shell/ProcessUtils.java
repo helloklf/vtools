@@ -45,7 +45,7 @@ public class ProcessUtils {
             }
 
             // String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
-            String insideCmd = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
+            String insideCmd = "ps -e -o %CPU,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
             String outsideCmd = outsideToybox + " " + insideCmd;
 
             for (String cmd : new String[]{insideCmd, outsideCmd}) {
@@ -83,10 +83,10 @@ public class ProcessUtils {
                 processInfo.rss = Long.parseLong(columns[1]);
                 processInfo.name = columns[2];
                 processInfo.pid = Integer.parseInt(columns[3]);
-                processInfo.user = columns[4];
-                processInfo.command = columns[5];
+                processInfo.state = columns[4];
+                processInfo.user = columns[5];
+                processInfo.command = columns[6];
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
-                processInfo.uss = processInfo.rss - processInfo.shr;
                 return processInfo;
             } catch (Exception ex) {
                 Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
