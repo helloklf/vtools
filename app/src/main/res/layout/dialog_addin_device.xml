@@ -62,19 +62,19 @@
 
         <Button
             android:id="@+id/dialog_chooser"
+            style="@style/SceneButton"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
+            android:layout_marginEnd="6dp"
             android:text="选择模板"
             android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_default"
+            style="@style/SceneButton"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
+            android:layout_marginEnd="6dp"
             android:text="还原"
             android:textSize="11dp" />
     </LinearLayout>

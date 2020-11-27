@@ -39,7 +39,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/source_1"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:background="@drawable/source_icon_bg"
+                android:background="@drawable/action_menu_icon_bg"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -80,7 +80,7 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_2"
-                android:background="@drawable/source_icon_bg"
+                android:background="@drawable/action_menu_icon_bg"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -122,7 +122,7 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_import"
-                android:background="@drawable/source_icon_bg"
+                android:background="@drawable/action_menu_icon_bg"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -164,7 +164,7 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_network"
-                android:background="@drawable/source_icon_bg"
+                android:background="@drawable/action_menu_icon_bg"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -206,7 +206,7 @@
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_custom"
-                android:background="@drawable/source_icon_bg"
+                android:background="@drawable/action_menu_icon_bg"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 

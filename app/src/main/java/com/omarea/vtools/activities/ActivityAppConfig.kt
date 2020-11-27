@@ -28,6 +28,7 @@ import com.omarea.utils.AppListHelper
 import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import kotlinx.android.synthetic.main.activity_app_config.*
 import org.json.JSONObject
 import java.util.*
@@ -41,7 +42,6 @@ class ActivityAppConfig : ActivityBase() {
     private var installedList: ArrayList<Appinfo>? = null
     private var displayList: ArrayList<Appinfo>? = null
     private lateinit var sceneConfigStore: SceneConfigStore
-    private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +103,6 @@ class ActivityAppConfig : ActivityBase() {
         applistHelper = AppListHelper(context)
         spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         sceneConfigStore = SceneConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
@@ -138,35 +137,23 @@ class ActivityAppConfig : ActivityBase() {
             scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val app = item.packageName.toString()
-                val values = ArrayList<String>().apply {
-                    addAll(resources.getStringArray(R.array.powercfg_options_values))
-                }
-                val originIndex = values.indexOf(spfPowercfg.getString(app, firstMode))
-                var currentMode = originIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        // .setTitle(item.appName.toString())
-                        .setTitle("启动时 调节性能至")
-                        .setSingleChoiceItems(R.array.powercfg_options_menu, originIndex) { _, which ->
-                            currentMode = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (currentMode != originIndex) {
-                                val modeName = values[currentMode]
-
+                DialogAppPowerConfig(this,
+                        spfPowercfg.getString(app, ""),
+                        object : DialogAppPowerConfig.IResultCallback{
+                            override fun onChange(mode: String?) {
                                 spfPowercfg.edit().run {
-                                    if (modeName.isEmpty()) {
+                                    if (mode.isNullOrEmpty()) {
                                         remove(app)
                                     } else {
-                                        putString(app, modeName)
+                                        putString(app, mode)
                                     }
                                 }.apply()
 
                                 setAppRowDesc(item)
                                 (parent.adapter as SceneModeAdapter).updateRow(position, view)
-                                notifyService(app, modeName)
+                                notifyService(app, "" + mode)
                             }
-                        }
-                        .setNeutralButton(R.string.btn_cancel, null))
+                        }).show()
                 true
             }
         } else {
@@ -305,7 +292,11 @@ class ActivityAppConfig : ActivityBase() {
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         Scene.post {
-            lv.adapter = SceneModeAdapter(context, dl!!, firstMode)
+            lv.adapter = SceneModeAdapter(
+                    context,
+                    dl!!,
+                    globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
+            )
             processBarDialog.hideDialog()
         }
     }

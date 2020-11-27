@@ -1,34 +1,39 @@
 package com.omarea.vtools.dialogs
 
-import android.app.AlertDialog
-import android.content.Context
+import android.app.Activity
+import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
 
-/**
- * Created by helloklf on 2017/12/11.
- */
-
-class DialogPower(var context: Context) {
+class DialogPower(var context: Activity) {
     fun showPowerMenu() {
-        DialogHelper.animDialog(
-                AlertDialog.Builder(context).setTitle(context.getString(R.string.power_menu)).setItems(
-                        arrayOf(context.getString(R.string.power_shutdown),
-                                context.getString(R.string.power_reboot),
-                                context.getString(R.string.power_hot_reboot),
-                                context.getString(R.string.power_fastboot),
-                                context.getString(R.string.power_recovery),
-                                context.getString(R.string.power_emergency))
-                ) { _, w ->
-                    when (w) {
-                        0 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_shutdown_cmd))
-                        1 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_reboot_cmd))
-                        2 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_hot_reboot_cmd))
-                        3 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_fastboot_cmd))
-                        4 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_recovery_cmd))
-                        5 -> KeepShellPublic.doCmdSync(context.getString(R.string.power_emergency_cmd))
-                    }
-                })
+        val view = context.layoutInflater.inflate(R.layout.dialog_power_operation, null)
+        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        view.findViewById<View>(R.id.power_shutdown).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_shutdown_cmd))
+        }
+        view.findViewById<View>(R.id.power_reboot).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_reboot_cmd))
+        }
+        view.findViewById<View>(R.id.power_hot_reboot).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_hot_reboot_cmd))
+        }
+
+        view.findViewById<View>(R.id.power_recovery).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_recovery_cmd))
+        }
+        view.findViewById<View>(R.id.power_fastboot).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_fastboot_cmd))
+        }
+        view.findViewById<View>(R.id.power_emergency).setOnClickListener {
+            dialog.dismiss()
+            KeepShellPublic.doCmdSync(context.getString(R.string.power_emergency_cmd))
+        }
     }
 }

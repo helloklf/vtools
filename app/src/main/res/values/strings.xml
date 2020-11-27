@@ -294,22 +294,6 @@
     <string name="boot_after_auto_modify">开机后自动修改</string>
     <string name="core_control_helpinfo">部分手机具有CPU参数动态调整机制，会导致自定义的参数很快失效，此外，温控也会限制你调高CPU频率。</string>
     <string name="shell_executor">脚本执行</string>
-    <string-array name="powercfg_options_menu">
-        <item>省电模式</item>
-        <item>均衡模式</item>
-        <item>性能模式</item>
-        <item>极速模式</item>
-        <item>全局默认模式</item>
-        <item>保持不变</item>
-    </string-array>
-    <string-array name="powercfg_options_values">
-        <item>powersave</item>
-        <item>balance</item>
-        <item>performance</item>
-        <item>fast</item>
-        <item />
-        <item>igoned</item>
-    </string-array>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
         <item>均衡模式</item>
@@ -322,8 +306,8 @@
         <item>均衡</item>
         <item>性能</item>
         <item>极速</item>
-        <item>未指定</item>
-        <item>保持上个应用状态</item>
+        <item>全局默认</item>
+        <item>保持状态</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
         <item>用户</item>
@@ -495,13 +479,6 @@
     </string-array>
 
 
-    <string name="power_shutdown">快速关机</string>
-    <string name="power_reboot">快速重启</string>
-    <string name="power_hot_reboot">热重启</string>
-    <string name="power_fastboot">进入Fastboot</string>
-    <string name="power_recovery">进入Recovery</string>
-    <string name="power_emergency">进入9008模式</string>
-    <string name="power_menu">请选择操作</string>
     <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
     <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>

@@ -29,9 +29,11 @@ import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.IntInputFilter
+import com.omarea.ui.SceneModeAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
 import org.json.JSONObject
@@ -302,34 +304,25 @@ class ActivityAppDetails : ActivityBase() {
                 return@setOnClickListener
             }
 
-            val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-            val currentMode = powercfg.getString(app, spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
-            val values = ArrayList<String>().apply {
-                addAll(resources.getStringArray(R.array.powercfg_options_values))
-            }
-            val index = values.indexOf(currentMode)
-            var selectedIndex = if (index < 0) 0 else index
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.perf_opt))
-                    .setSingleChoiceItems(R.array.powercfg_options_menu, index) { dialog, which ->
-                        selectedIndex = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { dialog, which ->
-                        if (index != selectedIndex) {
-                            val modeName = resources.getStringArray(R.array.powercfg_options_values)[selectedIndex]
-                            powercfg.edit().run {
-                                if (modeName.isEmpty()) {
+            val spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+
+            DialogAppPowerConfig(this,
+                    spfPowercfg.getString(app, ""),
+                    object : DialogAppPowerConfig.IResultCallback{
+                        override fun onChange(mode: String?) {
+                            spfPowercfg.edit().run {
+                                if (mode.isNullOrEmpty()) {
                                     remove(app)
                                 } else {
-                                    putString(app, modeName)
+                                    putString(app, mode)
                                 }
                             }.apply()
-                            (it as TextView).text = ModeSwitcher.getModName(modeName)
+
+                            (it as TextView).text = ModeSwitcher.getModName("" + mode)
                             _result = RESULT_OK
-                            notifyService(app, modeName)
+                            notifyService(app, "" + mode)
                         }
-                    }
-                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
+                    }).show()
         }
 
         val groupNames = ArrayList<String>().apply {
@@ -556,7 +549,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_packagename.text = packageInfo.packageName
         app_details_icon.setImageDrawable(applicationInfo.loadIcon(packageManager))
 
-        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
+        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "")
         app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
         val groupNames = ArrayList<String>().apply {

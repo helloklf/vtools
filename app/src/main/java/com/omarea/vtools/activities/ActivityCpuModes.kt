@@ -135,7 +135,7 @@ class ActivityCpuModes : ActivityBase() {
 
     // 选择配置来源
     private fun chooseConfigSource () {
-        val view = layoutInflater.inflate(R.layout.layout_powercfg_source, null)
+        val view = layoutInflater.inflate(R.layout.dialog_powercfg_source, null)
         val dialog = DialogHelper.customDialogBlurBg(this, view)
 
         val conservative = view.findViewById<View>(R.id.source_official_conservative)

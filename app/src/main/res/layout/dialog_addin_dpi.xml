@@ -84,46 +84,46 @@
 
         <Button
             android:id="@+id/dialog_dpi_720"
-            android:layout_width="40dp"
+            style="@style/SceneButton"
+            android:layout_width="50dp"
             android:layout_height="32dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="HD"
             android:textSize="12dp" />
 
         <Button
             android:id="@+id/dialog_dpi_1080"
-            android:layout_width="40dp"
+            style="@style/SceneButton"
+            android:layout_width="50dp"
             android:layout_height="32dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="FHD"
             android:textSize="12dp" />
 
         <Button
             android:id="@+id/dialog_dpi_2k"
-            android:layout_width="40dp"
+            style="@style/SceneButton"
+            android:layout_width="50dp"
             android:layout_height="32dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="2K"
             android:textSize="12dp" />
 
         <Button
             android:id="@+id/dialog_dpi_4k"
+            style="@style/SceneButton"
             android:layout_width="40dp"
             android:layout_height="32dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="4K"
             android:textSize="12dp" />
 
         <Button
             android:id="@+id/dialog_dpi_reset"
-            android:layout_width="40dp"
+            style="@style/SceneButton"
+            android:layout_width="50dp"
             android:layout_height="32dp"
             android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="重置"
             android:textSize="12dp" />
     </LinearLayout>
