@@ -45,10 +45,11 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/mode_powersave"
+                android:src="@drawable/memory_default"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:padding="11dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="@color/color_powersave_bg"
+                android:backgroundTint="#C0838383"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -87,9 +88,10 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/mode_balance"
+                android:src="@drawable/memory_lock"
+                android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="@color/color_balance_bg"
+                android:backgroundTint="#00BCD4"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -129,9 +131,10 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/mode_performance"
+                android:src="@drawable/memory_perf"
+                android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="@color/color_performance_bg"
+                android:backgroundTint="#FF9800"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -171,9 +174,10 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/mode_fast"
+                android:src="@drawable/memory_mem"
+                android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="@color/color_fast_bg"
+                android:backgroundTint="#8BC34A"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
