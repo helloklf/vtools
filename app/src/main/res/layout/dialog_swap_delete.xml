@@ -83,7 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="删除/data/swapfile文件，回收存储空间。如果你打算不再使用Swapfile的话~" />
+                        android:text="关闭Swapfile后，删除/data/swapfile文件" />
                 </LinearLayout>
 
                 <Switch
