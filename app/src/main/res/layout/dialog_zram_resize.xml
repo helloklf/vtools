@@ -76,6 +76,7 @@
                 android:textColor="?android:colorAccent"
                 android:layout_width="75dp"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:layout_gravity="center_vertical" />
         </LinearLayout>
 
