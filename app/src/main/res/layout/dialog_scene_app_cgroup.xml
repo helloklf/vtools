@@ -49,7 +49,6 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:padding="11dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#C0838383"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -91,7 +90,6 @@
                 android:src="@drawable/memory_lock"
                 android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#00BCD4"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
