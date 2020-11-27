@@ -13,9 +13,6 @@
     <style name="AppThemeWallpaper" parent="AppThemeNight">
         <item name="android:navigationBarColor">@color/cardBgDarkTransparent</item>
         <item name="android:statusBarColor">@color/cardBgDarkTransparent</item>
-        <item name="colorPrimary">@color/lightPink</item>
-        <item name="colorPrimaryDark">@color/lightPink</item>
-        <item name="colorAccent">@color/lightPink</item>
         <item name="cardBg">@color/cardBgDarkTransparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
