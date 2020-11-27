@@ -18,7 +18,7 @@ class DialogAppPowerConfig(var context: Activity, val current: String?, val iRes
     }
 
     fun show() {
-        val view = context.layoutInflater.inflate(R.layout.dialog_powercfg_modes, null)
+        val view = context.layoutInflater.inflate(R.layout.dialog_scene_app_powercfg, null)
         val dialog = DialogHelper.customDialogBlurBg(context, view)
 
         view.findViewById<View>(R.id.mode_powersave).setOnClickListener {

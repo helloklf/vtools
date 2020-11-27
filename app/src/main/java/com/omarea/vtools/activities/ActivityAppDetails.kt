@@ -33,6 +33,7 @@ import com.omarea.ui.SceneModeAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogAppCGroupMem
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
@@ -325,34 +326,19 @@ class ActivityAppDetails : ActivityBase() {
                     }).show()
         }
 
-        val groupNames = ArrayList<String>().apply {
-            addAll(resources.getStringArray(R.array.cgroup_mem_options))
-        }
-        val groupValues = ArrayList<String>().apply {
-            addAll(resources.getStringArray(R.array.cgroup_mem_values))
-        }
         app_details_cgroup_mem.setOnClickListener {
             val utlis = CGroupMemoryUtlis(this)
             if (!utlis.isSupported) {
                 DialogHelper.helpInfo(this, "", "抱歉，您的内核不支持该功能特性~")
                 return@setOnClickListener
             }
-
-            val index = groupValues.indexOf(sceneConfigInfo.fgCGroupMem)
-            var selectedIndex = if (index < 0) 0 else index
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.cgroup_mem_title))
-                    .setSingleChoiceItems(R.array.cgroup_mem_options, index) { dialog, which ->
-                        selectedIndex = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { dialog, which ->
-                        if (index != selectedIndex) {
-                            sceneConfigInfo.fgCGroupMem = groupValues[selectedIndex]
-                            (it as TextView).text = groupNames[selectedIndex]
-                            _result = RESULT_OK
-                        }
-                    }
-                    .setNegativeButton(R.string.btn_cancel, { dialog, which -> }))
+            DialogAppCGroupMem(this, sceneConfigInfo.fgCGroupMem, object : DialogAppCGroupMem.IResultCallback {
+                override fun onChange(group: String?, name: String?) {
+                    sceneConfigInfo.fgCGroupMem = group
+                    (it as TextView).text = name
+                    _result = RESULT_OK
+                }
+            }).show()
         }
 
         app_details_hidenav.setOnClickListener {
@@ -552,13 +538,7 @@ class ActivityAppDetails : ActivityBase() {
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "")
         app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
-        val groupNames = ArrayList<String>().apply {
-            addAll(resources.getStringArray(R.array.cgroup_mem_options))
-        }
-        val groupValues = ArrayList<String>().apply {
-            addAll(resources.getStringArray(R.array.cgroup_mem_values))
-        }
-        app_details_cgroup_mem.text = if (groupValues.contains(sceneConfigInfo.fgCGroupMem)) groupNames[groupValues.indexOf(sceneConfigInfo.fgCGroupMem)] else groupNames.first()
+        app_details_cgroup_mem.text = DialogAppCGroupMem.Transform(this).getName(sceneConfigInfo.fgCGroupMem)
 
         if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true
