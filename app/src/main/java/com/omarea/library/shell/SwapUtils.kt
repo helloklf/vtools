@@ -6,7 +6,6 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
-import com.omarea.scene_mode.ModeSwitcher
 import java.io.File
 
 /**
@@ -224,13 +223,10 @@ class SwapUtils(context: Context) {
         }
 
     // 强制触发内存回收
-    // level    1:轻微    2:更重    3:极端
+    // level    0:极微    1:轻微    2:更重    3:极端
     fun forceKswapd(level: Int): String {
         if (swapForceKswapdScript != null) {
-            val keepShell = KeepShell()
-            val result = keepShell.doCmdSync("sh $swapForceKswapdScript $level")
-            keepShell.tryExit()
-            return result
+            return KeepShellPublic.getInstance("swap-clear", true).doCmdSync("sh $swapForceKswapdScript $level")
         }
         return "Fail!"
     }

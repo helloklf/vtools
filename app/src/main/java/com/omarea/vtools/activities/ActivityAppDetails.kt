@@ -33,6 +33,7 @@ import com.omarea.ui.SceneModeAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogAppBoostPolicy
 import com.omarea.vtools.dialogs.DialogAppCGroupMem
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import com.omarea.xposed.XposedCheck
@@ -341,6 +342,16 @@ class ActivityAppDetails : ActivityBase() {
             }).show()
         }
 
+        app_details_boost_mem.setOnClickListener {
+            DialogAppBoostPolicy(this, sceneConfigInfo.dynamicBoostMem, object : DialogAppBoostPolicy.IResultCallback {
+                override fun onChange(enabled: Boolean) {
+                    sceneConfigInfo.dynamicBoostMem = enabled
+                    (it as TextView).text = if (enabled) "已启用" else "未启用"
+                    _result = RESULT_OK
+                }
+            }).show()
+        }
+
         app_details_hidenav.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
@@ -539,6 +550,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
         app_details_cgroup_mem.text = DialogAppCGroupMem.Transform(this).getName(sceneConfigInfo.fgCGroupMem)
+        app_details_boost_mem.text = if (sceneConfigInfo.dynamicBoostMem) "已启用" else "未启用"
 
         if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true
@@ -609,7 +621,8 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.smoothScroll != originConfig.smoothScroll ||
                 sceneConfigInfo.freeze != originConfig.freeze ||
                 sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
-                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem
+                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
+                sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem
         ) {
             setResult(RESULT_OK, this.intent)
         } else {

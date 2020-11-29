@@ -42,6 +42,12 @@ elif [[ "$level" == "2" ]]; then
   else
     TargetRecycle=$(($MemTotal / 100 * 18))
   fi
+elif [[ "$level" == "0" ]]; then
+  if [[ $friendly == "true" ]]; then
+    TargetRecycle=$(($MemTotal / 100 * 12))
+  else
+    TargetRecycle=$(($MemTotal / 100 * 6))
+  fi
 else
   if [[ $friendly == "true" ]]; then
     TargetRecycle=$(($MemTotal / 100 * 20))
@@ -80,7 +86,16 @@ else
     fi
 
     echo $TargetRecycle > $modify_path
-    sleep_time=$(($RecyclingSize / 1024 / 60 + 2))
+    # 级别0用在实时加速中，最重要的保持系统的持续流畅，隐藏缩短回收持续时间，减少卡顿
+    if [[ "$level" == "0" ]]; then
+      echo $RecyclingSize >> /cache/scene_booster.log
+      sleep_time=$(($RecyclingSize / 1024 / 120 + 2))
+      if [[ $sleep_time -gt 6 ]]; then
+        sleep_time=6
+      fi
+    else
+      sleep_time=$(($RecyclingSize / 1024 / 60 + 2))
+    fi
 
     while [ $sleep_time -gt 0 ]; do
         sleep 1

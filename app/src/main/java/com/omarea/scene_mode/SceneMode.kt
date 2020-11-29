@@ -1,22 +1,28 @@
 package com.omarea.scene_mode
 
+import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.core.content.ContextCompat.getSystemService
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.library.shell.GAppsUtilis
 import com.omarea.library.shell.LocationHelper
+import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatScreenRotation
+import java.util.*
+import kotlin.collections.ArrayList
 
-class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
+
+class SceneMode private constructor(private val context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
@@ -374,6 +380,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                     restoreLocationModeState()
                     resumeBrightnessState()
                     restoreHeaddUp()
+                    stoptMemoryDynamicBooster()
                 } else {
                     if (currentSceneConfig!!.aloneLight) {
                         backupBrightnessState()
@@ -409,17 +416,24 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                     if (currentSceneConfig!!.freeze) {
                         setFreezeAppStartTime(packageName)
                     }
-                }
 
-                // 实验性新特性（cgroup/memory自动配置）
-                if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
-                    CGroupMemoryUtlis(Scene.context).run {
-                        if (isSupported) {
-                            setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
-                            // Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
-                        } else {
-                            Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                    // 实验性新特性（cgroup/memory自动配置）
+                    if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
+                        CGroupMemoryUtlis(Scene.context).run {
+                            if (isSupported) {
+                                setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)
+                                // Scene.toast("进入" + currentSceneConfig!!.packageName!! + "，cgroup调为[${currentSceneConfig!!.fgCGroupMem}]\n(Scene试验性功能)")
+                            } else {
+                                Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                            }
                         }
+                    }
+
+                    // if (packageName.equals("com.miHoYo.Yuanshen") || packageName.equals("com.tencent.tmgp.sgame")) {
+                    if (currentSceneConfig?.dynamicBoostMem == true) {
+                        startMemoryDynamicBooster()
+                    } else {
+                        stoptMemoryDynamicBooster()
                     }
                 }
 
@@ -427,6 +441,38 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             } catch (ex: Exception) {
                 Log.e(">>>>", "" + ex.message)
             }
+        }
+    }
+
+    private var am: ActivityManager? = null
+    private var memoryWatchTimer: Timer? = null
+    fun startMemoryDynamicBooster() {
+        //获取运行内存的信息
+        if (am == null) {
+            am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
+        }
+        val info = ActivityManager.MemoryInfo()
+
+        memoryWatchTimer = Timer().apply {
+            schedule(object : TimerTask() {
+                override fun run() {
+                    am?.getMemoryInfo(info)
+                    val total = info.totalMem
+                    val availMem = info.availMem
+                    val raito = availMem.toDouble() / total
+
+                    if (raito < 0.16 && raito > 0.0) {
+                        SwapUtils(context).forceKswapd(0)
+                    }
+                }
+            }, 3000, 10000)
+        }
+    }
+
+    private fun stoptMemoryDynamicBooster() {
+        if (memoryWatchTimer != null) {
+            memoryWatchTimer?.cancel()
+            memoryWatchTimer = null
         }
     }
 

@@ -10,7 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     public SceneConfigStore(Context context) {
         super(context, "scene3_config", null, DB_VERSION);
@@ -30,7 +30,8 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     "freeze int default(0)," + // 休眠
                     "screen_orientation int default(-1)," + // 屏幕旋转方向
                     "fg_cgroup_mem text default('')," + // cgroup
-                    "bg_cgroup_mem text default('')" + // cgroup
+                    "bg_cgroup_mem text default('')," + // cgroup
+                    "dynamic_boost_mem int default(0)" + //
                 ")");
         } catch (Exception ignored) {
         }
@@ -46,11 +47,16 @@ public class SceneConfigStore extends SQLiteOpenHelper {
             }
         }
 
-        if (oldVersion == 3) {
-            // 屏幕方向
+        if (oldVersion < 4) {
             try {
                 db.execSQL("alter table scene_config3 add column fg_cgroup_mem text default('')");
                 db.execSQL("alter table scene_config3 add column bg_cgroup_mem text default('')");
+            } catch (Exception ignored) {
+            }
+        }
+        if (oldVersion < 5) {
+            try {
+                db.execSQL("alter table scene_config3 add column dynamic_boost_mem text default(0)");
             } catch (Exception ignored) {
             }
         }
@@ -72,6 +78,7 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                 sceneConfigInfo.screenOrientation = cursor.getInt(cursor.getColumnIndex("screen_orientation"));
                 sceneConfigInfo.fgCGroupMem = cursor.getString(cursor.getColumnIndex("fg_cgroup_mem"));
                 sceneConfigInfo.bgCGroupMem = cursor.getString(cursor.getColumnIndex("bg_cgroup_mem"));
+                sceneConfigInfo.dynamicBoostMem = cursor.getInt(cursor.getColumnIndex("dynamic_boost_mem")) == 1;
             }
             cursor.close();
             sqLiteDatabase.close();
@@ -86,7 +93,7 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         getWritableDatabase().beginTransaction();
         try {
             database.execSQL("delete from  scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
-            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation, fg_cgroup_mem, bg_cgroup_mem) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation, fg_cgroup_mem, bg_cgroup_mem, dynamic_boost_mem) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     sceneConfigInfo.packageName,
                     sceneConfigInfo.aloneLight ? 1 : 0,
                     sceneConfigInfo.aloneLightValue,
@@ -96,7 +103,8 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     sceneConfigInfo.freeze ? 1 : 0,
                     sceneConfigInfo.screenOrientation,
                     sceneConfigInfo.fgCGroupMem,
-                    sceneConfigInfo.bgCGroupMem
+                    sceneConfigInfo.bgCGroupMem,
+                    sceneConfigInfo.dynamicBoostMem ? 1 : 0
             });
             database.setTransactionSuccessful();
             return true;
