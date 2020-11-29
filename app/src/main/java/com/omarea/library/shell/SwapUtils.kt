@@ -12,10 +12,10 @@ import java.io.File
  * Created by Hello on 2017/11/01.
  */
 
-class SwapUtils(context: Context) {
+class SwapUtils(private val context: Context) {
     private var swapfilePath: String = "/data/swapfile"
     private var swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
-    private var swapForceKswapdScript = FileWrite.writePrivateShellFile("addin/force_compact.sh", "addin/force_compact.sh", context)
+    private var swapForceKswapdScript:String? = null
     // private var zramControlScript = FileWrite.writePrivateShellFile("addin/zram_control.sh", "addin/zram_control.sh", context)
 
     // 是否已创建swapfile文件
@@ -225,6 +225,11 @@ class SwapUtils(context: Context) {
     // 强制触发内存回收
     // level    0:极微    1:轻微    2:更重    3:极端
     fun forceKswapd(level: Int): String {
+        if (swapForceKswapdScript == null) {
+            swapForceKswapdScript = FileWrite.writePrivateShellFile("addin/force_compact.sh", "addin/force_compact.sh", context)
+            KeepShellPublic.doCmdSync("rm /cache/force_compact.log 2>/dev/null")
+        }
+
         if (swapForceKswapdScript != null) {
             return KeepShellPublic.getInstance("swap-clear", true).doCmdSync("sh $swapForceKswapdScript $level")
         }

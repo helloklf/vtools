@@ -319,7 +319,7 @@
     <string-array name="cgroup_mem_options">
         <item>普通应用</item>
         <item>常驻后台</item>
-        <item>强制内存</item>
+        <item>优先内存</item>
         <item>系统进程</item>
     </string-array>
     <string-array name="cgroup_mem_values">

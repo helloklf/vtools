@@ -88,12 +88,15 @@ else
     echo $TargetRecycle > $modify_path
     # 级别0用在实时加速中，最重要的保持系统的持续流畅，隐藏缩短回收持续时间，减少卡顿
     if [[ "$level" == "0" ]]; then
-      echo $RecyclingSize >> /cache/scene_booster.log
+      # TODO:去掉 log
+      current_app=`getprop vtools.powercfg_app`
+      echo $current_app $(($RecyclingSize / 1024))MB >> /cache/force_compact.log
       sleep_time=$(($RecyclingSize / 1024 / 120 + 2))
       if [[ $sleep_time -gt 6 ]]; then
         sleep_time=6
       fi
     else
+      echo Scene App $(($RecyclingSize / 1024))MB >> /cache/force_compact.log
       sleep_time=$(($RecyclingSize / 1024 / 60 + 2))
     fi
 

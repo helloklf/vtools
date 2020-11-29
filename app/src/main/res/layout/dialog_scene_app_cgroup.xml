@@ -148,7 +148,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="强制内存" />
+                    android:text="优先内存" />
 
                 <TextView
                     style="@style/textSmall"
