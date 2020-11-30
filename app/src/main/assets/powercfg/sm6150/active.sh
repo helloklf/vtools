@@ -165,6 +165,8 @@ sched_config() {
 }
 
 if [ "$action" = "powersave" ]; then
+  governor_restore
+
 	set_cpu_freq 5000 1612800 5000 1555200
 	set_input_boost_freq 0 0 0
 
@@ -184,9 +186,9 @@ if [ "$action" = "powersave" ]; then
   echo 500 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
+elif [ "$action" = "balance" ]; then
   governor_restore
 
-elif [ "$action" = "balance" ]; then
 	set_cpu_freq 5000 1708800 5000 1843200
 	set_input_boost_freq 1324800 0 40
 
@@ -206,9 +208,9 @@ elif [ "$action" = "balance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
+elif [ "$action" = "performance" ]; then
   governor_restore
 
-elif [ "$action" = "performance" ]; then
 	set_cpu_freq 300000 2500000 300000 2750000
 	set_input_boost_freq 1324800 1555200 40
 
@@ -228,9 +230,9 @@ elif [ "$action" = "performance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
-  governor_restore
-
 elif [ "$action" = "fast" ]; then
+  governor_performance
+
 	set_cpu_freq 1708800 2500000 1209600 2750000
 	set_input_boost_freq 1804800 1939200 120
 
@@ -250,5 +252,4 @@ elif [ "$action" = "fast" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
-  governor_performance
 fi

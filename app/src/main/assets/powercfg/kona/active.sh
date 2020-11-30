@@ -177,6 +177,8 @@ sched_config() {
 }
 
 if [[ "$action" = "powersave" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -197,12 +199,12 @@ if [[ "$action" = "powersave" ]]; then
 	sched_config "85 85" "96 96" "160" "260"
   echo 0 > /sys/devices/system/cpu/cpu7/online
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "balance" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -223,12 +225,12 @@ if [[ "$action" = "balance" ]]; then
 
   sched_config "85 85" "96 96" "120" "200"
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "performance" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
@@ -249,12 +251,12 @@ if [[ "$action" = "performance" ]]; then
 
 	sched_config "85 85" "95 95" "85" "100"
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "fast" ]]; then
+  governor_performance
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
@@ -274,8 +276,6 @@ if [[ "$action" = "fast" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
-
-  governor_performance
 
 	exit 0
 fi

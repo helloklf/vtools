@@ -155,7 +155,7 @@ set_input_boost_freq() {
 
 set_cpu_freq()
 {
-    echo $1 $2 $3 $4
+  echo $1 $2 $3 $4
 	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
 	echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
@@ -166,18 +166,20 @@ set_cpu_freq()
 }
 
 sched_config() {
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
 
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
 }
 
 if [[ "$action" = "powersave" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -198,12 +200,12 @@ if [[ "$action" = "powersave" ]]; then
 	sched_config "85 85" "96 96" "160" "260"
   echo 0 > /sys/devices/system/cpu/cpu7/online
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "balance" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -224,12 +226,12 @@ if [[ "$action" = "balance" ]]; then
 
 	sched_config "85 85" "96 96" "120" "200"
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "performance" ]]; then
+  governor_restore
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
@@ -250,12 +252,12 @@ if [[ "$action" = "performance" ]]; then
 
 	sched_config "85 85" "95 95" "85" "100"
 
-  governor_restore
-
 	exit 0
 fi
 
 if [[ "$action" = "fast" ]]; then
+  governor_performance
+
   echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
@@ -275,8 +277,6 @@ if [[ "$action" = "fast" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
-
-  governor_performance
 
 	exit 0
 fi
