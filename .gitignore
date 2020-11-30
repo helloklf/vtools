@@ -13,3 +13,5 @@ app/release_mini
 app/release/app-release.apk
 app/build.gradle
 .cxx
+app/debug/app-debug.apk
+app/debug/output-metadata.json
