@@ -26,6 +26,7 @@ class AppListHelper(context: Context) {
 
     fun getTags(applicationInfo: ApplicationInfo): String {
         val stateTags = StringBuilder()
+        val readDir = if (Build.VERSION.SDK_INT >= 30) CommonCmds.AbsBackUpReadDir else CommonCmds.AbsBackUpDir
         try {
             if (!applicationInfo.enabled) {
                 stateTags.append("❄已冻结 ")
@@ -37,7 +38,7 @@ class AppListHelper(context: Context) {
                 stateTags.append("🔒更新的系统应用 ")
             }
             val packageName = applicationInfo.packageName
-            val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
+            val absPath = readDir + packageName + ".apk"
             if (File(absPath).exists()) {
                 val backupInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)!!
                 val installInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
@@ -50,7 +51,7 @@ class AppListHelper(context: Context) {
                 } else {
                     stateTags.append("♻高于备份版本 ")
                 }
-            } else if (File(CommonCmds.BackUpDir + packageName + ".tar.gz").exists()) {
+            } else if (File(readDir + packageName + ".tar.gz").exists()) {
                 stateTags.append("🔄有备份数据 ")
             }
         } catch (ex: Exception) {
@@ -213,7 +214,8 @@ class AppListHelper(context: Context) {
         return (list)
     }
 
-    fun getApkFilesInfoList(dirPath: String): ArrayList<Appinfo> {
+    fun getBackupedAppList(): ArrayList<Appinfo> {
+        val dirPath = if (Build.VERSION.SDK_INT >= 30) CommonCmds.AbsBackUpReadDir else CommonCmds.AbsBackUpDir
         val list = ArrayList<Appinfo>()
         val dir = File(dirPath)
         if (!dir.exists())
@@ -242,8 +244,6 @@ class AppListHelper(context: Context) {
                 val packageInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
                 if (packageInfo != null) {
                     val applicationInfo = packageInfo.applicationInfo
-                    if (applicationInfo.packageName == "com.omarea.vtools")
-                        continue
                     applicationInfo.sourceDir = absPath
                     applicationInfo.publicSourceDir = absPath
 

@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -14,6 +15,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -305,29 +307,23 @@ class ActivityCpuModes : ActivityBase() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_POWERCFG_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                if (data.extras?.containsKey("file") != true) {
-                    return
-                }
-                val path = data.extras!!.getString("file")!!
-                val file = File(path)
-                if (file.exists()) {
-                    if (file.length() > 200 * 1024) {
-                        Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
-                        return
-                    }
-                    val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
-                    val configStar = lines.split("\n").firstOrNull()
-                    if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context, lines, ModeSwitcher.SOURCE_SCENE_IMPORT)) {
-                            configInstalled()
+                if (Build.VERSION.SDK_INT >= 30) {
+                    val absPath = FilePathResolver().getPath(this, data.data)
+                    if (absPath != null) {
+                        if (absPath.endsWith(".sh")) {
+                            installLocalConfig(absPath)
                         } else {
-                            Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "选择的文件无效（应当是.sh文件）！", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "所选的文件没找到！", Toast.LENGTH_LONG).show()
+                    if (data.extras?.containsKey("file") != true) {
+                        return
+                    }
+                    val path = data.extras!!.getString("file")!!
+                    installLocalConfig(path)
                 }
             }
             return
@@ -335,6 +331,29 @@ class ActivityCpuModes : ActivityBase() {
             if (resultCode == Activity.RESULT_OK) {
                 configInstalled()
             }
+        }
+    }
+
+    private fun installLocalConfig(path: String) {
+        val file = File(path)
+        if (file.exists()) {
+            if (file.length() > 200 * 1024) {
+                Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
+                return
+            }
+            val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
+            val configStar = lines.split("\n").firstOrNull()
+            if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
+                if (configInstaller.installCustomConfig(context, lines, ModeSwitcher.SOURCE_SCENE_IMPORT)) {
+                    configInstalled()
+                } else {
+                    Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            Toast.makeText(context, "所选的文件没找到！", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -359,12 +378,20 @@ class ActivityCpuModes : ActivityBase() {
     }
 
     private fun chooseLocalConfig() {
-        try {
-            val intent = Intent(this.context, ActivityFileSelector::class.java)
-            intent.putExtra("extension", "sh")
-            startActivityForResult(intent, REQUEST_POWERCFG_FILE)
-        } catch (ex: Exception) {
-            Toast.makeText(context, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+        val action = REQUEST_POWERCFG_FILE
+        if (Build.VERSION.SDK_INT >= 30) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            startActivityForResult(intent, action)
+        } else {
+            try {
+                val intent = Intent(this.context, ActivityFileSelector::class.java)
+                intent.putExtra("extension", "sh")
+                startActivityForResult(intent, action)
+            } catch (ex: Exception) {
+                Toast.makeText(context, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

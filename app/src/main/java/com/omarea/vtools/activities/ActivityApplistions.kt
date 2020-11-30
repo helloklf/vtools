@@ -1,29 +1,21 @@
 package com.omarea.vtools.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.Scene
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
-import com.omarea.store.SpfConfig
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
@@ -174,12 +166,21 @@ class ActivityApplistions : ActivityBase() {
         setListData(backupedList, apps_backupedlist)
     }
 
+    private var backupReadFixed = false
     private fun setList() {
         processBarDialog.showDialog()
-        Thread(Runnable {
+        Thread {
+            if (!backupReadFixed && Build.VERSION.SDK_INT >= 30) {
+                val fixCmd = FileWrite.writePrivateShellFile("addin/fix_backup_read.sh", "addin/fix_backup_read.sh", this)
+                if (fixCmd != null) {
+                    KeepShellPublic.doCmdSync("sh $fixCmd")
+                }
+                backupReadFixed = true
+            }
+
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
-            backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
+            backupedList = appListHelper.getBackupedAppList()
             apps_userlist?.run {
                 setListData(installedList, this)
             }
@@ -189,7 +190,7 @@ class ActivityApplistions : ActivityBase() {
             apps_backupedlist?.run {
                 setListData(backupedList, this)
             }
-        }).start()
+        }.start()
     }
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {

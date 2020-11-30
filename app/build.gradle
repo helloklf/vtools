@@ -18,7 +18,7 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 201126
+        versionCode 20201130
         versionName "4.0.0 Inside Preview"
         externalNativeBuild {
             cmake {
@@ -29,10 +29,10 @@ android {
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            zipAlignEnabled true
+            zipAlignEnabled false
             debuggable false
             jniDebuggable = false
-            signingConfig signingConfigs.omarea_Signing
+            // signingConfig signingConfigs.omarea_Signing
         }
         release_mini {
             shrinkResources true

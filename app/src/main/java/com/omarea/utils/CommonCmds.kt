@@ -1,6 +1,7 @@
 package com.omarea.utils
 
 import android.os.Environment
+import com.omarea.Scene
 
 /**
  * Created by Hello on 2017/2/22.
@@ -9,8 +10,8 @@ import android.os.Environment
 object CommonCmds {
     val SDCardDir: String = Environment.getExternalStorageDirectory().absolutePath
 
-    const val BackUpDir = "/backups/apps/"
     val AbsBackUpDir = "$SDCardDir/backups/apps/"
+    val AbsBackUpReadDir = "${SDCardDir}/Android/data/${Scene.context.packageName}/backups/apps/"
 
     const val MountSystemRW =
             "busybox mount -o rw,remount / 2>/dev/null\n" +

@@ -3,6 +3,7 @@ package com.omarea.vtools.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
@@ -10,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
 import com.omarea.Scene
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.CommonCmds
@@ -75,16 +77,16 @@ class ActivityImg : ActivityBase() {
         img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             when (position) {
                 0 -> backupImg(BOOT_IMG)
-                1 -> chooseImaToFlash(BOOT_IMG)
+                1 -> chooseImgToFlash(BOOT_IMG)
 
                 2 -> backupImg(RECOVERY_IMG)
-                3 -> chooseImaToFlash(RECOVERY_IMG)
+                3 -> chooseImgToFlash(RECOVERY_IMG)
 
                 4 -> backupImg(DTBO_IMG)
-                5 -> chooseImaToFlash(DTBO_IMG)
+                5 -> chooseImgToFlash(DTBO_IMG)
 
                 6 -> backupImg(PERSIST_IMG)
-                7 -> chooseImaToFlash(PERSIST_IMG)
+                7 -> chooseImgToFlash(PERSIST_IMG)
             }
         }
     }
@@ -129,40 +131,66 @@ class ActivityImg : ActivityBase() {
     private val DTBO_IMG = 2
     private val PERSIST_IMG = 3
 
-    private fun chooseImaToFlash(type: Int) {
-        val intent = Intent(this, ActivityFileSelector::class.java)
-        intent.putExtra("extension", "img")
-        startActivityForResult(intent, type)
+    private fun chooseImgToFlash(type: Int) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            startActivityForResult(intent, type)
+        } else {
+            val intent = Intent(this, ActivityFileSelector::class.java)
+            intent.putExtra("extension", "img")
+            startActivityForResult(intent, type)
+        }
+    }
+
+    private fun flash(imgPath: String, requestCode: Int) {
+        //刷入recovery
+        if (File(imgPath).exists()) {
+            var partition = ""
+            when (requestCode) {
+                BOOT_IMG -> partition = "Boot"
+                RECOVERY_IMG -> partition = "Recovery"
+                DTBO_IMG -> partition = "DTBO"
+                PERSIST_IMG -> partition = "Persist"
+            }
+            DialogHelper.animDialog(AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.flash_confirm))
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        when (requestCode) {
+                            BOOT_IMG -> BackupRestoreUtils(this).flashBoot(imgPath)
+                            RECOVERY_IMG -> BackupRestoreUtils(this).flashRecovery(imgPath)
+                            DTBO_IMG -> BackupRestoreUtils(this).flashDTBO(imgPath)
+                            PERSIST_IMG -> BackupRestoreUtils(this).flashPersist(imgPath)
+                        }
+                    }
+                    .setMessage("此操作将刷入${imgPath}到系统${partition}分区，如果你选择了错误的文件，刷入后可能导致手机无法开机！"))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null && data.extras?.containsKey("file") == true) {
-            val path = data.extras!!.getString("file")!!
-            //刷入recovery
-            if (File(path).exists()) {
-                var partition = ""
-                when (requestCode) {
-                    BOOT_IMG -> partition = "Boot"
-                    RECOVERY_IMG -> partition = "Recovery"
-                    DTBO_IMG -> partition = "DTBO"
-                    PERSIST_IMG -> partition = "Persist"
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                val absPath = FilePathResolver().getPath(this, data.data)
+                if (absPath != null) {
+                    if (absPath.endsWith(".img")) {
+                        flash(absPath, requestCode)
+                    } else {
+                        Toast.makeText(this, "选择的文件无效（应当是.img文件）！", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
                 }
-                DialogHelper.animDialog(AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.flash_confirm))
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            when (requestCode) {
-                                BOOT_IMG -> BackupRestoreUtils(this).flashBoot(path)
-                                RECOVERY_IMG -> BackupRestoreUtils(this).flashRecovery(path)
-                                DTBO_IMG -> BackupRestoreUtils(this).flashDTBO(path)
-                                PERSIST_IMG -> BackupRestoreUtils(this).flashPersist(path)
-                            }
-                        }
-                        .setMessage("此操作将刷入${path}到系统${partition}分区，如果你选择了错误的文件，刷入后可能导致手机无法开机！"))
+            } else {
+                if (data.extras?.containsKey("file") == true) {
+                    val path = data.extras!!.getString("file")!!
+                    flash(path, requestCode)
+                } else {
+                    Toast.makeText(this, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
+                }
             }
-        } else {
-            Toast.makeText(this, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
         }
     }
 }
