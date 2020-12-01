@@ -390,10 +390,12 @@ class ActivityAppConfig : ActivityBase() {
         if (configInfo.dpi >= 96) {
             desc.append("DIP " + configInfo.dpi + "  ")
         }
-        DialogAppOrientation.Transform(this).getName(configInfo.screenOrientation).run {
-            if (isNotEmpty()) {
-                desc.append(this)
-                desc.append("  ")
+        if (configInfo.screenOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+            DialogAppOrientation.Transform(this).getName(configInfo.screenOrientation).run {
+                if (isNotEmpty()) {
+                    desc.append(this)
+                    desc.append("  ")
+                }
             }
         }
         if (aidlConn != null) {
