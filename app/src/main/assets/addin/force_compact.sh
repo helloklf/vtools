@@ -12,7 +12,7 @@ elif [[ -f '/proc/sys/vm/min_free_kbytes' ]]; then
   modify_path='/proc/sys/vm/min_free_kbytes'
 else
   echo '搞不定，你这内核不支持！'
-  exit 1
+  return 1
 fi
 
 min_free_kbytes=`getprop vtools.backup.free_kbytes`
@@ -67,9 +67,14 @@ else
   SwapRequire=$(($RecyclingSize / 100 * 130))
 
   # 如果没有足够的Swap容量可以回收这些内存
-  # 则只拿Swap剩余容量的60%来回收内存
+  # 则只拿Swap剩余容量的50%来回收内存
   if [[ $SwapFree -lt $SwapRequire ]]; then
-      RecyclingSize=$(($SwapFree / 100 * 60))
+    # 模式0优先保证性能，SWAP不足时强制回收有风险，因此不执行
+    if [[ "$level" == "0" ]]; then
+      echo '空闲SWAP不足以完成自动回收~'
+      return 5
+    fi
+    RecyclingSize=$(($SwapFree / 100 * 50))
   fi
 
   # 最后计算出最终要回收的内存大小
@@ -80,7 +85,7 @@ else
     # 状态记录，避免同时执行多次
     if [[ "$running_tag" == "1" ]]; then
       echo '不要同时执行多次内存回收操作~'
-      exit 0
+      return 0
     else
       setprop vtools.state.force_compact 1
     fi

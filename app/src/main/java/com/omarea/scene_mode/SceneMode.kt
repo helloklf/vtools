@@ -446,6 +446,7 @@ class SceneMode private constructor(private val context: Context, private var st
 
     private var am: ActivityManager? = null
     private var memoryWatchTimer: Timer? = null
+    private var swapUtils: SwapUtils? = null
     fun startMemoryDynamicBooster() {
         //获取运行内存的信息
         if (am == null) {
@@ -454,6 +455,9 @@ class SceneMode private constructor(private val context: Context, private var st
         val info = ActivityManager.MemoryInfo()
 
         memoryWatchTimer = Timer().apply {
+            if (swapUtils == null) {
+                swapUtils = SwapUtils(context)
+            }
             schedule(object : TimerTask() {
                 override fun run() {
                     am?.getMemoryInfo(info)
@@ -462,7 +466,7 @@ class SceneMode private constructor(private val context: Context, private var st
                     val raito = availMem.toDouble() / total
 
                     if (raito < 0.16 && raito > 0.0) {
-                        SwapUtils(context).forceKswapd(0)
+                        swapUtils?.forceKswapd(0)
                     }
                 }
             }, 3000, 10000)
