@@ -8,6 +8,7 @@ import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import com.omarea.Scene
+import com.omarea.model.SceneConfigInfo
 
 class FloatScreenRotation(mContext: Context) {
     private var view: View = View(mContext)
@@ -40,13 +41,15 @@ class FloatScreenRotation(mContext: Context) {
     private var show: Boolean = false
     private val wm = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    public fun update(screenOrientation: Int) {
+    public fun update(config: SceneConfigInfo) {
+        val screenOrientation = config.screenOrientation
+
         if (screenOrientation == params.screenOrientation) {
             return
         }
 
         params.screenOrientation = screenOrientation
-        Scene.post(Runnable {
+        Scene.post {
             if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
                 // Log.d(">>>>", "恢复" + screenOrientation)
                 if (show) {
@@ -62,7 +65,7 @@ class FloatScreenRotation(mContext: Context) {
                     show = true
                 }
             }
-        })
+        }
     }
 
     public fun remove() {
@@ -70,5 +73,6 @@ class FloatScreenRotation(mContext: Context) {
             wm.removeViewImmediate(view)
         }
         this.show = false;
+        params.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 }

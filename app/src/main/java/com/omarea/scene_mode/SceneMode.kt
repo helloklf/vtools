@@ -3,11 +3,9 @@ package com.omarea.scene_mode
 import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.CGroupMemoryUtlis
@@ -251,7 +249,7 @@ class SceneMode private constructor(private val context: Context, private var st
     // 设置屏幕旋转
     private fun updateScreenRotation() {
         currentSceneConfig?.run {
-            floatScreenRotation.update(screenOrientation)
+            floatScreenRotation.update(this)
         }
     }
 
@@ -501,7 +499,7 @@ class SceneMode private constructor(private val context: Context, private var st
 
     fun onScreenOff() {
         // 息屏时暂停屏幕旋转修改
-        floatScreenRotation.update(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        floatScreenRotation.remove()
     }
 
 
