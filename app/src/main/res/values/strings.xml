@@ -328,6 +328,12 @@
         <item>scene_perf</item>
         <item>scene_sys</item>
     </string-array>
+    <string-array name="orientation_options">
+        <item>未设置</item>
+        <item></item>
+        <item></item>
+        <item>scene_sys</item>
+    </string-array>
 
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>

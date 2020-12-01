@@ -53,4 +53,9 @@ class RadioGroupSimulator {
         get () {
             return radios.find { it.isChecked }
         }
+
+    fun setCheckedByTag(value: Any) {
+        val radio = radios.find { it.tag == value }
+        radio?.isChecked = true
+    }
 }

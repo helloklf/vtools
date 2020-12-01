@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.model.SceneConfigInfo
@@ -35,9 +36,11 @@ import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppBoostPolicy
 import com.omarea.vtools.dialogs.DialogAppCGroupMem
+import com.omarea.vtools.dialogs.DialogAppOrientation
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
+import kotlinx.android.synthetic.main.list_item_text.view.*
 import org.json.JSONObject
 import java.io.File
 
@@ -417,6 +420,14 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.disNotice = (it as Switch).isChecked
             }
         }
+        scene_orientation.setOnClickListener {
+            DialogAppOrientation(this, sceneConfigInfo.screenOrientation, object : DialogAppOrientation.IResultCallback {
+                override fun onChange(value: Int, name: String?) {
+                    sceneConfigInfo.screenOrientation = value
+                    (it as TextView).text = "" + name
+                }
+            }).show()
+        }
         app_details_aloowlight.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
@@ -570,20 +581,7 @@ class ActivityAppDetails : ActivityBase() {
         scene_mode_config.visibility = if (scene_mode_config.visibility == View.VISIBLE && scene_mode_allow.isChecked) View.VISIBLE else View.GONE
 
         val screenOrientation = sceneConfigInfo.screenOrientation
-        when (screenOrientation) {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED -> {
-                scene_orientation_default.isChecked = true
-            }
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE -> {
-                scene_orientation_landscape.isChecked = true
-            }
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT -> {
-                scene_orientation_portrait.isChecked = true
-            }
-            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR -> {
-                scene_orientation_auto.isChecked = true
-            }
-        }
+        scene_orientation.text = DialogAppOrientation.Transform(this).getName(screenOrientation)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -600,15 +598,6 @@ class ActivityAppDetails : ActivityBase() {
 
     private fun saveConfig() {
         val originConfig = SceneConfigStore(this).getAppConfig(sceneConfigInfo.packageName)
-        sceneConfigInfo.screenOrientation = (if (scene_orientation_auto.isChecked) {
-            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        } else if (scene_orientation_landscape.isChecked) {
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        } else if (scene_orientation_portrait.isChecked) {
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-        } else {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        })
 
         if (
                 sceneConfigInfo.screenOrientation != originConfig.screenOrientation ||

@@ -138,7 +138,7 @@
             android:layout_marginStart="8dp"
             android:id="@+id/btn_confirm"
             style="@style/dialogConfirmBtn"
-            android:text="下一步" />
+            android:text="确定" />
     </LinearLayout>
 
 </LinearLayout>

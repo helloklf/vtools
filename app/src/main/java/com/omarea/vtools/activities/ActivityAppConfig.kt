@@ -28,6 +28,7 @@ import com.omarea.utils.AppListHelper
 import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogAppOrientation
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import kotlinx.android.synthetic.main.activity_app_config.*
 import org.json.JSONObject
@@ -389,15 +390,10 @@ class ActivityAppConfig : ActivityBase() {
         if (configInfo.dpi >= 96) {
             desc.append("DIP " + configInfo.dpi + "  ")
         }
-        when (configInfo.screenOrientation) {
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE -> {
-                desc.append("横屏显示  ")
-            }
-            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT -> {
-                desc.append("竖屏显示  ")
-            }
-            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR -> {
-                desc.append("自动旋转  ")
+        DialogAppOrientation.Transform(this).getName(configInfo.screenOrientation).run {
+            if (isNotEmpty()) {
+                desc.append(this)
+                desc.append("  ")
             }
         }
         if (aidlConn != null) {

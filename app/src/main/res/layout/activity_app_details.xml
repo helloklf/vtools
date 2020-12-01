@@ -34,6 +34,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -154,21 +155,47 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="基本设置" />
-                    <Switch
-                        android:id="@+id/app_details_aloowlight"
-                        style="@style/scene_config_item"
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:minHeight="40dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="关闭自动亮度" />
+                        android:layout_height="wrap_content">
 
-                    <Switch
-                        android:id="@+id/app_details_gps"
-                        style="@style/scene_config_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="打开GPS（离开后还原）" />
+                        <TextView
+                            style="@style/scene_config_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="关闭自动亮度" />
+                        <Switch
+                            android:id="@+id/app_details_aloowlight"
+                            style="@style/scene_config_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+                    </LinearLayout>
 
                     <LinearLayout
+                        android:gravity="center_vertical"
+                        android:minHeight="40dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/scene_config_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="打开GPS（离开后还原）" />
+                        <Switch
+                            android:id="@+id/app_details_gps"
+                            style="@style/scene_config_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:minHeight="40dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -178,40 +205,13 @@
                             android:layout_height="wrap_content"
                             android:text="旋转屏幕" />
 
-                        <RadioGroup
+                        <TextView
+                            android:id="@+id/scene_orientation"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:gravity="end"
-                            android:orientation="horizontal">
-
-                            <RadioButton
-                                android:id="@+id/scene_orientation_default"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="6dp"
-                                android:text="默认" />
-
-                            <RadioButton
-                                android:id="@+id/scene_orientation_auto"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="6dp"
-                                android:text="重力" />
-
-                            <RadioButton
-                                android:id="@+id/scene_orientation_portrait"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="6dp"
-                                android:text="竖" />
-
-                            <RadioButton
-                                android:id="@+id/scene_orientation_landscape"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="横" />
-                        </RadioGroup>
+                            android:gravity="center_vertical|end"
+                            android:paddingEnd="8dp" />
                     </LinearLayout>
                 </LinearLayout>
 
