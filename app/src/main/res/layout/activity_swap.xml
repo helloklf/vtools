@@ -58,7 +58,7 @@
                     <FrameLayout
                         android:layout_width="70dp"
                         android:layout_height="70dp">
-                        <com.omarea.ui.RamChartView
+                        <com.omarea.ui.ZRamStateView
                             android:id="@+id/swap_usage"
                             app:total="2048"
                             app:free="2048"
@@ -155,7 +155,7 @@
                     <FrameLayout
                         android:layout_width="70dp"
                         android:layout_height="70dp">
-                        <com.omarea.ui.RamChartView
+                        <com.omarea.ui.ZRamStateView
                             android:id="@+id/zram_usage"
                             app:total="2048"
                             app:free="2048"
