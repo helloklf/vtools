@@ -36,6 +36,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:paddingStart="10dp"
                         android:paddingEnd="0dp"
                         android:layout_margin="8dp"
                         android:background="@drawable/filter_toolbar_bg">

@@ -167,8 +167,9 @@ class ActivityAppConfig : ActivityBase() {
         config_search_box.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 loadList()
+                return@setOnEditorActionListener true
             }
-            true
+            false
         }
 
         configlist_modes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

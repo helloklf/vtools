@@ -100,9 +100,16 @@ class ActivityApplistions : ActivityBase() {
             }
             false
         }
-        apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
-            searchApp()
-        }))
+        var lastInput = 0L
+        apps_search_box.addTextChangedListener(SearchTextWatcher {
+            val current = System.currentTimeMillis()
+            lastInput = current
+            myHandler?.postDelayed({
+                if (lastInput == current) {
+                    searchApp()
+                }
+            }, 500)
+        })
 
         app_btn_hide2.setOnClickListener {
             val intent = Intent(context, ActivityHiddenApps::class.java)

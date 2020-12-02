@@ -11,6 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.ProcessUtils
@@ -53,19 +54,13 @@ class ActivityProcess : ActivityBase() {
         }
 
         // 搜索关键字
-        process_search.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
+        process_search.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                (process_list.adapter as ProcessAdapter?)?.updateKeywords(v.text.toString())
+                return@setOnEditorActionListener true
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                s?.run {
-                    (process_list.adapter as ProcessAdapter?)?.updateKeywords(s.toString())
-                }
-            }
-        })
+            false
+        }
 
         // 排序方式
         process_sort_mode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
