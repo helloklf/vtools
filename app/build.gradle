@@ -12,13 +12,13 @@ android {
         }
     }
     compileSdkVersion 30
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
     defaultConfig {
         resConfigs "zh"
         applicationId "com.omarea.vtools"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 20201130
+        versionCode 20201203
         versionName "4.0.0 Inside Preview"
         externalNativeBuild {
             cmake {
@@ -43,7 +43,7 @@ android {
             jniDebuggable = false
         }
         debug {
-            // signingConfig signingConfigs.omarea_Signing
+            signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
             debuggable true
             jniDebuggable = false

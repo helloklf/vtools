@@ -514,6 +514,18 @@ class SceneMode private constructor(private val context: Context, private var st
      */
     fun clearFreezeApp() {
         val suspendMode = this.suspendMode
+
+        currentSceneConfig?.packageName?.run {
+            val config = store.getAppConfig(this)
+            if (config.freeze) {
+                if (suspendMode) {
+                    suspendApp(this)
+                } else {
+                    Companion.freezeApp(this)
+                }
+            }
+        }
+
         while (freezList.size > 0) {
             val firstItem = freezList.first()
             val config = store.getAppConfig(firstItem.packageName)
