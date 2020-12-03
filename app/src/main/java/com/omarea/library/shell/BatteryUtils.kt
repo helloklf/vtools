@@ -174,6 +174,7 @@ class BatteryUtils {
                 val stringBuilder = StringBuilder()
                 var voltage = 0F
                 var electricity = 0F
+                var padAuth = false
                 for (info in infos) {
                     try {
                         if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
@@ -226,11 +227,8 @@ class BatteryUtils {
                             }
                         } else if (info.startsWith("POWER_SUPPLY_INPUT_CURRENT_NOW=")) {
                             val keyword = "POWER_SUPPLY_INPUT_CURRENT_NOW="
-                            stringBuilder.append("当前电流 = ")
                             val v = Integer.parseInt(info.substring(keyword.length, info.length))
                             electricity = v / 1000 / 1000.0f
-                            stringBuilder.append(electricity)
-                            stringBuilder.append("A")
                         } else if (info.startsWith("POWER_SUPPLY_QUICK_CHARGE_TYPE=")) {
                             val keyword = "POWER_SUPPLY_QUICK_CHARGE_TYPE="
                             stringBuilder.append("快充类型 = ")
@@ -259,6 +257,7 @@ class BatteryUtils {
                             val keyword = "POWER_SUPPLY_PD_AUTHENTICATION="
                             stringBuilder.append("PD认证 = ")
                             stringBuilder.append(if (info.substring(keyword.length, info.length).equals("1")) "已认证" else "未认证")
+                            padAuth = true
                         } else {
                             continue
                         }
@@ -267,7 +266,11 @@ class BatteryUtils {
                         stringBuilder.append("\n")
                     }
                 }
-                if (voltage > 0 && electricity > 0) {
+                if (!padAuth && voltage > 0 && electricity > 0) {
+                    stringBuilder.append("当前电流 = ")
+                    stringBuilder.append(electricity)
+                    stringBuilder.append("A")
+
                     stringBuilder.append("\n参考功率 = ")
                     stringBuilder.append((voltage * electricity * 100).toInt() / 100f)
                     stringBuilder.append("W")
