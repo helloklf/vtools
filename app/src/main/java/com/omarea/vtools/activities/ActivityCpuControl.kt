@@ -827,7 +827,7 @@ class ActivityCpuControl : ActivityBase() {
 
     private fun saveBootConfig() {
         if (cpuModeName != null) {
-            if (!CpuConfigStorage(context).saveCpuConfig(status)) {
+            if (!CpuConfigStorage(context).saveCpuConfig(status, cpuModeName)) {
                 Toast.makeText(context, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
             }
         } else {
