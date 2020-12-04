@@ -101,7 +101,7 @@ class SceneMode private constructor(private val context: Context, private var st
         }
 
         fun unfreezeApp(app: String) {
-            getCurrentInstance()?.setFreezeAppStartTime(app)
+            getCurrentInstance()?.setFreezeAppLeaveTime(app)
 
             if (app.equals("com.android.vending")) {
                 GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());

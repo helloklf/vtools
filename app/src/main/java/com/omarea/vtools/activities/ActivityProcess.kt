@@ -219,7 +219,7 @@ class ActivityProcess : ActivityBase() {
                 findViewById<TextView>(R.id.ProcessCpuSet).text = "" + detail.cpuSet.toString()
                 findViewById<TextView>(R.id.ProcessCGroup).text = "" + detail.cGroup
                 findViewById<TextView>(R.id.ProcessOOMADJ).text = "" + detail.oomAdj
-                findViewById<TextView>(R.id.ProcessOOMScore).text = "" + detail.oomScore
+                findViewById<TextView>(R.id.ProcessOOMScoreAdj).text = "" + detail.oomScoreAdj
                 findViewById<TextView>(R.id.ProcessState).text = detail.getState()
                 if (processInfo.rss > 8192) {
                     findViewById<TextView>(R.id.ProcessMEM).text = (detail.rss / 1024).toInt().toString() + "MB"

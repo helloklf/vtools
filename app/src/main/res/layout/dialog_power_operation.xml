@@ -190,13 +190,13 @@
                     android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Fastboot" />
+                    android:text="Recovery" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="重启到Fastboot模式（俗称USB线刷模式）" />
+                    android:text="重启到Recovery模式（俗称卡刷模式）" />
             </LinearLayout>
 
         </LinearLayout>
@@ -221,7 +221,6 @@
                 android:padding="10dp"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -234,13 +233,13 @@
                     android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recovery" />
+                    android:text="Fastboot" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="重启到Recovery模式（俗称卡刷模式）" />
+                    android:text="重启到Fastboot模式（俗称USB线刷模式）" />
             </LinearLayout>
 
         </LinearLayout>

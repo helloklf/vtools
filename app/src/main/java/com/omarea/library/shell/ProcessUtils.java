@@ -127,6 +127,7 @@ public class ProcessUtils {
                 row.cGroup = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cgroup");
                 row.oomAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_adj");
                 row.oomScore = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score");
+                row.oomScoreAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score_adj");
             }
             return row;
         }

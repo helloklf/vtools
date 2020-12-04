@@ -61,4 +61,5 @@ public class ProcessInfo {
     public String cGroup;
     public String oomAdj;
     public String oomScore;
+    public String oomScoreAdj;
 }
