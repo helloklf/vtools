@@ -199,6 +199,7 @@ class ActivitySwap : ActivityBase() {
 
                 timer.cancel()
                 myHandler.post {
+                    swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, false).apply()
                     processBarDialog.hideDialog()
                     getSwaps()
                 }
