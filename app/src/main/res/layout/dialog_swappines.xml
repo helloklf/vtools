@@ -143,6 +143,7 @@
                     style="@style/SceneSeekBar"
                     android:layout_width="match_parent"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:min="1"
                     android:max="1000" />
 
             </TableLayout>
