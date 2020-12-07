@@ -1,7 +1,6 @@
 package com.omarea.store
 
 import android.content.Context
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.ObjectStorage
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.CpuFrequencyUtils
@@ -24,7 +23,7 @@ class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(
 
     fun saveCpuConfig(status: CpuStatus?, configFile: String? = null): Boolean {
         val name = if (configFile == null) defaultFile else configFile
-        remove(name + ".sh")
+        removeCache(name)
         return super.save(status, name)
     }
 
@@ -32,20 +31,29 @@ class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(
     fun applyCpuConfig(context: Context, configFile: String? = null) {
         val name = if (configFile == null) defaultFile else configFile
 
-        if (exists(name + ".sh")) {
-            KeepShellPublic.doCmdSync(FileWrite.getPrivateFilePath(context, configFile + ".sh"))
+        val cacheName = getCacheName(name)
+        if (File(cacheName).exists()) {
+            KeepShellPublic.doCmdSync(cacheName)
         } else if (exists(name)) {
             load(name)?.run {
-                val commands = CpuFrequencyUtils().buikdShell(this).joinToString("\n")
+                val commands = CpuFrequencyUtils().buildShell(this).joinToString("\n")
                 saveCache(commands, name)
                 KeepShellPublic.doCmdSync(commands)
             }
         }
     }
 
-    private fun saveCache(shellContent: String, configFile: String) {
-        val bootConfig = FileWrite.getPrivateFilePath(context, configFile + ".sh")
-        val file = File(bootConfig)
+    private fun removeCache(name: String) {
+        remove("$name.sh")
+    }
+
+    private fun getCacheName(name: String): String {
+        return getSaveDir("$name.sh")
+    }
+
+    private fun saveCache(shellContent: String, name: String) {
+        val cacheConfig = getCacheName(name)
+        val file = File(cacheConfig)
         file.writeText(shellContent, Charsets.UTF_8)
         file.setWritable(true)
         file.setExecutable(true, false)
