@@ -44,7 +44,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
         */
     }
 
-    private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture")
+    private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture", "com.android.settings")
 
     private fun preciseSkip(root: AccessibilityNodeInfo): Boolean {
         autoSkipConfigStore.getSkipViewId(lastActivity)?.run {

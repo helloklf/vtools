@@ -47,7 +47,8 @@
                 <LinearLayout
                     android:id="@+id/app_options_uninstall_keep"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="6dp">
@@ -92,7 +93,8 @@
                 <LinearLayout
                     android:id="@+id/app_options_uninstall_user"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="6dp">
