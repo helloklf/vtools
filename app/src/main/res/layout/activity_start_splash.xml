@@ -80,7 +80,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@drawable/ic_settings"
-            app:tint="?android:colorAccent" />
+            android:tint="?android:colorAccent" />
 
         <TextView
             android:id="@+id/fullscreen_content"

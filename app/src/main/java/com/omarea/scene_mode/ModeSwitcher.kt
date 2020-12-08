@@ -178,7 +178,8 @@ open class ModeSwitcher {
                         Scene.context).run {
                     if (this) {
                         val file = FileWrite.getPrivateFilePath(Scene.context, "powercfg/general_optimize.sh")
-                        keepShellExec("sh $file")
+                        // keepShellExec("sh $file")
+                        keepShellExec("nohup $file >/dev/null 2>&1 &")
                     }
                 }
             }
