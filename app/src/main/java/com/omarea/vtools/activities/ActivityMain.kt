@@ -99,6 +99,7 @@ class ActivityMain : ActivityBase() {
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
+        /*
         if (!ActivityStartSplash.finished) {
             val intent = Intent(this.applicationContext, ActivityStartSplash::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -107,6 +108,7 @@ class ActivityMain : ActivityBase() {
             startActivity(intent)
             finish()
         }
+        */
 
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()

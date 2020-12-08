@@ -24,7 +24,7 @@ public class ShellExecutor {
                     outputStream.close();
 
                     InputStream inputStream = process.getInputStream();
-                    byte[] cache = new byte[2048];
+                    byte[] cache = new byte[16384];
                     int length = inputStream.read(cache);
                     inputStream.close();
                     process.destroy();
