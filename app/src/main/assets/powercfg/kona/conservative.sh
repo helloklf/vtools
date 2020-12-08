@@ -85,6 +85,12 @@ governor_restore () {
   fi
 }
 
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 set_value()
 {
     value=$1
@@ -155,7 +161,7 @@ set_input_boost_freq() {
 
 set_cpu_freq()
 {
-    echo $1 $2 $3 $4
+  echo $1 $2 $3 $4
 	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
 	echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
@@ -166,15 +172,15 @@ set_cpu_freq()
 }
 
 sched_config() {
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
 
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
 }
 
 if [[ "$action" = "powersave" ]]; then
@@ -198,8 +204,6 @@ if [[ "$action" = "powersave" ]]; then
 	sched_config "85 85" "96 96" "160" "260"
   echo 0 > /sys/devices/system/cpu/cpu7/online
 
-  governor_restore
-
 	exit 0
 fi
 
@@ -222,9 +226,7 @@ if [[ "$action" = "balance" ]]; then
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "85 85" "96 96" "120" "200"
-
-  governor_restore
+	sched_config "78 85" "89 96" "120" "200"
 
 	exit 0
 fi
@@ -248,9 +250,7 @@ if [[ "$action" = "performance" ]]; then
   echo 0-1 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "85 85" "95 95" "85" "100"
-
-  governor_restore
+	sched_config "65 78" "75 88" "85" "100"
 
 	exit 0
 fi
@@ -274,9 +274,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "85 85" "95 95" "85" "100"
-
-  governor_performance
+	sched_config "62 78" "72 85" "85" "100"
 
 	exit 0
 fi

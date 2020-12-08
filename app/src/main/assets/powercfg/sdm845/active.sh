@@ -46,6 +46,49 @@ fi
 # /sys/devices/system/cpu/cpu4/cpufreq/scaling_available_frequencies
 # 825600 902400 979200 1056000 1209600 1286400 1363200 1459200 1536000 1612800 1689600 1766400 1843200 1920000 1996800 2092800 2169600 2246400 2323200 2400000 2476800 2553600 2649600
 
+governor_backup () {
+  local governor_backup=/cache/governor_backup.prop
+  if [[ ! -f $governor_backup ]]; then
+    echo '' > $governor_backup
+    local dir=/sys/class/devfreq
+    for file in `ls $dir`; do
+      if [ -f $dir/$file/governor ]; then
+        governor=`cat $dir/$file/governor`
+        echo "$file#$governor" >> $governor_backup
+      fi
+    done
+  fi
+}
+
+governor_performance () {
+  governor_backup
+  local dir=/sys/class/devfreq
+  for file in `ls $dir`; do
+    if [ -f $dir/$file/governor ]; then
+      echo $dir/$file/governor
+      echo performance > $dir/$file/governor
+    fi
+  done
+}
+
+governor_restore () {
+  local governor_backup=/cache/governor_backup.prop
+  local dir=/sys/class/devfreq
+  if [[ -f "$governor_backup" ]]; then
+      while read line; do
+        if [[ "$line" != "" ]]; then
+            echo ${line#*#} > $dir/${line%#*}/governor
+        fi
+      done < /cache/governor_backup.prop
+  fi
+}
+
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 function set_value()
 {
     value=$1
@@ -103,7 +146,6 @@ echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-
 
 function set_input_boost_freq() {
   local c0="$1"

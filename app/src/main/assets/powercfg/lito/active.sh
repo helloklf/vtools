@@ -78,6 +78,12 @@ governor_restore () {
   fi
 }
 
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 set_value()
 {
     value=$1
@@ -182,8 +188,6 @@ if [[ "$action" = "powersave" ]]; then
   echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
   echo 1000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 
-  governor_restore
-
 	exit 0
 fi
 
@@ -209,8 +213,6 @@ if [[ "$action" = "balance" ]]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 
-  governor_restore
-
 	exit 0
 fi
 
@@ -228,8 +230,6 @@ if [[ "$action" = "performance" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "65 65" "75 75" "300" "400"
-
-  governor_restore
 
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
@@ -262,8 +262,6 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
-
-  governor_performance
 
 	exit 0
 fi

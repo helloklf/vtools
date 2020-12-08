@@ -84,6 +84,12 @@ governor_restore () {
   fi
 }
 
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 set_value()
 {
     value=$1
@@ -197,8 +203,6 @@ if [[ "$action" = "powersave" ]]; then
 	sched_config "85 85" "96 96" "160" "260"
   echo 0 > /sys/devices/system/cpu/cpu7/online
 
-  governor_restore
-
 	exit 0
 fi
 
@@ -221,9 +225,7 @@ if [[ "$action" = "balance" ]]; then
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "85 85" "96 96" "120" "200"
-
-  governor_restore
+	sched_config "78 85" "89 96" "120" "200"
 
 	exit 0
 fi
@@ -247,9 +249,7 @@ if [[ "$action" = "performance" ]]; then
   echo 0-1 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "85 85" "95 95" "85" "100"
-
-  governor_restore
+	sched_config "62 78" "72 85" "85" "100"
 
 	exit 0
 fi
@@ -273,9 +273,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "85 85" "95 95" "85" "100"
-
-  governor_performance
+	sched_config "55 75" "68 82" "85" "100"
 
 	exit 0
 fi
