@@ -83,6 +83,12 @@ governor_restore () {
   fi
 }
 
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 function set_value()
 {
     value=$1
@@ -162,8 +168,6 @@ function set_cpu_freq()
 
 
 if [ "$action" = "powersave" ]; then
-  governor_restore
-
 	set_cpu_freq 5000 1420800 5000 1459200
   set_input_boost_freq 0 0 0
 
@@ -174,8 +178,6 @@ if [ "$action" = "powersave" ]; then
 	echo 0 > /proc/sys/kernel/sched_boost
 
 elif [ "$action" = "balance" ]; then
-  governor_restore
-
 	set_cpu_freq 5000 1516800 5000 1612800
   set_input_boost_freq 1228800 0 40
 
@@ -186,8 +188,6 @@ elif [ "$action" = "balance" ]; then
 	echo 0 > /proc/sys/kernel/sched_boost
 
 elif [ "$action" = "performance" ]; then
-  governor_restore
-
 	set_cpu_freq 5000 1766400 5000 2323200
   set_input_boost_freq 1689600 1459200 80
 
@@ -198,8 +198,6 @@ elif [ "$action" = "performance" ]; then
 	echo 0 > /proc/sys/kernel/sched_boost
 
 elif [ "$action" = "fast" ]; then
-  governor_performance
-
 	set_cpu_freq 5000 2500000 1267200 3500000
   set_input_boost_freq 1689600 1804800 80
 

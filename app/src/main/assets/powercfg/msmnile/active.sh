@@ -85,6 +85,12 @@ governor_restore () {
   fi
 }
 
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 function set_value()
 {
     value=$1
@@ -145,11 +151,11 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 
 function set_input_boost_freq() {
-    local c0="$1"
-    local c1="$2"
-    local c2="$3"
-    local ms="$4"
-    echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
+  local c0="$1"
+  local c1="$2"
+  local c2="$3"
+  local ms="$4"
+  echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
@@ -166,8 +172,6 @@ function set_cpu_freq()
 }
 
 if [[ "$action" = "powersave" ]]; then
-  governor_restore
-
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -189,8 +193,6 @@ if [[ "$action" = "powersave" ]]; then
 fi
 
 if [[ "$action" = "balance" ]]; then
-  governor_restore
-
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -212,8 +214,6 @@ if [[ "$action" = "balance" ]]; then
 fi
 
 if [[ "$action" = "performance" ]]; then
-  governor_restore
-
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -235,8 +235,6 @@ if [[ "$action" = "performance" ]]; then
 fi
 
 if [[ "$action" = "fast" ]]; then
-  governor_performance
-
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
