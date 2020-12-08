@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
+import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.PropsUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.nio.charset.Charset
 
 /**
  * Created by Hello on 2018/06/03.
@@ -27,7 +29,7 @@ open class ModeSwitcher {
         const val SOURCE_OUTSIDE = "SOURCE_OUTSIDE"
         const val SOURCE_NONE = "SOURCE_NONE"
 
-        fun getCurrentSource (): String {
+        fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
                 return SOURCE_OUTSIDE
             }
@@ -37,7 +39,8 @@ open class ModeSwitcher {
             }
             return SOURCE_NONE
         }
-        fun getCurrentSourceName (): String {
+
+        fun getCurrentSourceName(): String {
             val source = getCurrentSource()
             return (when (source) {
                 "SOURCE_OUTSIDE" -> {
@@ -157,7 +160,7 @@ open class ModeSwitcher {
 
     // init
     // TODO:看什么时候清空缓存
-    internal fun initPowercfg(): ModeSwitcher {
+    internal fun initPowerCfg(): ModeSwitcher {
         if (configProvider.isEmpty()) {
             val installer = CpuConfigInstaller()
             if (installer.outsideConfigInstalled()) {
@@ -168,6 +171,16 @@ open class ModeSwitcher {
                     innerConfigUpdated = true
                 }
                 configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
+
+                FileWrite.writePrivateFile(
+                        RawText.getRawText(Scene.context, R.raw.general_optimize).toByteArray(Charset.defaultCharset()),
+                        "powercfg/general_optimize.sh",
+                        Scene.context).run {
+                    if (this) {
+                        val file = FileWrite.getPrivateFilePath(Scene.context, "powercfg/general_optimize.sh")
+                        keepShellExec("sh $file")
+                    }
+                }
             }
         }
 
@@ -195,7 +208,7 @@ open class ModeSwitcher {
             }
             SOURCE_OUTSIDE -> {
                 if (!inited) {
-                    initPowercfg()
+                    initPowerCfg()
                 }
 
                 if (configProvider.isNotEmpty()) {
@@ -207,7 +220,7 @@ open class ModeSwitcher {
             }
             else -> {
                 if (!inited) {
-                    initPowercfg()
+                    initPowerCfg()
                 }
 
                 if (configProvider.isNotEmpty()) {
