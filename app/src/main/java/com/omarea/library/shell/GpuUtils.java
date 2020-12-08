@@ -239,7 +239,8 @@ public class GpuUtils {
     }
     // #endregion Adreno GPU Power Level
 
-    public static ArrayList<String> buildSetAdrenoGPUParams(CpuStatus cpuState, ArrayList<String> commands) {
+    public static ArrayList<String> buildSetAdrenoGPUParams(CpuStatus cpuState) {
+        ArrayList<String> commands = new ArrayList<>();
         // governor
         if (!cpuState.adrenoGovernor.equals("")) {
             commands.add("chmod 0664 " + getGpuParamsDir() + "/governor;");
