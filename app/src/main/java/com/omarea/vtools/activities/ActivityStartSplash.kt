@@ -59,6 +59,7 @@ class ActivityStartSplash : Activity() {
         val agreement = view.findViewById<CompoundButton>(R.id.agreement)
         val timer = Timer()
         var timeout = 60
+        var clickItems = 0
         timer.schedule(object : TimerTask() {
             override fun run() {
                 Scene.post {
@@ -78,10 +79,11 @@ class ActivityStartSplash : Activity() {
             finish()
         }
         btnConfirm.setOnClickListener {
-            if (timeout > 0) {
+            if (!agreement.isChecked) {
                 return@setOnClickListener
             }
-            if (!agreement.isChecked) {
+            if (timeout > 0 && clickItems < 20) { // 连点20次允许跳过倒计时
+                clickItems++
                 return@setOnClickListener
             }
 
