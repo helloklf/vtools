@@ -162,7 +162,7 @@
     <string name="electricity_unit_as">显示为：</string>
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
-    <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps</string>
+    <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps（Android 11+系统不支持备份功能）</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>

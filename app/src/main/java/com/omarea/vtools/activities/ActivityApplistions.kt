@@ -173,18 +173,9 @@ class ActivityApplistions : ActivityBase() {
         setListData(backupedList, apps_backupedlist)
     }
 
-    private var backupReadFixed = false
     private fun setList() {
         processBarDialog.showDialog()
         Thread {
-            if (!backupReadFixed && Build.VERSION.SDK_INT >= 30) {
-                val fixCmd = FileWrite.writePrivateShellFile("addin/fix_backup_read.sh", "addin/fix_backup_read.sh", this)
-                if (fixCmd != null) {
-                    KeepShellPublic.doCmdSync("sh $fixCmd")
-                }
-                backupReadFixed = true
-            }
-
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
             backupedList = appListHelper.getBackupedAppList()
