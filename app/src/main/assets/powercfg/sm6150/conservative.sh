@@ -16,10 +16,6 @@ fi
 
 stop perfd
 
-echo 0 > /sys/module/msm_thermal/core_control/enabled
-echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-echo N > /sys/module/msm_thermal/parameters/enabled
-
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor6=`cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor`
 

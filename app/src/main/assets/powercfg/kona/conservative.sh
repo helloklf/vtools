@@ -27,12 +27,6 @@ if [[ "$action" = "init" ]]; then
 	exit 0
 fi
 
-stop perfd
-
-echo 0 > /sys/module/msm_thermal/core_control/enabled
-echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-echo N > /sys/module/msm_thermal/parameters/enabled
-
 governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
 governor4=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
 governor7=`cat /sys/devices/system/cpu/cpufreq/policy7/scaling_governor`
