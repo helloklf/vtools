@@ -61,12 +61,14 @@ object ThemeSwitch {
 
             val themeId = when (theme) {
                 -1 -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     if (themeMode.isDarkMode) {
                         themeMode.isLightStatusBar = false
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                         R.style.AppThemeNoActionBarNight
                     } else {
                         themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                         R.style.AppThemeWhite
                     }
                 }
