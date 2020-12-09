@@ -74,7 +74,7 @@ governor_restore () {
   done
 }
 
-if [[ "$action" == "fast" ]]; then
+if [[ "$action" == "fast" ]] || [[ "$action" == "performance" ]]; then
   governor_performance
 else
   governor_restore
