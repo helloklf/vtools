@@ -70,7 +70,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="同意风险" />
+                            android:text="接受风险" />
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
