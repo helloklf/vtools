@@ -65,23 +65,25 @@ class ChargeTempView : View {
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
-        val innerPadding = dpSize * 24f
-
-        val minTemperature = samples.map { it.temperature }.min()
-        val maxTemperature = samples.map { it.temperature }.max()
-
-        val maxY =
-                if (maxTemperature != null && maxTemperature > 50) (maxTemperature.toInt() + 2) else 51
-
-        val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / 100 // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
-        val stratY = height - innerPadding
 
         val pathFilterAlpha = Path()
         var isFirstPoint = true
 
         val textSize = dpSize * 8.5f
         paint.textSize = textSize
+
+        val minTemperature = samples.map { it.temperature }.min()
+        val maxTemperature = samples.map { it.temperature }.max()
+
+        val innerPadding = dpSize * 24f
+        val yAxisWidth = paint.measureText(maxTemperature.toString()  + "°C")
+
+        val maxY =
+                if (maxTemperature != null && maxTemperature > 50) (maxTemperature.toInt() + 2) else 51
+
+        val ratioX = (this.width - innerPadding - yAxisWidth) * 1.0 / 100 // 横向比率
+        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val startY = height - innerPadding
 
         paint.textAlign = Paint.Align.CENTER
         for (point in 0..101) {
@@ -90,12 +92,12 @@ class ChargeTempView : View {
                 val text = (point).toString() + "%"
                 canvas.drawText(
                         text,
-                        (point * ratioX).toInt() + innerPadding,
+                        (point * ratioX).toInt() + yAxisWidth,
                         this.height - innerPadding + textSize + (dpSize * 2),
                         paint
                 )
                 canvas.drawCircle(
-                        (point * ratioX).toInt() + innerPadding,
+                        (point * ratioX).toInt() + yAxisWidth,
                         this.height - innerPadding,
                         potintRadius,
                         paint
@@ -110,25 +112,25 @@ class ChargeTempView : View {
                     paint.color = Color.parseColor("#aa888888")
                 }
                 canvas.drawLine(
-                        (point * ratioX).toInt() + innerPadding, innerPadding,
-                        (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint
+                        (point * ratioX).toInt() + yAxisWidth, innerPadding,
+                        (point * ratioX).toInt() + yAxisWidth, this.height - innerPadding, paint
                 )
             }
         }
 
-        paint.textAlign = Paint.Align.RIGHT
+        paint.textAlign = Paint.Align.LEFT
         for (point in 0..maxY) {
             if (point % 5 == 0) {
                 if (point > 0) {
                     paint.color = Color.parseColor("#888888")
                     canvas.drawText(
                             point.toString() + "°C",
-                            innerPadding - dpSize * 4,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            0f,
+                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2f,
                             paint
                     )
                     canvas.drawCircle(
-                            innerPadding,
+                            yAxisWidth,
                             innerPadding + ((maxY - point) * ratioY).toInt(),
                             potintRadius,
                             paint
@@ -145,7 +147,7 @@ class ChargeTempView : View {
                 paint.strokeWidth = 2f
             }
             canvas.drawLine(
-                    innerPadding,
+                    yAxisWidth,
                     innerPadding + ((maxY - point) * ratioY).toInt(),
                     (this.width - innerPadding),
                     innerPadding + ((maxY - point) * ratioY).toInt(),
@@ -159,11 +161,11 @@ class ChargeTempView : View {
             val temperature = sample.temperature
 
             if (isFirstPoint) {
-                pathFilterAlpha.moveTo(pointX, stratY - (temperature * ratioY))
+                pathFilterAlpha.moveTo(pointX, startY - (temperature * ratioY))
                 isFirstPoint = false
-                canvas.drawCircle(pointX, stratY - (temperature * ratioY), potintRadius, paint)
+                canvas.drawCircle(pointX, startY - (temperature * ratioY), potintRadius, paint)
             } else {
-                pathFilterAlpha.lineTo(pointX, stratY - (temperature * ratioY))
+                pathFilterAlpha.lineTo(pointX, startY - (temperature * ratioY))
             }
         }
 
