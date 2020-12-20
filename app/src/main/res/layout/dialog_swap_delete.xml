@@ -89,8 +89,8 @@
 
                 <Switch
                     android:id="@+id/swap_delete_file"
-                    android:enabled="false"
-                    android:checked="true"
+                    android:enabled="true"
+                    android:checked="false"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_width="wrap_content"
