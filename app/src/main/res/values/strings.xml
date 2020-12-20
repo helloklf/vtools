@@ -328,6 +328,7 @@
         <item>scene_perf</item>
         <item>scene_sys</item>
     </string-array>
+    <string name="cgroup_mem_default">scene_def</string>
     <string-array name="orientation_options">
         <item>未设置</item>
         <item></item>

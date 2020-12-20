@@ -43,10 +43,20 @@ elif [[ "$level" == "2" ]]; then
     TargetRecycle=$(($MemTotal / 100 * 18))
   fi
 elif [[ "$level" == "0" ]]; then
+  #cat /dev/cpuset/background/tasks | while read line ; do
+  #  if [[ -f /proc/$line/oom_adj ]] && [[ `cat /proc/$line/oom_adj` == 15 ]]; then
+  #    echo file > /proc/$line/reclaim 2>/dev/null
+  #  fi
+  #done
+
+  cat /dev/cpuset/background/tasks | while read line ; do
+    echo file > /proc/$line/reclaim 2>/dev/null 2> /dev/null
+  done
+
   if [[ $friendly == "true" ]]; then
-    TargetRecycle=$(($MemTotal / 100 * 12))
+    TargetRecycle=$(($MemTotal / 100 * 14))
   else
-    TargetRecycle=$(($MemTotal / 100 * 6))
+    TargetRecycle=$(($MemTotal / 100 * 10))
   fi
 else
   if [[ $friendly == "true" ]]; then
