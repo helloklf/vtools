@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/splash_root"
     android:layout_width="match_parent"
@@ -8,72 +9,12 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="false">
 
-    <ScrollView
-        android:visibility="gone"
-        android:id="@+id/start_contract"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/scene_contract_title"
-                android:textColor="#888888"
-                style="@style/textTitle" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:autoLink="all"
-                android:text="@string/scene_contract"
-                android:textColor="#888888"
-                style="@style/textSmall" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="right"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/contract_exit"
-                    android:layout_width="60dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/btn_bg"
-                    android:text="退出"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="14dp" />
-
-                <Button
-                    android:id="@+id/contract_confirm"
-                    android:layout_width="70dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="继续使用"
-                    android:textColor="?android:colorAccent"
-                    android:textSize="14dp" />
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
     <LinearLayout
-        android:id="@+id/start_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="200dp"

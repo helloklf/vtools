@@ -309,7 +309,7 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
                 if (installer.outsideConfigInstalled()) {
                     installer.configCodeVerify()
                 }
-                initPowercfg()
+                initPowerCfg()
             } else {
                 spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
                 dyamicCore = false

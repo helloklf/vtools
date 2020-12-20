@@ -31,6 +31,25 @@ if [ ! "$governor6" = "schedutil" ]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
 fi
 
+governor_restore () {
+  local dir=/sys/class/devfreq
+  for file in `ls $dir`; do
+    if [ -f $dir/$file/available_frequencies ]; then
+      min_freq=$(awk '{print $1}' $dir/$file/available_frequencies)
+      if [[ "$min_freq" != "" ]]; then
+        echo $file '->' $min_freq
+        echo $min_freq > $dir/$file/min_freq
+      fi
+    fi
+  done
+}
+
+if [[ "$action" == "fast" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
+
 function set_value()
 {
     value=$1

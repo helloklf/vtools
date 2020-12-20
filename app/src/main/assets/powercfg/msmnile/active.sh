@@ -48,42 +48,38 @@ fi
 # GPU
 # 810000000 585000000 499200000 427000000 345000000 257000000
 
-governor_backup () {
-  local governor_backup=/cache/governor_backup.prop
-  if [[ ! -f $governor_backup ]]; then
-    echo '' > $governor_backup
-    local dir=/sys/class/devfreq
-    for file in `ls $dir`; do
-      if [ -f $dir/$file/governor ]; then
-        governor=`cat $dir/$file/governor`
-        echo "$file#$governor" >> $governor_backup
-      fi
-    done
-  fi
-}
-
 governor_performance () {
-  governor_backup
   local dir=/sys/class/devfreq
   for file in `ls $dir`; do
-    if [ -f $dir/$file/governor ]; then
-      echo $dir/$file/governor
-      echo performance > $dir/$file/governor
+    if [ -f $dir/$file/available_frequencies ]; then
+      max_freq=$(awk -F ' ' '{print $NF}' $dir/$file/available_frequencies)
+      if [[ "$max_freq" != "" ]]; then
+        echo $file '->' $max_freq
+        echo $max_freq > $dir/$file/max_freq
+        echo $max_freq > $dir/$file/min_freq
+      fi
     fi
   done
 }
 
 governor_restore () {
-  local governor_backup=/cache/governor_backup.prop
   local dir=/sys/class/devfreq
-  if [[ -f "$governor_backup" ]]; then
-      while read line; do
-        if [[ "$line" != "" ]]; then
-            echo ${line#*#} > $dir/${line%#*}/governor
-        fi
-      done < /cache/governor_backup.prop
-  fi
+  for file in `ls $dir`; do
+    if [ -f $dir/$file/available_frequencies ]; then
+      min_freq=$(awk '{print $1}' $dir/$file/available_frequencies)
+      if [[ "$min_freq" != "" ]]; then
+        echo $file '->' $min_freq
+        echo $min_freq > $dir/$file/min_freq
+      fi
+    fi
+  done
 }
+
+if [[ "$action" == "fast" ]] || [[ "$action" == "performance" ]]; then
+  governor_performance
+else
+  governor_restore
+fi
 
 function set_value()
 {
@@ -145,11 +141,11 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 
 function set_input_boost_freq() {
-    local c0="$1"
-    local c1="$2"
-    local c2="$3"
-    local ms="$4"
-    echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
+  local c0="$1"
+  local c1="$2"
+  local c2="$3"
+  local ms="$4"
+  echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
@@ -166,8 +162,6 @@ function set_cpu_freq()
 }
 
 if [[ "$action" = "powersave" ]]; then
-  governor_restore
-
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -189,8 +183,6 @@ if [[ "$action" = "powersave" ]]; then
 fi
 
 if [[ "$action" = "balance" ]]; then
-  governor_restore
-
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -212,8 +204,6 @@ if [[ "$action" = "balance" ]]; then
 fi
 
 if [[ "$action" = "performance" ]]; then
-  governor_restore
-
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -235,8 +225,6 @@ if [[ "$action" = "performance" ]]; then
 fi
 
 if [[ "$action" = "fast" ]]; then
-  governor_performance
-
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable

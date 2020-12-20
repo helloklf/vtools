@@ -45,9 +45,13 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             dialog.dismiss()
             clearAll()
         }
-        dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
-            dialog.dismiss()
-            backupAll()
+        if (Build.VERSION.SDK_INT >= 30) {
+            dialogView.findViewById<View>(R.id.app_options_backup_apk).visibility = View.GONE
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
+                dialog.dismiss()
+                backupAll()
+            }
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
@@ -294,17 +298,6 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         sb.append("cd \${backup_path}\n")
         sb.append("chown sdcard_rw:sdcard_rw *\n")
         sb.append("chmod 777 *\n")
-
-        if (Build.VERSION.SDK_INT >= 30) {
-            val fixCmd = FileWrite.writePrivateShellFile(
-                    "addin/fix_backup_read.sh",
-                    "addin/fix_backup_read.sh",
-                    context
-            )
-            if (fixCmd != null) {
-                sb.append("sh $fixCmd\n")
-            }
-        }
 
         sb.append("echo '[operation completed]'\n")
         execShell(sb)

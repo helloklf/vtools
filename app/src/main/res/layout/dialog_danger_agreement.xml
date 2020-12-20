@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:background="@drawable/krscript_item_ripple"
+            android:background="@drawable/krscript_item_ripple_inactive"
             android:orientation="vertical">
 
             <TextView
@@ -24,13 +24,13 @@
                 style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="卸载确认" />
+                android:text="@string/scene_contract_title" />
             <TextView
                 android:id="@+id/confirm_message"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="8dp"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                android:text="确定卸载选中的${apps.size}个应用？"
+                android:text="@string/scene_contract"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -43,9 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!--卸载保留数据-->
                 <LinearLayout
-                    android:id="@+id/app_options_uninstall_keep"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="70dp"
@@ -56,11 +54,11 @@
                     <ImageView
                         android:layout_marginStart="10dp"
                         android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FFC107"
+                        android:backgroundTint="#FF5252"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_marginEnd="6dp"
-                        android:src="@drawable/app_options_uninstall_apk"
+                        android:src="@drawable/icon_danger"
                         app:tint="@android:color/white" />
 
                     <LinearLayout
@@ -72,67 +70,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="保留应用数据" />
+                            android:text="接受风险" />
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="卸载时保留此应用所有数据\n如果你准备降级此应用或安装不同签名版本，请勿勾选！" />
+                            android:text="我已了解并愿意承担风险" />
                     </LinearLayout>
 
                     <Switch
-                        android:id="@+id/uninstall_keep_data"
+                        android:id="@+id/agreement"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
-                <!--从当前用户卸载应用-->
-                <LinearLayout
-                    android:id="@+id/app_options_uninstall_user"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="70dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
-
-                    <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FFC107"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="6dp"
-                        android:src="@drawable/app_options_uninstall_user"
-                        app:tint="@android:color/white" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="仅从当前用户卸载" />
-                        <TextView
-                            style="@style/textSecondary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="只从当前用户卸载，其它用户可以继续使用\n多用户指：主用户、访客模式、手机分身" />
-                    </LinearLayout>
-                    <Switch
-                        android:id="@+id/uninstall_user_only"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -147,12 +101,12 @@
                 android:id="@+id/btn_cancel"
                 style="@style/dialogCancelBtn"
                 android:layout_marginEnd="8dp"
-                android:text="取消">
+                android:text="还是算了">
             </Button>
             <Button
                 android:id="@+id/btn_confirm"
                 style="@style/dialogConfirmBtn"
-                android:text="确定">
+                android:text="继续使用">
             </Button>
         </LinearLayout>
 

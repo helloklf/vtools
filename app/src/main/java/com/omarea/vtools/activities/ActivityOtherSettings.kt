@@ -81,7 +81,7 @@ class ActivityOtherSettings : ActivityBase() {
     fun onThemeClick(view: View) {
         val tag = view.tag.toString().toInt()
         if (tag == 10 && spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10) {
-            spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, 1).apply()
+            spf.edit().remove(SpfConfig.GLOBAL_SPF_THEME).apply()
             this.recreate()
         } else {
             if (tag == 10 && !hasRWPermission()) {

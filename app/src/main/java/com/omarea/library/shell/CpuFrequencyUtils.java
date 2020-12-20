@@ -394,7 +394,7 @@ public class CpuFrequencyUtils {
         return new File("/sys/kernel/hmp/down_threshold").exists() && new File("/sys/kernel/hmp/up_threshold").exists() && new File("/sys/kernel/hmp/boost").exists();
     }
 
-    public ArrayList<String> buikdShell(CpuStatus cpuStatus) {
+    public ArrayList<String> buildShell(CpuStatus cpuStatus) {
         ArrayList<String> commands = new ArrayList<>();
         if (cpuStatus != null) {
             // thermal
@@ -451,7 +451,6 @@ public class CpuFrequencyUtils {
                                 commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
                             }
                             // }
-                            KeepShellPublic.INSTANCE.doCmdSync(commands);
                         }
                     }
                 }
@@ -473,7 +472,7 @@ public class CpuFrequencyUtils {
             */
 
             // GPU
-            commands.addAll(GpuUtils.buildSetAdrenoGPUParams(cpuStatus, commands));
+            commands.addAll(GpuUtils.buildSetAdrenoGPUParams(cpuStatus));
 
             // exynos
             if (exynosHMP()) {

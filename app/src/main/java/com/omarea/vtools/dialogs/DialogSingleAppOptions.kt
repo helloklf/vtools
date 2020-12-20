@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.CompoundButton
@@ -89,9 +90,13 @@ class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handl
             dialog.dismiss()
             clearAll()
         }
-        dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
-            dialog.dismiss()
-            backupAll()
+        if (Build.VERSION.SDK_INT >= 30) {
+            dialogView.findViewById<View>(R.id.app_options_backup_apk).visibility = View.GONE
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
+                dialog.dismiss()
+                backupAll()
+            }
         }
         dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()

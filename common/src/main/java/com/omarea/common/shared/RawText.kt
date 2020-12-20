@@ -10,6 +10,5 @@ object RawText {
         } catch (ex: Exception) {
             return ""
         }
-
     }
 }

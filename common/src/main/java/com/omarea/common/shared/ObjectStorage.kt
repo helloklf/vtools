@@ -6,7 +6,7 @@ import java.io.*
 
 open class ObjectStorage<T : Serializable>(private val context: Context) {
     private val objectStorageDir = "objects/"
-    private fun getSaveDir(configFile: String): String {
+    protected fun getSaveDir(configFile: String): String {
         return FileWrite.getPrivateFilePath(context, objectStorageDir + configFile)
     }
 
