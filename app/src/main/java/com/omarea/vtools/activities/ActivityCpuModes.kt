@@ -16,6 +16,8 @@ import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
 import com.omarea.common.shared.FilePathResolver
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -334,16 +336,41 @@ class ActivityCpuModes : ActivityBase() {
         }
     }
 
+    private fun readFileLines(file: File): String? {
+        if (file.canRead()) {
+            return file.readText(Charset.defaultCharset()).trimStart().replace("\r", "")
+        } else {
+            val innerPath = FileWrite.getPrivateFilePath(context, "powercfg.tmp")
+            KeepShellPublic.doCmdSync("cp \"${file.absolutePath}\" \"$innerPath\"\nchmod 777 \"$innerPath\"")
+            val tmpFile = File(innerPath)
+            if (tmpFile.exists() && tmpFile.canRead()) {
+                val lines = tmpFile.readText(Charset.defaultCharset()).trimStart().replace("\r", "")
+                KeepShellPublic.doCmdSync("rm \"$innerPath\"")
+                return lines
+            }
+        }
+        return null
+    }
+
     private fun installLocalConfig(path: String) {
+        if (!path.endsWith(".sh")) {
+            Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val file = File(path)
         if (file.exists()) {
             if (file.length() > 200 * 1024) {
                 Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
                 return
             }
-            val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
+            val lines = readFileLines(file)
+            if (lines == null) {
+                Toast.makeText(context, "Scene无法读取此文件！", Toast.LENGTH_LONG).show()
+                return
+            }
             val configStar = lines.split("\n").firstOrNull()
-            if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
+            if (configStar != null && (configStar.startsWith("#!/") || lines.contains("echo "))) {
                 if (configInstaller.installCustomConfig(context, lines, ModeSwitcher.SOURCE_SCENE_IMPORT)) {
                     configInstalled()
                 } else {
