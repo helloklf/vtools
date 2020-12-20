@@ -11,7 +11,6 @@ object CommonCmds {
     val SDCardDir: String = Environment.getExternalStorageDirectory().absolutePath
 
     val AbsBackUpDir = "$SDCardDir/backups/apps/"
-    val AbsBackUpReadDir = "${SDCardDir}/Android/data/${Scene.context.packageName}/backups/apps/"
 
     const val MountSystemRW =
             "busybox mount -o rw,remount / 2>/dev/null\n" +

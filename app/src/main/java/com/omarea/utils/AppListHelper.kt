@@ -26,7 +26,7 @@ class AppListHelper(context: Context) {
 
     fun getTags(applicationInfo: ApplicationInfo): String {
         val stateTags = StringBuilder()
-        val readDir = if (Build.VERSION.SDK_INT >= 30) CommonCmds.AbsBackUpReadDir else CommonCmds.AbsBackUpDir
+        val readDir = CommonCmds.AbsBackUpDir
         try {
             if (!applicationInfo.enabled) {
                 stateTags.append("❄已冻结 ")
@@ -215,7 +215,7 @@ class AppListHelper(context: Context) {
     }
 
     fun getBackupedAppList(): ArrayList<Appinfo> {
-        val dirPath = if (Build.VERSION.SDK_INT >= 30) CommonCmds.AbsBackUpReadDir else CommonCmds.AbsBackUpDir
+        val dirPath = CommonCmds.AbsBackUpDir
         val list = ArrayList<Appinfo>()
         val dir = File(dirPath)
         if (!dir.exists())

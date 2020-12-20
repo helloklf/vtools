@@ -1,5 +1,10 @@
 base_dir="/data/user/$ANDROID_UID/com.xiaomi.market/files"
 res_dir=`ls $base_dir | grep web-res- | tail -1`
+if [[ "$res_dir" == "" ]]; then
+    echo '找到资源文件夹' 1>&2
+    return
+fi
+echo 找到资源文件夹 $res_dir
 
 function override_file() {
   local page="$1"

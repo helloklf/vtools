@@ -3,6 +3,7 @@ package com.omarea.vtools.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.*
+import android.provider.Settings
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
@@ -119,6 +120,15 @@ class ActivityApplistions : ActivityBase() {
         appListHelper = AppListHelper(context)
 
         setList()
+        if (Build.VERSION.SDK_INT >= 30 && !Environment.isExternalStorageManager()) {
+            try {
+                val intent = Intent()
+                intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(this, "无法申请存储管理权限~", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType, activity: Activity) {

@@ -45,7 +45,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             dialog.dismiss()
             clearAll()
         }
-        if (Build.VERSION.SDK_INT >= 30) {
+        if (Build.VERSION.SDK_INT >= 30 && !Environment.isExternalStorageManager()) {
             dialogView.findViewById<View>(R.id.app_options_backup_apk).visibility = View.GONE
         } else {
             dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
@@ -243,7 +243,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val includeData = view.findViewById<CompoundButton>(R.id.backup_include_data)
 
         // 检测数据备份功能兼容性
-        if (!checkRestoreData()) {
+        if (Build.VERSION.SDK_INT >= 30 || !checkRestoreData()) {
             includeData.isEnabled = false
             includeData.isChecked = false
         }

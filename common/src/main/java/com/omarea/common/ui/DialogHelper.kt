@@ -184,10 +184,12 @@ class DialogHelper {
                     .create()
 
             dialog.window?.run {
-                setBackgroundDrawableResource(android.R.color.transparent)
                 setWindowAnimations(R.style.windowAnim2)
             }
             dialog.show()
+            dialog.window?.run {
+                setBackgroundDrawableResource(android.R.color.transparent)
+            }
 
             return DialogWrap(dialog)
         }
@@ -203,6 +205,7 @@ class DialogHelper {
                     .setCancelable(cancelable)
                     .create()
 
+            dialog.show()
             dialog.window?.run {
                 setBackgroundDrawableResource(android.R.color.transparent)
 
@@ -237,7 +240,6 @@ class DialogHelper {
                 // setWindowAnimations(R.style.windowAnim2)
             }
 
-            dialog.show()
             return DialogWrap(dialog)
         }
 
