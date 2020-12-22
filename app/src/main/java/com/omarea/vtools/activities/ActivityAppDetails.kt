@@ -345,6 +345,23 @@ class ActivityAppDetails : ActivityBase() {
             }).show()
         }
 
+
+        app_details_cgroup_mem2.setOnClickListener {
+            val utlis = CGroupMemoryUtlis(this)
+            if (!utlis.isSupported) {
+                DialogHelper.helpInfo(this, "", "抱歉，您的内核不支持该功能特性~")
+                return@setOnClickListener
+            }
+
+            DialogAppCGroupMem(this, sceneConfigInfo.bgCGroupMem, object : DialogAppCGroupMem.IResultCallback {
+                override fun onChange(group: String?, name: String?) {
+                    sceneConfigInfo.bgCGroupMem = group
+                    (it as TextView).text = name
+                    _result = RESULT_OK
+                }
+            }).show()
+        }
+
         app_details_boost_mem.setOnClickListener {
             DialogAppBoostPolicy(this, sceneConfigInfo.dynamicBoostMem, object : DialogAppBoostPolicy.IResultCallback {
                 override fun onChange(enabled: Boolean) {
@@ -561,6 +578,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
         app_details_cgroup_mem.text = DialogAppCGroupMem.Transform(this).getName(sceneConfigInfo.fgCGroupMem)
+        app_details_cgroup_mem2.text = DialogAppCGroupMem.Transform(this).getName(sceneConfigInfo.bgCGroupMem)
         app_details_boost_mem.text = if (sceneConfigInfo.dynamicBoostMem) "已启用" else "未启用"
 
         if (immersivePolicyControl.isFullScreen(app)) {
@@ -610,6 +628,7 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.smoothScroll != originConfig.smoothScroll ||
                 sceneConfigInfo.freeze != originConfig.freeze ||
                 sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
+                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
                 sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
                 sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem
         ) {

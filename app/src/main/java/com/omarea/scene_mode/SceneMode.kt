@@ -15,6 +15,7 @@ import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
@@ -345,15 +346,20 @@ class SceneMode private constructor(private val context: Context, private var st
         }
 
         // 实验性新特性（cgroup/memory自动配置）
-        if (sceneConfigInfo.bgCGroupMem?.isNotEmpty() == true && sceneConfigInfo.fgCGroupMem != sceneConfigInfo.bgCGroupMem) {
-            CGroupMemoryUtlis(Scene.context).run {
-                if (isSupported) {
-                    setGroup(sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
-                    // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
-                } else {
-                    Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+        if (sceneConfigInfo.fgCGroupMem != sceneConfigInfo.bgCGroupMem) {
+                CGroupMemoryUtlis(Scene.context).run {
+                    if (isSupported) {
+                        if (sceneConfigInfo.bgCGroupMem?.isNotEmpty() == true) {
+                            setGroup(sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
+                            // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
+                        } else {
+                            setGroup(sceneConfigInfo.packageName!!, context.getString(R.string.cgroup_mem_default))
+                            // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[scene_def]\n(Scene试验性功能)")
+                        }
+                    } else {
+                        Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")
+                    }
                 }
-            }
         }
 
         // KeepShellPublic.doCmdSync("pm suspend ${sceneConfigInfo.packageName}")

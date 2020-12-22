@@ -186,6 +186,7 @@ class ActivityProcess : ActivityBase() {
             done
 
             # 示例，回收所有第三方应用的内存（遍历效率低）
+            # pm list packages | awk -F ':' '{print $2}' |  while read app ; do
             pm list packages | cut -f2 -d ':' |  while read app ; do
               echo $app
               pgrep -f $app | while read pid; do
