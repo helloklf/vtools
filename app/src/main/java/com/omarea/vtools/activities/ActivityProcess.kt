@@ -1,14 +1,11 @@
 package com.omarea.vtools.activities
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -16,7 +13,7 @@ import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.ProcessUtils
 import com.omarea.model.ProcessInfo
-import com.omarea.ui.ProcessAdapter
+import com.omarea.ui.AdapterProcess
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activty_process.*
 import java.util.*
@@ -47,16 +44,16 @@ class ActivityProcess : ActivityBase() {
         }
 
         if (supported) {
-            process_list.adapter = ProcessAdapter(context)
+            process_list.adapter = AdapterProcess(context)
             process_list.setOnItemClickListener { _, _, position, _ ->
-                openProcessDetail((process_list.adapter as ProcessAdapter).getItem(position))
+                openProcessDetail((process_list.adapter as AdapterProcess).getItem(position))
             }
         }
 
         // 搜索关键字
         process_search.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                (process_list.adapter as ProcessAdapter?)?.updateKeywords(v.text.toString())
+                (process_list.adapter as AdapterProcess?)?.updateKeywords(v.text.toString())
                 return@setOnEditorActionListener true
             }
             false
@@ -68,11 +65,11 @@ class ActivityProcess : ActivityBase() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                (process_list.adapter as ProcessAdapter?)?.updateSortMode(when (position) {
-                    0 -> ProcessAdapter.SORT_MODE_CPU
-                    1 -> ProcessAdapter.SORT_MODE_MEM
-                    2 -> ProcessAdapter.SORT_MODE_PID
-                    else -> ProcessAdapter.SORT_MODE_DEFAULT
+                (process_list.adapter as AdapterProcess?)?.updateSortMode(when (position) {
+                    0 -> AdapterProcess.SORT_MODE_CPU
+                    1 -> AdapterProcess.SORT_MODE_MEM
+                    2 -> AdapterProcess.SORT_MODE_PID
+                    else -> AdapterProcess.SORT_MODE_DEFAULT
                 })
             }
         }
@@ -83,13 +80,13 @@ class ActivityProcess : ActivityBase() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                (process_list.adapter as ProcessAdapter?)?.updateFilterMode(when (position) {
-                    0 -> ProcessAdapter.FILTER_ANDROID_USER
-                    1 -> ProcessAdapter.FILTER_ANDROID_SYSTEM
-                    2 -> ProcessAdapter.FILTER_ANDROID
-                    3 -> ProcessAdapter.FILTER_OTHER
-                    4 -> ProcessAdapter.FILTER_ALL
-                    else -> ProcessAdapter.FILTER_ALL
+                (process_list.adapter as AdapterProcess?)?.updateFilterMode(when (position) {
+                    0 -> AdapterProcess.FILTER_ANDROID_USER
+                    1 -> AdapterProcess.FILTER_ANDROID_SYSTEM
+                    2 -> AdapterProcess.FILTER_ANDROID
+                    3 -> AdapterProcess.FILTER_OTHER
+                    4 -> AdapterProcess.FILTER_ALL
+                    else -> AdapterProcess.FILTER_ALL
                 })
             }
         }
@@ -99,7 +96,7 @@ class ActivityProcess : ActivityBase() {
     private fun updateData() {
         val data = processUtils.allProcess
         handle.post {
-            (process_list?.adapter as ProcessAdapter?)?.setList(data)
+            (process_list?.adapter as AdapterProcess?)?.setList(data)
         }
     }
 
@@ -221,10 +218,10 @@ class ActivityProcess : ActivityBase() {
                 findViewById<TextView>(R.id.ProcessOOMADJ).text = "" + detail.oomAdj
                 findViewById<TextView>(R.id.ProcessOOMScoreAdj).text = "" + detail.oomScoreAdj
                 findViewById<TextView>(R.id.ProcessState).text = detail.getState()
-                if (processInfo.rss > 8192) {
-                    findViewById<TextView>(R.id.ProcessMEM).text = (detail.rss / 1024).toInt().toString() + "MB"
+                if (processInfo.res > 8192) {
+                    findViewById<TextView>(R.id.ProcessMEM).text = (detail.res / 1024).toInt().toString() + "MB"
                 } else {
-                    findViewById<TextView>(R.id.ProcessMEM).text = detail.rss.toString() + "KB"
+                    findViewById<TextView>(R.id.ProcessMEM).text = detail.res.toString() + "KB"
                 }
                 findViewById<TextView>(R.id.ProcessUSER).text = processInfo.user
                 if (isAndroidProcess(processInfo)) {

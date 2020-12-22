@@ -45,7 +45,7 @@ public class ProcessUtils {
             }
 
             // String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
-            String insideCmd = "ps -e -o %CPU,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
+            String insideCmd = "ps -e -o %CPU,RES,SHR,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
             String outsideCmd = outsideToybox + " " + insideCmd;
 
             for (String cmd : new String[]{insideCmd, outsideCmd}) {
@@ -63,11 +63,11 @@ public class ProcessUtils {
 
     private long str2Long(String str) {
         if (str.contains("K")) {
-            return Long.parseLong(str.substring(0, str.indexOf("K")));
+            return (long)Double.parseDouble(str.substring(0, str.indexOf("K")));
         } else if (str.contains("M")) {
-            return Long.parseLong(str.substring(0, str.indexOf("M"))) * 1024;
+            return (long)(Double.parseDouble(str.substring(0, str.indexOf("M"))) * 1024);
         } else if (str.contains("G")) {
-            return Long.parseLong(str.substring(0, str.indexOf("G"))) * 1048576;
+            return (long)(Double.parseDouble(str.substring(0, str.indexOf("G"))) * 1048576);
         } else {
             return Long.parseLong(str) / 1024;
         }
@@ -80,12 +80,14 @@ public class ProcessUtils {
             try {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
-                processInfo.rss = Long.parseLong(columns[1]);
-                processInfo.name = columns[2];
-                processInfo.pid = Integer.parseInt(columns[3]);
-                processInfo.state = columns[4];
-                processInfo.user = columns[5];
-                processInfo.command = columns[6];
+                processInfo.res = str2Long(columns[1]);
+                processInfo.shr = str2Long(columns[2]);
+                processInfo.rss = Long.parseLong(columns[3]);
+                processInfo.name = columns[4];
+                processInfo.pid = Integer.parseInt(columns[5]);
+                processInfo.state = columns[6];
+                processInfo.user = columns[7];
+                processInfo.command = columns[8];
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {

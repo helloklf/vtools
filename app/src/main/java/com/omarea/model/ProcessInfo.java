@@ -48,6 +48,7 @@ public class ProcessInfo {
        */
         return cpu;
     }
+    public long res;
     public long rss;
     public String state;
     public long shr;

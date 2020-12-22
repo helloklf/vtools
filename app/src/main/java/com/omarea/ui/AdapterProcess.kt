@@ -18,7 +18,7 @@ import com.omarea.vtools.R
  * Created by Hello on 2018/01/26.
  */
 
-class ProcessAdapter(private val context: Context,
+class AdapterProcess(private val context: Context,
                      private var processes: ArrayList<ProcessInfo> = ArrayList(),
                      private var keywords: String = "",
                      private var sortMode: Int = SORT_MODE_CPU,
@@ -83,7 +83,7 @@ class ProcessAdapter(private val context: Context,
             when (sortMode) {
                 SORT_MODE_DEFAULT -> it.pid
                 SORT_MODE_CPU -> -(it.getCpu() * 10).toInt()
-                SORT_MODE_MEM -> -(it.rss * 100).toInt()
+                SORT_MODE_MEM -> -(it.res * 100).toInt()
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }
@@ -215,10 +215,10 @@ class ProcessAdapter(private val context: Context,
             findViewById<TextView>(R.id.ProcessName).text = keywordHightLight(processInfo.name)
             findViewById<TextView>(R.id.ProcessPID).text = "PID: " + processInfo.pid
             findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.getCpu() + "%"
-            if (processInfo.rss > 8192) {
-                findViewById<TextView>(R.id.ProcessMEM).text = "RSS: " + (processInfo.rss / 1024).toInt() + "MB"
+            if (processInfo.res > 8192) {
+                findViewById<TextView>(R.id.ProcessMEM).text = "RES: " + (processInfo.res / 1024).toInt() + "MB"
             } else {
-                findViewById<TextView>(R.id.ProcessMEM).text = "RSS: " + processInfo.rss + "KB"
+                findViewById<TextView>(R.id.ProcessMEM).text = "RES: " + processInfo.res + "KB"
             }
             findViewById<TextView>(R.id.ProcessUSER).text = keywordHightLight(processInfo.user)
             loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
