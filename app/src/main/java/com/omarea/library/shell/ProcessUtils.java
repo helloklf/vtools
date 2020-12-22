@@ -82,6 +82,7 @@ public class ProcessUtils {
                 processInfo.cpu = Float.parseFloat(columns[0]);
                 processInfo.res = str2Long(columns[1]);
                 processInfo.shr = str2Long(columns[2]);
+                processInfo.mem = processInfo.res - processInfo.shr;
                 processInfo.rss = Long.parseLong(columns[3]);
                 processInfo.name = columns[4];
                 processInfo.pid = Integer.parseInt(columns[5]);

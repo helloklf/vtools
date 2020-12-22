@@ -50,6 +50,7 @@ public class ProcessInfo {
     }
     public long res;
     public long rss;
+    public long mem;
     public String state;
     public long shr;
     public String user;
