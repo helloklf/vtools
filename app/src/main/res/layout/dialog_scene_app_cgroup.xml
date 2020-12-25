@@ -90,6 +90,7 @@
                 android:src="@drawable/memory_lock"
                 android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#40C4FF"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -198,6 +199,49 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="禁止交换到SWAP，且禁止LMK杀死进程" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/cgroup_limit"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/memory_limit"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:padding="4dp"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#FF6E40"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="受限后台" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="限制RAM用量，积极使用SWAP" />
             </LinearLayout>
 
         </LinearLayout>

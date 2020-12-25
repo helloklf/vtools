@@ -279,7 +279,7 @@
         <activity android:name=".activities.ActivityImg" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBattery" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCharge" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityProcess" android:configChanges="orientation|screenSize" />
+        <activity android:name=".activities.ActivityProcess" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityMagisk" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuControl" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />

@@ -18,7 +18,6 @@ class DialogAppOrientation(var context: Activity, val current: Int?, val iResult
     class Transform(private val context: Context) {
         private val res = context.resources
         private val groupNames = ArrayList<String>().apply {
-            addAll(res.getStringArray(R.array.orientation_options))
         }
 
         fun getName(value: Int?): String {

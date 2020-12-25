@@ -321,20 +321,16 @@
         <item>常驻后台</item>
         <item>优先内存</item>
         <item>系统进程</item>
+        <item>受限后台</item>
     </string-array>
     <string-array name="cgroup_mem_values">
         <item></item>
         <item>scene_lock</item>
         <item>scene_perf</item>
         <item>scene_sys</item>
+        <item>scene_limit</item>
     </string-array>
     <string name="cgroup_mem_default">scene_def</string>
-    <string-array name="orientation_options">
-        <item>未设置</item>
-        <item></item>
-        <item></item>
-        <item>scene_sys</item>
-    </string-array>
 
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>

@@ -1,23 +1,38 @@
 if [[ -d /dev/memcg ]]; then
-    scene_memcg="/dev/memcg"
-elif [[ -d /sys/fs/cgroup ]]; then
     scene_memcg="/sys/fs/cgroup/memory"
+elif [[ -d /sys/fs/cgroup ]]; then
+    scene_memcg="/dev/memcg"
 fi
 
 function init_group() {
     local g=$scene_memcg/$1
     if [[ ! -d $g ]]; then
-      mkdir $g
+      mkdir -p $g
     fi
     echo $2 > $g/memory.swappiness
     echo $3 > $g/memory.oom_control
+    echo 1 > $g/memory.move_charge_at_immigrate
 }
 
 if [[ "$scene_memcg" != "" ]]; then
-    init_group scene_lock 100 1
-    init_group scene_perf 10 0
-    init_group scene_sys 0 1
-    init_group scene_def 100 0
+
+    group_lmt=$scene_memcg/scene_limit
+    if [[ ! -e $group_lmt ]]; then
+        init_group scene_lock 100 1
+        init_group scene_perf 10 0
+        init_group scene_sys 0 1
+        init_group scene_def 100 0
+        echo 1 > $scene_memcg/memory.move_charge_at_immigrate
+
+        mkdir -p $group_lmt
+        echo 512M > $group_lmt/memory.soft_limit_in_bytes
+        echo 8192M > $group_lmt/memory.memsw.limit_in_bytes
+        # echo 512M > $group_lmt/memory.limit_in_bytes
+        # echo 512M > $group_lmt/memory.kmem.limit_in_bytes
+        echo 1 > $group_lmt/memory.oom_control
+        echo 100 > $group_lmt/memory.swappiness
+        echo 1 > $group_lmt/memory.move_charge_at_immigrate
+    fi
 
     pgrep -f %s | while read pid; do
         echo $pid > $scene_memcg/%s/tasks
