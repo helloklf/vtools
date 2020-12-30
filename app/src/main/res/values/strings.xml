@@ -322,6 +322,7 @@
         <item>优先内存</item>
         <item>系统进程</item>
         <item>受限后台</item>
+        <item>回收内存</item>
     </string-array>
     <string-array name="cgroup_mem_values">
         <item></item>
@@ -329,6 +330,7 @@
         <item>scene_perf</item>
         <item>scene_sys</item>
         <item>scene_limit</item>
+        <item>scene_limit2</item>
     </string-array>
     <string name="cgroup_mem_default">scene_def</string>
 

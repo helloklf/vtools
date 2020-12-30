@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -427,11 +428,28 @@ public class AccessibilityScenceMode : AccessibilityService() {
     class WindowAnalyzeThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
         override fun run() {
             // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
-            val wp = (try {
-                windowInfo.root?.packageName
+            val root = (try {
+                windowInfo.root
             } catch (ex: Exception) {
                 null
             })
+            val wp = (try {
+                root?.packageName
+            } catch (ex: Exception) {
+                null
+            })
+            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
+            if (wp?.equals("com.miui.home") == true) {
+                /*
+                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
+                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
+                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
+                */
+                val node = root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
+                if (node != null) {
+                    return
+                }
+            }
 
             if (lastParsingThread == tid && wp != null) {
                 GlobalStatus.lastPackageName = wp.toString()

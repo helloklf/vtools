@@ -66,5 +66,9 @@ class DialogAppCGroupMem(var context: Activity, val current: String?, val iResul
             dialog.dismiss()
             onItemClick("scene_limit")
         }
+        view.findViewById<View>(R.id.cgroup_limit2).setOnClickListener {
+            dialog.dismiss()
+            onItemClick("scene_limit2")
+        }
     }
 }

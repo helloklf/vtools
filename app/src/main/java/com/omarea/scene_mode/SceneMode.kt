@@ -350,7 +350,7 @@ class SceneMode private constructor(private val context: Context, private var st
                 CGroupMemoryUtlis(Scene.context).run {
                     if (isSupported) {
                         if (sceneConfigInfo.bgCGroupMem?.isNotEmpty() == true) {
-                            setGroup(sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
+                            setGroupAutoDelay(this, sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
                             // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
                         } else {
                             setGroup(sceneConfigInfo.packageName!!, context.getString(R.string.cgroup_mem_default))
@@ -445,6 +445,24 @@ class SceneMode private constructor(private val context: Context, private var st
             } catch (ex: Exception) {
                 Log.e(">>>>", "" + ex.message)
             }
+        }
+    }
+
+    private fun setGroupAutoDelay(util: CGroupMemoryUtlis, app: String, mode: String) {
+        if (mode == "scene_limit") {
+            Scene.postDelayed({
+                if (currentSceneConfig?.packageName != app) {
+                    util.setGroup(app, mode)
+                }
+            }, 2000)
+        } else if (mode == "scene_limit2") {
+            Scene.postDelayed({
+                if (currentSceneConfig?.packageName != app) {
+                    util.setGroup(app, mode)
+                }
+            }, 5000)
+        } else {
+            util.setGroup(app, mode)
         }
     }
 
