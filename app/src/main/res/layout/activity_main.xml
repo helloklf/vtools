@@ -33,10 +33,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <FrameLayout
+                <!--<FrameLayout
                     android:id="@+id/app_donate"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent" />-->
             </FrameLayout>
 
             <TabWidget

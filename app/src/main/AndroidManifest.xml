@@ -127,7 +127,7 @@
             android:configChanges="keyboardHidden|orientation|uiMode|screenSize|density|screenLayout|fontScale|smallestScreenSize"
             android:excludeFromRecents="false"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/app_name_short"
             android:launchMode="singleTop"
             android:screenOrientation="behind">
             <intent-filter>
