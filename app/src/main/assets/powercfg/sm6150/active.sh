@@ -217,14 +217,14 @@ elif [ "$action" = "performance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
 elif [ "$action" = "fast" ]; then
-	set_cpu_freq 1708800 2500000 1209600 2750000
-	set_input_boost_freq 1804800 1939200 120
+  set_cpu_freq 1708800 2500000 1209600 2750000
+  set_input_boost_freq 1804800 1939200 120
 
-	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-	echo 300000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
+  echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+  echo 300000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
-	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 1 > /proc/sys/kernel/sched_boost
+  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 1 > /proc/sys/kernel/sched_boost
 
   echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable

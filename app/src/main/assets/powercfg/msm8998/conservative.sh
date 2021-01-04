@@ -142,10 +142,10 @@ function set_cpu_freq()
 {
   echo $1 $2 $3 $4
   echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo $3 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	echo $4 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+  echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  echo $3 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
+  echo $4 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 }
 
 function interactive_cfg()
@@ -163,71 +163,71 @@ function schedutil_cfg()
 }
 
 if [ "$action" = "powersave" ]; then
-	set_cpu_freq 5000 1401600 5000 1344000
+  set_cpu_freq 5000 1401600 5000 1344000
 
-	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
-	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
+  echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
+  echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
   echo 15 > /proc/sys/kernel/sched_init_task_load
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	set_value "85 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
-	set_value 518400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+  set_value "85 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+  set_value 518400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
   set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
   interactive_cfg 0 0 9000 10000
   schedutil_cfg 0 1000 10000 0
 
 
-	set_value "99" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
-	set_value 576000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+  set_value "99" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+  set_value 576000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
   set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
   interactive_cfg 4 0 19000 20000
   schedutil_cfg 4 1000 10000 0
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "balance" ]; then
-	set_cpu_freq 5000 1401600 5000 1497600
+  set_cpu_freq 5000 1401600 5000 1497600
 
   echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
   echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
   echo 20 > /proc/sys/kernel/sched_init_task_load
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	set_value "84 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
-	set_value 960000 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+  set_value "84 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+  set_value 960000 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
   set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
   interactive_cfg 0 0 9000 10000
   schedutil_cfg 0 1000 5000 0
 
 
-	set_value "83 300000:89 1056000:89 1344000:92" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
-	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+  set_value "83 300000:89 1056000:89 1344000:92" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+  set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
   set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
   interactive_cfg 4 0 19000 20000
   schedutil_cfg 4 1000 5000 0
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "performance" ]; then
-	set_cpu_freq 300000 1900800 300000 2035200
+  set_cpu_freq 300000 1900800 300000 2035200
 
   echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
   echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
   echo 25 > /proc/sys/kernel/sched_init_task_load
 
   echo 0-1 > /dev/cpuset/background/cpus
@@ -245,34 +245,34 @@ if [ "$action" = "performance" ]; then
   interactive_cfg 4 79000 23000 12000
   schedutil_cfg 4 1000 1000 1
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	set_cpu_freq 300000 2500000 300000 2750000
+  set_cpu_freq 300000 2500000 300000 2750000
 
   echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
   echo 50 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 1 > /proc/sys/kernel/sched_boost
+  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 1 > /proc/sys/kernel/sched_boost
   echo 30 > /proc/sys/kernel/sched_init_task_load
 
   echo 0 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
   set_value "72 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
-	set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+  set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
   set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
   interactive_cfg 0 79000 19000 5000
   schedutil_cfg 0 1000 1000 1
 
 
   set_value "73 1497600:78 2016000:87" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
-	set_value 1497600 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+  set_value 1497600 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
   set_value 1 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
   interactive_cfg 4 79000 19000 5000
   schedutil_cfg 4 1000 1000 1
 
-	exit 0
+  exit 0
 fi

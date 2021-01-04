@@ -167,12 +167,12 @@ sched_config() {
 }
 
 sched_limit() {
-    echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
-    echo $2 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-    echo $3 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us
-    echo $4 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us
-    echo $5 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
-    echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+  echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo $2 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo $3 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us
+  echo $4 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us
+  echo $5 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
+  echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 }
 
 if [[ "$action" = "powersave" ]]; then

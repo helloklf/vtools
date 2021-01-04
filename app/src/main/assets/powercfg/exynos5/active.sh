@@ -12,7 +12,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 # /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_freq_table
@@ -22,10 +22,10 @@ fi
 # 2600000 2496000 2392000 2288000 2184000 2080000 1976000 1872000 1768000 1664000 1560000 1456000 1352000 1248000 1144000 1040000 936000 832000 728000 624000 520000 416000 312000
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
 
 function set_value()
@@ -84,12 +84,12 @@ if [[ "$action" = "powersave" ]]; then
     set_value 0 /sys/devices/system/cpu/cpu6/online
     set_value 0 /sys/devices/system/cpu/cpu7/online
 
-	set_value 50000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	set_value 1900000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	set_value 50000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	set_value 1040000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
-	set_value 546000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	set_value 520000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+  set_value 50000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  set_value 1900000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  set_value 50000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
+  set_value 1040000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+  set_value 546000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+  set_value 520000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
     set_value 225 /sys/kernel/hmp/down_threshold
     set_value 600 /sys/kernel/hmp/up_threshold
@@ -99,14 +99,14 @@ if [[ "$action" = "powersave" ]]; then
     set_value "90 312000:92 520000:95 832000:93 1040000:87 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
-	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+  echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 19000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
     echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
-	exit 0
+  exit 0
 fi
 
 set_value 8 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
@@ -132,23 +132,23 @@ if [[ "$action" = "balance" ]]; then
     set_value "84 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
-	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+  echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 19000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
     echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "performance" ]]; then
-	set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	set_value 1900000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	set_value 100000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	set_value 2392000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
-	set_value 1378000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	set_value 1456000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+  set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  set_value 1900000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  set_value 100000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
+  set_value 2392000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+  set_value 1378000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+  set_value 1456000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
     set_value 170 /sys/kernel/hmp/down_threshold
     set_value 310 /sys/kernel/hmp/up_threshold
@@ -160,23 +160,23 @@ if [[ "$action" = "performance" ]]; then
     set_value "80 312000:92 520000:87 832000:88 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
-	echo 39000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+  echo 39000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 5000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 39000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
     echo 5000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "fast" ]]; then
-	set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	set_value 3000000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	set_value 1248000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	set_value 2900000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
-	set_value 1482000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	set_value 1872000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+  set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  set_value 3000000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  set_value 1248000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
+  set_value 2900000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+  set_value 1482000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+  set_value 1872000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
     set_value 170 /sys/kernel/hmp/down_threshold
     set_value 310 /sys/kernel/hmp/up_threshold
@@ -188,12 +188,12 @@ if [[ "$action" = "fast" ]]; then
     set_value "79 312000:92 520000:77 832000:78 1040000:75 1456000:85 1872000:88 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
-	echo 39000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+  echo 39000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 5000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 39000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
     echo 5000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
-	exit 0
+  exit 0
 fi

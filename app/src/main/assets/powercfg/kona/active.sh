@@ -155,15 +155,24 @@ set_cpu_freq()
 }
 
 sched_config() {
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
-    echo "$1" > /proc/sys/kernel/sched_downmigrate
-    echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
+  echo "$1" > /proc/sys/kernel/sched_downmigrate
+  echo "$2" > /proc/sys/kernel/sched_upmigrate
 
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
-    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
-    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+  echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+  echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+}
+
+sched_limit() {
+  echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo $2 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo $3 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us
+  echo $4 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us
+  echo $5 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
+  echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 }
 
 if [[ "$action" = "powersave" ]]; then
@@ -185,6 +194,8 @@ if [[ "$action" = "powersave" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
   sched_config "85 85" "96 96" "160" "260"
+
+  sched_limit 0 500 0 1000 0 1000
 
   exit 0
 fi
@@ -209,6 +220,8 @@ if [[ "$action" = "balance" ]]; then
 
   sched_config "78 85" "89 96" "120" "200"
 
+  sched_limit 0 0 0 500 0 500
+
   exit 0
 fi
 
@@ -232,6 +245,8 @@ if [[ "$action" = "performance" ]]; then
 
   sched_config "62 78" "72 85" "85" "100"
 
+  sched_limit 0 0 0 0 0 0
+
   exit 0
 fi
 
@@ -254,6 +269,8 @@ if [[ "$action" = "fast" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
   sched_config "55 75" "68 82" "85" "100"
+
+  sched_limit 5000 0 2000 0 2000 0
 
   exit 0
 fi

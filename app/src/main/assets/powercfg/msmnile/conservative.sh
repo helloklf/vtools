@@ -161,6 +161,15 @@ function set_cpu_freq()
   echo $6 > /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq
 }
 
+sched_limit() {
+  echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+  echo $2 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+  echo $3 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/down_rate_limit_us
+  echo $4 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/up_rate_limit_us
+  echo $5 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
+  echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+}
+
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -178,6 +187,8 @@ if [[ "$action" = "powersave" ]]; then
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+
+  sched_limit 0 500 0 1000 0 1000
 
   exit 0
 fi
@@ -245,6 +256,8 @@ if [[ "$action" = "fast" ]]; then
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+
+  sched_limit 5000 0 2000 0 2000 0
 
   exit 0
 fi

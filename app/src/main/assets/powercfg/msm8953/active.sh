@@ -12,12 +12,12 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 if [ ! "$governor" = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 
 echo 1-3 > /dev/cpuset/background/cpus
@@ -49,7 +49,7 @@ echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 
 #powersave 1.2Ghz
 if [ "$action" = "powersave" ]; then
-	echo "0:1840000 1:1840000 2:1840000 3:1840000 4:1840000 5:1840000 6:1840000 7:1840000" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:1840000 1:1840000 2:1840000 3:1840000 4:1840000 5:1840000 6:1840000 7:1840000" > /sys/module/msm_performance/parameters/cpu_max_freq
     echo "19000 1401600:39000" > /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
     echo 85 > /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
     echo 20000 > /sys/devices/system/cpu/cpufreq/interactive/timer_rate
@@ -67,12 +67,12 @@ if [ "$action" = "powersave" ]; then
     echo 6 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
     echo 8 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
-	exit 0
+  exit 0
 fi
 
 
 if [ "$action" = "balance" ]; then
-	echo "0:2016000 1:2016000 2:2016000 3:2016000 4:2016000 5:2016000 6:2016000 7:2016000" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:2016000 1:2016000 2:2016000 3:2016000 4:2016000 5:2016000 6:2016000 7:2016000" > /sys/module/msm_performance/parameters/cpu_max_freq
     echo "19000 1401600:39000" > /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
     echo 85 > /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
     echo 20000 > /sys/devices/system/cpu/cpufreq/interactive/timer_rate
@@ -90,11 +90,11 @@ if [ "$action" = "balance" ]; then
     echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
     echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "performance" ]; then
-	echo "0:2016000 1:2016000 2:2016000 3:2016000 4:2016000 5:2016000 6:2016000 7:2016000" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:2016000 1:2016000 2:2016000 3:2016000 4:2016000 5:2016000 6:2016000 7:2016000" > /sys/module/msm_performance/parameters/cpu_max_freq
     echo "19000 1401600:39000" > /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
     echo 80 > /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
     echo 20000 > /sys/devices/system/cpu/cpufreq/interactive/timer_rate
@@ -112,11 +112,11 @@ if [ "$action" = "performance" ]; then
     echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
     echo 5 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	echo "0:2900000 1:2900000 2:2900000 3:2900000 4:2900000 5:2900000 6:2900000 7:2900000" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:2900000 1:2900000 2:2900000 3:2900000 4:2900000 5:2900000 6:2900000 7:2900000" > /sys/module/msm_performance/parameters/cpu_max_freq
     echo "19000 1401600:39000" > /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
     echo 82 > /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
     echo 20000 > /sys/devices/system/cpu/cpufreq/interactive/timer_rate
@@ -134,5 +134,5 @@ if [ "$action" = "fast" ]; then
     echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
     echo 0 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
-	exit 0
+  exit 0
 fi
