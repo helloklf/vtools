@@ -5,7 +5,7 @@
 target=`getprop ro.board.platform`
 
 case "$target" in
-	"kona")
+  "kona")
 
     # Core control parameters for gold
     echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -61,8 +61,8 @@ case "$target" in
     if [ `cat /sys/devices/soc0/revision` == "2.0" ]; then
       echo 1248000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
     else
-		  echo 1228800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	  fi
+      echo 1228800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+    fi
     echo 691200 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
     echo 1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/pl
 
@@ -88,7 +88,7 @@ case "$target" in
     else
       echo 1612800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
     fi
-	  echo 1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
+    echo 1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
 
     echo N > /sys/module/lpm_levels/parameters/sleep_disabled
   ;;

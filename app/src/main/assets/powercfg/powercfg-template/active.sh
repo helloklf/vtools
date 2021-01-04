@@ -12,23 +12,23 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "powersave" ]]; then
     #powersave
 
-	exit 0
+  exit 0
 elif [[ "$action" = "balance" ]]; then
-	#balance
+  #balance
 
-	exit 0
+  exit 0
 elif [[ "$action" = "performance" ]]; then
-	#performance
+  #performance
 
-	exit 0
+  exit 0
 elif [[ "$action" = "fast" ]]; then
-	#fast
-	
-	exit 0
+  #fast
+
+  exit 0
 fi

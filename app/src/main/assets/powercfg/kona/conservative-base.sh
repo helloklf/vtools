@@ -5,7 +5,7 @@
 target=`getprop ro.board.platform`
 
 case "$target" in
-	"kona")
+  "kona")
     # Core control parameters for gold
     echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
     echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres

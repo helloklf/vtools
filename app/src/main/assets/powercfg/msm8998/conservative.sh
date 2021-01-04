@@ -12,7 +12,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 echo 1 > /sys/devices/system/cpu/cpu0/online
@@ -28,12 +28,12 @@ governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
 
 if [ ! "$governor0" = "interactive" ] && [ ! "$governor0" = "schedutil" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 if [ ! "$governor4" = "interactive" ] && [ ! "$governor4" = "schedutil" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
-	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
 
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
@@ -141,7 +141,7 @@ gpu_config
 function set_cpu_freq()
 {
   echo $1 $2 $3 $4
-	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	echo $3 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq

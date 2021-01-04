@@ -5,7 +5,7 @@
 target=`getprop ro.board.platform`
 
 case "$target" in
-	"kona")
+  "kona")
 
     # Controls how many more tasks should be eligible to run on gold CPUs
     # w.r.t number of gold CPUs available to trigger assist (max number of
@@ -71,7 +71,7 @@ case "$target" in
     echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
     echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
     echo 1766400 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
-	  echo 1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
+    echo 1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
 
     echo N > /sys/module/lpm_levels/parameters/sleep_disabled
   ;;

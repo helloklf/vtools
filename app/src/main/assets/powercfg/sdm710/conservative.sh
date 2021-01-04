@@ -12,7 +12,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 stop perfd
@@ -25,10 +25,10 @@ governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor6=`cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor`
 
 if [ ! "$governor0" = "schedutil" ]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 if [ ! "$governor6" = "schedutil" ]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
 fi
 
 governor_restore () {

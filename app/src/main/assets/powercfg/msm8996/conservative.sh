@@ -12,7 +12,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 stop perfd
@@ -21,12 +21,12 @@ governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor2=`cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor`
 
 if [ ! "$governor0" = "interactive" ] && [ ! "$governor0" = "schedutil" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 if [ ! "$governor2" = "interactive" ] && [ ! "$governor2" = "schedutil" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
-	echo 'schedutil' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+  echo 'interactive' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 fi
 
 function set_value()
@@ -92,34 +92,34 @@ gpu_config
 function set_cpu_freq()
 {
   echo $1 $2 $3 $4
-	#echo "0:$2 1:$2 2:$4 3:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo $3 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
-	echo $4 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
+  #echo "0:$2 1:$2 2:$4 3:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+  echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+  echo $3 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
+  echo $4 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
 }
 
 if [ "$action" = "powersave" ]; then
   set_cpu_freq 300000 850000 300000 960000
 
-	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
 
   echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	set_value 480000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+  set_value 480000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+  echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
+  echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
   echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
   echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
   echo 99 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
-	set_value 480000 /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
+  set_value 480000 /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
+  echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
   echo 19000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/min_sample_time
   echo 20000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/timer_rate
   echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/io_is_busy
 
-	exit 0
+  exit 0
 fi
 
 if [ "$action" = "balance" ]; then
