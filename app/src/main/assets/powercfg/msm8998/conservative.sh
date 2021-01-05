@@ -45,31 +45,41 @@ governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
 # /sys/devices/system/cpu/cpu4/cpufreq/scaling_available_frequencies
 # 300000 345600 422400 499200 576000 652800 729600 806400 902400 979200 1056000 1132800 1190400 1267200 1344000 1420800 1497600 1574400 1651200 1728000 1804800 1881600 1958400 2035200 2112000 2208000 2265600 2323200 2342400 2361600 2457600
 
+governor_backup () {
+  local governor_backup=/cache/governor_backup.prop
+  if [[ ! -f $governor_backup ]]; then
+    echo '' > $governor_backup
+    local dir=/sys/class/devfreq
+    for file in `ls $dir`; do
+      if [ -f $dir/$file/governor ]; then
+        governor=`cat $dir/$file/governor`
+        echo "$file#$governor" >> $governor_backup
+      fi
+    done
+  fi
+}
+
 governor_performance () {
+  governor_backup
   local dir=/sys/class/devfreq
   for file in `ls $dir`; do
-    if [ -f $dir/$file/available_frequencies ]; then
-      max_freq=$(awk -F ' ' '{print $NF}' $dir/$file/available_frequencies)
-      if [[ "$max_freq" != "" ]]; then
-        echo $file '->' $max_freq
-        echo $max_freq > $dir/$file/max_freq
-        echo $max_freq > $dir/$file/min_freq
-      fi
+    if [ -f $dir/$file/governor ]; then
+      echo $dir/$file/governor
+      echo performance > $dir/$file/governor
     fi
   done
 }
 
 governor_restore () {
+  local governor_backup=/cache/governor_backup.prop
   local dir=/sys/class/devfreq
-  for file in `ls $dir`; do
-    if [ -f $dir/$file/available_frequencies ]; then
-      min_freq=$(awk '{print $1}' $dir/$file/available_frequencies)
-      if [[ "$min_freq" != "" ]]; then
-        echo $file '->' $min_freq
-        echo $min_freq > $dir/$file/min_freq
-      fi
-    fi
-  done
+  if [[ -f "$governor_backup" ]]; then
+      while read line; do
+        if [[ "$line" != "" ]]; then
+            echo ${line#*#} > $dir/${line%#*}/governor
+        fi
+      done < /cache/governor_backup.prop
+  fi
 }
 
 if [[ "$action" == "fast" ]]; then
