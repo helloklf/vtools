@@ -207,7 +207,7 @@ class DialogHelper {
 
             dialog.show()
             dialog.window?.run {
-                setBackgroundDrawableResource(android.R.color.transparent)
+                // setBackgroundDrawableResource(android.R.color.transparent)
 
                 // TODO:处理模糊背景
                 // BlurBackground(activity).setScreenBgLight(dialog)
