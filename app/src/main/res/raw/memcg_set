@@ -6,6 +6,6 @@ fi
 
 if [[ "$scene_memcg" != "" ]]; then
     pgrep -f %s | while read pid; do
-        echo $pid > $scene_memcg/%s/tasks
+        echo $pid > $scene_memcg%s/tasks
     done
 fi

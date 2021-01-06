@@ -353,8 +353,8 @@ class SceneMode private constructor(private val context: Context, private var st
                             setGroupAutoDelay(this, sceneConfigInfo.packageName!!, sceneConfigInfo.bgCGroupMem)
                             // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[${sceneConfigInfo.bgCGroupMem}]\n(Scene试验性功能)")
                         } else {
-                            setGroup(sceneConfigInfo.packageName!!, context.getString(R.string.cgroup_mem_default))
-                            // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[scene_def]\n(Scene试验性功能)")
+                            setGroup(sceneConfigInfo.packageName!!, "")
+                            // Scene.toast(sceneConfigInfo.packageName!! + "退出，cgroup调为[/]\n(Scene试验性功能)")
                         }
                     } else {
                         Scene.toast("你的内核不支持cgroup设置！\n(Scene试验性功能)")

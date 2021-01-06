@@ -333,7 +333,6 @@
         <item>scene_limit</item>
         <item>scene_limit2</item>
     </string-array>
-    <string name="cgroup_mem_default">scene_def</string>
 
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>

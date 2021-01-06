@@ -20,7 +20,6 @@ if [[ "$scene_memcg" != "" ]]; then
         init_group scene_lock 100 1
         init_group scene_perf 10 0
         init_group scene_sys 0 1
-        init_group scene_def 100 0
         echo 1 > $scene_memcg/memory.move_charge_at_immigrate
 
         MemTotalStr=`cat /proc/meminfo | grep MemTotal`

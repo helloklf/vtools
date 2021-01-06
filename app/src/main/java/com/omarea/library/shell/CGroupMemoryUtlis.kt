@@ -16,7 +16,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
     }
 
     public val isSupported: Boolean
-        get () {
+        get() {
             if (supported == null) {
                 supported = RootFile.fileExists("/dev/memcg/tasks") || RootFile.fileExists("/sys/fs/cgroup/memory/tasks")
             }
@@ -30,7 +30,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
             val outName = "memcg_set_init.sh"
             if (FileWrite.writePrivateFile(initShell.toByteArray(Charset.defaultCharset()), outName, context)) {
                 val shellPath = FileWrite.getPrivateFilePath(context, outName)
-                KeepShellPublic.doCmdSync("sh " + shellPath)
+                KeepShellPublic.doCmdSync("sh $shellPath")
                 init = true
             }
         }
@@ -43,7 +43,12 @@ public class CGroupMemoryUtlis(private val context: Context) {
         }
 
         if (memcgShell != null) {
-            KeepShellPublic.doCmdSync(String.format(memcgShell!!, packageName, group))
+            val groupPath = (if (group.isNotEmpty()) {
+                ("/$group")
+            } else {
+                ""
+            })
+            KeepShellPublic.doCmdSync(String.format(memcgShell!!, packageName, groupPath))
         }
     }
 }
