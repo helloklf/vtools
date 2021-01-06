@@ -233,6 +233,23 @@ class ActivityFreezeApps : ActivityBase() {
                 (freeze_apps.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
             }
         })
+
+        val p = packageManager
+        val startActivity = ComponentName(this.applicationContext, ActivityFreezeApps::class.java)
+        val activityEnabled = p.getComponentEnabledSetting(startActivity) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        freeze_quick_entry.isChecked = activityEnabled
+        freeze_quick_entry.setOnClickListener {
+            try {
+                if ((it as CompoundButton).isChecked) {
+                    p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+                } else {
+                    p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
+                }
+                Toast.makeText(context, getString(R.string.freeze_entrance_changed), Toast.LENGTH_SHORT).show()
+            } catch (ex: java.lang.Exception) {
+            }
+            (it as CompoundButton).isChecked = p.getComponentEnabledSetting(startActivity) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        }
     }
 
     private fun loadData() {
@@ -560,9 +577,6 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     private fun freezeOptionsDialog() {
-        val p = packageManager
-        val startActivity = ComponentName(this.applicationContext, ActivityFreezeApps::class.java)
-        val enabled = p.getComponentEnabledSetting(startActivity) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(getString(R.string.freeze_apps_manage))
                 .setItems(
@@ -571,7 +585,6 @@ class ActivityFreezeApps : ActivityBase() {
                                 getString(R.string.freeze_shortcut_rebuild),
                                 getString(R.string.freeze_enable_all),
                                 getString(R.string.freeze_disable_all),
-                                if (enabled) getString(R.string.freeze_hidden_entrance) else getString(R.string.freeze_show_entrance),
                                 getString(R.string.freeze_clear_all))) { _, which ->
 
                     when (which) {
@@ -594,17 +607,6 @@ class ActivityFreezeApps : ActivityBase() {
                             loadData()
                         }
                         4 -> {
-                            try {
-                                if (enabled) {
-                                    p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
-                                } else {
-                                    p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
-                                }
-                                Toast.makeText(context, getString(R.string.freeze_entrance_changed), Toast.LENGTH_SHORT).show()
-                            } catch (ex: java.lang.Exception) {
-                            }
-                        }
-                        5 -> {
                             processBarDialog.showDialog()
                             RemoveAllThread(context, freezeApps, Runnable {
                                 handler.post {

@@ -352,6 +352,32 @@
                                     android:textAlignment="center" />
                             </LinearLayout>
                         </LinearLayout>
+
+
+                        <LinearLayout style="@style/ListCardItem">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <com.omarea.ui.HelpIcon
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    app:text="在桌面显示“应用偏见”管理界面快捷入口" />
+
+                                <Switch
+                                    android:id="@+id/freeze_quick_entry"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="桌面快捷入口" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
                     </LinearLayout>
                 </com.omarea.common.ui.OverScrollView>
             </FrameLayout>

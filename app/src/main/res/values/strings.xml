@@ -410,8 +410,6 @@
     <string name="freeze_shortcut_rebuild">向桌面添加快捷方式</string>
     <string name="freeze_enable_all">全部解冻</string>
     <string name="freeze_disable_all">全部冻结</string>
-    <string name="freeze_hidden_entrance">从桌面隐藏本界面入口</string>
-    <string name="freeze_show_entrance">添加本界面入口到桌面</string>
     <string name="freeze_clear_all">清空偏见列表</string>
     <string name="freeze_entrance_changed">√ 图标显示状态已切换</string>
     <string name="freeze_shortcut_delete_desc">你可能需要手动删除已添加的快捷方式！</string>
