@@ -45,10 +45,54 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerInside"
-                android:src="@drawable/memory_default"
+                android:src="@drawable/memory_linux"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:padding="11dp"
                 android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#FFAB00"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="系统默认" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SWAP使用策略遵循系统全局配置" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/cgroup_lock"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/memory_default"
+                android:padding="10dp"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="#00BFA5"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -69,50 +113,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="允许交换到SWAP，且允许LMK杀死进程" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:id="@+id/cgroup_lock"
-            style="@style/ListCardItemSmall"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                android:src="@drawable/memory_lock"
-                android:padding="10dp"
-                android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#40C4FF"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                app:tint="#ffffff" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="常驻后台" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="允许交换到SWAP，但禁止LMK杀死进程" />
+                    android:text="允许积极的将(此应用的)内存交换到SWAP" />
             </LinearLayout>
 
         </LinearLayout>
@@ -133,7 +134,7 @@
                 android:src="@drawable/memory_perf"
                 android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FF9800"
+                android:backgroundTint="#7CB342"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -155,7 +156,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="尽量避免交换到SWAP，但允许LMK杀死进程" />
+                    android:text="尽量避免将(此应用的)内存交换到SWAP" />
             </LinearLayout>
 
         </LinearLayout>
@@ -176,7 +177,6 @@
                 android:src="@drawable/memory_mem"
                 android:padding="10dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#8BC34A"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
@@ -192,13 +192,13 @@
                     android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="系统进程" />
+                    android:text="重要进程" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="禁止交换到SWAP，且禁止LMK杀死进程" />
+                    android:text="禁止将(此应用的)内存交换到SWAP" />
             </LinearLayout>
 
         </LinearLayout>
@@ -220,7 +220,7 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:padding="4dp"
                 android:background="@drawable/action_menu_icon_bg"
-                android:backgroundTint="#FF6E40"
+                android:backgroundTint="#40C4FF"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -241,7 +241,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="限制RAM用量，允许使用SWAP" />
+                    android:text="限制物理内存使用量，允许积极的将(此应用的)内存交换到SWAP" />
             </LinearLayout>
 
         </LinearLayout>
@@ -284,7 +284,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="尽可能转移到SWAP，回收占用的RAM" />
+                    android:text="只允许占用极少的物理内存，允许积极的将(此应用的)内存交换到SWAP" />
             </LinearLayout>
 
         </LinearLayout>
