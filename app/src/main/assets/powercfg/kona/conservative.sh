@@ -279,7 +279,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
-  set_cpu_freq 1075200 1804800 1382400 2600000 1305600 3200000
+  set_cpu_freq 1248000 1804800 1478400 2600000 1516800 3200000
   set_input_boost_freq 1804800 1670400 1862400 80
 
   echo 1612800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
