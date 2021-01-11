@@ -201,7 +201,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1420800 710400 1420800 825600 1996800
+  set_cpu_freq 300000 1708800 710400 1612800 825600 1920000
   set_input_boost_freq 1209600 0 0 40
 
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -226,7 +226,7 @@ if [[ "$action" = "balance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1708800 710400 1920000 825600 2227200
+  set_cpu_freq 300000 1785600 710400 1920000 825600 2323200
   set_input_boost_freq 1478400 0 0 40
 
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -264,7 +264,7 @@ if [[ "$action" = "performance" ]]; then
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "62 78" "72 85" "85" "100"
+  sched_config "60 75" "72 83" "85" "100"
 
   sched_limit 0 0 0 0 0 0
 
@@ -276,7 +276,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
 
-  set_cpu_freq 1036800 1785600 1286400 2600000 1286400 3200000
+  set_cpu_freq 1036800 1785600 1612800 2600000 1708800 3200000
   set_input_boost_freq 1708800 1612800 1804800 80
 
   echo 1632000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -291,7 +291,7 @@ if [[ "$action" = "fast" ]]; then
 
   sched_config "55 75" "68 82" "85" "100"
 
-  sched_limit 5000 0 2000 0 2000 0
+  sched_limit 50000 0 20000 0 20000 0
 
   exit 0
 fi
