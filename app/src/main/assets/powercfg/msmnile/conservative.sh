@@ -111,47 +111,34 @@ function set_value()
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
-gpu_max_freq='585000000'
+gpu_max_freq=$(echo $gpu_freqs | awk -F ' ' '{print $NF}')
 # GPU最小频率
-gpu_min_freq='257000000'
-# GPU最小 power level
-gpu_min_pl=5
-# GPU最大 power level
-gpu_max_pl=0
-# GPU默认 power level
-gpu_default_pl=`cat /sys/class/kgsl/kgsl-3d0/default_pwrlevel`
-# GPU型号
-gpu_model=`cat /sys/class/kgsl/kgsl-3d0/gpu_model`
-# GPU调度器
-gpu_governor=`cat /sys/class/kgsl/kgsl-3d0/devfreq/governor`
+gpu_min_freq=$(echo $gpu_freqs | awk '{print $1}')
 
-# MaxFrequency、MinFrequency
-for freq in $gpu_freqs; do
-    if [[ $freq -gt $gpu_max_freq ]]; then
-        gpu_max_freq=$freq
-    fi;
-    if [[ $freq -lt $gpu_min_freq ]]; then
-        gpu_min_freq=$freq
-    fi;
-done
-
-# Power Levels
-if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
-    gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0/num_pwrlevels`
-    gpu_min_pl=`expr $gpu_min_pl - 1`
-fi;
-if [[ "$gpu_min_pl" -lt 0 ]];then
-    gpu_min_pl=0
-fi;
+# 输出GPU信息
+echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
 
 if [[ ! "$gpu_governor" = "msm-adreno-tz" ]]; then
   echo 'msm-adreno-tz' > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 fi
-
 echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+
+set_gpu_min_freq() {
+  index=$1
+
+  # GPU频率表
+  gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
+
+  target_freq=$(echo $gpu_freqs | awk "{print \$${index}}")
+  if [[ "$target_freq" != "" ]]; then
+    echo $target_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+  fi
+
+  # gpu_max_freq=`cat /sys/class/kgsl/kgsl-3d0/devfreq/max_freq`
+  # gpu_min_freq=`cat /sys/class/kgsl/kgsl-3d0/devfreq/min_freq`
+  # echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
+}
 
 
 function set_input_boost_freq() {
@@ -204,7 +191,6 @@ if [[ "$action" = "powersave" ]]; then
   set_cpu_freq 300000 1420800 710400 1420800 825600 1420800
   set_input_boost_freq 0 0 0 0
 
-  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1209600 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -217,6 +203,10 @@ if [[ "$action" = "powersave" ]]; then
 
   sched_limit 0 500 0 1000 0 1000
 
+  echo 90 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
+  echo 90 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
+  echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
+
   exit 0
 fi
 
@@ -228,7 +218,6 @@ if [[ "$action" = "balance" ]]; then
   set_cpu_freq 300000 1420800 710400 1420800 825600 1996800
   set_input_boost_freq 1209600 0 0 40
 
-  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1478400 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -242,6 +231,10 @@ if [[ "$action" = "balance" ]]; then
 
   sched_limit 0 0 0 500 0 500
 
+  echo 80 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
+  echo 90 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
+  echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
+
   exit 0
 fi
 
@@ -253,7 +246,7 @@ if [[ "$action" = "performance" ]]; then
   set_cpu_freq 300000 1785600 710400 2419200 825600 2841600
   set_input_boost_freq 1478400 1286400 1286400 40
 
-  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  set_gpu_min_freq 2
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1632000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -266,6 +259,10 @@ if [[ "$action" = "performance" ]]; then
   sched_config "62 78" "72 85" "85" "100"
 
   sched_limit 0 0 0 0 0 0
+
+  echo 60 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
+  echo 70 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
+  echo 80 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   exit 0
 fi
@@ -282,7 +279,7 @@ if [[ "$action" = "fast" ]]; then
   echo 1612800 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
   echo 1708800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  set_gpu_min_freq 3
   echo 1 > /proc/sys/kernel/sched_boost
 
   echo 0-2 > /dev/cpuset/background/cpus
@@ -291,6 +288,10 @@ if [[ "$action" = "fast" ]]; then
   sched_config "55 75" "68 82" "85" "100"
 
   sched_limit 5000 0 2000 0 2000 0
+
+  echo 50 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
+  echo 60 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
+  echo 70 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   exit 0
 fi
