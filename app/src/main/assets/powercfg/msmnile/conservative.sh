@@ -260,7 +260,7 @@ if [[ "$action" = "performance" ]]; then
   set_cpu_freq 300000 1785600 710400 2419200 825600 2841600
   set_input_boost_freq 1478400 1286400 1286400 40
 
-  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1632000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -293,7 +293,7 @@ if [[ "$action" = "fast" ]]; then
   echo 1612800 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
   echo 1708800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 1 > /proc/sys/kernel/sched_boost
 
   echo 0-2 > /dev/cpuset/background/cpus
