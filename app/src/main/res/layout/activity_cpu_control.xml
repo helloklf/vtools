@@ -271,7 +271,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        app:text="Adreno GPU的性能通常会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低(能达到的频率越低)\n\n一般来说，PowerLevel可选级别数量和可选频率数量是对等，设置频率时注意保持一致即可" />
+                        app:text="Adreno GPU的性能有时会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低(能达到的频率越低)\n\n一般来说，PowerLevel可选级别数量和可选频率数量是对等，设置频率时注意保持一致即可" />
 
                     <TextView
                         style="@style/textTitle"
