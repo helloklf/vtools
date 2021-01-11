@@ -110,18 +110,47 @@ set_value()
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
-gpu_max_freq=$(echo $gpu_freqs | awk -F ' ' '{print $NF}')
+gpu_max_freq='587000000'
 # GPU最小频率
-gpu_min_freq=$(echo $gpu_freqs | awk '{print $1}')
+gpu_min_freq='305000000'
+# GPU最小 power level
+gpu_min_pl=5
+# GPU最大 power level
+gpu_max_pl=0
+# GPU默认 power level
+gpu_default_pl=`cat /sys/class/kgsl/kgsl-3d0/default_pwrlevel`
+# GPU型号
+gpu_model=`cat /sys/class/kgsl/kgsl-3d0/gpu_model`
+# GPU调度器
+gpu_governor=`cat /sys/class/kgsl/kgsl-3d0/devfreq/governor`
 
-# 输出GPU信息
-echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
+# MaxFrequency、MinFrequency
+for freq in $gpu_freqs; do
+    if [[ $freq -gt $gpu_max_freq ]]; then
+        gpu_max_freq=$freq
+    fi;
+    if [[ $freq -lt $gpu_min_freq ]]; then
+        gpu_min_freq=$freq
+    fi;
+done
+
+# Power Levels
+if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
+    gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0/num_pwrlevels`
+    gpu_min_pl=`expr $gpu_min_pl - 1`
+fi;
+if [[ "$gpu_min_pl" -lt 0 ]];then
+    gpu_min_pl=0
+fi;
 
 if [[ ! "$gpu_governor" = "msm-adreno-tz" ]]; then
   echo 'msm-adreno-tz' > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 fi
+
 echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 set_gpu_min_freq() {
   index=$1
@@ -241,7 +270,7 @@ if [[ "$action" = "performance" ]]; then
   set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
   set_input_boost_freq 1420800 1286400 1305600 40
 
-  set_gpu_min_freq 2
+  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1612800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -271,7 +300,7 @@ if [[ "$action" = "fast" ]]; then
   echo 1670400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
   echo 1862400 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-  set_gpu_min_freq 3
+  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 1 > /proc/sys/kernel/sched_boost
 
   echo 0 > /dev/cpuset/background/cpus
