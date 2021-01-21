@@ -10,7 +10,7 @@ function init_group() {
       mkdir -p $g
     fi
     echo $2 > $g/memory.swappiness
-    echo $3 > $g/memory.oom_control
+    echo 0 > $g/memory.oom_control
     echo 1 > $g/memory.move_charge_at_immigrate
 }
 
@@ -43,7 +43,7 @@ if [[ "$scene_memcg" != "" ]]; then
         echo 8192M > $group_lmt/memory.memsw.limit_in_bytes
         # echo 512M > $group_lmt/memory.limit_in_bytes
         # echo 512M > $group_lmt/memory.kmem.limit_in_bytes
-        echo 1 > $group_lmt/memory.oom_control
+        echo 0 > $group_lmt/memory.oom_control
         echo 100 > $group_lmt/memory.swappiness
         echo 1 > $group_lmt/memory.move_charge_at_immigrate
     fi
@@ -53,7 +53,7 @@ if [[ "$scene_memcg" != "" ]]; then
         mkdir -p $group_lmt2
         echo 192M > $group_lmt2/memory.soft_limit_in_bytes
         echo 8192M > $group_lmt2/memory.memsw.limit_in_bytes
-        echo 1 > $group_lmt2/memory.oom_control
+        echo 0 > $group_lmt2/memory.oom_control
         echo 100 > $group_lmt2/memory.swappiness
         echo 1 > $group_lmt2/memory.move_charge_at_immigrate
     fi
