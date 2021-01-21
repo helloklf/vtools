@@ -27,8 +27,8 @@ import com.omarea.ui.TabIconHelper
 import com.omarea.utils.ElectricityUnit
 import com.omarea.utils.Update
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
-import com.omarea.vtools.fragments.FragmentDonate
 import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
@@ -287,13 +287,9 @@ class ActivityMain : ActivityBase() {
                     Toast.makeText(this, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
                     return false
                 }
-                if (FloatMonitor.isShown == true) {
-                    FloatMonitor(this).hidePopupWindow()
-                    return false
-                }
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(this)) {
-                        showFloatMonitor()
+                        DialogMonitor(this).show()
                     } else {
                         //若没有权限，提示获取
                         //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -305,21 +301,11 @@ class ActivityMain : ActivityBase() {
                         Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    showFloatMonitor()
+                    DialogMonitor(this).show()
                 }
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun showFloatMonitor() {
-        DialogHelper.animDialog(AlertDialog.Builder(this)
-                .setMessage(getString(R.string.float_monitor_tips))
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    FloatMonitor(this).showPopupWindow()
-                }
-                .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                })
     }
 
     public override fun onPause() {

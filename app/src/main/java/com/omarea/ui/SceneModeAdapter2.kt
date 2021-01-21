@@ -175,7 +175,7 @@ class SceneModeAdapter2(private val context: Context, apps: ArrayList<Appinfo>, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val convertView = View.inflate(context, R.layout.list_item_scenen_app, null)
+        val convertView = View.inflate(context, R.layout.list_item_scene_app, null)
         val viewHolder = ViewHolder(convertView)
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.summery = convertView.findViewById(R.id.ItemSummary)

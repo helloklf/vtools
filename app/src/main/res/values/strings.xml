@@ -28,7 +28,7 @@
     <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
     <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
-    <string name="app_name">Scene4 Preview</string>
+    <string name="app_name">Scene4 Beta</string>
     <string name="app_name_short">Scene4</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
@@ -387,7 +387,6 @@
     <string name="scene_contract_title">风险声明</string>
     <string name="scene_contract">Scene是一款面向玩机爱好者的应用，使用它需要拥有优秀的视力、阅读理解能力和良好的心态。\n\n使用过程中可能出现无法预料的错误，导致数据丢失，甚至无法正常开机。\n\n请务必不要在你[用于工作]或者存有[重要数据]的手机上使用，以免造成损失！\n\n使用过程中，务必仔细阅读提示信息谨慎操作，不要轻易拨动不理解的功能选项！\n\n此外，本应用作者不保证会提供使用帮助和故障恢复建议！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
-    <string name="float_monitor_tips">悬浮窗可以拖动调整位置，单击切换展开状态，双击关闭~</string>
     <string name="lmk_optimize_desc">让Scene根据你的RAM容量，自动调整LMK参数，从而增强后台能力（可能导致低内存时卡顿）。如需恢复，请关闭该选项重启手机，如需开机后自动设置，请允许工具箱自启动</string>
     <string name="lmk_optimize">低内存优化</string>
     <string name="low_memory_killer">Low Memory Killer</string>

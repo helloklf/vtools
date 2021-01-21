@@ -42,7 +42,7 @@ class FloatMonitor(private val mContext: Context) {
      * @param context
      */
     fun showPopupWindow() {
-        if (isShown!!) {
+        if (show!!) {
             return
         }
         startMonitorTime = System.currentTimeMillis()
@@ -55,7 +55,7 @@ class FloatMonitor(private val mContext: Context) {
             return
         }
 
-        isShown = true
+        show = true
         // 获取WindowManager
         mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
@@ -381,10 +381,10 @@ class FloatMonitor(private val mContext: Context) {
      */
     fun hidePopupWindow() {
         stopTimer()
-        if (isShown!! && null != mView) {
+        if (show!! && null != mView) {
             mWindowManager!!.removeView(mView)
             mView = null
-            isShown = false
+            show = false
         }
     }
 
@@ -420,7 +420,7 @@ class FloatMonitor(private val mContext: Context) {
 
     companion object {
         private var mWindowManager: WindowManager? = null
-        public var isShown: Boolean? = false
+        public var show: Boolean? = false
 
         @SuppressLint("StaticFieldLeak")
         private var mView: View? = null

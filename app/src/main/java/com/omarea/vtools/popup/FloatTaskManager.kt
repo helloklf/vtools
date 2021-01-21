@@ -22,7 +22,7 @@ class FloatTaskManager(private val context: Context) {
     companion object {
         var mView: View? = null
         private var locked = false
-        val isShown: Boolean
+        val show: Boolean
             get() {
                 return mView != null
             }
@@ -189,6 +189,9 @@ class FloatTaskManager(private val context: Context) {
             adapter.removeItem(position)
 
             true
+        }
+        process_list.setOnItemClickListener { _, _, _, _ ->
+            Toast.makeText(context, "如需结束进程，请长按它~", Toast.LENGTH_SHORT).show()
         }
 
         // 锁定位置

@@ -288,10 +288,10 @@ class FloatPowercfgSelector(context: Context) {
         }
 
         // 性能监视悬浮窗开关
-        fw_float_monitor.alpha = if (FloatMonitor.isShown == true) 1f else 0.5f
+        fw_float_monitor.alpha = if (FloatMonitor.show == true) 1f else 0.5f
         fw_float_monitor.setOnClickListener {
 
-            if (FloatMonitor.isShown == true) {
+            if (FloatMonitor.show == true) {
                 FloatMonitor(context).hidePopupWindow()
                 fw_float_monitor.alpha = 0.3f
             } else {
@@ -301,9 +301,9 @@ class FloatPowercfgSelector(context: Context) {
         }
 
         // 进程管理器
-        fw_float_task.alpha = if (FloatTaskManager.isShown) 1f else 0.5f
+        fw_float_task.alpha = if (FloatTaskManager.show) 1f else 0.5f
         fw_float_task.setOnClickListener {
-            if (FloatTaskManager.isShown) {
+            if (FloatTaskManager.show) {
                 FloatTaskManager(context).hidePopupWindow()
                 fw_float_task.alpha = 0.3f
             } else {

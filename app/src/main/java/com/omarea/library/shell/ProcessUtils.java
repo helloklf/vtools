@@ -104,15 +104,17 @@ public class ProcessUtils {
     public ArrayList<ProcessInfo> getAllProcess() {
         ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
         boolean isFristRow = true;
-        for (String row : KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND).split("\n")) {
-            if (isFristRow) {
-                isFristRow = false;
-                continue;
-            }
+        if (PS_COMMAND != null) {
+            for (String row : KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND).split("\n")) {
+                if (isFristRow) {
+                    isFristRow = false;
+                    continue;
+                }
 
-            ProcessInfo processInfo = readRow(row.trim());
-            if (processInfo != null) {
-                processInfoList.add(processInfo);
+                ProcessInfo processInfo = readRow(row.trim());
+                if (processInfo != null) {
+                    processInfoList.add(processInfo);
+                }
             }
         }
         return processInfoList;
@@ -122,17 +124,19 @@ public class ProcessUtils {
     public ProcessInfo getProcessDetail(int pid) {
         // Log.d("Scene-Process", PS_COMMAND + " --pid " + pid);
 
-        String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " --pid " + pid).split("\n");
-        if (rows.length > 1) {
-            ProcessInfo row = readRow(rows[1].trim());
-            if (row != null) {
-                row.cpuSet = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cpuset");
-                row.cGroup = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cgroup");
-                row.oomAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_adj");
-                row.oomScore = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score");
-                row.oomScoreAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score_adj");
+        if (PS_COMMAND != null) {
+            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " --pid " + pid).split("\n");
+            if (rows.length > 1) {
+                ProcessInfo row = readRow(rows[1].trim());
+                if (row != null) {
+                    row.cpuSet = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cpuset");
+                    row.cGroup = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cgroup");
+                    row.oomAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_adj");
+                    row.oomScore = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score");
+                    row.oomScoreAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score_adj");
+                }
+                return row;
             }
-            return row;
         }
         return null;
     }
