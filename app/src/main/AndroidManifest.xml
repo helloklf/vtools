@@ -284,7 +284,8 @@
         <activity android:name=".activities.ActivityCpuControl" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBatteryStats" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityAppConfig" android:configChanges="orientation|screenSize" />
+        <activity android:name=".activities.ActivityAppConfig" android:configChanges="orientation|screenSize" android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activities.ActivityAppConfig2" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivitySystemScene" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityMiuiThermal" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
 

@@ -47,7 +47,8 @@
                 android:textColor="?android:colorAccent" />
         </LinearLayout>
 
-        <LinearLayout style="@style/ListCardItemClickable">
+        <LinearLayout style="@style/ListCardItemClickable"
+            android:visibility="gone">
 
             <TextView
                 style="@style/textTitle"
@@ -74,7 +75,8 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout style="@style/ListCardItemClickableLast">
+        <LinearLayout style="@style/ListCardItemClickableLast"
+            android:visibility="gone">
 
             <TextView
                 style="@style/textSmall"

@@ -1,4 +1,15 @@
 <resources>
+    <style name="SceneTabLayout">
+        <item name="android:background">?cardBg</item>
+        <item name="tabIndicator">@null</item>
+        <item name="tabMaxWidth">0dp</item>
+        <item name="tabGravity">fill</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tabRippleColor">@android:color/transparent</item>
+    </style>
+
     <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />
 
     <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />

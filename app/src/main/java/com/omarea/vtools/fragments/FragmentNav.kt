@@ -168,10 +168,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 Toast.makeText(context, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
                 return
             }
-            val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
-            var fragment: Fragment? = null
 
             when (id) {
                 R.id.nav_freeze -> {
@@ -242,7 +238,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(sendIntent)
                 }
                 R.id.nav_app_scene -> {
-                    val intent = Intent(context, ActivityAppConfig::class.java)
+                    val intent = Intent(context, ActivityAppConfig2::class.java)
                     startActivity(intent)
                     return
                 }
@@ -289,17 +285,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     }
                     return
                 }
-            }
-
-            if (fragment != null) {
-                // configlist_tabhost.currentTab = 1
-
-                // transaction.disallowAddToBackStack()
-                transaction.replace(R.id.app_more, fragment)
-                transaction.addToBackStack(null);
-                transaction.commitAllowingStateLoss()
-
-                //item.isChecked = true
             }
         }
     }

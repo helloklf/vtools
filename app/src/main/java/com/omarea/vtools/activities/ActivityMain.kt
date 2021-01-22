@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.android.material.tabs.TabLayout
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -24,14 +25,13 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
+import com.omarea.ui.TabIconHelper2
 import com.omarea.utils.ElectricityUnit
 import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
-import com.omarea.vtools.fragments.FragmentHome
-import com.omarea.vtools.fragments.FragmentNav
-import com.omarea.vtools.fragments.FragmentNotRoot
+import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -135,27 +135,16 @@ class ActivityMain : ActivityBase() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
-        configlist_tabhost.setup()
-
-        tabIconHelper.newTabSpec(getString(R.string.app_nav), ContextCompat.getDrawable(this, R.drawable.app_more)!!, R.id.app_more)
-        tabIconHelper.newTabSpec(getString(R.string.app_home), ContextCompat.getDrawable(this, R.drawable.app_home)!!, R.id.tab_home)
-        // 去除捐赠 tabIconHelper.newTabSpec(getString(R.string.app_donate), ContextCompat.getDrawable(this, R.drawable.app_donate)!!, R.id.app_donate)
-        configlist_tabhost.setOnTabChangedListener { tabId ->
-            tabIconHelper.updateHighlight()
-
-            updateBackArrow()
-        }
-        configlist_tabhost.currentTab = 1
-        supportFragmentManager.addOnBackStackChangedListener {
-            updateBackArrow()
-        }
-
-        if (CheckRootStatus.lastCheckResult) {
-            setHomePage()
-        }
-        // 去除捐赠入口 setDonatePage()
-        setNavPage()
+        val tabIconHelper2 = TabIconHelper2(tab_list, tab_content, this, supportFragmentManager, R.layout.list_item_tab2)
+        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
+        tabIconHelper2.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, (if (CheckRootStatus.lastCheckResult) {
+            FragmentHome()
+        } else {
+            FragmentNotRoot()
+        }))
+        tabIconHelper2.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, FragmentDonate())
+        tab_content.adapter = tabIconHelper2.adapter
+        tab_list.getTabAt(1)?.select() // 默认选中第二页
 
         if (CheckRootStatus.lastCheckResult) {
             try {
@@ -180,21 +169,8 @@ class ActivityMain : ActivityBase() {
                         })
             }
             ThermalCheckThread(this).run()
-        } else {
-            try {
-                setNotRootPage()
-            } catch (ex: java.lang.Exception) {
-            }
         }
 
-    }
-
-    private fun updateBackArrow() {
-        val isDetailPage = (configlist_tabhost.currentTab == 0) && supportFragmentManager.backStackEntryCount > 0
-        supportActionBar!!.setHomeButtonEnabled(isDetailPage)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(isDetailPage)
-
-        configlist_tabhost.tabWidget.visibility = if (isDetailPage) View.GONE else View.VISIBLE
     }
 
     override fun onResume() {
@@ -207,45 +183,6 @@ class ActivityMain : ActivityBase() {
         }
     }
 
-    private fun setHomePage() {
-        val fragmentManager = supportFragmentManager
-        fragmentManager.fragments.clear()
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.tab_home, FragmentHome())
-        // transaction.addToBackStack(getString(R.string.app_name))
-        transaction.commitAllowingStateLoss()
-    }
-
-    private fun setNavPage() {
-        val fragmentManager = supportFragmentManager
-
-        fragmentManager.fragments.clear()
-        val transaction2 = fragmentManager.beginTransaction()
-        transaction2.replace(R.id.app_more, FragmentNav.createPage(themeMode))
-        // transaction.addToBackStack(getString(R.string.app_name))
-        transaction2.commitAllowingStateLoss()
-    }
-
-    /*
-    private fun setDonatePage() {
-        val fragmentManager = supportFragmentManager
-
-        fragmentManager.fragments.clear()
-        val transaction2 = fragmentManager.beginTransaction()
-        transaction2.replace(R.id.meiweapp_donate, FragmentDonate.createPage())
-        // transaction.addToBackStack(getString(R.string.app_name))
-        transaction2.commitAllowingStateLoss()
-    }
-    */
-
-    private fun setNotRootPage() {
-        val fragmentManager = supportFragmentManager
-        fragmentManager.fragments.clear()
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.tab_home, FragmentNotRoot())
-        transaction.commitAllowingStateLoss()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
     }
 
@@ -255,11 +192,6 @@ class ActivityMain : ActivityBase() {
             when {
                 supportFragmentManager.backStackEntryCount > 0 -> {
                     supportFragmentManager.popBackStack()
-                }
-                configlist_tabhost.currentTab != 1 -> {
-                    configlist_tabhost.currentTab = 1
-                    setNavPage()
-                    title = getString(R.string.app_name)
                 }
                 else -> {
                     setExcludeFromRecent(true)
