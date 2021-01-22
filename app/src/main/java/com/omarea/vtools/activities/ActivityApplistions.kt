@@ -47,10 +47,10 @@ class ActivityApplistions : ActivityBase() {
         }
 
         apps_search_box.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchApp(apps_search_box.text)
             }
-            false
+            true
         }
         var lastInput = 0L
         apps_search_box.addTextChangedListener(SearchTextWatcher {

@@ -125,8 +125,10 @@ class FragmentAppBackup : androidx.fragment.app.Fragment() {
         }
         set (value) {
             keywords = value
-            app_list?.run {
-                setListData(appList, this)
+            if (keywords != value) {
+                app_list?.run {
+                    setListData(appList, this)
+                }
             }
         }
 }
