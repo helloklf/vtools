@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            style="@style/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="警告" />
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/applist_warn" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/app_btn_hide2"
+        style="@style/SceneButton"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="找回[隐藏]的应用" />
+</LinearLayout>

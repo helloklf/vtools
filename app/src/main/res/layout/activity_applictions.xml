@@ -9,162 +9,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TabHost
-        android:id="@+id/applications_tabhost"
+    <FrameLayout
+        android:layout_marginTop="?actionBarSize"
+        android:id="@+id/apps_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/apps_search_box"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/filter_toolbar_bg"
+            android:hint="搜索 应用名或PackageName"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:inputType="textFilter"
+            android:singleLine="true"
+            android:textSize="16dp" />
+    </FrameLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/tab_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_app_bar">
+        android:layout_above="@id/tab_list"
+        android:layout_below="@id/apps_search_bar" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/apps_search_box"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/filter_toolbar_bg"
-                android:hint="搜索 应用名或PackageName"
-                android:layout_margin="8dp"
-                android:inputType="textFilter"
-                android:singleLine="true"
-                android:textSize="16dp" />
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <FrameLayout
-                    android:id="@+id/tab_apps_user"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab_apps_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check" />
-
-                    <com.omarea.common.ui.OverScrollListView
-                        android:id="@+id/apps_userlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/list_view_bg"
-                        android:divider="@null"
-                        android:scrollbars="none" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/tab_apps_system"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab_apps_system"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check" />
-
-                    <com.omarea.common.ui.OverScrollListView
-                        android:id="@+id/apps_systemlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/list_view_bg"
-                        android:divider="@null"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:layout_marginBottom="8dp"
-                        android:scrollbars="none" />
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/tab_apps_backuped"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab_apps_backuped"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check" />
-
-                    <com.omarea.common.ui.OverScrollListView
-                        android:id="@+id/apps_backupedlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/list_view_bg"
-                        android:divider="@null"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:layout_marginBottom="8dp"
-                        android:scrollbars="none" />
-
-                </FrameLayout>
-
-                <com.omarea.common.ui.OverScrollView
-                    android:id="@+id/tab_apps_helper"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/activity_horizontal_margin">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/krscript_item_ripple_inactive"
-                            android:orientation="vertical"
-                            android:padding="@dimen/activity_horizontal_margin">
-
-                            <TextView
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="警告" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/applist_warn" />
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/app_btn_hide2"
-                            style="@style/SceneButton"
-                            android:layout_width="wrap_content"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
-                            android:text="找回[隐藏]的应用" />
-                    </LinearLayout>
-                </com.omarea.common.ui.OverScrollView>
-            </FrameLayout>
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/tab_widget_background" />
-        </LinearLayout>
-    </TabHost>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_list"
+        style="@style/SceneTabLayout" />
 
 </RelativeLayout>

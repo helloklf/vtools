@@ -51,6 +51,10 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return count == this.list!!.size
     }
 
+    fun hasSelected () : Boolean {
+        return this.states.filter { it.value == true }.isNotEmpty()
+    }
+
     init {
         this.list = sortAppList(filterAppList(apps, keywords))
         for (i in this.list.indices) {
