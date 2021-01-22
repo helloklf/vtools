@@ -1,7 +1,6 @@
 package com.omarea.vtools.fragments
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +14,6 @@ class FragmentAppHelp : androidx.fragment.app.Fragment() {
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_app_help, container, false)
     }
-
-    private lateinit var globalSPF: SharedPreferences
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

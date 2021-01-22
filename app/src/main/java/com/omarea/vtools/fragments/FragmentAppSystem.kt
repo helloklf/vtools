@@ -29,13 +29,14 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        processBarDialog = ProgressBarDialog(activity!!)
+        appListHelper = AppListHelper(context!!)
+
         return inflater.inflate(R.layout.fragment_app_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        processBarDialog = ProgressBarDialog(activity!!)
-        appListHelper = AppListHelper(context!!)
 
         app_list.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
 
@@ -128,8 +129,8 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
             return keywords
         }
         set (value) {
-            keywords = value
             if (keywords != value) {
+                keywords = value
                 app_list?.run {
                     setListData(appList, this)
                 }
