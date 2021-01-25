@@ -21,7 +21,7 @@ import com.omarea.vtools.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.fragment_app_list.*
 import java.lang.ref.WeakReference
 
-class FragmentAppSystem : androidx.fragment.app.Fragment() {
+class FragmentAppSystem(private val myHandler: Handler) : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var appListHelper: AppListHelper
     private var appList: ArrayList<Appinfo>? = null
@@ -45,7 +45,7 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             val app = adapter.getItem(position - 1) as Appinfo
-            DialogSingleAppOptions(activity!!, app, myHandler!!).showSingleAppOptions()
+            DialogSingleAppOptions(activity!!, app, myHandler).showSingleAppOptions()
             true
         }
 
@@ -55,10 +55,6 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
         }
 
         this.setList()
-    }
-
-    private var myHandler: Handler? = ActivityApplistions.UpdateHandler {
-        setList()
     }
 
     private fun getSelectedAppShowOptions(activity: Activity) {
@@ -90,36 +86,34 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
-        if (myHandler != null) {
-            myHandler!!.post {
-                try {
-                    processBarDialog.hideDialog()
-                    val adapterObj = AppListAdapter(dl, keywords)
-                    val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
-                    lv.adapter = adapterObj
-                    lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
-                        if (postion == 0) {
-                            val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
-                            checkBox.isChecked = !checkBox.isChecked
-                            if (adapter.get() != null) {
-                                adapter.get()!!.setSelecteStateAll(checkBox.isChecked)
-                                adapter.get()!!.notifyDataSetChanged()
-                            }
-                        } else {
-                            val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
-                            checkBox.isChecked = !checkBox.isChecked
-                            val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                            if (adapter.get() != null) {
-                                all.isChecked = adapter.get()!!.getIsAllSelected()
-                            }
+        myHandler.post {
+            try {
+                processBarDialog.hideDialog()
+                val adapterObj = AppListAdapter(dl, keywords)
+                val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
+                lv.adapter = adapterObj
+                lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
+                    if (postion == 0) {
+                        val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
+                        checkBox.isChecked = !checkBox.isChecked
+                        if (adapter.get() != null) {
+                            adapter.get()!!.setSelecteStateAll(checkBox.isChecked)
+                            adapter.get()!!.notifyDataSetChanged()
                         }
-                        fab_apps.visibility = if (adapter.get()?.hasSelected() == true) View.VISIBLE else View.GONE
+                    } else {
+                        val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
+                        checkBox.isChecked = !checkBox.isChecked
+                        val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                        if (adapter.get() != null) {
+                            all.isChecked = adapter.get()!!.getIsAllSelected()
+                        }
                     }
-                    val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                    all.isChecked = false
-                    fab_apps.visibility = View.GONE
-                } catch (ex: Exception) {
+                    fab_apps.visibility = if (adapter.get()?.hasSelected() == true) View.VISIBLE else View.GONE
                 }
+                val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                all.isChecked = false
+                fab_apps.visibility = View.GONE
+            } catch (ex: Exception) {
             }
         }
     }
@@ -136,4 +130,8 @@ class FragmentAppSystem : androidx.fragment.app.Fragment() {
                 }
             }
         }
+
+    fun reloadList() {
+        setList()
+    }
 }

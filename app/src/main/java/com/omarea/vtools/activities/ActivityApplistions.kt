@@ -16,18 +16,19 @@ import com.omarea.vtools.fragments.FragmentAppUser
 import kotlinx.android.synthetic.main.activity_applictions.*
 
 class ActivityApplistions : ActivityBase() {
-    private var myHandler = Handler(Looper.getMainLooper())
-    private val fragmentAppUser = FragmentAppUser()
-    private val fragmentAppSystem = FragmentAppSystem()
-    private val fragmentAppBackup = FragmentAppBackup()
+    private var myHandler: Handler = UpdateHandler {
+        reloadList()
+    }
 
-    class UpdateHandler(private var updateList: Runnable?) : Handler(Looper.getMainLooper()) {
+    private val fragmentAppUser = FragmentAppUser(myHandler)
+    private val fragmentAppSystem = FragmentAppSystem(myHandler)
+    private val fragmentAppBackup = FragmentAppBackup(myHandler)
+
+    class UpdateHandler(private var updateList: Runnable) : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.what == 2) {
-                if (updateList != null) {
-                    updateList!!.run()
-                }
+                updateList.run()
             }
         }
     }
@@ -42,7 +43,7 @@ class ActivityApplistions : ActivityBase() {
             newTabSpec("第三方", getDrawable(R.drawable.tab_app)!!, fragmentAppUser)
             newTabSpec("系统", getDrawable(R.drawable.tab_security)!!, fragmentAppSystem)
             newTabSpec("备份的", getDrawable(R.drawable.tab_package)!!, fragmentAppBackup)
-            newTabSpec("已卸载", getDrawable(R.drawable.tab_help)!!, FragmentAppHelp())
+            newTabSpec("帮助", getDrawable(R.drawable.tab_help)!!, FragmentAppHelp())
             tab_content.adapter = this.adapter
         }
 
@@ -86,5 +87,17 @@ class ActivityApplistions : ActivityBase() {
             fragmentAppSystem.searchText = this
             fragmentAppBackup.searchText = this
         }
+    }
+
+    private fun reloadList() {
+        try {
+            fragmentAppUser.reloadList()
+        } catch (ex: Exception) {}
+        try {
+            fragmentAppSystem.reloadList()
+        } catch (ex: Exception) {}
+        try {
+            fragmentAppBackup.reloadList()
+        } catch (ex: Exception) {}
     }
 }
