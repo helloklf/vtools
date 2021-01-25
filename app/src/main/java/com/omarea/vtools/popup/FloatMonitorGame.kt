@@ -3,13 +3,19 @@ package com.omarea.vtools.popup
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
+import android.graphics.Typeface
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
@@ -114,6 +120,7 @@ class FloatMonitorGame(private val mContext: Context) {
     private var gpuPanel: View? = null
     private var temperaturePanel: View? = null
     private var temperatureText: TextView? = null
+    private var fpsText: TextView? = null
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler(Looper.getMainLooper())
@@ -160,6 +167,8 @@ class FloatMonitorGame(private val mContext: Context) {
 
         val batteryStatus = batteryUnit.getBatteryTemperature()
 
+        val fps = fpsUtils.currentFps
+
         myHandler.post {
             cpuLoadTextView?.text = cpuLoad.toInt().toString() + "%"
             if (gpuLoad > -1) {
@@ -168,7 +177,10 @@ class FloatMonitorGame(private val mContext: Context) {
                 gpuLoadTextView?.text = "--"
             }
 
-            temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
+            temperatureText!!.setText(batteryStatus.temperature.toString())
+            if (fps != null) {
+                fpsText?.text = fps.toString()
+            }
         }
     }
 
@@ -204,6 +216,7 @@ class FloatMonitorGame(private val mContext: Context) {
         cpuLoadTextView = view!!.findViewById(R.id.fw_cpu_load)
         gpuLoadTextView = view!!.findViewById(R.id.fw_gpu_load)
         temperatureText = view!!.findViewById(R.id.fw_battery_temp)
+        fpsText = view!!.findViewById(R.id.fw_fps)
 
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 

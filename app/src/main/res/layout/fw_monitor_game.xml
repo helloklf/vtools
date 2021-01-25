@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
-    android:background="@drawable/shape_corner"
+    android:background="@drawable/monitor_game_bg"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,7 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:paddingHorizontal="8dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="4dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,8 +22,8 @@
             android:layout_gravity="center"
             android:text="CPU:"
             android:textAlignment="center"
-            android:textColor="#ffffff"
-            android:textSize="7dp"
+            android:textColor="#dddddd"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
@@ -34,7 +36,7 @@
             android:minWidth="20dp"
             android:textColor="#ffffff"
             android:fontFamily="monospace"
-            android:textSize="7dp"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
@@ -43,8 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="GPU:"
-            android:textColor="#ffffff"
-            android:textSize="7dp"
+            android:textColor="#dddddd"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
@@ -57,7 +59,31 @@
             android:minWidth="20dp"
             android:textColor="#ffffff"
             android:fontFamily="monospace"
-            android:textSize="7dp"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="FPS:"
+            android:textAlignment="center"
+            android:textColor="#dddddd"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/fw_fps"
+            android:layout_marginStart="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="--"
+            android:minWidth="22dp"
+            android:textColor="#ffffff"
+            android:fontFamily="monospace"
+            android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
@@ -66,12 +92,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textAlignment="center"
-            android:text="--°C"
+            android:textAlignment="viewEnd"
+            android:text="--"
             android:minWidth="20dp"
             android:textColor="#ffffff"
             android:fontFamily="monospace"
-            android:textSize="7dp"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="°C"
+            android:textColor="#dddddd"
+            android:fontFamily="monospace"
+            android:textSize="8dp"
             android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
