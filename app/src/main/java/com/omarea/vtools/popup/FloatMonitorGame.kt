@@ -137,7 +137,7 @@ class FloatMonitorGame(private val mContext: Context) {
                 // 因为迷你监视器更主要的作用是分析CPU负载对游戏性能的影响
                 // 通常单核满载会直接导致游戏卡顿，因此单核高负载时，优先显示单核负载而非多核平均负载
                 // 以便使用者知晓，此时CPU压力过高可能导致卡顿
-                if (bigCoreLoadMax > 70) {
+                if (bigCoreLoadMax > 70 && bigCoreLoadMax > cpuLoad) {
                     cpuLoad = bigCoreLoadMax
                 }
             } catch (ex: java.lang.Exception) {
