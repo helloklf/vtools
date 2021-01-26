@@ -11,7 +11,9 @@ import java.util.HashMap;
  */
 public class CpuLoadUtils {
     private static String lastCpuState = "";
+    private static HashMap<Integer, Double> lastCpuStateMap;
     private static String lastCpuStateSum = "";
+    private static Long lastCpuStateTime;
 
     public CpuLoadUtils() {
         lastCpuState = KernelProrp.INSTANCE.getProp("/proc/stat", "^cpu");
@@ -41,6 +43,10 @@ public class CpuLoadUtils {
     }
 
     public HashMap<Integer, Double> getCpuLoad() {
+        if (lastCpuStateMap != null && System.currentTimeMillis() - lastCpuStateTime < 500) {
+            return lastCpuStateMap;
+        }
+
         @SuppressLint("UseSparseArrays") HashMap<Integer, Double> loads = new HashMap<>();
         String times = KernelProrp.INSTANCE.getProp("/proc/stat", "^cpu");
         if (!times.equals("error") && times.startsWith("cpu")) {
@@ -87,6 +93,9 @@ public class CpuLoadUtils {
                         }
                     }
                     lastCpuState = times;
+                    // 缓存状态以优化性能
+                    lastCpuStateTime = System.currentTimeMillis();
+                    lastCpuStateMap = loads;
                     return loads;
                 }
             } catch (Exception ex) {
@@ -98,6 +107,10 @@ public class CpuLoadUtils {
     }
 
     public Double getCpuLoadSum() {
+        if (lastCpuStateMap != null && System.currentTimeMillis() - lastCpuStateTime < 500 && lastCpuStateMap.containsKey(-1)) {
+            return lastCpuStateMap.get(-1);
+        }
+
         String times = KernelProrp.INSTANCE.getProp("/proc/stat", "^cpu ");
         if (!times.equals("error") && times.startsWith("cpu")) {
             try {
