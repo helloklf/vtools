@@ -75,15 +75,15 @@
     </group>
 
     <group title="性能">
-        <switch confirm="true">
+        <!--<switch confirm="true">
             <title>低内存设备</title>
             <desc>开启低内存设备标识，从而激活一些为低端机设计的特性（仅限纯原生系统！！！），定制系统开启后可能无法开机！！！</desc>
             <get>run low_ram/get.sh</get>
             <set>run low_ram/set.sh</set>
-        </switch>
+        </switch>-->
         <switch>
             <title>省电模式</title>
-            <desc>开关安卓系统自带的省电模式（不是第三方UI自带的省电模式）</desc>
+            <desc>开关原生安卓系统自带的省电模式（不是第三方UI定制的省电模式）</desc>
             <get>run ps/get.sh</get>
             <set>run ps/set.sh</set>
         </switch>
