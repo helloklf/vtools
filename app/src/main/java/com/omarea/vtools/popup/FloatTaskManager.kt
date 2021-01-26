@@ -26,6 +26,7 @@ class FloatTaskManager(private val context: Context) {
             get() {
                 return mView != null
             }
+        private var timer: Timer? = null
     }
 
     /**
@@ -36,7 +37,6 @@ class FloatTaskManager(private val context: Context) {
         return (dpValue * scale + 0.5f).toInt()
     }
 
-    private var timer: Timer? = null
     fun showPopupWindow() {
         if (mView != null) {
             return

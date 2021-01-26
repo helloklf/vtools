@@ -16,6 +16,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.ImageView
@@ -30,8 +31,6 @@ import com.omarea.vtools.R
 import java.util.*
 
 class FloatMonitor(private val mContext: Context) {
-    private var timer: Timer? = null
-    private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
     private var CpuFrequencyUtil = CpuFrequencyUtils()
 
@@ -45,7 +44,6 @@ class FloatMonitor(private val mContext: Context) {
         if (show!!) {
             return
         }
-        startMonitorTime = System.currentTimeMillis()
         if (batteryManager == null) {
             batteryManager = mContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         }
@@ -161,7 +159,7 @@ class FloatMonitor(private val mContext: Context) {
     }
 
     private fun stopTimer() {
-        if (this.timer != null) {
+        if (timer != null) {
             timer!!.cancel()
             timer = null
         }
@@ -424,5 +422,6 @@ class FloatMonitor(private val mContext: Context) {
 
         @SuppressLint("StaticFieldLeak")
         private var mView: View? = null
+        private var timer: Timer? = null
     }
 }

@@ -20,7 +20,6 @@ import com.omarea.vtools.R
 import java.util.*
 
 class FloatMonitorGame(private val mContext: Context) {
-    private var timer: Timer? = null
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
     private var CpuFrequencyUtil = CpuFrequencyUtils()
@@ -87,7 +86,7 @@ class FloatMonitorGame(private val mContext: Context) {
     }
 
     private fun stopTimer() {
-        if (this.timer != null) {
+        if (timer != null) {
             timer!!.cancel()
             timer = null
         }
@@ -113,8 +112,8 @@ class FloatMonitorGame(private val mContext: Context) {
 
     private fun updateInfo() {
         if (coreCount < 1) {
-            coreCount = CpuFrequencyUtil.getCoreCount()
-            clusters = CpuFrequencyUtil.getClusterInfo()
+            coreCount = CpuFrequencyUtil.coreCount
+            clusters = CpuFrequencyUtil.clusterInfo
         }
         val gpuLoad = GpuUtils.getGpuLoad()
 
@@ -157,7 +156,7 @@ class FloatMonitorGame(private val mContext: Context) {
         myHandler.post {
             cpuLoadTextView?.text = cpuLoad.toInt().toString() + "%"
             if (gpuLoad > -1) {
-                gpuLoadTextView?.text = gpuLoad.toInt().toString() + "%"
+                gpuLoadTextView?.text = gpuLoad.toString() + "%"
             } else {
                 gpuLoadTextView?.text = "--"
             }
@@ -213,5 +212,6 @@ class FloatMonitorGame(private val mContext: Context) {
 
         @SuppressLint("StaticFieldLeak")
         private var mView: View? = null
+        private var timer: Timer? = null
     }
 }
