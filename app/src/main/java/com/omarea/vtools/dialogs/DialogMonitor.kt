@@ -14,33 +14,39 @@ class DialogMonitor(var context: Activity) {
     fun show() {
         val view = context.layoutInflater.inflate(R.layout.dialog_float_monitor, null)
         val dialog = DialogHelper.customDialogBlurBg(context, view)
-        val perf = view.findViewById<CompoundButton>(R.id.monitor_perf)
-        val proc = view.findViewById<CompoundButton>(R.id.monitor_proc)
-        val game = view.findViewById<CompoundButton>(R.id.monitor_game)
 
-        perf.isChecked = FloatMonitor.show == true
-        proc.isChecked = FloatTaskManager.show == true
-        proc.isEnabled = ProcessUtils().supported(context)
-        game.isChecked = FloatMonitorGame.show == true
-
-        view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
-            dialog.dismiss()
-            if (perf.isChecked) {
-                FloatMonitor(context).showPopupWindow()
-            } else {
-                FloatMonitor(context).hidePopupWindow()
-            }
-            if (proc.isChecked) {
-                FloatTaskManager(context).showPopupWindow()
-            } else {
-                FloatTaskManager(context).hidePopupWindow()
-            }
-            if (game.isChecked) {
-                FloatMonitorGame(context).showPopupWindow()
-            } else {
-                FloatMonitorGame(context).hidePopupWindow()
+        view.findViewById<CompoundButton>(R.id.monitor_perf).run {
+            isChecked = FloatMonitor.show == true
+            setOnClickListener {
+                if (isChecked) {
+                    FloatMonitor(context).showPopupWindow()
+                } else {
+                    FloatMonitor(context).hidePopupWindow()
+                }
             }
         }
+        view.findViewById<CompoundButton>(R.id.monitor_proc).run {
+            isChecked = FloatTaskManager.show == true
+            isEnabled = ProcessUtils().supported(context)
+            setOnClickListener {
+                if (isChecked) {
+                    FloatTaskManager(context).showPopupWindow()
+                } else {
+                    FloatTaskManager(context).hidePopupWindow()
+                }
+            }
+        }
+        view.findViewById<CompoundButton>(R.id.monitor_game).run {
+            isChecked = FloatMonitorGame.show == true
+            setOnClickListener {
+                if (isChecked) {
+                    FloatMonitorGame(context).showPopupWindow()
+                } else {
+                    FloatMonitorGame(context).hidePopupWindow()
+                }
+            }
+        }
+
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }

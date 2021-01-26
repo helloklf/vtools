@@ -3,25 +3,19 @@ package com.omarea.vtools.popup
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
-import android.graphics.Typeface
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.library.shell.*
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import java.util.*
 
@@ -30,8 +24,6 @@ class FloatMonitorGame(private val mContext: Context) {
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
     private var CpuFrequencyUtil = CpuFrequencyUtils()
-
-    private val globalSPF = mContext.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     /**
      * 显示弹出框
@@ -101,19 +93,6 @@ class FloatMonitorGame(private val mContext: Context) {
         }
     }
 
-    private fun subFreqStr(freq: String?): String {
-        if (freq == null) {
-            return ""
-        }
-        if (freq.length > 3) {
-            return freq.substring(0, freq.length - 3)
-        } else if (freq.isEmpty()) {
-            return "0"
-        } else {
-            return freq
-        }
-    }
-
     private var view: View? = null
     private var cpuLoadTextView: TextView? = null
     private var gpuLoadTextView: TextView? = null
@@ -128,7 +107,6 @@ class FloatMonitorGame(private val mContext: Context) {
     private val info = ActivityManager.MemoryInfo()
     private var coreCount = -1
     private var clusters = ArrayList<Array<String>>()
-    private var clustersFreq = ArrayList<String>()
 
     private val fpsUtils = FpsUtils()
     private var batteryManager: BatteryManager? = null
@@ -138,29 +116,36 @@ class FloatMonitorGame(private val mContext: Context) {
             coreCount = CpuFrequencyUtil.getCoreCount()
             clusters = CpuFrequencyUtil.getClusterInfo()
         }
-        clustersFreq.clear()
-        for (coreIndex in 0 until clusters.size) {
-            clustersFreq.add(CpuFrequencyUtil.getCurrentFrequency(coreIndex))
-        }
-        val loads = cpuLoadUtils.cpuLoad
         val gpuLoad = GpuUtils.getGpuLoad()
-
-        var maxFreq = 0
-        for (item in clustersFreq) {
-            if (item.isNotEmpty()) {
-                try {
-                    val freq = item.toInt()
-                    if (freq > maxFreq) {
-                        maxFreq = freq
-                    }
-                } catch (ex: Exception) {
-                }
-            }
-        }
 
         activityManager!!.getMemoryInfo(info)
 
         var cpuLoad = cpuLoadUtils.cpuLoadSum
+        // 尝试获得大核心的最高负载
+        val loads = cpuLoadUtils.cpuLoad
+        // 一般BigLittle架构的处理器，后面几个核心都是大核，游戏主要依赖大核性能。而小核负载一般来源于后台进程，因此不需要分析小核负载
+        val centerIndex = coreCount / 2
+        var bigCoreLoadMax = 0.0
+        if (centerIndex >= 2) {
+            try {
+                for (i in centerIndex until coreCount) {
+                    val coreLoad = loads[i]!!
+                    if (coreLoad > bigCoreLoadMax) {
+                        bigCoreLoadMax = coreLoad
+                    }
+                }
+                // 如果某个大核负载超过70%，则将CPU负载显示为此大核的负载
+                // 因为迷你监视器更主要的作用是分析CPU负载对游戏性能的影响
+                // 通常单核满载会直接导致游戏卡顿，因此单核高负载时，优先显示单核负载而非多核平均负载
+                // 以便使用者知晓，此时CPU压力过高可能导致卡顿
+                if (bigCoreLoadMax > 70) {
+                    cpuLoad = bigCoreLoadMax
+                }
+            } catch (ex: java.lang.Exception) {
+                Log.e("", "" + ex.message)
+            }
+        }
+
         if (cpuLoad < 0) {
             cpuLoad = 0.toDouble()
         }
@@ -192,7 +177,6 @@ class FloatMonitorGame(private val mContext: Context) {
                 updateInfo()
             }
         }, 0, 1500)
-        updateInfo()
     }
 
     /**

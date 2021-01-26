@@ -373,7 +373,7 @@ class FloatMonitor(private val mContext: Context) {
                 updateInfo()
             }
         }, 0, 1500)
-        updateInfo()
+        // updateInfo()
     }
 
     /**

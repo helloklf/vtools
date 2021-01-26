@@ -199,13 +199,7 @@
         <Button
             android:id="@+id/btn_cancel"
             style="@style/dialogCancelBtn"
-            android:text="取消" />
-
-        <Button
-            android:layout_marginStart="8dp"
-            android:id="@+id/btn_confirm"
-            style="@style/dialogConfirmBtn"
-            android:text="确定" />
+            android:text="@string/btn_confirm" />
     </LinearLayout>
 
 </LinearLayout>
