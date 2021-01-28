@@ -73,6 +73,14 @@ public class ProcessUtils {
         }
     }
 
+    // 从进程列表排除的应用
+    private final ArrayList<String> excludeProcess = new ArrayList<String>() {
+        {
+            add("ps");
+            add("com.omarea.vtools");
+        }
+    };
+
     // 解析单行数据
     private ProcessInfo readRow(String row) {
         String[] columns = row.split(" +");
@@ -85,6 +93,11 @@ public class ProcessUtils {
                 processInfo.mem = processInfo.res - processInfo.shr;
                 processInfo.rss = Long.parseLong(columns[3]);
                 processInfo.name = columns[4];
+
+                if (excludeProcess.contains(processInfo.name)) {
+                    return null;
+                }
+
                 processInfo.pid = Integer.parseInt(columns[5]);
                 processInfo.state = columns[6];
                 processInfo.user = columns[7];

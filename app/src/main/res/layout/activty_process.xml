@@ -59,6 +59,7 @@
             android:background="@drawable/list_view_bg"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingVertical="1dp"
             android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
