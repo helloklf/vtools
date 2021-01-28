@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -304,7 +305,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         myHandler.post {
             try {
                 home_running_time.text = elapsedRealtimeStr()
-                home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
+                if (batteryCurrentNow != Long.MIN_VALUE && batteryCurrentNow != Long.MAX_VALUE) {
+                    home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
+                } else {
+                    home_battery_now.text = "--"
+                }
                 home_battery_capacity.text = "$batteryCapacity%"
                 home_battery_temperature.text = "${GlobalStatus.batteryTemperature}°C"
 

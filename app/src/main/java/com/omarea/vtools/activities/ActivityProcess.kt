@@ -68,7 +68,8 @@ class ActivityProcess : ActivityBase() {
                 (process_list.adapter as AdapterProcess?)?.updateSortMode(when (position) {
                     0 -> AdapterProcess.SORT_MODE_CPU
                     1 -> AdapterProcess.SORT_MODE_MEM
-                    2 -> AdapterProcess.SORT_MODE_PID
+                    2 -> AdapterProcess.SORT_MODE_RES
+                    3 -> AdapterProcess.SORT_MODE_PID
                     else -> AdapterProcess.SORT_MODE_DEFAULT
                 })
             }

@@ -54,7 +54,62 @@
                 android:focusable="false"
                 android:padding="0dp" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_marginStart="16dp"
+            android:background="@drawable/list_view_bg"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:text="■"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                style="@style/textSmall"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="PID"
+                style="@style/textSmall"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="USER"
+                style="@style/textSmall"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="MEM"
+                style="@style/textSmall"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="RES"
+                style="@style/textSmall"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="CPU"
+                style="@style/textSmall"
+                android:textStyle="bold"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
         <com.omarea.common.ui.OverScrollListView
             android:id="@+id/process_list"
             android:layout_width="match_parent"
