@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/ProcessName"
             style="@style/textSmall"
-            android:alpha="0.65"
+            android:alpha="0.6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1" />
@@ -44,13 +44,13 @@
             <TextView
                 android:id="@+id/ProcessPID"
                 style="@style/textSmall"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_width="45dp"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/ProcessUSER"
                 style="@style/textSmall"
+                android:lines="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -73,8 +73,7 @@
                 android:id="@+id/ProcessCPU"
                 style="@style/textSmall"
                 android:layout_width="45dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
