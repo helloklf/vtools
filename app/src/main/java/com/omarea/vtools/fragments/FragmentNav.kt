@@ -252,6 +252,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
+                R.id.nav_auto_click -> {
+                    val intent = Intent(context, ActivityAutoClick::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_app_magisk -> {
                     val intent = Intent(context, ActivityMagisk::class.java)
                     startActivity(intent)

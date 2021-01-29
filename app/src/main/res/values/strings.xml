@@ -82,6 +82,7 @@
     <string name="menu_scene_mode">场景模式</string>
     <string name="menu_app_scene">应用场景</string>
     <string name="menu_system_scene">系统场景</string>
+    <string name="menu_auto_click">自动点击</string>
     <string name="menu_cpu_modes">性能配置</string>
     <string name="menu_freeze">应用偏见</string>
     <string name="menu_battery_stats">耗电统计</string>

@@ -201,7 +201,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1708800 710400 1478400 844800 1516800
+  set_cpu_freq 300000 1708800 710400 1478400 844800 1632000
   set_input_boost_freq 1248000 0 0 40
 
   echo 0 > /proc/sys/kernel/sched_boost

@@ -216,7 +216,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1612800 710400 1286400 844800 1305600
+  set_cpu_freq 300000 1612800 710400 1478400 844800 1632000
   set_input_boost_freq 1248000 0 0 40
 
   echo 0 > /proc/sys/kernel/sched_boost
@@ -229,7 +229,6 @@ if [[ "$action" = "powersave" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
 
   sched_config "85 85" "96 96" "160" "260"
-  echo 0 > /sys/devices/system/cpu/cpu7/online
 
   sched_limit 0 500 0 1000 0 1000
 
@@ -237,7 +236,6 @@ if [[ "$action" = "powersave" ]]; then
 fi
 
 if [[ "$action" = "balance" ]]; then
-  echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -262,7 +260,6 @@ if [[ "$action" = "balance" ]]; then
 fi
 
 if [[ "$action" = "performance" ]]; then
-  echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -288,7 +285,6 @@ if [[ "$action" = "performance" ]]; then
 fi
 
 if [[ "$action" = "fast" ]]; then
-  echo 1 > /sys/devices/system/cpu/cpu7/online
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
