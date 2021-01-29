@@ -6,14 +6,10 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.CompoundButton
 import com.omarea.store.SpfConfig
-import com.omarea.ui.TabIconHelper2
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vtools.R
-import com.omarea.vtools.fragments.FragmentSceneApps
-import com.omarea.vtools.fragments.FragmentSceneSettings
-import kotlinx.android.synthetic.main.activity_app_config2.*
-import kotlinx.android.synthetic.main.fragment_scene_settings.*
+import kotlinx.android.synthetic.main.activity_auto_click.*
 
 
 class ActivityAutoClick : ActivityBase() {
