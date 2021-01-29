@@ -51,10 +51,11 @@ public class ProcessInfo {
     public long res;
     public long rss;
     public long mem;
-    public String state;
+    public long swap;
+    public String state = "";
     public String user;
-    public String command;
-    public String cmdline;
+    public String command = "";
+    public String cmdline = "";
 
     public String friendlyName = "";
 

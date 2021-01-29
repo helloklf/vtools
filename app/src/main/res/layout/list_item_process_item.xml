@@ -38,6 +38,7 @@
             android:lines="1" />
 
         <LinearLayout
+            android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -56,11 +57,17 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/ProcessCPU"
+                android:id="@+id/ProcessSWAP"
                 style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/ProcessCPU"
+                style="@style/textSmall"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

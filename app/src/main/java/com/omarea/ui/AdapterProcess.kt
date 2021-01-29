@@ -26,7 +26,8 @@ class AdapterProcess(private val context: Context,
     companion object {
         val SORT_MODE_DEFAULT = 1;
         val SORT_MODE_CPU = 4;
-        val SORT_MODE_RES = 12;
+        val SORT_MODE_RES = 8;
+        val SORT_MODE_SWAP = 12;
         val SORT_MODE_PID = 16;
 
         val FILTER_ALL = 1;
@@ -84,6 +85,7 @@ class AdapterProcess(private val context: Context,
                 SORT_MODE_DEFAULT -> it.pid
                 SORT_MODE_CPU -> -(it.getCpu() * 10).toInt()
                 SORT_MODE_RES -> -(it.res * 100).toInt()
+                SORT_MODE_SWAP -> -(it.swap * 100).toInt()
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }
@@ -230,6 +232,11 @@ class AdapterProcess(private val context: Context,
                 findViewById<TextView>(R.id.ProcessRES).text = "" + (processInfo.res / 1024).toInt() + "MB"
             } else {
                 findViewById<TextView>(R.id.ProcessRES).text = "" + processInfo.res + "KB"
+            }
+            if (processInfo.swap > 8192) {
+                findViewById<TextView>(R.id.ProcessSWAP).text = "" + (processInfo.swap / 1024).toInt() + "MB"
+            } else {
+                findViewById<TextView>(R.id.ProcessSWAP).text = "" + processInfo.swap + "KB"
             }
             loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
         }

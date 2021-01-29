@@ -46,7 +46,7 @@ public class ProcessUtils {
 
             // String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
             // String insideCmd = "ps -e -o %CPU,RES,SHR,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
-            String insideCmd = "ps -e -o %CPU,RES,NAME,PID,S,USER,COMMAND,CMDLINE";
+            String insideCmd = "ps -e -o %CPU,RES,SWAP,NAME,PID,S,USER,COMMAND,CMDLINE";
             String outsideCmd = outsideToybox + " " + insideCmd;
 
             for (String cmd : new String[]{insideCmd, outsideCmd}) {
@@ -90,16 +90,46 @@ public class ProcessUtils {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
                 processInfo.res = str2Long(columns[1]);
-                processInfo.name = columns[2];
+                processInfo.swap = str2Long(columns[2]);
+                processInfo.name = columns[3];
 
                 if (excludeProcess.contains(processInfo.name)) {
                     return null;
                 }
 
-                processInfo.pid = Integer.parseInt(columns[3]);
-                processInfo.state = columns[4];
-                processInfo.user = columns[5];
-                processInfo.command = columns[6];
+                processInfo.pid = Integer.parseInt(columns[4]);
+                processInfo.state = columns[5];
+                processInfo.user = columns[6];
+                processInfo.command = columns[7];
+                processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
+                return processInfo;
+            } catch (Exception ex) {
+                Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
+            }
+        } else {
+            Log.e("Scene-ProcessUtils", "" + row);
+        }
+        return null;
+    }
+    // 解析单行数据
+    private ProcessInfo readDetailRow(String row) {
+        String[] columns = row.split(" +");
+        if (columns.length >= 6) {
+            try {
+                ProcessInfo processInfo = new ProcessInfo();
+                processInfo.cpu = Float.parseFloat(columns[0]);
+                processInfo.res = str2Long(columns[1]);
+                processInfo.swap = str2Long(columns[2]);
+                processInfo.name = columns[3];
+
+                if (excludeProcess.contains(processInfo.name)) {
+                    return null;
+                }
+
+                processInfo.pid = Integer.parseInt(columns[4]);
+                processInfo.state = columns[5];
+                processInfo.user = columns[6];
+                processInfo.command = columns[7];
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {
@@ -138,7 +168,7 @@ public class ProcessUtils {
         if (PS_COMMAND != null) {
             String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " --pid " + pid).split("\n");
             if (rows.length > 1) {
-                ProcessInfo row = readRow(rows[1].trim());
+                ProcessInfo row = readDetailRow(rows[1].trim());
                 if (row != null) {
                     row.cpuSet = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cpuset");
                     row.cGroup = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cgroup");
