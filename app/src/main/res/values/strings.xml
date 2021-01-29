@@ -459,7 +459,6 @@
 
     <string-array name="process_sort_modes">
         <item>按CPU</item>
-        <item>按MEM</item>
         <item>按RES</item>
         <item>按PID</item>
         <item>不排序</item>

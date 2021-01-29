@@ -76,21 +76,6 @@
                 android:text="PID"
                 style="@style/textSmall"
                 android:textStyle="bold"
-                android:layout_width="45dp"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:text="USER"
-                style="@style/textSmall"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:text="MEM"
-                style="@style/textSmall"
-                android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -107,8 +92,9 @@
                 android:text="CPU"
                 style="@style/textSmall"
                 android:textStyle="bold"
-                android:layout_width="45dp"
-                android:layout_height="wrap_content" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
         </LinearLayout>
         <com.omarea.common.ui.OverScrollListView
             android:id="@+id/process_list"

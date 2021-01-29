@@ -67,9 +67,8 @@ class ActivityProcess : ActivityBase() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 (process_list.adapter as AdapterProcess?)?.updateSortMode(when (position) {
                     0 -> AdapterProcess.SORT_MODE_CPU
-                    1 -> AdapterProcess.SORT_MODE_MEM
-                    2 -> AdapterProcess.SORT_MODE_RES
-                    3 -> AdapterProcess.SORT_MODE_PID
+                    1 -> AdapterProcess.SORT_MODE_RES
+                    2 -> AdapterProcess.SORT_MODE_PID
                     else -> AdapterProcess.SORT_MODE_DEFAULT
                 })
             }

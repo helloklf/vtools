@@ -45,7 +45,8 @@ public class ProcessUtils {
             }
 
             // String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
-            String insideCmd = "ps -e -o %CPU,RES,SHR,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
+            // String insideCmd = "ps -e -o %CPU,RES,SHR,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
+            String insideCmd = "ps -e -o %CPU,RES,NAME,PID,S,USER,COMMAND,CMDLINE";
             String outsideCmd = outsideToybox + " " + insideCmd;
 
             for (String cmd : new String[]{insideCmd, outsideCmd}) {
@@ -89,19 +90,16 @@ public class ProcessUtils {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
                 processInfo.res = str2Long(columns[1]);
-                processInfo.shr = str2Long(columns[2]);
-                processInfo.mem = processInfo.res - processInfo.shr;
-                processInfo.rss = Long.parseLong(columns[3]);
-                processInfo.name = columns[4];
+                processInfo.name = columns[2];
 
                 if (excludeProcess.contains(processInfo.name)) {
                     return null;
                 }
 
-                processInfo.pid = Integer.parseInt(columns[5]);
-                processInfo.state = columns[6];
-                processInfo.user = columns[7];
-                processInfo.command = columns[8];
+                processInfo.pid = Integer.parseInt(columns[3]);
+                processInfo.state = columns[4];
+                processInfo.user = columns[5];
+                processInfo.command = columns[6];
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {
