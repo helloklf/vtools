@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
-class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var context: Context) {
+class ParamsSeekBar(private var actionParamInfo: ActionParamInfo, private var context: Context) {
     fun render(): View {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_seekbar, null)
         val seekbar = layout.findViewById<SeekBar>(R.id.kr_param_seekbar)

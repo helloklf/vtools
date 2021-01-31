@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.omarea.krscript.R
-import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ActionParamInfo
 import com.omarea.krscript.model.ParamInfoFilter
 
@@ -79,107 +78,58 @@ class ActionParamsLayoutRender {
             if (options != null && !(actionParamInfo.type == "app" || actionParamInfo.type == "packages")) {
                 if (actionParamInfo.multiple) {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
-                    addToLayout(view, actionParamInfo, false)
+                    addToLayout(view, actionParamInfo)
                 } else {
-                    val spinner = Spinner(context)
-                    val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
-
-                    spinner.adapter = SimpleAdapter(context, options, R.layout.kr_simple_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
-                    spinner.isEnabled = !actionParamInfo.readonly
-
-                    addToLayout(spinner, actionParamInfo)
-                    if (selectedIndex > -1 && selectedIndex < options.size) {
-                        spinner.setSelection(selectedIndex)
-                    }
+                    addToLayout(ParamsSpinner(actionParamInfo, context).render(), actionParamInfo)
                 }
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
-                addToLayout(CheckBox(context).apply {
-                    isChecked = getCheckState(actionParamInfo, false)
-                    isEnabled = !actionParamInfo.readonly
-                    if (!actionParamInfo.label.isNullOrEmpty()) {
-                        text = actionParamInfo.label
-                    }
-                }, actionParamInfo)
+                addToLayout(ParamsCheckbox(actionParamInfo, context).render(), actionParamInfo)
             }
             // 开关渲染
             else if (actionParamInfo.type == "switch") {
-                val switch = Switch(context)
-                switch.isChecked = getCheckState(actionParamInfo, false)
-                switch.isEnabled = !actionParamInfo.readonly
-                if (!actionParamInfo.label.isNullOrEmpty()) {
-                    switch.text = actionParamInfo.label
-                }
-                switch.setPadding(dp2px(context, 8f), 0, 0, 0)
-                addToLayout(switch, actionParamInfo)
+                addToLayout(ParamsSwitch(actionParamInfo, context).render(), actionParamInfo)
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
-                val layout = SeekBarRender(actionParamInfo, context).render()
+                val layout = ParamsSeekBar(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 文件选择
             else if (actionParamInfo.type == "file" || actionParamInfo.type == "folder") {
                 val layout = ParamsFileChooserRender(actionParamInfo, context, fileChooser).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 应用选择
             else if (actionParamInfo.type == "app" || actionParamInfo.type == "packages") {
                 val layout = ParamsAppChooserRender(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 颜色输入
             else if (actionParamInfo.type == "color") {
                 val layout = ParamsColorPicker(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 文本框渲染
             else {
-                val editText = EditText(context)
-                if (actionParamInfo.valueFromShell != null)
-                    editText.setText(actionParamInfo.valueFromShell)
-                else if (actionParamInfo.value != null)
-                    editText.setText(actionParamInfo.value)
-                editText.background = ColorDrawable(Color.TRANSPARENT)
-                editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
-                editText.isEnabled = !actionParamInfo.readonly
-                editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (actionParamInfo.placeholder.isNotEmpty()) {
-                    editText.hint = actionParamInfo.placeholder
-                } else if (
-                        (actionParamInfo.type == "int" || actionParamInfo.type == "number")
-                        &&
-                        (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)
-                ) {
-                    editText.hint = "${actionParamInfo.min} ~ ${actionParamInfo.max}"
-                }
-
-                addToLayout(editText, actionParamInfo)
+                addToLayout(ParamsEditText(actionParamInfo, context).render(), actionParamInfo)
             }
         }
     }
 
-    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo, setTag: Boolean = true) {
-        if (setTag) {
-            inputView.tag = actionParamInfo.name
-        }
-
+    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo) {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
+        } else if (!actionParamInfo.label.isNullOrEmpty()) {
+            layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.label
         } else {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
-        }
-
-        if (!actionParamInfo.label.isNullOrEmpty() && (actionParamInfo.type != "bool" && actionParamInfo.type != "checkbox" && actionParamInfo.type != "switch")) {
-            layout.findViewById<TextView>(R.id.kr_param_label).text = actionParamInfo.label
-        } else {
-            layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
         }
 
         if (!actionParamInfo.desc.isNullOrEmpty()) {

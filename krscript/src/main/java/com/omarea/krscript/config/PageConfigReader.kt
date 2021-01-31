@@ -417,6 +417,9 @@ class PageConfigReader {
                 val attrValue = parser.getAttributeValue(i)
                 when (parser.getAttributeName(i)) {
                     "confirm" -> clickableNode.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
+                    "warn", "warning" -> {
+                        clickableNode.warning = attrValue
+                    }
                     "auto-off", "auto-close" -> clickableNode.autoOff = (attrValue == "auto-close" || attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
                     "auto-finish" -> clickableNode.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
                     "interruptible", "interruptable" -> clickableNode.interruptable = (

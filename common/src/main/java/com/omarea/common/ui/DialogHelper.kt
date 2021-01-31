@@ -13,26 +13,31 @@ import android.widget.TextView
 import com.omarea.common.R
 
 class DialogHelper {
-    class DialogWrap(private val dialog: AlertDialog) {
+    class DialogWrap(private val d: AlertDialog) {
         public val context = dialog.context
+
+        public val dialog: AlertDialog
+            get () {
+                return d
+            }
 
         public fun dismiss() {
             try {
-                dialog.dismiss()
+                d.dismiss()
             } catch (ex: Exception) {
             }
         }
 
         public fun hide() {
             try {
-                dialog.hide()
+                d.hide()
             } catch (ex: Exception) {
             }
         }
 
         public val isShowing: Boolean
             get() {
-                return dialog.isShowing()
+                return d.isShowing()
             }
     }
 

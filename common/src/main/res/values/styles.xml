@@ -102,6 +102,15 @@
         <item name="android:alpha">0.45</item>
         <item name="android:background">@null</item>
     </style>
+    <style name="SceneSeekbarIcon">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:alpha">0.45</item>
+        <item name="android:background">@drawable/seekbar_progress_icon</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
 
     <style name="SceneButton" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/btn_bg</item>
@@ -155,7 +164,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textSize">16dp</item>
     </style>
-    <style name="dialogConfirmBtn" parent="dialogCancelBtn">
+    <style name="dialogConfirmBtn" parent="dialogLargeBtn">
         <item name="android:textColor">#ffffff</item>
         <item name="android:background">@drawable/btn_bg_large</item>
     </style>
@@ -163,5 +172,37 @@
     <style name="dialogCancelBtn" parent="dialogLargeBtn">
         <item name="android:layout_marginStart">0dp</item>
         <item name="android:background">@drawable/btn_bg_large_secondary</item>
+    </style>
+
+    <style name="dialogRoot">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="dialogTitle" parent="@style/textTitle">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="dialogDesc" parent="@style/textSmall">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="dialogWarn" parent="@style/textSmall">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@drawable/in_card_item_inactive</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>
