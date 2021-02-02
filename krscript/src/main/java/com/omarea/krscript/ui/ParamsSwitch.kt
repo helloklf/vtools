@@ -15,9 +15,8 @@ class ParamsSwitch(private var actionParamInfo: ActionParamInfo, private var con
         layout.findViewById<CompoundButton>(R.id.kr_param_switch).run {
             tag = actionParamInfo.name
             isChecked = getCheckState(actionParamInfo, false)
-            // text = actionParamInfo.title
             if (!actionParamInfo.label.isNullOrEmpty()) {
-                text = actionParamInfo.label
+                // text = actionParamInfo.label
             }
 
             setOnClickListener {

@@ -18,9 +18,8 @@ class ParamsCheckbox(private var actionParamInfo: ActionParamInfo, private var c
         layout.findViewById<CheckBox>(R.id.kr_param_checkbox).run {
             tag = actionParamInfo.name
             isChecked = getCheckState(actionParamInfo, false)
-            // text = actionParamInfo.title
             if (!actionParamInfo.label.isNullOrEmpty()) {
-                text = actionParamInfo.label
+                // text = actionParamInfo.label
             }
 
             setOnClickListener {

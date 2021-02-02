@@ -43,7 +43,7 @@ class ParamsFileChooserRender(private var actionParamInfo: ActionParamInfo, priv
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_file, null)
         val textView = layout.findViewById<TextView>(R.id.kr_param_file_text)
         val pathView = layout.findViewById<EditText>(R.id.kr_param_file_path)
-        val btn = layout.findViewById<ImageButton>(R.id.kr_param_file_btn)
+        val btn = layout.findViewById<View>(R.id.kr_param_file_btn)
 
         if (actionParamInfo.editable) {
             textView.visibility = View.GONE

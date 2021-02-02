@@ -11,4 +11,9 @@ open class ClickableNode(currentPageConfigPath: String) : NodeInfoBase(currentPa
 
     // 是否允许添加快捷方式（非false，且具有key则默认允许）
     var allowShortcut:Boolean? = null
+
+    // 是否锁定
+    var locked: Boolean = false
+    // 锁定状态获取（脚本）
+    var lockShell: String = ""
 }

@@ -10,7 +10,7 @@
         android:padding="12dp">
 
         <LinearLayout
-            android:alpha="0.8"
+            android:alpha="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="150dp"
@@ -59,6 +59,7 @@
             <Button
                 android:id="@+id/btn_confirm"
                 style="@style/dialogConfirmBtn"
+                android:background="@drawable/btn_bg_large_warning"
                 android:text="确定">
             </Button>
         </LinearLayout>

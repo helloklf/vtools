@@ -1,128 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/dialogRoot"
     android:clickable="true"
     android:focusable="true">
 
-    <RelativeLayout
+
+    <ImageButton
+        android:id="@+id/btn_hide"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        style="@style/SceneButton"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:scaleType="centerInside"
+        android:padding="7dp"
+        android:src="@drawable/kr_hide" />
+
+    <LinearLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/btn_hide"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
-            style="@style/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/btn_hide"
-            android:maxLines="1"
-            android:textSize="18dp" />
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:paddingTop="0dp"
+            style="@style/dialogTitle" />
 
-        <ImageButton
-            android:id="@+id/btn_hide"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:background="@android:color/transparent"
-            android:rotation="180"
-            android:scaleType="centerInside"
-            android:src="@drawable/kr_hide" />
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/desc"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:paddingTop="0dp"
+            style="@style/dialogDesc" />
+    </LinearLayout>
 
     <com.omarea.common.ui.OverScrollView
+        android:layout_marginTop="16dp"
+        android:background="@drawable/krscript_item_ripple_inactive"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_actions"
-        android:layout_below="@+id/top_bar"
-        android:background="@drawable/krscript_params_view">
+        android:layout_below="@+id/top_bar">
 
         <TextView
             android:id="@+id/shell_output"
             android:textIsSelectable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp" />
+            android:fontFamily="monospace"
+            android:textSize="12sp"
+            android:padding="12dp" />
     </com.omarea.common.ui.OverScrollView>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/bottom_actions"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
+        android:layout_marginVertical="16dp"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <Button
             android:id="@+id/btn_copy"
-            style="@style/kr_action_button"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:orientation="horizontal">
+            style="@style/dialogCancelBtn"
+            android:text="@string/btn_copy_output" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="@android:color/transparent"
-                android:padding="5dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/kr_copy"
-                android:tint="?android:colorAccent" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingEnd="10dp"
-                android:text="@string/btn_copy_output"
-                android:textColor="?android:colorAccent"
-                android:textSize="13dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
             android:id="@+id/btn_exit"
-            style="@style/kr_action_button"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:background="@android:color/transparent"
-                android:padding="5dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/kr_close"
-                android:tint="@android:color/holo_red_dark" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingEnd="10dp"
-                android:text="@string/btn_exit"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </RelativeLayout>
+            style="@style/dialogConfirmBtn"
+            android:text="@string/btn_exit" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/action_progress"
+        android:layout_marginTop="12dp"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_below="@+id/top_bar"
-        android:layout_marginTop="-4dp"
         android:indeterminate="true"
         android:max="100"
         android:progress="0" />

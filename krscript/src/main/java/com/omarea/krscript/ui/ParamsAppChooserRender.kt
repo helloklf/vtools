@@ -47,7 +47,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
         updateTextView(valueView, nameView)
 
-        layout.findViewById<ImageButton>(R.id.kr_param_app_btn).setOnClickListener {
+        layout.findViewById<View>(R.id.kr_param_app_btn).setOnClickListener {
             openDialog(valueView, nameView)
         }
         nameView.setOnClickListener {

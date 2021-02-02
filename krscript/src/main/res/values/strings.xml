@@ -55,4 +55,6 @@
     <string name="kr_page_load_success">页面加载成功</string>
     <string name="kr_auto_run_item_losted">指定项已丢失</string>
     <string name="kr_hidden_task_running">手速太快了，上个操作还没完成！</string>
+    <string name="kr_lock_title">功能锁定</string>
+    <string name="kr_lock_message">此功能已被锁定</string>
 </resources>

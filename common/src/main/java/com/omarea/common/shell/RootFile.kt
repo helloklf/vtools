@@ -2,7 +2,6 @@ package com.omarea.common.shell
 
 import android.util.Log
 import com.omarea.common.shared.RootFileInfo
-import java.lang.Exception
 
 /**
  * Created by Hello on 2018/07/06.

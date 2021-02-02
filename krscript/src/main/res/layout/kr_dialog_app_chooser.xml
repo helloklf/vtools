@@ -41,7 +41,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_actions"
         android:layout_below="@+id/top_bar"
-        android:background="@drawable/krscript_params_view">
+        android:background="@drawable/kr_params_view">
 
         <TextView
             android:id="@+id/shell_output"

@@ -215,6 +215,8 @@ class PageConfigReader {
             summaryNode(action, parser)
         } else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
             action.setState = parser.nextText().trim()
+        } else if ("lock" == parser.name || "lock-state" == parser.name) {
+            action.lockShell = parser.nextText()
         } else if ("param" == parser.name) {
             if (actionParamInfos == null) {
                 actionParamInfos = ArrayList()
@@ -324,6 +326,7 @@ class PageConfigReader {
             "html" -> node.onlineHtmlPage = parser.nextText()
             "config" -> node.pageConfigPath = parser.nextText()
             "handler-sh", "handler", "set", "getstate", "script" -> node.pageHandlerSh = parser.nextText()
+            "lock", "lock-state" -> node.lockShell = parser.nextText()
             "option", "page-option", "menu", "menu-item" -> {
                 val option = runnableNode(PageMenuOption(pageConfigAbsPath), parser) as PageMenuOption?
                 if (option != null) {
@@ -371,6 +374,7 @@ class PageConfigReader {
             "get", "getstate" -> switchNode.getState = parser.nextText()
             "set", "setstate" -> switchNode.setState = parser.nextText()
             "resource" -> resourceNode(parser)
+            "lock", "lock-state" -> switchNode.lockShell = parser.nextText()
         }
     }
 
@@ -417,6 +421,7 @@ class PageConfigReader {
                 val attrValue = parser.getAttributeValue(i)
                 when (parser.getAttributeName(i)) {
                     "confirm" -> clickableNode.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
+                    "lock", "lock-state", "locked" -> clickableNode.locked = (attrValue == "1" || attrValue == "true" || attrValue == "locked")
                     "warn", "warning" -> {
                         clickableNode.warning = attrValue
                     }
@@ -497,6 +502,7 @@ class PageConfigReader {
                 "activity", "a", "intent" -> page.activity = attrValue
                 "option-sh", "option-su", "options-sh" -> page.pageMenuOptionsSh = attrValue
                 "handler-sh", "handler", "set", "getstate", "script" -> page.pageHandlerSh = attrValue
+                "lock", "lock-state" -> page.locked = (attrValue == "1" || attrValue == "true" || attrValue == "locked")
             }
         }
         return page
@@ -652,6 +658,8 @@ class PageConfigReader {
             pickerNode.setState = parser.nextText()
         } else if ("resource" == parser.name) {
             resourceNode(parser)
+        } else if ("lock" == parser.name || "lock-state" == parser.name) {
+            pickerNode.lockShell = parser.nextText()
         }
     }
 

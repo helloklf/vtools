@@ -2,14 +2,12 @@ package com.omarea.krscript.ui
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
-import com.omarea.krscript.model.ParamInfoFilter
 
 class ActionParamsLayoutRender {
     companion object {
@@ -126,11 +124,18 @@ class ActionParamsLayoutRender {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
-        } else if (!actionParamInfo.label.isNullOrEmpty()) {
-            layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.label
         } else {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
         }
+
+        if (!actionParamInfo.label.isNullOrEmpty()) {
+            layout.findViewById<TextView>(R.id.kr_param_label).run {
+                text = actionParamInfo.label
+            }
+        } else {
+            layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
+        }
+
 
         if (!actionParamInfo.desc.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_desc).text = actionParamInfo.desc

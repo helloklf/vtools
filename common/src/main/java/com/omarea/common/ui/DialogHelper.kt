@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.omarea.common.R
@@ -98,12 +100,13 @@ class DialogHelper {
             return animDialog(alert)
         }
 
-        fun confirm(context: Context,
-                    title: String = "",
-                    message: String = "",
-                    onConfirm: Runnable? = null,
-                    onCancel: Runnable? = null): DialogWrap {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
+        private fun openContinueAlert (context: Context,
+                                 title: String = "",
+                                 message: String = "",
+                                 onConfirm: Runnable? = null,
+                                 onCancel: Runnable? = null,
+                                       layout: Int): DialogWrap {
+            val view = LayoutInflater.from(context).inflate(layout, null)
 
             if (title.isEmpty()) {
                 view.findViewById<TextView>(R.id.confirm_title).visibility = View.GONE
@@ -127,6 +130,22 @@ class DialogHelper {
             }
 
             return dialog
+        }
+
+        fun confirm(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    onConfirm: Runnable? = null,
+                    onCancel: Runnable? = null): DialogWrap {
+            return openContinueAlert(context, title, message, onConfirm, onCancel, R.layout.dialog_confirm)
+        }
+
+        fun warning(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    onConfirm: Runnable? = null,
+                    onCancel: Runnable? = null): DialogWrap {
+            return openContinueAlert(context, title, message, onConfirm, onCancel, R.layout.dialog_warning)
         }
 
         fun confirm(context: Context,
@@ -171,12 +190,13 @@ class DialogHelper {
             return color
         }
 
-        fun confirmBlur(context: Activity,
-                    title: String = "",
-                    message: String = "",
-                    onConfirm: Runnable? = null,
-                    onCancel: Runnable? = null): DialogWrap {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
+        private fun openContinueAlertBlur(context: Activity,
+                                      title: String = "",
+                                      message: String = "",
+                                      onConfirm: Runnable? = null,
+                                      onCancel: Runnable? = null,
+                                      layout: Int): DialogWrap {
+            val view = LayoutInflater.from(context).inflate(layout, null)
             view.findViewById<TextView>(R.id.confirm_title).setText(title)
             view.findViewById<TextView>(R.id.confirm_message).setText(message)
             val dialog = customDialogBlurBg(context, view)
@@ -192,11 +212,27 @@ class DialogHelper {
             return dialog
         }
 
-        fun customDialog(context: Context, view: View): DialogWrap {
+        fun confirmBlur(context: Activity,
+                        title: String = "",
+                        message: String = "",
+                        onConfirm: Runnable? = null,
+                        onCancel: Runnable? = null): DialogWrap {
+            return openContinueAlertBlur(context, title, message, onConfirm, onCancel, R.layout.dialog_confirm)
+        }
+
+        fun warningBlur(context: Activity,
+                        title: String = "",
+                        message: String = "",
+                        onConfirm: Runnable? = null,
+                        onCancel: Runnable? = null): DialogWrap {
+            return openContinueAlertBlur(context, title, message, onConfirm, onCancel, R.layout.dialog_warning)
+        }
+
+        fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {
             val dialog = AlertDialog
                     .Builder(context)
                     .setView(view)
-                    .setCancelable(true)
+                    .setCancelable(cancelable)
                     .create()
 
             dialog.window?.run {
@@ -215,14 +251,59 @@ class DialogHelper {
         }
 
         fun customDialogBlurBg(activity: Activity, view: View, cancelable: Boolean): DialogWrap {
-            val dialog = AlertDialog
-                    .Builder(activity, R.style.custom_alert_dialog)
-                    .setView(view)
-                    .setCancelable(cancelable)
-                    .create()
+            val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
+            if (wallpaperMode) {
+                return customDialog(activity, view, cancelable)
+            } else {
+                val dialog = AlertDialog
+                        .Builder(activity, R.style.custom_alert_dialog)
+                        .setView(view)
+                        .setCancelable(cancelable)
+                        .create()
 
-            dialog.show()
-            dialog.window?.run {
+                dialog.show()
+                dialog.window?.run {
+                    setWindowBlurBg(this, activity)
+                    decorView.run {
+                        systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    }
+                    /*
+                    // 隐藏状态栏和导航栏
+                    decorView.run {
+                        systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        setOnSystemUiVisibilityChangeListener {
+                            var uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
+                                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or  //全屏
+                                    View.SYSTEM_UI_FLAG_FULLSCREEN or  //隐藏导航栏
+                                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            uiOptions = uiOptions or 0x00001000
+                            systemUiVisibility = uiOptions
+                        }
+                    }
+                    */
+
+                    // setWindowAnimations(R.style.windowAnim2)
+                }
+
+                return DialogWrap(dialog)
+            }
+        }
+
+        fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {
+            val dialog =
+                    AlertDialog.Builder(context)
+                            .setTitle(title)
+                            .setMessage(message)
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                            }
+            return animDialog(dialog)
+        }
+
+        fun setWindowBlurBg (window: Window, activity: Activity) {
+            val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
+
+            window.run {
                 // TODO:处理模糊背景
                 // BlurBackground(activity).setScreenBgLight(dialog)
 
@@ -231,7 +312,12 @@ class DialogHelper {
                 // attributes =attrs
                 // decorView.setPadding(0, 0, 0, 0)
 
-                val blurBitmap = FastBlurUtility.getBlurBackgroundDrawer(activity)
+                val blurBitmap = if (wallpaperMode) {
+                    null
+                } else {
+                    FastBlurUtility.getBlurBackgroundDrawer(activity)
+                }
+
                 if (blurBitmap != null) {
                     setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
                 } else {
@@ -244,39 +330,7 @@ class DialogHelper {
                         setBackgroundDrawable(d)
                     }
                 }
-                decorView.run {
-                    systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-                /*
-                // 隐藏状态栏和导航栏
-                decorView.run {
-                    systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    setOnSystemUiVisibilityChangeListener {
-                        var uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or  //布局位于状态栏下方
-                                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or  //全屏
-                                View.SYSTEM_UI_FLAG_FULLSCREEN or  //隐藏导航栏
-                                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        uiOptions = uiOptions or 0x00001000
-                        systemUiVisibility = uiOptions
-                    }
-                }
-                */
-
-                // setWindowAnimations(R.style.windowAnim2)
             }
-
-            return DialogWrap(dialog)
-        }
-
-        fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {
-            val dialog =
-                    AlertDialog.Builder(context)
-                            .setTitle(title)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            }
-            return animDialog(dialog)
         }
     }
 }
