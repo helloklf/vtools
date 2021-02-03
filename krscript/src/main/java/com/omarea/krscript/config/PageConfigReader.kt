@@ -399,6 +399,9 @@ class PageConfigReader {
             for (i in 0 until parser.attributeCount) {
                 val attrValue = parser.getAttributeValue(i)
                 when (parser.getAttributeName(i)) {
+                    "min-sdk", "sdk-min" -> runnableNode.minSdkVersion = attrValue.trim().toInt()
+                    "max-sdk", "sdk-max" -> runnableNode.maxSdkVersion = attrValue.trim().toInt()
+                    "target-sdk", "sdk-target" -> runnableNode.targetSdkVersion = attrValue.trim().toInt()
                     "icon", "icon-path" -> runnableNode.iconPath = attrValue.trim()
                     "logo", "logo-path" -> runnableNode.logoPath = attrValue.trim()
                     "allow-shortcut" -> runnableNode.allowShortcut = attrValue == "allow" || attrValue == "allow-shortcut" || attrValue == "true" || attrValue == "1"

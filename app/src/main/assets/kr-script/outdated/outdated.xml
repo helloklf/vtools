@@ -28,7 +28,7 @@
         </action>
     </group>
 
-    <group title="温控">
+    <group title="删除温控" visible="getprop persist.vtools.additional.danger">
         <action>
             <title>硬删温控 *不推荐</title>
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
@@ -44,6 +44,9 @@
             <get>run thermal-engine/get.sh</get>
             <set>run thermal-engine/set.sh</set>
         </switch>
+    </group>
+
+    <group title="关闭温控">
         <action confirm="true">
             <title>临时关闭温控</title>
             <desc>关闭存在于系统中的温控服务，重启后失效</desc>
@@ -61,7 +64,10 @@
                 echo '可能需要重启才会生效'
             </set>
         </switch>
-        <action visible=". ./kr-script/common/android_o.sh">
+    </group>
+
+    <group visible="getprop persist.vtools.additional.danger">
+        <action min-sdk="26" max-sdk="28">
             <title>HWUI渲染引擎</title>
             <desc>切换HWUI渲染引擎，本功能仅支持Android O(8.x)、Android P(9.0)</desc>
             <summary sh="run hwui_render/summary.sh" />
@@ -70,7 +76,7 @@
                 value-sh="run hwui_render/get.sh" />
             <set>run hwui_render/set.sh</set>
         </action>
-        <switch visible=". ./kr-script/common/android_q.sh" confirm="true">
+        <switch target-sdk="29" confirm="true">
             <title>HWUI使用Vulkan</title>
             <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应。有些手机甚至可能无法进入桌面！</desc>
             <get>run hwui_vulkan/get.sh</get>

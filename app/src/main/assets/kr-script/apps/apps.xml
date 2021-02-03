@@ -16,7 +16,7 @@
             <set>run douyin_ad_set.sh</set>
         </switch>
 
-        <action>
+        <action max-sdk="29">
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
             <params>

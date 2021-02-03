@@ -16,4 +16,9 @@ open class ClickableNode(currentPageConfigPath: String) : NodeInfoBase(currentPa
     var locked: Boolean = false
     // 锁定状态获取（脚本）
     var lockShell: String = ""
+
+    // 此功能的Android SDK版本要求
+    var targetSdkVersion = 0
+    var minSdkVersion = 0
+    var maxSdkVersion = 100
 }

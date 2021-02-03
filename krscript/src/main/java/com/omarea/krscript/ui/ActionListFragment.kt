@@ -3,6 +3,7 @@ package com.omarea.krscript.ui
 import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -91,6 +92,27 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     }
 
     private fun nodeUnlocked(clickableNode: ClickableNode): Boolean {
+        val currentSDK = Build.VERSION.SDK_INT
+        if (clickableNode.targetSdkVersion > 0 && currentSDK != clickableNode.targetSdkVersion) {
+            DialogHelper.helpInfo(context!!,
+                    getString(R.string.kr_sdk_discrepancy),
+                    getString(R.string.kr_sdk_discrepancy_message).format(clickableNode.targetSdkVersion)
+            )
+            return false
+        } else if (currentSDK > clickableNode.maxSdkVersion) {
+            DialogHelper.helpInfo(context!!,
+                    getString(R.string.kr_sdk_overtop),
+                    getString(R.string.kr_sdk_message).format(clickableNode.minSdkVersion, clickableNode.maxSdkVersion)
+            )
+            return false
+        } else if (currentSDK < clickableNode.minSdkVersion) {
+            DialogHelper.helpInfo(context!!,
+                    getString(R.string.kr_sdk_too_low),
+                    getString(R.string.kr_sdk_message).format(clickableNode.minSdkVersion, clickableNode.maxSdkVersion)
+            )
+            return false
+        }
+
         var message = ""
         val unlocked = (if (clickableNode.lockShell.isNotEmpty()) {
             message = ScriptEnvironmen.executeResultRoot(context, clickableNode.lockShell, clickableNode)
