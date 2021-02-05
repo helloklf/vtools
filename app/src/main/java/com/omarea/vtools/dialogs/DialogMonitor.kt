@@ -3,6 +3,8 @@ package com.omarea.vtools.dialogs
 import android.app.Activity
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.ProcessUtils
 import com.omarea.vtools.R
@@ -27,10 +29,15 @@ class DialogMonitor(var context: Activity) {
         }
         view.findViewById<CompoundButton>(R.id.monitor_proc).run {
             isChecked = FloatTaskManager.show == true
-            isEnabled = ProcessUtils().supported(context)
             setOnClickListener {
                 if (isChecked) {
-                    FloatTaskManager(context).showPopupWindow()
+                    val floatTaskManager = FloatTaskManager(context)
+                    if (floatTaskManager.supported) {
+                        FloatTaskManager(context).showPopupWindow()
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.monitor_process_unsupported), Toast.LENGTH_SHORT).show()
+                        isChecked = false
+                    }
                 } else {
                     FloatTaskManager(context).hidePopupWindow()
                 }

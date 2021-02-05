@@ -83,7 +83,7 @@
         </picker>
     </group>
 
-    <group title="温控" visible="getprop persist.vtools.additional.danger">
+    <group title="温控">
         <picker
             visible="run thermal_conf/support.sh"
             title="温控配置切换" desc="小米骁龙710、730、835、845、855、865、天玑820系列机型专享！"
@@ -92,9 +92,6 @@
             <get>run thermal_conf/current.sh</get>
             <set>run thermal_conf/config.sh</set>
         </picker>
-    </group>
-
-    <group>
         <action confirm="true">
             <title>开启MIUI9、MIUI10隐藏的温控选项</title>
             <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>

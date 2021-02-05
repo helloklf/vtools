@@ -79,15 +79,8 @@ class FloatProcessAdapter(private val context: Context,
         notifyDataSetChanged()
     }
 
-    private fun keywordSearch(item: ProcessInfo, text: String): Boolean {
-        return item.friendlyName.toString().toLowerCase().contains(text) || item.name.toString().toLowerCase().contains(text) || item.user.toString().toLowerCase().contains(text) || item.command.toString().toLowerCase().contains(text) || item.cmdline.toString().toLowerCase().contains(text)
-    }
-
     private fun filterAppList(): ArrayList<ProcessInfo> {
-        val text = keywords.toLowerCase()
-        val keywordsEmpty = text.isEmpty()
-        return ArrayList(processes.filter { it ->
-            (keywordsEmpty || keywordSearch(it, text)) && (
+        return ArrayList(processes.filter { it -> (
                     when (filterMode) {
                         FILTER_ALL -> true
                         FILTER_ANDROID_USER -> isAndroidUserProcess(it)
@@ -131,7 +124,7 @@ class FloatProcessAdapter(private val context: Context,
             return
         } else {
             if (isAndroidProcess(item)) {
-                Thread(Runnable {
+                Thread {
                     var icon: Drawable? = null
                     try {
                         val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
@@ -151,7 +144,7 @@ class FloatProcessAdapter(private val context: Context,
                             }
                         }
                     }
-                }).start()
+                }.start()
             } else {
                 imageView.setImageDrawable(context.getDrawable(R.drawable.process_linux))
                 imageView.tag = item.name

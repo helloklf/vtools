@@ -68,8 +68,7 @@ class ActivityProcess : ActivityBase() {
                 (process_list.adapter as AdapterProcess?)?.updateSortMode(when (position) {
                     0 -> AdapterProcess.SORT_MODE_CPU
                     1 -> AdapterProcess.SORT_MODE_RES
-                    2 -> AdapterProcess.SORT_MODE_SWAP
-                    3 -> AdapterProcess.SORT_MODE_PID
+                    2 -> AdapterProcess.SORT_MODE_PID
                     else -> AdapterProcess.SORT_MODE_DEFAULT
                 })
             }
@@ -224,6 +223,11 @@ class ActivityProcess : ActivityBase() {
                     findViewById<TextView>(R.id.ProcessMEM).text = (detail.res / 1024).toInt().toString() + "MB"
                 } else {
                     findViewById<TextView>(R.id.ProcessMEM).text = detail.res.toString() + "KB"
+                }
+                if (processInfo.swap > 8192) {
+                    findViewById<TextView>(R.id.ProcessSWAP).text = (detail.swap / 1024).toInt().toString() + "MB"
+                } else {
+                    findViewById<TextView>(R.id.ProcessSWAP).text = detail.swap.toString() + "KB"
                 }
                 findViewById<TextView>(R.id.ProcessUSER).text = processInfo.user
                 if (isAndroidProcess(processInfo)) {

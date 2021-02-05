@@ -13,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.library.shell.ProcessUtils
+import com.omarea.library.shell.ProcessUtils2
 import com.omarea.model.ProcessInfo
 import com.omarea.ui.FloatProcessAdapter
 import com.omarea.vtools.R
@@ -28,6 +29,11 @@ class FloatTaskManager(private val context: Context) {
             }
         private var timer: Timer? = null
     }
+
+    val supported: Boolean
+        get () {
+            return processUtils.supported(context)
+        }
 
     /**
      * dp转换成px
@@ -138,7 +144,7 @@ class FloatTaskManager(private val context: Context) {
 
         if (timer == null) {
             timer = Timer()
-            timer!!.schedule(object : TimerTask() {
+            timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     updateData()
                 }
@@ -147,7 +153,7 @@ class FloatTaskManager(private val context: Context) {
     }
 
     private val handle = Handler(Looper.getMainLooper())
-    private val processUtils = ProcessUtils()
+    private val processUtils = ProcessUtils2()
 
     // 更新任务列表
     private fun updateData() {

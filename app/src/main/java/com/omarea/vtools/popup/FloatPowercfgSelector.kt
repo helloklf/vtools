@@ -307,11 +307,12 @@ class FloatPowercfgSelector(context: Context) {
                 FloatTaskManager(context).hidePopupWindow()
                 fw_float_task.alpha = 0.3f
             } else {
-                if (ProcessUtils().supported(context)) {
-                    FloatTaskManager(context).showPopupWindow()
+                val floatTaskManager = FloatTaskManager(context)
+                if (floatTaskManager.supported) {
+                    floatTaskManager.showPopupWindow()
                     fw_float_task.alpha = 1f
                 } else {
-                    Scene.toast("进程管理器暂未兼容你的手机！", Toast.LENGTH_SHORT)
+                    Scene.toast(context.getString(R.string.monitor_process_unsupported), Toast.LENGTH_SHORT)
                 }
             }
         }

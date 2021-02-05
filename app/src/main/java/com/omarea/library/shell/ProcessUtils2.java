@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /*
  * 进程管理相关
  */
-public class ProcessUtils {
+public class ProcessUtils2 {
 
     /*
     VSS- Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
@@ -30,15 +30,12 @@ public class ProcessUtils {
 
     // pageSize 获取 : getconf PAGESIZE
 
-    private static String LIST_COMMAND = null;
-    private static String DETAIL_COMMAND = null;
+    private static String PS_COMMAND = null;
 
-    // 兼容性检查
+    // 兼容性检查（TODO: 首次调用此函数可能比较耗时，需要调用这做loading优化体验）
     public boolean supported(Context context) {
-        if (LIST_COMMAND == null || DETAIL_COMMAND == null) {
-            LIST_COMMAND = "";
-            DETAIL_COMMAND = "";
-
+        if (PS_COMMAND == null) {
+            PS_COMMAND = "";
             String installPath = context.getString(R.string.toolkit_install_path);
             String toyboxInstallPath = installPath + "/toybox-outside";
             String outsideToybox = FileWrite.INSTANCE.getPrivateFilePath(context, toyboxInstallPath);
@@ -47,33 +44,23 @@ public class ProcessUtils {
                 FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
             }
 
-            String perfectCmd = "top -o %CPU,RES,SWAP,NAME,PID,USER,COMMAND,CMDLINE -q -b -n 1 -m 10000";
+            String perfectCmd = "top -o %CPU,NAME,COMMAND,PID -q -b -n 1 -m 100";
             String outsidePerfectCmd = outsideToybox + " " + perfectCmd;
-            // String insideCmd = "ps -e -o %CPU,RSS,SHR,NAME,PID,USER,COMMAND,CMDLINE";
-            // String insideCmd = "ps -e -o %CPU,RES,SHR,RSS,NAME,PID,S,USER,COMMAND,CMDLINE";
-            String insideCmd = "ps -e -o %CPU,RES,SWAP,NAME,PID,USER,COMMAND,CMDLINE";
+
+            String insideCmd = "ps -e -o %CPU,NAME,COMMAND,PID";
             String outsideCmd = outsideToybox + " " + insideCmd;
 
-            for (String cmd : new String[]{ outsidePerfectCmd, perfectCmd, outsideCmd,insideCmd }) {
+            for (String cmd : new String[]{ outsidePerfectCmd, perfectCmd, outsideCmd, insideCmd }) {
                 String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
                 String result = rows[0];
                 if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {
-                    LIST_COMMAND = cmd;
-                    break;
-                }
-            }
-
-            for (String cmd : new String[]{outsideCmd, insideCmd}) {
-                String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
-                String result = rows[0];
-                if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {
-                    DETAIL_COMMAND = cmd + " --pid ";
+                    PS_COMMAND = cmd;
                     break;
                 }
             }
         }
 
-        return !(LIST_COMMAND.isEmpty() || DETAIL_COMMAND.isEmpty());
+        return !PS_COMMAND.isEmpty();
     }
 
     private long str2Long(String str) {
@@ -93,6 +80,7 @@ public class ProcessUtils {
         {
             add("toybox-outside");
             add("ps");
+            add("top");
             add("com.omarea.vtools");
         }
     };
@@ -100,22 +88,18 @@ public class ProcessUtils {
     // 解析单行数据
     private ProcessInfo readRow(String row) {
         String[] columns = row.split(" +");
-        if (columns.length >= 6) {
+        if (columns.length >= 3) {
             try {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
-                processInfo.res = str2Long(columns[1]);
-                processInfo.swap = str2Long(columns[2]);
-                processInfo.name = columns[3];
+                processInfo.name = columns[1];
 
                 if (excludeProcess.contains(processInfo.name)) {
                     return null;
                 }
 
-                processInfo.pid = Integer.parseInt(columns[4]);
-                processInfo.user = columns[5];
-                processInfo.command = columns[6];
-                processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
+                processInfo.command = columns[2];
+                processInfo.pid = Integer.parseInt(columns[3]);
                 return processInfo;
             } catch (Exception ex) {
                 Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
@@ -130,8 +114,8 @@ public class ProcessUtils {
     public ArrayList<ProcessInfo> getAllProcess() {
         ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
         boolean isFristRow = true;
-        if (LIST_COMMAND != null) {
-            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(LIST_COMMAND).split("\n");
+        if (PS_COMMAND != null) {
+            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND).split("\n");
             for (String row : rows) {
                 if (isFristRow) {
                     isFristRow = false;
@@ -145,25 +129,6 @@ public class ProcessUtils {
             }
         }
         return processInfoList;
-    }
-
-    // 获取进程详情
-    public ProcessInfo getProcessDetail(int pid) {
-        if (DETAIL_COMMAND != null) {
-            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(DETAIL_COMMAND + pid).split("\n");
-            if (rows.length > 1) {
-                ProcessInfo row = readRow(rows[1].trim());
-                if (row != null) {
-                    row.cpuSet = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cpuset");
-                    row.cGroup = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cgroup");
-                    row.oomAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_adj");
-                    row.oomScore = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score");
-                    row.oomScoreAdj = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/oom_score_adj");
-                }
-                return row;
-            }
-        }
-        return null;
     }
 
     // 强制结束进程

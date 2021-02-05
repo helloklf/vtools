@@ -81,7 +81,7 @@
                     style="@style/textSmallTitle"
                     android:layout_width="65dp"
                     android:layout_height="wrap_content"
-                    android:text="CPU占用" />
+                    android:text="CPU(AVG)" />
 
                 <TextView
                     android:id="@+id/ProcessCPU"
@@ -89,6 +89,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/textSmallTitle"
@@ -98,6 +106,19 @@
 
                 <TextView
                     android:id="@+id/ProcessMEM"
+                    style="@style/textSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/textSmallTitle"
+                    android:layout_width="65dp"
+                    android:layout_height="wrap_content"
+                    android:text="SWAP" />
+
+                <TextView
+                    android:id="@+id/ProcessSWAP"
                     style="@style/textSmall"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
