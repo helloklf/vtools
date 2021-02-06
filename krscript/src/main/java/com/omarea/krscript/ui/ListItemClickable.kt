@@ -1,13 +1,10 @@
 package com.omarea.krscript.ui
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
 import com.omarea.krscript.R
 import com.omarea.krscript.config.IconPathAnalysis
-import com.omarea.krscript.config.PathAnalysis
 import com.omarea.krscript.model.ClickableNode
 
 open class ListItemClickable(context: Context,

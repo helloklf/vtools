@@ -1,5 +1,7 @@
 package com.omarea.krscript.model
 
+import com.omarea.common.model.SelectItem
+
 class ActionParamInfo {
     // 参数名：必需保持唯一
     var name: String? = null
@@ -21,8 +23,8 @@ class ActionParamInfo {
     var min: Int = Int.MIN_VALUE // seekbar only
     var required: Boolean = false // 是否是必需的
     var readonly: Boolean = false
-    var options: ArrayList<ActionParamOption>? = null
-    var optionsFromShell: ArrayList<HashMap<String, Any>>? = null
+    var options: ArrayList<SelectItem>? = null
+    var optionsFromShell: ArrayList<SelectItem>? = null
     var optionsSh = ""
     // 是否允许多选(options only)
     var multiple: Boolean = false
@@ -38,9 +40,4 @@ class ActionParamInfo {
     var editable: Boolean = false
     // 多个值的分隔符（仅限多选下拉）
     var separator: String = "\n"
-
-    open class ActionParamOption {
-        var value: String? = null
-        var desc: String? = null
-    }
 }

@@ -1,11 +1,9 @@
 package com.omarea.krscript.ui
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.EditText
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 import com.omarea.krscript.model.ParamInfoFilter

@@ -4,9 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
@@ -19,7 +16,7 @@ class ParamsCheckbox(private var actionParamInfo: ActionParamInfo, private var c
             tag = actionParamInfo.name
             isChecked = getCheckState(actionParamInfo, false)
             if (!actionParamInfo.label.isNullOrEmpty()) {
-                // text = actionParamInfo.label
+                text = actionParamInfo.label
             }
 
             setOnClickListener {

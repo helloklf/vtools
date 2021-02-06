@@ -1,7 +1,9 @@
 package com.omarea.krscript.model
 
+import com.omarea.common.model.SelectItem
+
 class PickerNode(currentConfigXml: String) : RunnableNode(currentConfigXml) {
-    var options: ArrayList<ActionParamInfo.ActionParamOption>? = null
+    var options: ArrayList<SelectItem>? = null
     var optionsSh = ""
     var value: String? = null
 

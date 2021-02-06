@@ -6,7 +6,6 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.omarea.krscript.R
-import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 
 class PageLayoutRender(private val mContext: Context,

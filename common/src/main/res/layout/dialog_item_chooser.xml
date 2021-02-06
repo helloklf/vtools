@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/dialogRoot"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/search_bar"
+        android:background="@drawable/dialog_search_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp">
+        <EditText
+            android:id="@+id/search_box"
+            android:nextFocusDown="@id/search_box"
+            android:lines="1"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:maxLength="30"
+            android:textSize="15dp"
+            android:hint="@string/item_chooser_search_hint"
+            android:background="@null" />
+
+        <ImageButton
+            android:id="@+id/search_box_clear"
+            android:background="@null"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/dialog_search_clear"
+            android:scaleType="centerInside"
+            android:padding="15dp"
+            android:tint="?android:textColorPrimary"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/item_list"
+        android:layout_below="@id/search_bar"
+        android:layout_above="@+id/bottom_buttons"
+        android:background="@drawable/confirm_dialog_bg"
+        android:divider="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="@style/dialogCancelBtn"
+            android:layout_marginEnd="8dp"
+            android:text="取消">
+        </Button>
+        <Button
+            android:id="@+id/btn_confirm"
+            style="@style/dialogConfirmBtn"
+            android:text="确定">
+        </Button>
+    </LinearLayout>
+</RelativeLayout>

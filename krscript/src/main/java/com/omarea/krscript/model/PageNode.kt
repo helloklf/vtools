@@ -1,7 +1,5 @@
 package com.omarea.krscript.model
 
-import java.io.File
-
 public class PageNode(currentConfigXml: String) : ClickableNode(currentConfigXml) {
     public var pageConfigPath: String = ""
     public var pageConfigSh: String = ""

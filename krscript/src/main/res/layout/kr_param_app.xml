@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/kr_param_app_name"
+        android:minHeight="35dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

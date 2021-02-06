@@ -5,11 +5,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
-import androidx.fragment.app.DialogFragment
 import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View

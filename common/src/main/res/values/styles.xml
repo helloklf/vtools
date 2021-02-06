@@ -43,10 +43,11 @@
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
         <item name="android:textAlignment">textEnd</item>
-        <item name="android:background">@null</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">@drawable/abc_spinner_mtrl_am_alpha</item>
+        <item name="android:backgroundTint">?android:textColorSecondary</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
@@ -205,5 +206,30 @@
         <item name="android:padding">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="dialog_full_screen" parent="Theme.AppCompat.Dialog">
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">false</item>
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">false</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+
+    <style name="dialog_full_screen_light" parent="@style/dialog_full_screen">
+        <item name="android:windowBackground">@android:color/background_light</item>
+        <item name="android:statusBarColor">@android:color/background_light</item>
+    </style>
+
+    <style name="dialog_full_screen_dark" parent="@style/dialog_full_screen">
+        <item name="android:windowBackground">@android:color/background_dark</item>
+        <item name="android:statusBarColor">@android:color/background_dark</item>
     </style>
 </resources>

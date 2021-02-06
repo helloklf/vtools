@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
@@ -26,7 +27,6 @@ import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
-
     companion object {
         fun create(
                 actionInfos: ArrayList<NodeInfoBase>?,
@@ -121,11 +121,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             !clickableNode.locked
         })
         if (!unlocked) {
-            DialogHelper.helpInfo(context!!, getString(R.string.kr_lock_title), if (message.isNotEmpty()) {
+            Toast.makeText(context, if (message.isNotEmpty()) {
                 message
             } else {
                 getString(R.string.kr_lock_message)
-            })
+            }, Toast.LENGTH_LONG).show()
         }
         return unlocked
     }
@@ -251,8 +251,8 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             // 获取可选项（合并options-sh和静态options的结果）
             val options = getParamOptions(paramInfo, item)
 
-            val labels = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
-            val values = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+            val labels = if (options != null) options.map { it.title }.toTypedArray() else arrayOf()
+            val values = if (options != null) options.map { it.value }.toTypedArray() else arrayOf()
 
             handler.post {
                 progressBarDialog.hideDialog()
@@ -361,7 +361,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                         progressBarDialog.showDialog(this.context!!.getString(R.string.kr_params_render))
                     }
                     handler.post {
-                        val render = ActionParamsLayoutRender(linearLayout)
+                        val render = ActionParamsLayoutRender(linearLayout, activity!!)
                         render.renderList(actionParamInfos, object : ParamsFileChooserRender.FileChooserInterface {
                             override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                                 return if (krScriptActionHandler == null) {
@@ -450,8 +450,8 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     /**
      * 获取Param的Options
      */
-    private fun getParamOptions(actionParamInfo: ActionParamInfo, nodeInfoBase: NodeInfoBase): ArrayList<HashMap<String, Any>>? {
-        val options = ArrayList<HashMap<String, Any>>()
+    private fun getParamOptions(actionParamInfo: ActionParamInfo, nodeInfoBase: NodeInfoBase): ArrayList<SelectItem>? {
+        val options = ArrayList<SelectItem>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
             shellResult = executeScriptGetResult(actionParamInfo.optionsSh, nodeInfoBase)
@@ -461,41 +461,24 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
                 if (item.contains("|")) {
                     val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    options.add(object : HashMap<String, Any>() {
-                        init {
-                            var descText = itemSplit[0]
-                            if (itemSplit.size > 0) {
-                                descText = itemSplit[1]
-                            }
-                            put("title", descText)
-                            put("item", object : ActionParamInfo.ActionParamOption() {
-                                init {
-                                    value = itemSplit[0]
-                                    desc = descText
-                                }
-                            })
+                    options.add(SelectItem().apply {
+                        var descText = itemSplit[0]
+                        if (itemSplit.size > 0) {
+                            descText = itemSplit[1]
                         }
+                        title = descText
+                        value = itemSplit[0]
                     })
                 } else {
-                    options.add(object : HashMap<String, Any>() {
-                        init {
-                            put("title", item)
-                            put("item", object : ActionParamInfo.ActionParamOption() {
-                                init {
-                                    value = item
-                                    desc = item
-                                }
-                            })
-                        }
+                    options.add(SelectItem().apply {
+                        title = item
+                        value = item
                     })
                 }
             }
         } else if (actionParamInfo.options != null) {
             for (option in actionParamInfo.options!!) {
-                val opt = HashMap<String, Any>()
-                opt.set("title", if (option.desc == null) "" else option.desc!!)
-                opt["item"] = option
-                options.add(opt)
+                options.add(option)
             }
         } else {
             return null

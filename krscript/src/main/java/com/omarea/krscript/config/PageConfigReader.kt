@@ -9,6 +9,7 @@ import android.text.Layout
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import com.omarea.common.model.SelectItem
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
@@ -260,7 +261,7 @@ class PageConfigReader {
                     }
                     attrName == "options-sh" || attrName == "option-sh" || attrName == "options-su" -> {
                         if (actionParamInfo.options == null)
-                            actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
+                            actionParamInfo.options = ArrayList<SelectItem>()
                         val script = attrValue
                         actionParamInfo.optionsSh = script
                     }
@@ -288,16 +289,16 @@ class PageConfigReader {
             if (actionParamInfo.options == null) {
                 actionParamInfo.options = ArrayList()
             }
-            val option = ActionParamInfo.ActionParamOption()
+            val option = SelectItem()
             for (i in 0 until parser.attributeCount) {
                 val attrName = parser.getAttributeName(i)
                 if (attrName == "val" || attrName == "value") {
                     option.value = parser.getAttributeValue(i)
                 }
             }
-            option.desc = parser.nextText()
+            option.title = parser.nextText()
             if (option.value == null)
-                option.value = option.desc
+                option.value = option.title
             actionParamInfo.options!!.add(option)
         } else if ("resource" == parser.name) {
             resourceNode(parser)
@@ -644,16 +645,16 @@ class PageConfigReader {
             if (pickerNode.options == null) {
                 pickerNode.options = ArrayList()
             }
-            val option = ActionParamInfo.ActionParamOption()
+            val option = SelectItem()
             for (i in 0 until parser.attributeCount) {
                 val attrName = parser.getAttributeName(i)
                 if (attrName == "val" || attrName == "value") {
                     option.value = parser.getAttributeValue(i)
                 }
             }
-            option.desc = parser.nextText()
+            option.title = parser.nextText()
             if (option.value == null)
-                option.value = option.desc
+                option.value = option.title
             pickerNode.options!!.add(option)
         } else if ("getstate" == parser.name || "get" == parser.name) {
             pickerNode.getState = parser.nextText()

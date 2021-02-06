@@ -3,4 +3,6 @@
     <string name="execute_fail">执行失败</string>
     <string name="execute_wait">正在执行，请稍等…</string>
     <string name="btn_confirm">确定</string>
+    <string name="app_chooser_search_hint">输入应用名/包名进行搜索</string>
+    <string name="item_chooser_search_hint">搜索可选择项</string>
 </resources>
