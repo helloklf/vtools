@@ -83,6 +83,20 @@
         </picker>
     </group>
 
+    <group title="硬件">
+        <action
+            visble="run haptic/support.sh"
+            shell="hidden">
+            <title>振动反馈</title>
+            <summary sh="run haptic/summary.sh" />
+            <param
+                title="振动强度(%)"
+                desc="超过150%可能会没有明显效果"
+                min="0" max="400" name="level" value-sh="run haptic/get.sh" type="seekbar" />
+            <set>run haptic/set.sh</set>
+        </action>
+    </group>
+
     <group title="温控">
         <picker
             visible="run thermal_conf/support.sh"
