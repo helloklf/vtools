@@ -27,13 +27,13 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/tab_freeze_apps"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
+                        android:id="@+id/freeze_toolbar"
                         style="@style/ListCardItem"
                         android:alpha="0.9"
                         android:orientation="horizontal">
@@ -73,9 +73,10 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:layout_below="@+id/freeze_toolbar"
+                        android:layout_alignParentBottom="true"
                         style="@style/ListCardItemLast"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
+                        android:layout_height="match_parent"
                         android:alpha="0.9"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
@@ -106,13 +107,15 @@
                     </LinearLayout>
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
                         android:id="@+id/freeze_add"
                         android:src="@drawable/add"
                         android:layout_marginBottom="10dp"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <com.omarea.common.ui.OverScrollView
                     android:id="@+id/tab_freeze_settings"

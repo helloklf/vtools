@@ -1,0 +1,1 @@
+cat $PAGE_WORK_DIR/ai_key/options.txt

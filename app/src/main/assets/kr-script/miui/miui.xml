@@ -95,6 +95,15 @@
                 min="0" max="400" name="level" value-sh="run haptic/get.sh" type="seekbar" />
             <set>run haptic/set.sh</set>
         </action>
+        <picker
+            visible="run ai_key/support.sh"
+            options-sh="run ai_key/options.sh"
+            shell="hidden">
+            <title>AI键事件</title>
+            <summary sh="run ai_key/summary.sh" />
+            <get>run ai_key/get.sh</get>
+            <set>run ai_key/set.sh</set>
+        </picker>
     </group>
 
     <group title="温控">
