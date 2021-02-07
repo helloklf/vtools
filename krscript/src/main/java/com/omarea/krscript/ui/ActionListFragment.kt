@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.DialogItemChooser
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.BgTaskThread
@@ -242,7 +243,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         val handler = Handler()
 
         progressBarDialog.showDialog(getString(R.string.kr_param_options_load))
-        Thread(Runnable {
+        Thread {
             // 获取当前值
             if (item.getState != null) {
                 paramInfo.valueFromShell = executeScriptGetResult(item.getState!!, item)
@@ -250,52 +251,30 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
             // 获取可选项（合并options-sh和静态options的结果）
             val options = getParamOptions(paramInfo, item)
-
-            val labels = if (options != null) options.map { it.title }.toTypedArray() else arrayOf()
-            val values = if (options != null) options.map { it.value }.toTypedArray() else arrayOf()
+            val optionsSorted = (if (options != null) {
+                        ActionParamsLayoutRender.setParamOptionsSelectedStatus(paramInfo, options)
+                    } else {
+                        null
+                    })
 
             handler.post {
                 progressBarDialog.hideDialog()
-                val builder = AlertDialog.Builder(this.context!!)
-                        .setTitle(item.title)
-                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
 
-                // 多选
-                if (item.multiple) {
-                    val status = if (options == null) {
-                        booleanArrayOf()
-                    } else {
-                        ActionParamsLayoutRender.getParamOptionsSelectedStatus(
-                                paramInfo,
-                                options
-                        )
-                    }
-                    builder.setMultiChoiceItems(labels, status) { _, index, isChecked ->
-                        status[index] = isChecked
-                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        val result = ArrayList<String?>()
-                        for (index in status.indices) {
-                            if (status[index]) {
-                                values[index]?.run {
-                                    result.add(this)
-                                }
+                if (optionsSorted != null) {
+                    DialogItemChooser(false, optionsSorted, item.multiple, object : DialogItemChooser.Callback {
+                        override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                            if (item.multiple) {
+                                pickerExecute(item, (selected.map { "" + it.value }).joinToString(item.separator), onCompleted)
+                            } else {
+                                pickerExecute(item, "" + selected[0].value, onCompleted)
                             }
                         }
-                        pickerExecute(item, "" + result.joinToString(item.separator), onCompleted)
-                    }
+                    }).show(activity!!.supportFragmentManager, "picker-item-chooser")
                 } else {
-                    // 单选
-                    var index = if (options == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, options)
-                    builder.setSingleChoiceItems(labels, index) { _, which ->
-                        index = which
-                    }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                        pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
-                    }
+                    Toast.makeText(context, getString(R.string.picker_not_item), Toast.LENGTH_SHORT).show()
                 }
-
-                DialogHelper.animDialog(builder)
             }
-        }).start()
+        }.start()
     }
 
     /**

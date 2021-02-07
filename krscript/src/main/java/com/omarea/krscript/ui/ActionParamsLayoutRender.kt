@@ -60,6 +60,21 @@ class ActionParamsLayoutRender(private var linearLayout: LinearLayout, activity:
             return status
         }
 
+        /**
+         * 设置列表的选中状态
+         * @param ActionParamInfo actionParamInfo 参数信息
+         * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
+         */
+        fun setParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<SelectItem>): ArrayList<SelectItem> {
+            val values = getParamValues(actionParamInfo)
+
+            for (index in 0 until options.size) {
+                val option = options[index]
+                options[index].selected = (values != null && values.contains(option.value))
+            }
+            return options
+        }
+
         // 获取多选下拉的选中值列表
         fun getParamValues (actionParamInfo: ActionParamInfo): List<String>? {
             val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value

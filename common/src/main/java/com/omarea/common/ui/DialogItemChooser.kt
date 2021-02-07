@@ -15,7 +15,14 @@ class DialogItemChooser(
         private val darkMode: Boolean,
         private var items: ArrayList<SelectItem>,
         private val multiple: Boolean = false,
-        private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_item_chooser, darkMode) {
+        private var callback: Callback? = null) : DialogFullScreen(
+        (if (items.size > 5) {
+            R.layout.dialog_item_chooser
+        } else {
+            R.layout.dialog_item_chooser_small
+        }),
+        darkMode
+) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -28,23 +35,27 @@ class DialogItemChooser(
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
             this.onConfirm(absListView)
         }
-        val clearBtn = view.findViewById<View>(R.id.search_box_clear)
-        val searchBox = view.findViewById<EditText>(R.id.search_box).apply {
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    if (s != null) {
-                        clearBtn.visibility = if (s.length > 0) View.VISIBLE else View.GONE
+        // 长列表才有搜索
+        if (items.size > 5) {
+            val clearBtn = view.findViewById<View>(R.id.search_box_clear)
+            val searchBox = view.findViewById<EditText>(R.id.search_box).apply {
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                    override fun afterTextChanged(s: Editable?) {
+                        if (s != null) {
+                            clearBtn.visibility = if (s.length > 0) View.VISIBLE else View.GONE
+                        }
                     }
-                }
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    (absListView.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
-                }
-            })
-        }
-        clearBtn.visibility = if (searchBox.text.isNullOrEmpty()) View.GONE else View.VISIBLE
-        clearBtn.setOnClickListener {
-            searchBox.text = null
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        (absListView.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
+                    }
+                })
+            }
+            clearBtn.visibility = if (searchBox.text.isNullOrEmpty()) View.GONE else View.VISIBLE
+            clearBtn.setOnClickListener {
+                searchBox.text = null
+            }
         }
     }
 
