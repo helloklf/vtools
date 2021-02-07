@@ -261,7 +261,9 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                 progressBarDialog.hideDialog()
 
                 if (optionsSorted != null) {
-                    DialogItemChooser(false, optionsSorted, item.multiple, object : DialogItemChooser.Callback {
+                    val systemUiVisibility = activity!!.window?.decorView?.systemUiVisibility
+                    val darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
+                    DialogItemChooser(darkMode, optionsSorted, item.multiple, object : DialogItemChooser.Callback {
                         override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
                             if (item.multiple) {
                                 pickerExecute(item, (selected.map { "" + it.value }).joinToString(item.separator), onCompleted)

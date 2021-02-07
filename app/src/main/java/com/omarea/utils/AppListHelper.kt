@@ -176,6 +176,8 @@ class AppListHelper(context: Context) {
             val applicationInfo = packageInfos[i].activityInfo.applicationInfo
             if (removeIgnore && exclude(applicationInfo.packageName)) {
                 continue
+            } else if (list.find { it.packageName == applicationInfo.packageName } != null) {
+                continue
             }
 
             // if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))

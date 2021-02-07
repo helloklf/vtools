@@ -21,6 +21,8 @@ import android.widget.Filterable
 import android.widget.SeekBar
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.AdapterAppChooser
+import com.omarea.common.ui.DialogAppChooser
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.shell.GAppsUtilis
@@ -512,27 +514,30 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     private fun addFreezeAppDialog() {
-        val allApp = AppListHelper(context).getBootableApps(false, true)
-        val apps = allApp.filter { !freezeApps.contains(it.packageName) }
-        val items = apps.map { it.appName.toString() }.toTypedArray()
-        val states = items.map { false }.toBooleanArray()
+        processBarDialog.showDialog()
+        Thread {
+            val allApp = AppListHelper(context).getBootableApps(false, true)
+            val apps = allApp.filter { !freezeApps.contains(it.packageName) }
+            val options = ArrayList(apps.map {
+                AdapterAppChooser.AppInfo().apply {
+                    appName = "" + it.appName
+                    packageName = "" + it.packageName
+                    selected = false
+                }
+            })
+            handler.post {
+                try {
+                    processBarDialog.hideDialog()
 
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.freeze_add))
-                .setMultiChoiceItems(items, states) { dialog, which, isChecked ->
-                    states[which] = isChecked
-                }
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    val selectedItems = ArrayList<String>()
-                    for (index in states.indices) {
-                        if (states[index]) {
-                            selectedItems.add(apps[index].packageName.toString())
+                    DialogAppChooser(themeMode.isDarkMode, options, true, object : DialogAppChooser.Callback {
+                        override fun onConfirm(apps: List<AdapterAppChooser.AppInfo>) {
+                            addFreezeApps(ArrayList(apps.map { it.packageName }))
                         }
-                    }
-                    addFreezeApps(selectedItems)
+                    }).show(supportFragmentManager, "freeze-app-add")
+                } catch (ex: java.lang.Exception) {
                 }
-                .setNegativeButton(R.string.btn_cancel, { _, _ -> })
-                .setCancelable(true))
+            }
+        }.start()
     }
 
     private fun addFreezeApps(selectedItems: ArrayList<String>) {
