@@ -142,14 +142,7 @@ class FloatTaskManager(private val context: Context) {
             true
         }
 
-        if (timer == null) {
-            timer = Timer()
-            timer!!.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    updateData()
-                }
-            }, 0, 3000)
-        }
+        this.startTimer()
     }
 
     private val handle = Handler(Looper.getMainLooper())
@@ -224,21 +217,39 @@ class FloatTaskManager(private val context: Context) {
                 process_filter.visibility = View.GONE
                 fw_float_close.visibility = View.GONE
                 fw_float_minimize.setImageDrawable(context.getDrawable(R.drawable.dialog_maximize))
+                this.stopUpdate()
             } else {
                 process_list.visibility = View.VISIBLE
                 process_filter.visibility = View.VISIBLE
                 fw_float_close.visibility = View.VISIBLE
                 fw_float_minimize.setImageDrawable(context.getDrawable(R.drawable.dialog_minimize))
+                this.startTimer()
             }
             // process_filter.visibility = if (process_filter.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
     }
 
-    fun hidePopupWindow() {
+    private fun stopUpdate() {
         if (timer != null) {
             timer?.cancel()
             timer = null
         }
+    }
+
+    private fun startTimer() {
+        this.stopUpdate()
+        if (timer == null) {
+            timer = Timer()
+            timer!!.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    updateData()
+                }
+            }, 0, 3000)
+        }
+    }
+
+    fun hidePopupWindow() {
+        this.stopUpdate()
         mView?.run {
             // 获取WindowManager
             val mWindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
