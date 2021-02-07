@@ -40,11 +40,11 @@
             android:layout_height="40dp" />
     </RelativeLayout>
 
-    <ListView
+    <com.omarea.common.ui.OverScrollListView
         android:id="@+id/app_list"
+        android:scrollbars="none"
         android:layout_below="@id/search_bar"
         android:layout_above="@+id/bottom_buttons"
-        android:background="@drawable/confirm_dialog_bg"
         android:divider="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
