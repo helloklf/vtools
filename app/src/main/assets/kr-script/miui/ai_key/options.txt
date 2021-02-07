@@ -1,9 +1,10 @@
 AI|AI键(默认)
 CAMERA|相机
-MUSIC|音乐
-SEARCH|搜索
+MEDIA_NEXT|下一曲
+MEDIA_PREVIOUS|上一曲
+CALL|拨号
 APP_SWITCH|应用切换
-MENU|菜单键
-BACK|返回键
-HOME|首页键
-POWER|电源键
+MENU|菜单
+BACK|返回
+HOME|首页
+POWER|电源

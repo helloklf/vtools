@@ -10,5 +10,10 @@ fi
 key_code=`grep '^key 689' $full_path | awk -F ' ' '{print $3}'`
 
 if [[ "$key_code" != "" ]];then
-    grep "$key_code" $PAGE_WORK_DIR/ai_key/options.txt | awk -F '|' '{print $2}'
+    key_name=`grep "$key_code" $PAGE_WORK_DIR/ai_key/options.txt | awk -F '|' '{print $2}'`
+    if [[ "$key_name" == "" ]]; then
+        echo $key_code
+    else
+        echo $key_name
+    fi
 fi
