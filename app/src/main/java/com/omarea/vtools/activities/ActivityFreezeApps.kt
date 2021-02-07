@@ -217,8 +217,13 @@ class ActivityFreezeApps : ActivityBase() {
         // 长按图标
         freeze_apps.setOnItemLongClickListener { parent, itemView, position, _ ->
             val item = (parent.adapter.getItem(position) as Appinfo)
-            showOptions(item, position, itemView)
+            showOptions(item)
             true
+        }
+
+        // 浮动按钮
+        freeze_add.setOnClickListener {
+            addFreezeAppDialog()
         }
 
         // 菜单按钮
@@ -334,39 +339,37 @@ class ActivityFreezeApps : ActivityBase() {
                 })
     }
 
-    private fun showOptions(appInfo: Appinfo, position: Int, view: View) {
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(appInfo.appName)
-                .setItems(
-                        arrayOf(
-                                getString(R.string.freeze_open),
-                                getString(R.string.freeze_shortcut_rebuild),
-                                getString(R.string.freeze_remove),
-                                if (appInfo.suspended || !appInfo.enabled) getString(R.string.freeze_enable) else getString(R.string.freeze_diasble),
-                                getString(R.string.freeze_remove_uninstall))) { _, which ->
+    private fun showOptions(appInfo: Appinfo) {
+        val view = layoutInflater.inflate(R.layout.dialog_freeze_app_opt, null)
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
 
-                    when (which) {
-                        0 -> startApp(appInfo)
-                        1 -> createShortcut(appInfo)
-                        2 -> {
-                            removeConfig(appInfo)
-                            loadData()
-                        }
-                        3 -> {
-                            toggleEnable(appInfo)
-                            loadData()
-                        }
-                        4 -> {
-                            DialogHelper.animDialog(
-                                    AlertDialog.Builder(context).setTitle("确定要卸载【${appInfo.appName}】？").setNeutralButton(R.string.btn_cancel) { _, _ ->
-                                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                        removeAndUninstall(appInfo)
-                                        loadData()
-                                    })
-                        }
-                    }
-                }
-                .setCancelable(true))
+        view.findViewById<View>(R.id.app_options_open).setOnClickListener {
+            dialog.dismiss()
+            startApp(appInfo)
+        }
+        view.findViewById<View>(R.id.app_options_shortcut).setOnClickListener {
+            dialog.dismiss()
+            createShortcut(appInfo)
+        }
+        view.findViewById<View>(R.id.app_options_remove).setOnClickListener {
+            dialog.dismiss()
+            removeConfig(appInfo)
+            loadData()
+        }
+        view.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
+            dialog.dismiss()
+            DialogHelper.animDialog(
+                    AlertDialog.Builder(context).setTitle("确定要卸载【${appInfo.appName}】？").setNeutralButton(R.string.btn_cancel) { _, _ ->
+                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        removeAndUninstall(appInfo)
+                        loadData()
+                    })
+        }
+        view.findViewById<View>(R.id.app_options_freeze).setOnClickListener {
+            dialog.dismiss()
+            toggleEnable(appInfo)
+            loadData()
+        }
     }
 
     private fun removeConfig(appInfo: Appinfo) {

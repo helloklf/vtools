@@ -33,6 +33,24 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
             }
         }
 
+        private fun searchStr (valueText: String, keyword: String): Boolean {
+            // First match against the whole, non-splitted value
+            if (valueText.contains(keyword)) {
+                return true
+            } else {
+                val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                val wordCount = words.size
+
+                // Start at index 0, in case valueText starts with space(s)
+                for (k in 0 until wordCount) {
+                    if (words[k].contains(keyword)) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             val results = Filter.FilterResults()
             val prefix: String = if (constraint == null) "" else constraint.toString()
@@ -57,22 +75,12 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
 
                 for (i in 0 until count) {
                     val value = values[i]
-                    val valueText = value.appName.toLowerCase()
-
-                    // First match against the whole, non-splitted value
-                    if (valueText.contains(prefixString)) {
+                    val labelText = value.appName.toLowerCase()
+                    val valueText = value.packageName.toLowerCase()
+                    if (searchStr(labelText, prefixString)) {
                         newValues.add(value)
-                    } else {
-                        val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-                        val wordCount = words.size
-
-                        // Start at index 0, in case valueText starts with space(s)
-                        for (k in 0 until wordCount) {
-                            if (words[k].contains(prefixString)) {
-                                newValues.add(value)
-                                break
-                            }
-                        }
+                    } else if (searchStr(valueText, prefixString)) {
+                        newValues.add(value)
                     }
                 }
 

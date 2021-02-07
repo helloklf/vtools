@@ -412,11 +412,6 @@
     <string name="freeze_clear_all">清空偏见列表</string>
     <string name="freeze_entrance_changed">√ 图标显示状态已切换</string>
     <string name="freeze_shortcut_delete_desc">你可能需要手动删除已添加的快捷方式！</string>
-    <string name="freeze_open">打开</string>
-    <string name="freeze_diasble">冻结</string>
-    <string name="freeze_enable">解冻</string>
-    <string name="freeze_remove">取消偏见</string>
-    <string name="freeze_remove_uninstall">卸载应用</string>
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 
     <string name="shortcut_create_fail">快捷方式创建失败</string>

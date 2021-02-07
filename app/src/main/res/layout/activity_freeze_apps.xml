@@ -104,6 +104,14 @@
                             android:layout_weight="1"
                             android:numColumns="4" />
                     </LinearLayout>
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/freeze_add"
+                        android:src="@drawable/add"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <com.omarea.common.ui.OverScrollView

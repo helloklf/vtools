@@ -236,6 +236,7 @@
             android:label="@string/title_activity_freeze"
             android:screenOrientation="behind"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:roundIcon="@drawable/freeze_logo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
