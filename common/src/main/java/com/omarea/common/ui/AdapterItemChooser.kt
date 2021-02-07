@@ -83,12 +83,6 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         return filter!!
     }
 
-    private val iconCaches = LruCache<String, Drawable>(100)
-
-    init {
-        filterItems.sortBy { !it.selected }
-    }
-
     override fun getCount(): Int {
         return filterItems.size
     }
