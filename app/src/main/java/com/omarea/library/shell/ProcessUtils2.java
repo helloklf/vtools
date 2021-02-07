@@ -44,7 +44,7 @@ public class ProcessUtils2 {
                 FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
             }
 
-            String perfectCmd = "top -o %CPU,NAME,COMMAND,PID -q -b -n 1 -m 100";
+            String perfectCmd = "top -o %CPU,NAME,COMMAND,PID -q -b -n 1 -m 65535";
             String outsidePerfectCmd = outsideToybox + " " + perfectCmd;
 
             String insideCmd = "ps -e -o %CPU,NAME,COMMAND,PID";

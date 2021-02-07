@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.LruCache
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -30,19 +31,17 @@ class FloatProcessAdapter(private val context: Context,
         val SORT_MODE_PID = 16;
 
         val FILTER_ALL = 1;
-        val FILTER_OTHER = 4;
-        val FILTER_ANDROID_USER = 8;
-        val FILTER_ANDROID_SYSTEM = 16;
         val FILTER_ANDROID = 32;
     }
 
     private val pm = context.packageManager
     private lateinit var list: ArrayList<ProcessInfo>
     private val nameCache = HashMap<String, String>()
+    private val iconCaches = LruCache<String, Drawable>(100)
 
     init {
-        loadLabel()
         setList()
+        loadLabel()
     }
 
     override fun getCount(): Int {
@@ -74,21 +73,6 @@ class FloatProcessAdapter(private val context: Context,
             }
             info.cpu = cpuTotal
             info
-        }
-        this.list = ArrayList(processes)
-        notifyDataSetChanged()
-    }
-
-    private fun filterAppList(): ArrayList<ProcessInfo> {
-        return ArrayList(processes.filter { it -> (
-                    when (filterMode) {
-                        FILTER_ALL -> true
-                        FILTER_ANDROID_USER -> isAndroidUserProcess(it)
-                        FILTER_ANDROID_SYSTEM -> isSystemProcess(it)
-                        FILTER_ANDROID -> isAndroidProcess(it)
-                        FILTER_OTHER -> !isAndroidProcess(it)
-                        else -> true
-                    })
         }.sortedBy {
             when (sortMode) {
                 SORT_MODE_DEFAULT -> it.pid
@@ -97,6 +81,18 @@ class FloatProcessAdapter(private val context: Context,
                 SORT_MODE_PID -> -it.pid
                 else -> it.pid
             }
+        }
+        this.list = ArrayList(if (processes.size > 100) processes.subList(0, 100) else processes)
+        notifyDataSetChanged()
+    }
+
+    private fun filterAppList(): ArrayList<ProcessInfo> {
+        return ArrayList(processes.filter { it -> (
+                    when (filterMode) {
+                        FILTER_ALL -> true
+                        FILTER_ANDROID -> isAndroidProcess(it)
+                        else -> true
+                    })
         })
     }
 
@@ -127,9 +123,13 @@ class FloatProcessAdapter(private val context: Context,
                 Thread {
                     var icon: Drawable? = null
                     try {
-                        val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
-                        val installInfo = pm.getPackageInfo(name, 0)
-                        icon = installInfo.applicationInfo.loadIcon(pm)
+                        if (icon == null) {
+                            val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                            icon = iconCaches.get(name)
+                            val installInfo = pm.getPackageInfo(name, 0)
+                            icon = installInfo.applicationInfo.loadIcon(pm)
+                            iconCaches.put(name, icon)
+                        }
                     } catch (ex: Exception) {
                     } finally {
                         if (icon != null) {
@@ -214,8 +214,8 @@ class FloatProcessAdapter(private val context: Context,
 
     fun setList(processes: ArrayList<ProcessInfo>) {
         this.processes = processes
-        loadLabel()
         setList()
+        loadLabel()
     }
 
     private fun updateRow(position: Int, view: View) {
