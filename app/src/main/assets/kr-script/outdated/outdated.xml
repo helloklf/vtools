@@ -28,7 +28,7 @@
         </action>
     </group>
 
-    <group title="删除温控" visible="getprop persist.vtools.additional.danger">
+    <group title="删除温控" visible="getprop persist.vtools.ext_all">
         <action>
             <title>硬删温控 *不推荐</title>
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
@@ -66,7 +66,7 @@
         </switch>
     </group>
 
-    <group visible="getprop persist.vtools.additional.danger">
+    <group visible="getprop persist.vtools.ext_all">
         <action min-sdk="26" max-sdk="28">
             <title>HWUI渲染引擎</title>
             <desc>切换HWUI渲染引擎，本功能仅支持Android O(8.x)、Android P(9.0)</desc>

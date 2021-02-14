@@ -422,7 +422,7 @@ class SceneMode private constructor(private val context: Context, private var st
                     }
 
                     // 实验性新特性（cgroup/memory自动配置）
-                    if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true) {
+                    if (currentSceneConfig?.fgCGroupMem?.isNotEmpty() == true || currentSceneConfig?.bgCGroupMem != currentSceneConfig?.fgCGroupMem) {
                         CGroupMemoryUtlis(Scene.context).run {
                             if (isSupported) {
                                 setGroup(currentSceneConfig!!.packageName!!, currentSceneConfig!!.fgCGroupMem)

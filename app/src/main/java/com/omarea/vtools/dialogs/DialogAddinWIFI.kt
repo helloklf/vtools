@@ -56,7 +56,12 @@ class DialogAddinWIFI(private var context: Context) {
 
     fun show() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val wifiInfo = KeepShellPublic.doCmdSync("cat /data/misc/wifi/WifiConfigStore.xml")
+            val path = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                "/data/misc/apexdata/com.android.wifi/WifiConfigStore.xml"
+            } else {
+                "/data/misc/wifi/WifiConfigStore.xml"
+            }
+            val wifiInfo =  KeepShellPublic.doCmdSync("cat $path")
             if (wifiInfo.isNotEmpty()) {
                 val factory = DocumentBuilderFactory.newInstance()
                 val builder = factory.newDocumentBuilder()

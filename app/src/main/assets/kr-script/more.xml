@@ -5,23 +5,23 @@
 
     <group>
         <switch
-            visible="if [[ `getprop persist.vtools.additional.danger` != '1' ]]; then echo 1; fi"
+            visible="if [[ `getprop persist.vtools.ext_all` != '1' ]]; then echo 1; fi"
             shell="hidden"
             reload="page"
             warning="使用需要修改系统文件的功能，可能会由于兼容性或异常导致系统损坏，并且无法通过恢复出厂设置还原。确定要继续使用这些功能吗？">
             <title>显示危险功能</title>
             <desc>显示需要修改系统文件的功能</desc>
-            <set>setprop persist.vtools.additional.danger $state</set>
-            <get>getprop persist.vtools.additional.danger</get>
+            <set>setprop persist.vtools.ext_all $state</set>
+            <get>getprop persist.vtools.ext_all</get>
         </switch>
         <switch
-            visible="getprop persist.vtools.additional.danger"
+            visible="getprop persist.vtools.ext_all"
             shell="hidden"
             reload="page">
             <title>显示危险功能</title>
             <desc>显示需要修改系统文件的功能</desc>
-            <set>setprop persist.vtools.additional.danger $state</set>
-            <get>getprop persist.vtools.additional.danger</get>
+            <set>setprop persist.vtools.ext_all $state</set>
+            <get>getprop persist.vtools.ext_all</get>
         </switch>
     </group>
 
@@ -33,7 +33,7 @@
             <set>run general/force_resize_set.sh</set>
         </switch>
 
-        <switch visible="getprop persist.vtools.additional.danger">
+        <switch visible="getprop persist.vtools.ext_all">
             <title>虚拟键设备</title>
             <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
             <get>run general/mainkey_get.sh</get>

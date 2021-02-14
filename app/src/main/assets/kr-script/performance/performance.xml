@@ -3,7 +3,7 @@
     <resource dir="file:///android_asset/kr-script/performance" />
     <resource dir="file:///android_asset/kr-script/qualcomm" />
 
-    <group title="智能调度" visible="getprop persist.vtools.additional.danger">
+    <group title="智能调度" visible="getprop persist.vtools.ext_all">
         <switch confirm="true" visible=". ./kr-script/qualcomm/msm_booster_support.sh">
             <title>Performance Boost Config</title>
             <desc>系统根据用户操作短时间内提高CPU频率，极大的提高流畅度，关闭后可能会出现卡顿</desc>
@@ -19,7 +19,7 @@
     </group>
 
     <group title="dex2oat编译">
-        <action min-sdk="24" visible="getprop persist.vtools.additional.danger">
+        <action min-sdk="24" visible="getprop persist.vtools.ext_all">
             <title>修改dex2oat线程数</title>
             <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
             <set>run dex2oat/threads_set.sh</set>
