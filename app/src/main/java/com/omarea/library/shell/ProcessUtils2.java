@@ -7,6 +7,7 @@ import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.ProcessInfo;
+import com.omarea.shell_utils.ToyboxIntaller;
 import com.omarea.vtools.R;
 
 import java.io.File;
@@ -36,13 +37,7 @@ public class ProcessUtils2 {
     public boolean supported(Context context) {
         if (PS_COMMAND == null) {
             PS_COMMAND = "";
-            String installPath = context.getString(R.string.toolkit_install_path);
-            String toyboxInstallPath = installPath + "/toybox-outside";
-            String outsideToybox = FileWrite.INSTANCE.getPrivateFilePath(context, toyboxInstallPath);
-
-            if (!new File(outsideToybox).exists()) {
-                FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
-            }
+            String outsideToybox = new ToyboxIntaller(context).install();
 
             String perfectCmd = "top -o %CPU,NAME,COMMAND,PID -q -b -n 1 -m 65535";
             String outsidePerfectCmd = outsideToybox + " " + perfectCmd;

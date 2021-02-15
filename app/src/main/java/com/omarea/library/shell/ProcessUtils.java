@@ -7,6 +7,7 @@ import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.ProcessInfo;
+import com.omarea.shell_utils.ToyboxIntaller;
 import com.omarea.vtools.R;
 
 import java.io.File;
@@ -39,13 +40,7 @@ public class ProcessUtils {
             LIST_COMMAND = "";
             DETAIL_COMMAND = "";
 
-            String installPath = context.getString(R.string.toolkit_install_path);
-            String toyboxInstallPath = installPath + "/toybox-outside";
-            String outsideToybox = FileWrite.INSTANCE.getPrivateFilePath(context, toyboxInstallPath);
-
-            if (!new File(outsideToybox).exists()) {
-                FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
-            }
+            String outsideToybox = new ToyboxIntaller(context).install();
 
             String perfectCmd = "top -o %CPU,RES,SWAP,NAME,PID,USER,COMMAND,CMDLINE -q -b -n 1 -m 65535";
             String outsidePerfectCmd = outsideToybox + " " + perfectCmd;
@@ -150,7 +145,10 @@ public class ProcessUtils {
     // 获取进程详情
     public ProcessInfo getProcessDetail(int pid) {
         if (DETAIL_COMMAND != null) {
-            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(DETAIL_COMMAND + pid).split("\n");
+            String r = KeepShellPublic.INSTANCE.doCmdSync(DETAIL_COMMAND + pid);
+            Log.d("Scene-SWAP", DETAIL_COMMAND + pid);
+            Log.d("Scene-SWAP", "" + r);
+            String[] rows = r.split("\n");
             if (rows.length > 1) {
                 ProcessInfo row = readRow(rows[1].trim());
                 if (row != null) {

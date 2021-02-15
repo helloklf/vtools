@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -219,12 +220,12 @@ class ActivityProcess : ActivityBase() {
                 findViewById<TextView>(R.id.ProcessOOMADJ).text = "" + detail.oomAdj
                 findViewById<TextView>(R.id.ProcessOOMScoreAdj).text = "" + detail.oomScoreAdj
                 findViewById<TextView>(R.id.ProcessState).text = detail.getState()
-                if (processInfo.res > 8192) {
+                if (detail.res > 8192) {
                     findViewById<TextView>(R.id.ProcessMEM).text = (detail.res / 1024).toInt().toString() + "MB"
                 } else {
                     findViewById<TextView>(R.id.ProcessMEM).text = detail.res.toString() + "KB"
                 }
-                if (processInfo.swap > 8192) {
+                if (detail.swap > 8192) {
                     findViewById<TextView>(R.id.ProcessSWAP).text = (detail.swap / 1024).toInt().toString() + "MB"
                 } else {
                     findViewById<TextView>(R.id.ProcessSWAP).text = detail.swap.toString() + "KB"
