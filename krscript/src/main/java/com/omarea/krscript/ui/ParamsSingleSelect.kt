@@ -23,7 +23,7 @@ class ParamsSingleSelect(
     var selectedIndex = ActionParamsLayoutRender.getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 
     private fun updateValueView(valueView: TextView, textView: TextView) {
-        if (selectedIndex > -1) {
+        if (selectedIndex > -1 && selectedIndex < options.size) {
             valueView.text = options[(selectedIndex)].value
             textView.text = options[(selectedIndex)].title
         } else {

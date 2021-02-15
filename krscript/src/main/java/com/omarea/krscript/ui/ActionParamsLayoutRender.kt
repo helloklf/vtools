@@ -19,7 +19,6 @@ class ActionParamsLayoutRender(private var linearLayout: LinearLayout, activity:
          */
         fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<SelectItem>): Int {
             var selectedIndex = -1
-            var index = 0
 
             val valList = ArrayList<String>()
             if (actionParamInfo.valueFromShell != null)
@@ -30,6 +29,7 @@ class ActionParamsLayoutRender(private var linearLayout: LinearLayout, activity:
             }
             if (valList.size > 0) {
                 for (j in valList.indices) {
+                    var index = 0
                     for (option in options) {
                         if (option.value == valList[j]) {
                             selectedIndex = index
