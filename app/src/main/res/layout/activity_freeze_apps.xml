@@ -48,7 +48,7 @@
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="偏见应用"
+                                android:text="小提示"
                                 android:textColor="?android:colorAccent" />
 
                             <TextView
@@ -56,15 +56,27 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="应用偏见需要激活场景模式(辅助服务)，才能自动冻结应用" />
+                                android:text="应用偏见功能需要激活场景模式(辅助服务)，才能自动冻结应用" />
                         </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/freeze_add"
+                            style="?android:buttonBarButtonStyle"
+                            android:src="@drawable/kr_plus"
+                            android:layout_marginStart="8dp"
+                            android:scaleType="centerInside"
+                            android:padding="5dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center_vertical"
+                            android:tint="?android:colorAccent" />
 
                         <ImageButton
                             android:id="@+id/freeze_menu"
                             style="?android:buttonBarButtonStyle"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
-                            android:layout_gravity="center"
+                            android:layout_gravity="center_vertical"
                             android:layout_marginStart="6dp"
                             android:padding="4dp"
                             android:scaleType="centerInside"
@@ -105,16 +117,6 @@
                             android:layout_weight="1"
                             android:numColumns="4" />
                     </LinearLayout>
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/freeze_add"
-                        android:src="@drawable/add"
-                        android:layout_marginBottom="10dp"
-                        android:layout_gravity="center_horizontal|bottom"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                 </RelativeLayout>
 
                 <com.omarea.common.ui.OverScrollView
@@ -146,7 +148,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="保留图标" />
+                                    android:text="保留应用图标" />
 
                             </LinearLayout>
 

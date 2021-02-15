@@ -15,6 +15,7 @@ import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Filterable
@@ -405,15 +406,16 @@ class ActivityFreezeApps : ActivityBase() {
     // 切换[图标置灰模式]
     private fun switchSuspendMode(enabled: Boolean) {
         processBarDialog.showDialog()
-        if (enabled) {
-        } else {
-        }
-        processBarDialog.showDialog()
-        for (it in freezeApps) {
-            enableApp(it)
-        }
-        processBarDialog.hideDialog()
-        loadData()
+        Thread {
+            for (it in freezeApps) {
+                enableApp(it)
+                disableApp(it)
+            }
+            handler.post {
+                processBarDialog.hideDialog()
+                loadData()
+            }
+        }.start()
     }
 
     private fun removeAndUninstall(appInfo: Appinfo) {
@@ -458,6 +460,9 @@ class ActivityFreezeApps : ActivityBase() {
     private fun startApp(appInfo: Appinfo) {
         if (((!appInfo.enabled) || appInfo.suspended)) {
             enableApp(appInfo)
+            appInfo.enabled = true
+            appInfo.suspended = false
+            (freeze_apps?.adapter as FreezeAppAdapter?)?.notifyDataSetChanged()
         }
         try {
             val intent = this.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
@@ -572,6 +577,7 @@ class ActivityFreezeApps : ActivityBase() {
                     if (icon != null) {
                         iconManager.saveIcon(icon, it)
                     }
+                    SceneMode.freezeApp(it)
                 }
             }
             store.close()
@@ -585,47 +591,55 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     private fun freezeOptionsDialog() {
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.freeze_apps_manage))
-                .setItems(
-                        arrayOf(
-                                getString(R.string.freeze_add_app),
-                                getString(R.string.freeze_shortcut_rebuild),
-                                getString(R.string.freeze_enable_all),
-                                getString(R.string.freeze_disable_all),
-                                getString(R.string.freeze_clear_all))) { _, which ->
+        val view = layoutInflater.inflate(R.layout.dialog_freeze_menu, null)
+        val dialog = DialogHelper.customDialogBlurBg(this, view)
 
-                    when (which) {
-                        0 -> addFreezeAppDialog()
-                        1 -> createShortcutAll()
-                        2 -> {
-                            processBarDialog.showDialog()
-                            for (it in freezeApps) {
-                                enableApp(it)
-                            }
-                            processBarDialog.hideDialog()
-                            loadData()
-                        }
-                        3 -> {
-                            processBarDialog.showDialog()
-                            for (it in freezeApps) {
-                                disableApp(it)
-                            }
-                            processBarDialog.hideDialog()
-                            loadData()
-                        }
-                        4 -> {
-                            processBarDialog.showDialog()
-                            RemoveAllThread(context, freezeApps, Runnable {
-                                handler.post {
-                                    loadData()
-                                    processBarDialog.hideDialog()
-                                    Toast.makeText(context, getString(R.string.freeze_shortcut_delete_desc), Toast.LENGTH_LONG).show()
-                                }
-                            }).start()
-                        }
-                    }
-                })
+        view.findViewById<View>(R.id.menu_freeze).setOnClickListener { _ ->
+            dialog.dismiss()
+            processBarDialog.showDialog()
+            Thread {
+                for (it in freezeApps) {
+                    disableApp(it)
+                }
+                handler.post {
+                    processBarDialog.hideDialog()
+                    loadData()
+                }
+            }.start()
+        }
+        view.findViewById<View>(R.id.menu_unfreeze).setOnClickListener { _ ->
+            dialog.dismiss()
+            if (freezeApps.size > config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)) {
+                Toast.makeText(context, "偏见应用数量超过[活动数量限制]，无法同时解冻全部应用~", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            processBarDialog.showDialog()
+            Thread {
+                for (it in freezeApps) {
+                    enableApp(it)
+                }
+                handler.post {
+                    processBarDialog.hideDialog()
+                    loadData()
+                }
+            }.start()
+        }
+        view.findViewById<View>(R.id.menu_remove).setOnClickListener { _ ->
+            dialog.dismiss()
+            processBarDialog.showDialog()
+            RemoveAllThread(context, freezeApps, Runnable {
+                handler.post {
+                    loadData()
+                    processBarDialog.hideDialog()
+                    Toast.makeText(context, getString(R.string.freeze_shortcut_delete_desc), Toast.LENGTH_LONG).show()
+                }
+            }).start()
+        }
+        view.findViewById<View>(R.id.menu_shortcut).setOnClickListener { _ ->
+            dialog.dismiss()
+            createShortcutAll()
+        }
     }
 
     private fun createShortcutAll() {
