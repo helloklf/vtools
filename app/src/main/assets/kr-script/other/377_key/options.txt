@@ -1,0 +1,10 @@
+INFO|INFO键(默认)
+CAMERA|相机
+MEDIA_NEXT|下一曲
+MEDIA_PREVIOUS|上一曲
+CALL|拨号
+APP_SWITCH|应用切换
+MENU|菜单
+BACK|返回
+HOME|首页
+POWER|电源

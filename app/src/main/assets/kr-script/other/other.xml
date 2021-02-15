@@ -35,6 +35,15 @@
             <desc>查看温度传感器当前数值</desc>
             <set>run sensor_values.sh</set>
         </action>
+        <picker
+            visible="run 377_key/support.sh"
+            options-sh="run 377_key/options.sh"
+            shell="hidden">
+            <title>Google键事件</title>
+            <summary sh="run 377_key/summary.sh" />
+            <get>run 377_key/get.sh</get>
+            <set>run 377_key/set.sh</set>
+        </picker>
     </group>
 
     <group>
