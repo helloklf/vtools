@@ -15,7 +15,6 @@ import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Filterable
@@ -571,6 +570,7 @@ class ActivityFreezeApps : ActivityBase() {
                 SceneMode.freezeApp(packageName)
             }
         }
+
         override fun run() {
             val store = SceneConfigStore(context)
             val iconManager = LogoCacheManager(context)

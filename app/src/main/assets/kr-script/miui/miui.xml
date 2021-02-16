@@ -163,8 +163,8 @@
         </switch>
     </group>
 
-    <group title="其它" max-sdk="29">
-        <action>
+    <group title="其它">
+        <action max-sdk="29">
             <title>应用商店简化</title>
             <desc>简化应用商店排版，并去除一些广告推荐</desc>
             <set>$PAGE_WORK_DIR/app_store_simplify.sh</set>
