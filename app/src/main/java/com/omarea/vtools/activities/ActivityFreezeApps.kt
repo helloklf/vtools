@@ -559,11 +559,18 @@ class ActivityFreezeApps : ActivityBase() {
                 }
             }
         }
-        AddFreezeAppsThread(context, selectedItems, next).start()
+        AddFreezeAppsThread(context, selectedItems, next, useSuspendMode).start()
     }
 
-    private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
+    private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable, private val useSuspendMode: Boolean) : Thread() {
         val packageManager: PackageManager = context.packageManager
+        private fun disableApp(packageName: String) {
+            if (useSuspendMode) {
+                SceneMode.suspendApp(packageName)
+            } else {
+                SceneMode.freezeApp(packageName)
+            }
+        }
         override fun run() {
             val store = SceneConfigStore(context)
             val iconManager = LogoCacheManager(context)
@@ -577,7 +584,7 @@ class ActivityFreezeApps : ActivityBase() {
                     if (icon != null) {
                         iconManager.saveIcon(icon, it)
                     }
-                    SceneMode.freezeApp(it)
+                    disableApp(it)
                 }
             }
             store.close()

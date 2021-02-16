@@ -12,14 +12,13 @@ class ToyboxIntaller(private val context: Context) {
     public fun install() : String {
 
         val installPath: String = context.getString(R.string.toolkit_install_path)
-        val toyboxInstallPath = "$installPath/toybox-outside"
+        val abi = Build.SUPPORTED_ABIS.joinToString(" ").toLowerCase(Locale.getDefault())
+        val fileName = if (abi.contains("arm64")) "toybox-outside64" else "toybox-outside";
+        val toyboxInstallPath = "$installPath/$fileName"
         val outsideToybox = getPrivateFilePath(context, toyboxInstallPath)
 
         if (!File(outsideToybox).exists()) {
-            val abi = Build.SUPPORTED_ABIS.joinToString(" ").toLowerCase(Locale.getDefault())
-            writePrivateFile(context.getAssets(),
-                    if (abi.contains("arm64")) "toolkit/toybox-outside64" else "toolkit/toybox-outside",
-                    toyboxInstallPath, context)
+            writePrivateFile(context.getAssets(), toyboxInstallPath, toyboxInstallPath, context)
         }
 
         return outsideToybox
