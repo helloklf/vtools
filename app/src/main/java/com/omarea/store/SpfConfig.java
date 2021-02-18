@@ -46,6 +46,7 @@ public class SpfConfig {
 
     public static String GLOBAL_SPF = "global"; //spf
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
+    public static String GLOBAL_SPF_HELP_ICON = "show_help_icon";
     public static String GLOBAL_SPF_SKIP_AD = "is_skip_ad";
     public static String GLOBAL_SPF_SKIP_AD_PRECISE = "is_skip_ad_precise";
     public static String GLOBAL_SPF_SKIP_AD_DELAY = "is_skip_ad_delay";

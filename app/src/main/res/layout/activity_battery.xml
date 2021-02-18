@@ -112,7 +112,6 @@
                 <com.omarea.ui.HelpIcon
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
                     app:text="@string/battery_step_charge_desc" />
 
                 <Switch
@@ -136,7 +135,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="@string/battery_pd_allowed_desc" />
 
                     <Switch
@@ -180,7 +178,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="@string/battery_qc_charger_desc" />
 
                     <Switch
@@ -242,7 +239,6 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
                             app:text="@string/battery_exec_desc" />
 
                         <TextView
@@ -269,7 +265,6 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
                             app:text="@string/battery_night_mode_desc" />
 
                         <Switch
@@ -337,7 +332,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="@string/battery_bp_desc" />
 
                     <Switch
@@ -438,6 +432,14 @@
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_marginTop="2dp"
+                        android:alpha="0.5"
+                        android:text="*数据仅供参考"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -459,7 +461,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
                         app:text="伪装数据并不会获得相应的续航能力，自欺欺人而已" />
 
                     <TextView

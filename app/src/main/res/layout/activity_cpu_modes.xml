@@ -449,7 +449,6 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
                             app:text="没有单独设置模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请返回上一级页面进入“应用场景”。" />
 
                         <TextView
@@ -480,7 +479,6 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
                             app:text="正常情况下，Scene会尽可能的减少模式切换\n\n例如：在几个同为“省电模式”的应用之前来回切换，是不会重复运行模式切换代码的\n\n除非是你发现每次切换应用，调度参数就会被系统重置，那才需要开启这个选项~" />
 
                         <Switch
@@ -504,7 +502,6 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
                             app:text="前台应用发生变化后，延迟5s再执行调度模式切换" />
 
                         <Switch

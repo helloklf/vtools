@@ -87,7 +87,9 @@ public class ProcessUtils {
     private final ArrayList<String> excludeProcess = new ArrayList<String>() {
         {
             add("toybox-outside");
+            add("toybox-outside64");
             add("ps");
+            add("top");
             add("com.omarea.vtools");
         }
     };

@@ -342,7 +342,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="@string/lmk_optimize_desc" />
 
                     <Switch

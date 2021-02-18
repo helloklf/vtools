@@ -83,6 +83,7 @@ function install_thermal() {
     echo ''
     echo '#################################'
     cat $resource_dir/info.txt
+    echo ''
     echo '#################################'
     echo ''
     echo ''

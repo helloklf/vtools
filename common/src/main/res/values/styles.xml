@@ -41,7 +41,7 @@
 
     <style name="SceneSpinner">
         <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingEnd">10dp</item>
         <item name="android:textAlignment">textEnd</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>

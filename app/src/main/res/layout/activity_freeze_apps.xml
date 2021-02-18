@@ -140,7 +140,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
 
                                 <Switch
@@ -162,7 +161,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n一加桌面、一加Hydrogen桌面、一加氢桌面\nLawnchair测试版、Lawnchair魔趣版\nMIUI桌面、POCO桌面、MIUI全局搜索\nLineageOS Trebuchet\n系统设置、Pixel 启动器\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
 
                                 <Switch
@@ -186,7 +184,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="点击偏见列表中的应用时打开应用，而不是切换冻结状态" />
 
                                 <Switch
@@ -207,7 +204,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
 
                                 <Switch
@@ -230,7 +226,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="离开应用界面超过此时间后冻结，0表示不限制。锁屏1分钟后自动冻结所有偏见应用，不受此设置影响！" />
 
                                 <TextView
@@ -278,7 +273,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="能同时处于解冻状态的偏见应用最大数量，0表示不限制" />
 
                                 <TextView
@@ -327,7 +321,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="息屏后冻结偏见应用的延迟时间" />
 
                                 <TextView
@@ -378,7 +371,6 @@
                                 <com.omarea.ui.HelpIcon
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="5dp"
                                     app:text="在桌面显示“应用偏见”管理界面快捷入口" />
 
                                 <Switch

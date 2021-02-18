@@ -23,7 +23,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="@android:color/holo_blue_light"
+            android:backgroundTint="#33b5e5"
             android:src="@drawable/app_options_freeze"
             app:tint="@android:color/white" />
 

@@ -59,6 +59,11 @@ class ActivityOtherSettings : ActivityBase() {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, (it as Switch).isChecked).apply()
         }
 
+        settings_help_icon.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, true)
+        settings_help_icon.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, (it as Switch).isChecked).apply()
+        }
+
         settings_classic_mode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
         settings_classic_mode.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, (it as Switch).isChecked).apply()

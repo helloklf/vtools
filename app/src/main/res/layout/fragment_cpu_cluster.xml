@@ -15,7 +15,6 @@
             <com.omarea.ui.HelpIcon
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
                 app:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
 
             <TextView

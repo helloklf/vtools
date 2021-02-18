@@ -72,7 +72,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
 
                     <TextView
@@ -191,7 +190,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="一般来说，默认的调度器就是最好的，不需要更换，除非你使用的内核有特殊的优化，或者你有特殊的需求。\n\n最大最小频率，建议配合功耗级(如果你有看到的话)别设置更改" />
 
                     <TextView
@@ -270,7 +268,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="Adreno GPU的性能有时会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低(能达到的频率越低)\n\n一般来说，PowerLevel可选级别数量和可选频率数量是对等，设置频率时注意保持一致即可" />
 
                     <TextView
@@ -350,7 +347,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="Qualcomm在老旧SOC上使用的一些发热控制先关的模块，在骁龙835之后基本已被废弃。一般来说保持默认即可，如果你希望设备达到最佳性能，那么建议不要勾选任何一项！" />
 
                     <TextView
@@ -413,7 +409,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极）" />
 
                     <TextView
@@ -522,7 +517,6 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
                         app:text="诸如温控和场景智能加速都可能会不断调节参数，导致你关闭的核心被重新开启，这是正常现象\n\n除非你禁用掉所有企图自启调节相关的功能(Scene并不能帮你找出并关闭这些东西)" />
 
                     <TextView

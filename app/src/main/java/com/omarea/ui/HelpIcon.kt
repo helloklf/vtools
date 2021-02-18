@@ -7,11 +7,18 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.ui.DialogHelper
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 class HelpIcon : RelativeLayout {
     private fun init(context: Context?, attrs: AttributeSet?) {
         val view: View = View.inflate(context, R.layout.layout_help_icon, this) as View
+        val config = context?.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        config?.run {
+            if (!getBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, true)) {
+                view.visibility = View.GONE
+            }
+        }
         attrs?.run {
             for (i in 0 until attributeCount) {
                 val attrName = getAttributeName(i)
