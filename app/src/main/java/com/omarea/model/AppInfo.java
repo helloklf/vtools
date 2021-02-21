@@ -2,16 +2,14 @@ package com.omarea.model;
 
 import android.graphics.drawable.Drawable;
 
+import com.omarea.common.ui.AdapterAppChooser;
+
 /**
  * 应用信息
  * Created by Hello on 2018/01/26.
  */
 
-public class Appinfo {
-    public Boolean selectState = false;
-
-    public CharSequence appName = "";
-    public CharSequence packageName = "";
+public class AppInfo extends AdapterAppChooser.AppInfo {
     public Drawable icon = null;
     public CharSequence enabledState = "";
     public CharSequence path = "";
@@ -27,8 +25,8 @@ public class Appinfo {
     public int targetSdkVersion;
     public int minSdkVersion;
 
-    public static Appinfo getItem() {
-        return new Appinfo();
+    public static AppInfo getItem() {
+        return new AppInfo();
     }
 
     public enum AppType {

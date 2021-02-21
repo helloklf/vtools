@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -294,7 +293,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
             lastWindowChanged = System.currentTimeMillis()
-            modernModeEvent(event)
+            if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
+                modernModeEvent(event)
+            } else {
+                startActivityPolling(1500L)
+            }
         } else {
             classicModelEvent(event)
         }
@@ -323,7 +326,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
             } // .sortedBy { it.layer }
 
-            if (effectiveWindows.size > 0) {
+            if (effectiveWindows.isNotEmpty()) {
                 try {
                     var lastWindow: AccessibilityWindowInfo? = null
                     val logs = if (floatLogView == null) null else StringBuilder()
@@ -386,7 +389,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                                 val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
                                 thread.start()
                                 if (event != null) {
-                                    startColorPolling()
+                                    startActivityPolling()
                                 }
                                 // thread.wait(300);
                                 // } catch (Exception ignored){}
@@ -406,7 +409,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                                 GlobalStatus.lastPackageName = wp.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                                 if (event != null) {
-                                    startColorPolling()
+                                    startActivityPolling()
                                 }
                             }
 
@@ -462,8 +465,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private var lastEventTime: Long = 0 // 最后一次触发事件的时间
     private val pollingTimeout: Long = 10000 // 轮询超时时间
     private val pollingInterval: Long = 3000 // 轮询间隔
-    private fun startColorPolling() {
-        stopColorPolling()
+    private fun startActivityPolling(delay: Long? = null) {
+        stopActivityPolling()
         synchronized(this) {
             lastEventTime = System.currentTimeMillis()
             if (pollingTimer == null) {
@@ -475,15 +478,15 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             // Log.d(">>>>", "Scene Get Windows")
                             modernModeEvent()
                         } else {
-                            stopColorPolling()
+                            stopActivityPolling()
                         }
                     }
-                }, pollingInterval, pollingInterval)
+                }, delay ?: pollingInterval, pollingInterval)
             }
         }
     }
 
-    private fun stopColorPolling() {
+    private fun stopActivityPolling() {
         synchronized(this) {
             if (pollingTimer != null) {
                 pollingTimer?.cancel()

@@ -15,7 +15,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import java.io.File
@@ -26,9 +26,9 @@ import kotlin.collections.HashMap
  * Created by Hello on 2018/01/26.
  */
 
-class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, private val firstMode: String) : BaseAdapter() {
+class SceneModeAdapter(private val context: Context, apps: ArrayList<AppInfo>, private val firstMode: String) : BaseAdapter() {
     private var keywords: String = ""
-    private val list: ArrayList<Appinfo>?
+    private val list: ArrayList<AppInfo>?
 
     init {
         this.list = filterAppList(apps, keywords)
@@ -38,7 +38,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         return list?.size ?: 0
     }
 
-    override fun getItem(position: Int): Appinfo {
+    override fun getItem(position: Int): AppInfo {
         return list!![position]
     }
 
@@ -46,13 +46,13 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         return position.toLong()
     }
 
-    private fun keywordSearch(item: Appinfo, text: String): Boolean {
+    private fun keywordSearch(item: AppInfo, text: String): Boolean {
         return item.packageName.toString().toLowerCase(Locale.getDefault()).contains(text)
                 || item.appName.toString().toLowerCase(Locale.getDefault()).contains(text)
                 || item.path.toString().toLowerCase(Locale.getDefault()).contains(text)
     }
 
-    private fun filterAppList(appList: ArrayList<Appinfo>, keywords: String): ArrayList<Appinfo> {
+    private fun filterAppList(appList: ArrayList<AppInfo>, keywords: String): ArrayList<AppInfo> {
         val text = keywords.toLowerCase(Locale.getDefault())
         if (text.isEmpty())
             return appList
@@ -61,7 +61,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         })
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(viewHolder: ViewHolder, item: AppInfo) {
         Thread {
             var icon: Drawable? = null
             try {
@@ -108,13 +108,13 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         return convertView
     }
 
-    fun updateRow(position: Int, listView: OverScrollListView, appinfo: Appinfo) {
+    fun updateRow(position: Int, listView: OverScrollListView, appInfo: AppInfo) {
         try {
             val visibleFirstPosi = listView.firstVisiblePosition
             val visibleLastPosi = listView.lastVisiblePosition
 
             if (position >= visibleFirstPosi && position <= visibleLastPosi) {
-                list!![position] = appinfo
+                list!![position] = appInfo
                 val view = listView.getChildAt(position - visibleFirstPosi)
                 updateRow(position, view)
             }

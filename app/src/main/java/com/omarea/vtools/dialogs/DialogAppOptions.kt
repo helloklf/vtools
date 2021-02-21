@@ -16,7 +16,7 @@ import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
@@ -26,7 +26,7 @@ import java.util.*
  * Created by helloklf on 2017/12/04.
  */
 
-open class DialogAppOptions(protected final var context: Activity, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
+open class DialogAppOptions(protected final var context: Activity, protected var apps: ArrayList<AppInfo>, protected var handler: Handler) {
     private var allowPigz = false
     private var backupPath = CommonCmds.AbsBackUpDir
     private var userdataPath = ""

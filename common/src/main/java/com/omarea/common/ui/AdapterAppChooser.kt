@@ -10,7 +10,7 @@ import com.omarea.common.R
 import java.util.*
 
 class AdapterAppChooser(private val context: Context, private var apps: ArrayList<AppInfo>, private val multiple: Boolean) : BaseAdapter(), Filterable {
-    class AppInfo {
+    open class AppInfo {
         var appName: String = ""
         var packageName: String = ""
 

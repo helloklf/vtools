@@ -26,7 +26,7 @@ import com.omarea.common.ui.DialogAppChooser
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.shell.GAppsUtilis
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.scene_mode.LogoCacheManager
 import com.omarea.scene_mode.SceneMode
@@ -203,7 +203,7 @@ class ActivityFreezeApps : ActivityBase() {
         // 点击应用图标
         freeze_apps.setOnItemClickListener { parent, itemView, position, _ ->
             try {
-                val appInfo = (parent.adapter.getItem(position) as Appinfo)
+                val appInfo = (parent.adapter.getItem(position) as AppInfo)
                 if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, false)) {
                     startApp(appInfo)
                 } else {
@@ -216,7 +216,7 @@ class ActivityFreezeApps : ActivityBase() {
 
         // 长按图标
         freeze_apps.setOnItemLongClickListener { parent, itemView, position, _ ->
-            val item = (parent.adapter.getItem(position) as Appinfo)
+            val item = (parent.adapter.getItem(position) as AppInfo)
             showOptions(item)
             true
         }
@@ -270,13 +270,13 @@ class ActivityFreezeApps : ActivityBase() {
                 // 已添加到桌面的快捷方式
                 val pinnedShortcuts = if (checkShortcuts) FreezeAppShortcutHelper().getPinnedShortcuts(context) else arrayListOf()
 
-                val lostedShortcuts = ArrayList<Appinfo>()
+                val lostedShortcuts = ArrayList<AppInfo>()
                 val lostedShortcutsName = StringBuilder()
 
                 // val allApp = AppListHelper(context).getAll()
                 val appListHelper = AppListHelper(context)
 
-                val freezeAppsInfo = ArrayList<Appinfo>()
+                val freezeAppsInfo = ArrayList<AppInfo>()
                 // 遍历偏见应用列表 获取应用详情
                 for (it in freezeApps) {
                     val packageName = it
@@ -315,7 +315,7 @@ class ActivityFreezeApps : ActivityBase() {
     /**
      * 显示快捷方式丢失，提示添加
      */
-    private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<Appinfo>) {
+    private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<AppInfo>) {
         if (!config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)) {
             return
         }
@@ -339,7 +339,7 @@ class ActivityFreezeApps : ActivityBase() {
                 })
     }
 
-    private fun showOptions(appInfo: Appinfo) {
+    private fun showOptions(appInfo: AppInfo) {
         val view = layoutInflater.inflate(R.layout.dialog_freeze_app_opt, null)
         val dialog = DialogHelper.customDialogBlurBg(this, view)
 
@@ -372,7 +372,7 @@ class ActivityFreezeApps : ActivityBase() {
         }
     }
 
-    private fun removeConfig(appInfo: Appinfo) {
+    private fun removeConfig(appInfo: AppInfo) {
         if ((!appInfo.enabled) || appInfo.suspended) {
             enableApp(appInfo)
         }
@@ -417,12 +417,12 @@ class ActivityFreezeApps : ActivityBase() {
         }.start()
     }
 
-    private fun removeAndUninstall(appInfo: Appinfo) {
+    private fun removeAndUninstall(appInfo: AppInfo) {
         removeConfig(appInfo)
         KeepShellPublic.doCmdSync("pm uninstall --user " + getUserId(context) + " " + appInfo.packageName)
     }
 
-    private fun enableApp(appInfo: Appinfo) {
+    private fun enableApp(appInfo: AppInfo) {
         enableApp(appInfo.packageName.toString())
     }
 
@@ -430,7 +430,7 @@ class ActivityFreezeApps : ActivityBase() {
         SceneMode.unfreezeApp(packageName)
     }
 
-    private fun disableApp(appInfo: Appinfo) {
+    private fun disableApp(appInfo: AppInfo) {
         disableApp(appInfo.packageName.toString())
     }
 
@@ -442,7 +442,7 @@ class ActivityFreezeApps : ActivityBase() {
         }
     }
 
-    private fun toggleEnable(appInfo: Appinfo) {
+    private fun toggleEnable(appInfo: AppInfo) {
         if (!appInfo.enabled || appInfo.suspended) {
             enableApp(appInfo)
             Toast.makeText(context, getString(R.string.freeze_enable_completed), Toast.LENGTH_SHORT).show()
@@ -456,7 +456,7 @@ class ActivityFreezeApps : ActivityBase() {
         }
     }
 
-    private fun startApp(appInfo: Appinfo) {
+    private fun startApp(appInfo: AppInfo) {
         if (((!appInfo.enabled) || appInfo.suspended)) {
             enableApp(appInfo)
             appInfo.enabled = true
@@ -496,7 +496,7 @@ class ActivityFreezeApps : ActivityBase() {
         // TODO: this.finish()
     }
 
-    private fun createShortcut(appInfo: Appinfo) {
+    private fun createShortcut(appInfo: AppInfo) {
         if ((!appInfo.enabled) || appInfo.suspended) {
             enableApp(appInfo)
         }
@@ -507,7 +507,7 @@ class ActivityFreezeApps : ActivityBase() {
         }
     }
 
-    private class CreateShortcutThread(private var apps: ArrayList<Appinfo>, private var context: Context, private var onCompleted: Runnable) : Thread() {
+    private class CreateShortcutThread(private var apps: ArrayList<AppInfo>, private var context: Context, private var onCompleted: Runnable) : Thread() {
         override fun run() {
             for (appInfo in apps) {
                 if ((!appInfo.enabled) || appInfo.suspended) {

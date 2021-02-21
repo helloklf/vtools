@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import java.io.File
 import java.util.*
 
@@ -83,10 +83,10 @@ class AppListHelper(context: Context) {
         return (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
     }
 
-    fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
+    fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<AppInfo> {
         val packageInfos = packageManager.getInstalledApplications(0)
 
-        val list = ArrayList<Appinfo>()/*在数组中存放数据*/
+        val list = ArrayList<AppInfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val applicationInfo = packageInfos[i]
 
@@ -98,7 +98,7 @@ class AppListHelper(context: Context) {
         return (list)
     }
 
-    private fun getApplicationInfo(applicationInfo: ApplicationInfo, systemApp: Boolean? = null, removeIgnore: Boolean = true): Appinfo? {
+    private fun getApplicationInfo(applicationInfo: ApplicationInfo, systemApp: Boolean? = null, removeIgnore: Boolean = true): AppInfo? {
         val appPath = applicationInfo.sourceDir
         if (appPath == null || (removeIgnore && exclude(applicationInfo.packageName))) {
             return null
@@ -118,9 +118,9 @@ class AppListHelper(context: Context) {
         if (!file.exists())
             return null
 
-        val item = Appinfo.getItem()
+        val item = AppInfo.getItem()
         //val d = packageInfo.loadIcon(packageManager)
-        item.appName = applicationInfo.loadLabel(packageManager)
+        item.appName = "" + applicationInfo.loadLabel(packageManager)
         item.packageName = applicationInfo.packageName
         //item.icon = d
         item.dir = file.parent
@@ -132,11 +132,11 @@ class AppListHelper(context: Context) {
         item.path = appPath
         item.updated = isSystemApp(applicationInfo) && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)
         item.appType = (if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
-            Appinfo.AppType.SYSTEM
+            AppInfo.AppType.SYSTEM
         } else if ((appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) {
-            Appinfo.AppType.USER
+            AppInfo.AppType.USER
         } else {
-            Appinfo.AppType.SYSTEM
+            AppInfo.AppType.SYSTEM
         })
         item.targetSdkVersion = applicationInfo.targetSdkVersion
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -153,25 +153,25 @@ class AppListHelper(context: Context) {
         return item
     }
 
-    fun getUserAppList(): ArrayList<Appinfo> {
+    fun getUserAppList(): ArrayList<AppInfo> {
         return getAppList(false)
     }
 
-    fun getSystemAppList(): ArrayList<Appinfo> {
+    fun getSystemAppList(): ArrayList<AppInfo> {
         return getAppList(true)
     }
 
-    fun getAll(): ArrayList<Appinfo> {
+    fun getAll(): ArrayList<AppInfo> {
         return getAppList(null, false)
     }
 
-    fun getBootableApps(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
+    fun getBootableApps(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<AppInfo> {
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
 
         val packageInfos = packageManager.queryIntentActivities(mainIntent, 0)
 
-        val list = ArrayList<Appinfo>()/*在数组中存放数据*/
+        val list = ArrayList<AppInfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val applicationInfo = packageInfos[i].activityInfo.applicationInfo
             if (removeIgnore && exclude(applicationInfo.packageName)) {
@@ -189,9 +189,9 @@ class AppListHelper(context: Context) {
             if (!file.exists())
                 continue
 
-            val item = Appinfo.getItem()
+            val item = AppInfo.getItem()
             //val d = packageInfo.loadIcon(packageManager)
-            item.appName = applicationInfo.loadLabel(packageManager)
+            item.appName = "" + applicationInfo.loadLabel(packageManager)
             item.packageName = applicationInfo.packageName
             //item.icon = d
             item.dir = file.parent
@@ -203,7 +203,7 @@ class AppListHelper(context: Context) {
             item.path = applicationInfo.sourceDir
             item.updated = isSystemApp(applicationInfo) && file.parent.startsWith("/data")
             // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
-            item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
+            item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) AppInfo.AppType.USER else AppInfo.AppType.SYSTEM
             try {
                 val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
                 item.versionName = packageInfo.versionName
@@ -216,9 +216,9 @@ class AppListHelper(context: Context) {
         return (list)
     }
 
-    fun getBackupedAppList(): ArrayList<Appinfo> {
+    fun getBackupedAppList(): ArrayList<AppInfo> {
         val dirPath = CommonCmds.AbsBackUpDir
-        val list = ArrayList<Appinfo>()
+        val list = ArrayList<AppInfo>()
         val dir = File(dirPath)
         if (!dir.exists())
             return list
@@ -249,15 +249,15 @@ class AppListHelper(context: Context) {
                     applicationInfo.sourceDir = absPath
                     applicationInfo.publicSourceDir = absPath
 
-                    val item = Appinfo.getItem()
-                    item.selectState = false
+                    val item = AppInfo.getItem()
+                    item.selected = false
                     item.appName = applicationInfo.loadLabel(packageManager).toString() + "  (" + packageInfo.versionCode + ")"
                     item.packageName = applicationInfo.packageName
                     item.path = applicationInfo.sourceDir
                     item.enabledState = checkInstall(packageInfo)
                     item.versionName = packageInfo.versionName
                     item.versionCode = packageInfo.versionCode
-                    item.appType = Appinfo.AppType.BACKUPFILE
+                    item.appType = AppInfo.AppType.BACKUPFILE
                     list.add(item)
                 }
             } catch (ex: Exception) {
@@ -267,7 +267,7 @@ class AppListHelper(context: Context) {
         return list
     }
 
-    fun getApp(packageName: String): Appinfo? {
+    fun getApp(packageName: String): AppInfo? {
         try {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
             return getApplicationInfo(applicationInfo, null, false)

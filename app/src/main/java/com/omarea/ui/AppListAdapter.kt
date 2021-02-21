@@ -14,7 +14,7 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.vtools.R
 import java.io.File
 import java.util.ArrayList
@@ -25,8 +25,8 @@ import kotlin.Comparator
  * Created by Hello on 2018/01/26.
  */
 
-class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
-    private val list: ArrayList<Appinfo>?
+class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
+    private val list: ArrayList<AppInfo>?
 
     @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
@@ -58,7 +58,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
     init {
         this.list = sortAppList(filterAppList(apps, keywords))
         for (i in this.list.indices) {
-            states[i] = !(this.list[i].enabledState == null || !this.list[i].selectState)
+            states[i] = !(this.list[i].enabledState == null || !this.list[i].selected)
         }
     }
 
@@ -66,7 +66,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return list?.size ?: 0
     }
 
-    override fun getItem(position: Int): Appinfo {
+    override fun getItem(position: Int): AppInfo {
         return list!![position]
     }
 
@@ -74,13 +74,13 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return position.toLong()
     }
 
-    private fun keywordSearch(item: Appinfo, text: String): Boolean {
+    private fun keywordSearch(item: AppInfo, text: String): Boolean {
         return item.packageName.toString().toLowerCase().contains(text)
                 || item.appName.toString().toLowerCase().contains(text)
                 || item.path.toString().toLowerCase().contains(text)
     }
 
-    private fun filterAppList(appList: ArrayList<Appinfo>, keywords: String): ArrayList<Appinfo> {
+    private fun filterAppList(appList: ArrayList<AppInfo>, keywords: String): ArrayList<AppInfo> {
         val text = keywords.toLowerCase()
         if (text.isEmpty())
             return appList
@@ -89,7 +89,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         })
     }
 
-    private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
+    private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
         list.sortWith(Comparator { l, r ->
             val les = l.enabledState.toString()
             val res = r.enabledState.toString()
@@ -110,7 +110,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return list
     }
 
-    fun getSelectedItems(): ArrayList<Appinfo> {
+    fun getSelectedItems(): ArrayList<AppInfo> {
         val states = states
         val selectedItems = states.keys
                 .filter { states[it] == true }
@@ -122,7 +122,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return selectedItems
     }
 
-    private fun loadIcon(context: Context, viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(context: Context, viewHolder: ViewHolder, item: AppInfo) {
         Thread(Runnable {
             var icon: Drawable? = null
             try {

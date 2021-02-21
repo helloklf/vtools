@@ -5,18 +5,18 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.vtools.R
 import java.io.File
 
-class AppMultipleChoiceAdapter(private val listview: ListView, private val apps: List<Appinfo>) : BaseAdapter() {
+class AppMultipleChoiceAdapter(private val listview: ListView, private val apps: List<AppInfo>) : BaseAdapter() {
     private val context = listview.context
 
     override fun getCount(): Int {
         return apps.size
     }
 
-    override fun getItem(position: Int): Appinfo {
+    override fun getItem(position: Int): AppInfo {
         return apps[position]
     }
 
@@ -24,7 +24,7 @@ class AppMultipleChoiceAdapter(private val listview: ListView, private val apps:
         return position.toLong()
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(viewHolder: ViewHolder, item: AppInfo) {
         Thread(Runnable {
             var icon: Drawable? = null
             try {
@@ -78,20 +78,20 @@ class AppMultipleChoiceAdapter(private val listview: ListView, private val apps:
         viewHolder.itemDesc?.text = item.packageName
 
         viewHolder.itemChecked?.run {
-            isChecked = item.selectState
+            isChecked = item.selected
             setOnClickListener {
-                getItem(position).selectState = isChecked
+                getItem(position).selected = isChecked
             }
         }
     }
 
-    fun getCheckedItems(): List<Appinfo> {
+    fun getCheckedItems(): List<AppInfo> {
         return apps.filter {
-            it.selectState
+            it.selected
         }
     }
 
-    fun getAll(): List<Appinfo> {
+    fun getAll(): List<AppInfo> {
         return apps
     }
 

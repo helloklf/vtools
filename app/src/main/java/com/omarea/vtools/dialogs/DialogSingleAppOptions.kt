@@ -17,7 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
@@ -26,20 +26,20 @@ import java.io.File
  * Created by Hello on 2018/01/26.
  */
 
-class DialogSingleAppOptions(context: Activity, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
+class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handler) : DialogAppOptions(context, arrayListOf<AppInfo>(app), handler) {
 
     fun showSingleAppOptions() {
         when (app.appType) {
-            Appinfo.AppType.USER -> showUserAppOptions()
-            Appinfo.AppType.SYSTEM -> showSystemAppOptions()
-            Appinfo.AppType.BACKUPFILE -> showBackupAppOptions()
+            AppInfo.AppType.USER -> showUserAppOptions()
+            AppInfo.AppType.SYSTEM -> showSystemAppOptions()
+            AppInfo.AppType.BACKUPFILE -> showBackupAppOptions()
             else -> {
                 Toast.makeText(context, "UNSupport！", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun loadAppIcon(app: Appinfo): Drawable? {
+    private fun loadAppIcon(app: AppInfo): Drawable? {
         if (app.icon != null) {
             return app.icon
         } else {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.omarea.common.ui.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <EditText
+                android:hint="标题/说明"
+                android:maxLength="20"
+                android:id="@+id/command_title"
+                style="@style/ListCardItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <EditText
+                android:minLines="8"
+                android:hint="再次粘贴要执行的sh脚本"
+                android:gravity="top"
+                android:id="@+id/command_script"
+                style="@style/ListCardItem"
+                android:textSize="12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:paddingHorizontal="@dimen/activity_horizontal_margin"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btn_run"
+                    style="@style/dialogCancelBtn"
+                    android:layout_marginEnd="8dp"
+                    android:text="运行">
+                </Button>
+                <Button
+                    android:id="@+id/btn_confirm"
+                    style="@style/dialogConfirmBtn"
+                    android:text="保存">
+                </Button>
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.omarea.common.ui.OverScrollView>
+</RelativeLayout>

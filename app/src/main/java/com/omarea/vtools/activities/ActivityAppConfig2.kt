@@ -16,7 +16,7 @@ import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -38,8 +38,8 @@ class ActivityAppConfig2 : ActivityBase() {
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var applistHelper: AppListHelper
-    private var installedList: ArrayList<Appinfo>? = null
-    private var displayList: ArrayList<Appinfo>? = null
+    private var installedList: ArrayList<AppInfo>? = null
+    private var displayList: ArrayList<AppInfo>? = null
     private lateinit var sceneConfigStore: SceneConfigStore
     private var aidlConn: IAppConfigAidlInterface? = null
 
@@ -105,7 +105,7 @@ class ActivityAppConfig2 : ActivityBase() {
 
         scene_app_list.setOnItemClickListener { parent, view2, position, _ ->
             try {
-                val item = (parent.adapter.getItem(position) as Appinfo)
+                val item = (parent.adapter.getItem(position) as AppInfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
                 intent.putExtra("app", item.packageName)
                 startActivityForResult(intent, REQUEST_APP_CONFIG)
@@ -119,7 +119,7 @@ class ActivityAppConfig2 : ActivityBase() {
 
         if (dynamicControl) {
             scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
-                val item = (parent.adapter.getItem(position) as Appinfo)
+                val item = (parent.adapter.getItem(position) as AppInfo)
                 val app = item.packageName.toString()
                 DialogAppPowerConfig(this,
                         spfPowercfg.getString(app, ""),
@@ -239,7 +239,7 @@ class ActivityAppConfig2 : ActivityBase() {
         }
     }
 
-    private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
+    private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
         list.sortWith { l, r ->
             try {
                 val les = l.enabledState.toString()
@@ -264,7 +264,7 @@ class ActivityAppConfig2 : ActivityBase() {
         return list
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
+    private fun setListData(dl: ArrayList<AppInfo>?, lv: OverScrollListView) {
         Scene.post {
             lv.adapter = SceneModeAdapter(
                     this,
@@ -338,8 +338,8 @@ class ActivityAppConfig2 : ActivityBase() {
         }).start()
     }
 
-    private fun setAppRowDesc(item: Appinfo) {
-        item.selectState = false
+    private fun setAppRowDesc(item: AppInfo) {
+        item.selected = false
         val packageName = item.packageName.toString()
         item.enabledState = spfPowercfg.getString(packageName, "")
         val configInfo = sceneConfigStore.getAppConfig(packageName)

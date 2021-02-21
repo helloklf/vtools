@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import java.io.File
@@ -22,15 +22,15 @@ import java.util.*
 import kotlin.collections.HashMap
 
 /* 测试 */
-class SceneModeAdapter2(private val context: Context, apps: ArrayList<Appinfo>, private val firstMode: String) : RecyclerView.Adapter<SceneModeAdapter2.ViewHolder>() {
+class SceneModeAdapter2(private val context: Context, apps: ArrayList<AppInfo>, private val firstMode: String) : RecyclerView.Adapter<SceneModeAdapter2.ViewHolder>() {
     private var keywords: String = ""
-    private val list: ArrayList<Appinfo>?
+    private val list: ArrayList<AppInfo>?
 
     init {
         this.list = filterAppList(apps, keywords)
     }
 
-    fun getItem(position: Int): Appinfo {
+    fun getItem(position: Int): AppInfo {
         return list!![position]
     }
 
@@ -38,13 +38,13 @@ class SceneModeAdapter2(private val context: Context, apps: ArrayList<Appinfo>, 
         return position.toLong()
     }
 
-    private fun keywordSearch(item: Appinfo, text: String): Boolean {
+    private fun keywordSearch(item: AppInfo, text: String): Boolean {
         return item.packageName.toString().toLowerCase(Locale.getDefault()).contains(text)
                 || item.appName.toString().toLowerCase(Locale.getDefault()).contains(text)
                 || item.path.toString().toLowerCase(Locale.getDefault()).contains(text)
     }
 
-    private fun filterAppList(appList: ArrayList<Appinfo>, keywords: String): ArrayList<Appinfo> {
+    private fun filterAppList(appList: ArrayList<AppInfo>, keywords: String): ArrayList<AppInfo> {
         val text = keywords.toLowerCase(Locale.getDefault())
         if (text.isEmpty())
             return appList
@@ -53,7 +53,7 @@ class SceneModeAdapter2(private val context: Context, apps: ArrayList<Appinfo>, 
         })
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(viewHolder: ViewHolder, item: AppInfo) {
         Thread {
             var icon: Drawable? = null
             try {

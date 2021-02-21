@@ -12,10 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ListView
+import com.omarea.common.ui.AdapterAppChooser
+import com.omarea.common.ui.DialogAppChooser
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.calculator.GetUpTime
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.model.TimingTaskInfo
 import com.omarea.model.TriggerInfo
 import com.omarea.scene_mode.ModeSwitcher
@@ -23,7 +25,6 @@ import com.omarea.scene_mode.SceneStandbyMode
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerManager
 import com.omarea.store.SpfConfig
-import com.omarea.ui.AppMultipleChoiceAdapter
 import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.SceneTriggerItem
 import com.omarea.ui.TabIconHelper
@@ -128,49 +129,54 @@ class ActivitySystemScene : ActivityBase() {
         } else {
             system_scene_standby_apps.visibility = View.GONE
         }
+
+        system_scene_command.setOnClickListener {
+            val intent = Intent(this, ActivityCustomCommand::class.java)
+            startActivity(intent)
+        }
     }
 
     // 设置待机模式的应用
     private fun standbyAppConfig() {
         processBarDialog.showDialog()
-        Thread(Runnable {
+        Thread {
             val configFile = context.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE)
             val whiteList = context.resources.getStringArray(R.array.scene_standby_white_list)
-            val view = LayoutInflater.from(context).inflate(R.layout.layout_standby_apps, null)
-            val apps = AppListHelper(context).getAll().filter {
+            val options = ArrayList(AppListHelper(context).getAll().filter {
                 !whiteList.contains(it.packageName)
             }.sortedBy {
                 it.appType
             }.map {
                 it.apply {
-                    selectState = configFile.getBoolean(packageName.toString(), it.appType == Appinfo.AppType.USER && !it.updated)
+                    selected = configFile.getBoolean(packageName.toString(), it.appType == AppInfo.AppType.USER && !it.updated)
                 }
-            }
+            })
 
             myHandler.post {
                 processBarDialog.hideDialog()
-                val listview = view.findViewById<ListView>(R.id.standby_apps)
-                val adapter = AppMultipleChoiceAdapter(listview, apps)
-                listview.adapter = adapter
 
-                DialogHelper.animDialog(AlertDialog.Builder(context).setCancelable(false)
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            saveStandbyAppConfig(adapter.getAll())
-                        }.setNeutralButton(R.string.btn_cancel) { _, _ -> }.setView(view)
-                )
+                DialogAppChooser(themeMode.isDarkMode, ArrayList(options), true, object : DialogAppChooser.Callback {
+                    override fun onConfirm(apps: List<AdapterAppChooser.AppInfo>) {
+                        val items = apps.map { it.packageName }
+                        options.forEach {
+                            it.selected = items.contains(it.packageName)
+                        }
+                        saveStandbyAppConfig(options)
+                    }
+                }).show(supportFragmentManager, "standby_apps")
             }
-        }).start()
+        }.start()
     }
 
     // 保存休眠应用配置
-    private fun saveStandbyAppConfig(apps: List<Appinfo>) {
+    private fun saveStandbyAppConfig(apps: List<AppInfo>) {
         val configFile = getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE).edit()
         configFile.clear()
 
         apps.forEach {
-            if (it.selectState && it.appType == Appinfo.AppType.SYSTEM) {
+            if (it.selected && it.appType == AppInfo.AppType.SYSTEM) {
                 configFile.putBoolean(it.packageName.toString(), true)
-            } else if ((!it.selectState) && it.appType == Appinfo.AppType.USER) {
+            } else if ((!it.selected) && it.appType == AppInfo.AppType.USER) {
                 configFile.putBoolean(it.packageName.toString(), false)
             }
         }

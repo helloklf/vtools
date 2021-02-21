@@ -11,11 +11,10 @@ import android.widget.AdapterView.OnItemClickListener
 import com.omarea.Scene
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.model.Appinfo
+import com.omarea.model.AppInfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityApplistions
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.fragment_app_list.*
@@ -24,7 +23,7 @@ import java.lang.ref.WeakReference
 class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var appListHelper: AppListHelper
-    private var appList: ArrayList<Appinfo>? = null
+    private var appList: ArrayList<AppInfo>? = null
     private var keywords = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +43,7 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
             if (position < 1)
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            val app = adapter.getItem(position - 1) as Appinfo
+            val app = adapter.getItem(position - 1) as AppInfo
             DialogSingleAppOptions(activity!!, app, myHandler!!).showSingleAppOptions()
             true
         }
@@ -83,7 +82,7 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
         }.start()
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
+    private fun setListData(dl: ArrayList<AppInfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
         myHandler.post {

@@ -2,8 +2,8 @@ package com.omarea.scene_mode
 
 import android.content.Context
 import com.omarea.common.shell.KeepShell
-import com.omarea.model.Appinfo.AppType.SYSTEM
-import com.omarea.model.Appinfo.AppType.USER
+import com.omarea.model.AppInfo.AppType.SYSTEM
+import com.omarea.model.AppInfo.AppType.USER
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 
