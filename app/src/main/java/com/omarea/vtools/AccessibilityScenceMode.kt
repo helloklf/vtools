@@ -474,7 +474,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 pollingTimer?.scheduleAtFixedRate(object : TimerTask() {
                     override fun run() {
                         val interval = System.currentTimeMillis() - lastEventTime
-                        if (interval in pollingInterval until pollingTimeout) {
+                        if (interval <= pollingTimeout) {
                             // Log.d(">>>>", "Scene Get Windows")
                             modernModeEvent()
                         } else {
