@@ -8,17 +8,20 @@ import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.widget.Toast
+import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.DialogItemChooser
 import com.omarea.library.shell.PropsUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.ActivityBase
 import com.omarea.vtools.services.CompileService
 
 /**
  * Created by Hello on 2018/02/20.
  */
 
-class DexCompileAddin(private var context: Activity) : AddinBase(context) {
+class DexCompileAddin(private var context: ActivityBase) : AddinBase(context) {
     fun isSupport(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()
@@ -158,7 +161,7 @@ class DexCompileAddin(private var context: Activity) : AddinBase(context) {
             }
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle("请选择pm.dexopt策略")
+
                 .setSingleChoiceItems(arr, index) { _, which ->
                     index = which
                 }

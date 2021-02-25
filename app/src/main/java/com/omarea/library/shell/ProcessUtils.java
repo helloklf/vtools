@@ -115,10 +115,10 @@ public class ProcessUtils {
                 processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {
-                Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
+                // Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
             }
         } else {
-            Log.e("Scene-ProcessUtils", "" + row);
+            // Log.e("Scene-ProcessUtils", "" + row);
         }
         return null;
     }

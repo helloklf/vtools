@@ -71,7 +71,9 @@ class ActivityAddin : ActivityBase() {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context).run() }, false))
             }
+            /*
             add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context).modifyConfig() }, false))
+            */
         }
 
         val mSimpleAdapter = SimpleAdapter(

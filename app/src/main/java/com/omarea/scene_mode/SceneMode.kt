@@ -15,7 +15,6 @@ import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,13 +27,13 @@ class SceneMode private constructor(private val context: Context, private var st
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     // 偏见应用解冻数量限制
-    private val freezAppLimit: Int
+    private val freezeAppLimit: Int
         get() {
             return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
         }
 
     // 偏见应用后台超时时间
-    private val freezAppTimeLimit: Int
+    private val freezeAppTimeLimit: Int
         get() {
             return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
         }
@@ -160,8 +159,8 @@ class SceneMode private constructor(private val context: Context, private var st
 
     // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
     fun clearFreezeAppCountLimit() {
-        if (freezAppLimit > 0) {
-            while (freezList.size > freezAppLimit) {
+        if (freezeAppLimit > 0) {
+            while (freezList.size > freezeAppLimit) {
                 freezeApp(freezList.first())
             }
         }
@@ -169,7 +168,7 @@ class SceneMode private constructor(private val context: Context, private var st
 
     // 冻结已经后台超时的偏见应用
     fun clearFreezeAppTimeLimit() {
-        val freezAppTimeLimit = this.freezAppTimeLimit
+        val freezAppTimeLimit = this.freezeAppTimeLimit
         if (freezAppTimeLimit > 0) {
             val currentTime = System.currentTimeMillis()
             freezList.filter {

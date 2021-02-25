@@ -98,10 +98,10 @@ public class ProcessUtils2 {
                 processInfo.pid = Integer.parseInt(columns[3]);
                 return processInfo;
             } catch (Exception ex) {
-                Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
+                // Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
             }
         } else {
-            Log.e("Scene-ProcessUtils", "" + row);
+            // Log.e("Scene-ProcessUtils", "" + row);
         }
         return null;
     }

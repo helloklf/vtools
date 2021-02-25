@@ -48,7 +48,8 @@ public class CGroupMemoryUtlis(private val context: Context) {
             } else {
                 ""
             })
-            KeepShellPublic.doCmdSync(String.format(memcgShell!!, packageName, groupPath))
+            val cmd = String.format(memcgShell!!, packageName, groupPath)
+            KeepShellPublic.doCmdSync(cmd)
         }
     }
 }

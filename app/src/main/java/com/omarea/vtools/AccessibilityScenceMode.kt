@@ -296,7 +296,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
                 modernModeEvent(event)
             } else {
-                startActivityPolling(1500L)
+                startActivityPolling(600L)
             }
         } else {
             classicModelEvent(event)
