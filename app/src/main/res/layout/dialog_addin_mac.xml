@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="26dp"
-    android:paddingRight="26dp">
+    android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
         android:layout_width="match_parent"

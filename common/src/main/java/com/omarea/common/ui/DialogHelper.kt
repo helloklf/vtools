@@ -120,11 +120,11 @@ class DialogHelper {
             }
 
             val dialog = customDialog(context, view)
-            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            view.findViewById<View?>(R.id.btn_cancel)?.setOnClickListener {
                 dialog.dismiss()
                 onCancel?.run()
             }
-            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            view.findViewById<View?>(R.id.btn_confirm)?.setOnClickListener {
                 dialog.dismiss()
                 onConfirm?.run()
             }
@@ -168,7 +168,7 @@ class DialogHelper {
             if (contentView != null) {
                 view.findViewById<FrameLayout>(R.id.confirm_custom_view).addView(contentView)
             }
-            val dialog = customDialog(context, view)
+            val dialog = if (context is Activity) customDialogBlurBg(context, view) else customDialog(context, view)
             view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                 dialog.dismiss()
                 onCancel?.run()
@@ -200,11 +200,11 @@ class DialogHelper {
             view.findViewById<TextView>(R.id.confirm_title).setText(title)
             view.findViewById<TextView>(R.id.confirm_message).setText(message)
             val dialog = customDialogBlurBg(context, view)
-            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+            view.findViewById<View?>(R.id.btn_cancel)?.setOnClickListener {
                 dialog.dismiss()
                 onCancel?.run()
             }
-            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            view.findViewById<View?>(R.id.btn_confirm)?.setOnClickListener {
                 dialog.dismiss()
                 onConfirm?.run()
             }
@@ -226,6 +226,17 @@ class DialogHelper {
                         onConfirm: Runnable? = null,
                         onCancel: Runnable? = null): DialogWrap {
             return openContinueAlertBlur(context, title, message, onConfirm, onCancel, R.layout.dialog_warning)
+        }
+
+        fun alert(context: Context,
+                  title: String = "",
+                  message: String = "",
+                  onConfirm: Runnable? = null): DialogWrap {
+            if (context is Activity) {
+                return openContinueAlertBlur(context, title, message, onConfirm, null, R.layout.dialog_alert)
+            } else {
+                return openContinueAlert(context, title, message, onConfirm, null, R.layout.dialog_alert)
+            }
         }
 
         fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {

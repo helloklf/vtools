@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:alpha="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/confirm_dialog_bg"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/confirm_title"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                style="@style/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="提示信息" />
+            <TextView
+                android:id="@+id/confirm_message"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"
+                android:text="提示内容"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/confirm_custom_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/dialogCancelBtn"
+                android:layout_marginEnd="8dp"
+                android:text="取消">
+            </Button>
+            <Button
+                android:id="@+id/btn_confirm"
+                style="@style/dialogConfirmBtn"
+                android:text="确定">
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
+</com.omarea.common.ui.OverScrollView>

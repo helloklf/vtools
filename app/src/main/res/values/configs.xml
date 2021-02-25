@@ -39,6 +39,7 @@
         <item>com.mfashiongallery.emag</item>
         <item>com.topjohnwu.magisk</item>
         <item>com.miui.notification</item>
+        <item>com.xiaomi.gamecenter.sdk.service</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.tencent.tmgp.speedmobile</item>

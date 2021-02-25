@@ -41,10 +41,7 @@ class DialogAddinWIFI(private var context: Context) {
                     .replace("\"", "")
                     .trim()
 
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("已保存的WIFI记录")
-                    .setMessage(wifiInfo)
-                    .setNeutralButton("确定") { _, _ -> })
+            DialogHelper.alert(context, "已保存的WIFI记录", wifiInfo)
         } else {
             Toast.makeText(context, "没有读取到这个文件，也许不支持您的设备吧！", Toast.LENGTH_LONG).show()
         }
@@ -89,10 +86,7 @@ class DialogAddinWIFI(private var context: Context) {
                     stringBuild.append("\n\n")
                 }
 
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("已保存的WIFI记录")
-                        .setMessage(stringBuild.toString().trim())
-                        .setNeutralButton("确定") { _, _ -> })
+                DialogHelper.alert(context, "已保存的WIFI记录", stringBuild.toString().trim())
             } else {
                 showOld()
             }

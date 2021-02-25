@@ -40,11 +40,11 @@ class DialogCustomMAC(private var context: Context) {
             }
         }
 
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定") { _, _ ->
+        DialogHelper.confirm(context, "自定义WIFI MAC", "", dialog, {
             val mac = macInput.text.trim().replace(Regex("-"), ":").toLowerCase()
             if (!Regex("[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}$", RegexOption.IGNORE_CASE).matches(mac)) {
                 Toast.makeText(context, "输入的MAC地址无效，格式应如 ec:d0:9f:af:95:01", Toast.LENGTH_LONG).show()
-                return@setNegativeButton
+                return@confirm
             }
 
             val raw = if (mode == SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1) {

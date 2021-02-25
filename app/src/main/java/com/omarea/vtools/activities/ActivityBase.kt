@@ -10,7 +10,7 @@ import com.omarea.common.ui.ThemeMode
 import com.omarea.vtools.R
 
 open class ActivityBase : AppCompatActivity() {
-    protected lateinit var themeMode: ThemeMode
+    public lateinit var themeMode: ThemeMode
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         this.themeMode = ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState, persistentState)

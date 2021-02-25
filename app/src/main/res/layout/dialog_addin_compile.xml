@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.omarea.common.ui.OverScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:alpha="0.85"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/confirm_title"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            style="@style/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="选择dex2oat编译方式" />
+        <TextView
+            android:id="@+id/confirm_message"
+            android:visibility="gone"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="8dp"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:minHeight="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/mode_speed_profile"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/mode_balance"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="@color/color_balance_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="speed-profile" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="对配置文件中列出的(热点)函数进行 AOT 编译" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/mode_speed"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/mode_performance"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="@color/color_performance_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="speed" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="对所有函数进行 AOT 编译" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/mode_everything"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/mode_fast"
+                android:background="@drawable/action_menu_icon_bg"
+                android:backgroundTint="@color/color_fast_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="everything" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="编译一切可以被编译的内容" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="65dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:id="@+id/mode_reset"
+            style="@style/ListCardItemSmall"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:alpha="0.8"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerInside"
+                android:src="@drawable/mode_empty"
+                android:padding="10dp"
+                android:background="@drawable/action_menu_icon_bg"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                app:tint="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="重置编译" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="重置编译的内容，还原刚安装时的状态" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/faq"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/SceneButton"
+            android:layout_width="120dp"
+            android:text="了解工作原理" />
+    </LinearLayout>
+
+</com.omarea.common.ui.OverScrollView>

@@ -1,6 +1,7 @@
 package com.omarea.vtools.dialogs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Point
@@ -23,7 +24,7 @@ import java.util.*
  * Created by Hello on 2017/12/03.
  */
 
-class DialogAddinModifyDPI(var context: Context) {
+class DialogAddinModifyDPI(var context: Activity) {
     private val BACKUP_SCREEN_DPI: String = "screen_dpi"
     private val BACKUP_SCREEN_RATIO: String = "screen_ratio"
     private val BACKUP_SCREEN_WIDTH: String = "screen_width"
@@ -53,7 +54,7 @@ class DialogAddinModifyDPI(var context: Context) {
         return (spf.getInt(BACKUP_SCREEN_DPI, DEFAULT_DPI) * width / spf.getInt(BACKUP_SCREEN_WIDTH, DEFAULT_WIDTH))
     }
 
-    fun modifyDPI(display: Display, context: Context) {
+    fun modifyDPI(display: Display, context: Activity) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_addin_dpi, null)
         val dpiInput = dialog.findViewById(R.id.dialog_addin_dpi_dpiinput) as EditText
@@ -103,60 +104,60 @@ class DialogAddinModifyDPI(var context: Context) {
             dpiInput.setText(getDpiScaleValue(width).toString())
         }
 
-        val dialogInstance = DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog)
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
-                    val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
-                    val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
-                    val qc = quickChange.isChecked
+         val dialogInstance = DialogHelper.confirm(context, "DPI、分辨率", "", dialog, {
+            val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
+            val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
+            val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
+            val qc = quickChange.isChecked
 
-                    val cmd = StringBuilder()
-                    if (width >= 320 && height >= 480) {
-                        cmd.append("wm size ${width}x$height")
-                        cmd.append("\n")
-                    }
-                    if (dpi >= 96) {
-                        if (qc) {
-                            cmd.append("wm density $dpi")
-                            cmd.append("\n")
-                        } else {
-                            if (MagiskExtend.moduleInstalled()) {
-                                KeepShellPublic.doCmdSync("wm density reset");
-                                MagiskExtend.setSystemProp("ro.sf.lcd_density", dpi.toString());
-                                MagiskExtend.setSystemProp("vendor.display.lcd_density", dpi.toString());
-                                Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
-                            } else {
-                                cmd.append(CommonCmds.MountSystemRW)
-                                cmd.append("wm density reset\n")
-                                cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
-                                cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")
-                                cmd.append("cp /system/build.prop /system/build.prop.dpi_bak\n")
-                                cmd.append("cp /data/build2.prop /system/build.prop\n")
-                                cmd.append("rm /data/build.prop\n")
-                                cmd.append("rm /data/build2.prop\n")
-                                cmd.append("chmod 0755 /system/build.prop\n")
-                                cmd.append("sync\n")
-                                cmd.append("reboot\n")
-                            }
-                        }
-                    }
-                    if (cmd.isNotEmpty())
-                        KeepShellPublic.doCmdSync(cmd.toString())
-
-                    if (qc) {
-                        autoResetConfirm()
+            val cmd = StringBuilder()
+            if (width >= 320 && height >= 480) {
+                cmd.append("wm size ${width}x$height")
+                cmd.append("\n")
+            }
+            if (dpi >= 96) {
+                if (qc) {
+                    cmd.append("wm density $dpi")
+                    cmd.append("\n")
+                } else {
+                    if (MagiskExtend.moduleInstalled()) {
+                        KeepShellPublic.doCmdSync("wm density reset");
+                        MagiskExtend.setSystemProp("ro.sf.lcd_density", dpi.toString());
+                        MagiskExtend.setSystemProp("vendor.display.lcd_density", dpi.toString());
+                        Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                    } else {
+                        cmd.append(CommonCmds.MountSystemRW)
+                        cmd.append("wm density reset\n")
+                        cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
+                        cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")
+                        cmd.append("cp /system/build.prop /system/build.prop.dpi_bak\n")
+                        cmd.append("cp /data/build2.prop /system/build.prop\n")
+                        cmd.append("rm /data/build.prop\n")
+                        cmd.append("rm /data/build2.prop\n")
+                        cmd.append("chmod 0755 /system/build.prop\n")
+                        cmd.append("sync\n")
+                        cmd.append("reboot\n")
                     }
                 }
-                .setNegativeButton(R.string.btn_cancel) { _, _ -> })
+            }
+            if (cmd.isNotEmpty())
+                KeepShellPublic.doCmdSync(cmd.toString())
+
+            if (qc) {
+                autoResetConfirm()
+            }
+        }, {
+
+        })
 
         dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener {
-            resetDisplay()
             if (dialogInstance.isShowing == true) {
                 try {
                     dialogInstance.dismiss()
                 } catch (ex: java.lang.Exception) {
                 }
             }
+            resetDisplay()
         }
     }
 

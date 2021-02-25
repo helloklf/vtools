@@ -102,6 +102,8 @@ class CompileService : IntentService("vtools-compile") {
         if (intent != null) {
             if (intent.action == getString(R.string.scene_speed_compile)) {
                 compile_method = "speed"
+            } else if (intent.action == getString(R.string.scene_speed_profile_compile)) {
+                compile_method = "speed-profile"
             } else if (intent.action == getString(R.string.scene_everything_compile)) {
                 compile_method = "everything"
             } else if (intent.action == getString(R.string.scene_reset_compile)) {

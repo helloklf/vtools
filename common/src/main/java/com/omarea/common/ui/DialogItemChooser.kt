@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.Filterable
+import android.widget.TextView
 import com.omarea.common.R
 import com.omarea.common.model.SelectItem
 
@@ -57,6 +58,52 @@ class DialogItemChooser(
                 searchBox.text = null
             }
         }
+
+        updateTitle()
+        updateMessage()
+    }
+
+    private var title: String = ""
+    private var message: String = ""
+
+    private fun updateTitle() {
+        view?.run {
+                findViewById<TextView?>(R.id.dialog_title).run {
+                    text = title
+                    visibility = if (title.isNotEmpty()) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                }
+        }
+    }
+
+    private fun updateMessage() {
+        view?.run {
+            findViewById<TextView?>(R.id.dialog_desc).run {
+                text = message
+                visibility = if (message.isNotEmpty()) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            }
+        }
+    }
+
+    public fun setTitle(title: String): DialogItemChooser {
+        this.title = title
+        updateTitle()
+
+        return this
+    }
+
+    public fun setMessage(message: String): DialogItemChooser {
+        this.message = message
+        updateMessage()
+
+        return this
     }
 
     private fun setup(gridView: AbsListView) {

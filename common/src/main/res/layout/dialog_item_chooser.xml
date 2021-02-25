@@ -9,8 +9,7 @@
         android:id="@+id/search_bar"
         android:background="@drawable/dialog_search_bg"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp">
+        android:layout_height="50dp">
         <EditText
             android:id="@+id/search_box"
             android:nextFocusDown="@id/search_box"
@@ -39,10 +38,36 @@
             android:layout_height="40dp" />
     </RelativeLayout>
 
+    <FrameLayout
+        android:layout_below="@id/search_bar"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/dialogTitle"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:id="@+id/dialog_title"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/dialogDesc"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:id="@+id/dialog_desc"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/item_list"
         android:scrollbars="none"
-        android:layout_below="@id/search_bar"
+        android:layout_below="@id/header"
         android:layout_above="@+id/bottom_buttons"
         android:divider="@null"
         android:layout_width="match_parent"
