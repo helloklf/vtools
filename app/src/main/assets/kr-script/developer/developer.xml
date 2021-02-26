@@ -35,6 +35,7 @@
             <set>settings put system show_touches $state</set>
         </switch>
         <picker value=" "
+            target-sdk="29"
             auto-off="true"
             visible=". ./kr-script/common/android_q.sh">
             <title>沙箱机制</title>

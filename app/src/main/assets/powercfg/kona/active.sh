@@ -197,7 +197,7 @@ sched_limit() {
 }
 
 if [[ "$action" = "powersave" ]]; then
-  set_cpu_freq 300000 1708800 710400 1478400 844800 1632000
+  set_cpu_freq 300000 1804800 710400 1478400 844800 1632000
   set_input_boost_freq 1248000 0 0 40
 
   echo 0 > /proc/sys/kernel/sched_boost
@@ -211,13 +211,13 @@ if [[ "$action" = "powersave" ]]; then
 
   sched_config "85 85" "96 96" "160" "260"
 
-  sched_limit 0 500 0 1000 0 1000
+  sched_limit 0 0 0 5000 0 5000
 
   exit 0
 fi
 
 if [[ "$action" = "balance" ]]; then
-  set_cpu_freq 300000 1708800 710400 2054400 844800 2361600
+  set_cpu_freq 300000 1804800 710400 2054400 844800 2361600
   set_input_boost_freq 1478400 0 0 40
 
   echo 0 > /proc/sys/kernel/sched_boost
