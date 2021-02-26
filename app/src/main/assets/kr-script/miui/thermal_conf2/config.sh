@@ -30,7 +30,7 @@ function clear_old() {
     done
     rm -f "$old_state_save" 2> /dev/null
 
-    echo '建议稍候重启手机' 1>&2
+    echo '建议稍后重启手机' 1>&2
     echo '#################################'
   fi
 }

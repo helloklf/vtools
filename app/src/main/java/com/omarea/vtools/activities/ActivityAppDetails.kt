@@ -644,6 +644,12 @@ class ActivityAppDetails : ActivityBase() {
         }
         if (!SceneConfigStore(this).setAppConfig(sceneConfigInfo)) {
             Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
+        } else {
+            if (sceneConfigInfo.freeze != originConfig.freeze) {
+                if (sceneConfigInfo.freeze) {
+                    SceneMode.getCurrentInstance()?.setFreezeAppLeaveTime(sceneConfigInfo.packageName)
+                }
+            }
         }
     }
 

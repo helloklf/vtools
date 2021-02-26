@@ -67,7 +67,7 @@
     </group>
 
     <group visible="getprop persist.vtools.ext_all">
-        <action min-sdk="26" max-sdk="28">
+        <action min-sdk="26" max-sdk="30">
             <title>HWUI渲染引擎</title>
             <desc>切换HWUI渲染引擎，本功能仅支持Android O(8.x)、Android P(9.0)</desc>
             <summary sh="run hwui_render/summary.sh" />
@@ -76,7 +76,7 @@
                 value-sh="run hwui_render/get.sh" />
             <set>run hwui_render/set.sh</set>
         </action>
-        <switch target-sdk="29" confirm="true">
+        <switch min-sdk="29" confirm="true">
             <title>HWUI使用Vulkan</title>
             <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应。有些手机甚至可能无法进入桌面！</desc>
             <get>run hwui_vulkan/get.sh</get>

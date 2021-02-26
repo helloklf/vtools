@@ -633,7 +633,7 @@ class ActivitySwap : ActivityBase() {
                 txt_swap_size_display.text = swapFileSize.toString() + "MB"
                 swap_usage.setData(swapSize, swapFree)
                 zram_usage.setData(zramSize.toFloat(), zramFree)
-                if (swapSize > 0 && swapFree > 0) {
+                if (swapSize > 0) {
                     swap_usage_ratio.text = (100 - (swapFree * 100 / swapSize).toInt()).toString() + "%"
                 } else {
                     swap_usage_ratio.text = "0%"

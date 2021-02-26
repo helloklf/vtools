@@ -225,7 +225,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="性能调节 "
+                    android:text="动态响应 "
                     android:textColor="#888"
                     android:textSize="12dp" />
             </LinearLayout>
