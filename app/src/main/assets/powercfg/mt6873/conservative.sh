@@ -72,7 +72,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 # policy_status
@@ -118,9 +118,9 @@ if [[ "$action" = "powersave" ]]; then
   cpufreq 1 0
   echo 0 > /proc/ufs_perf
 
-	exit 0
+  exit 0
 elif [[ "$action" = "balance" ]]; then
-	#balance
+  #balance
   ppm enabled 1
 
   ppm policy_status "1 0"
@@ -142,9 +142,9 @@ elif [[ "$action" = "balance" ]]; then
   cpufreq 0 0
   echo 0 > /proc/ufs_perf
 
-	exit 0
+  exit 0
 elif [[ "$action" = "performance" ]]; then
-	#performance
+  #performance
   ppm enabled 1
 
   ppm policy_status "1 0"
@@ -166,9 +166,9 @@ elif [[ "$action" = "performance" ]]; then
   cpufreq 3 1
   echo 2 > /proc/ufs_perf
 
-	exit 0
+  exit 0
 elif [[ "$action" = "fast" ]]; then
-	#fast
+  #fast
   ppm enabled 1
 
   ppm policy_status "1 0"

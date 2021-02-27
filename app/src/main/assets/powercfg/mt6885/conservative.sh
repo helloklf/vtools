@@ -44,7 +44,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 # policy_status
@@ -87,9 +87,9 @@ if [[ "$action" = "powersave" ]]; then
 
   cpuset 0-2 0-3 0-7 0-7 0-3
 
-	exit 0
+  exit 0
 elif [[ "$action" = "balance" ]]; then
-	#balance
+  #balance
 
   min_freq 500000 730000
   max_freq 2000000 1927000
@@ -100,9 +100,9 @@ elif [[ "$action" = "balance" ]]; then
 
   cpuset 0-2 0-3 0-7 0-7 0-3
 
-	exit 0
+  exit 0
 elif [[ "$action" = "performance" ]]; then
-	#performance
+  #performance
 
   min_freq 500000 730000
   max_freq 2000000 2600000
@@ -113,9 +113,9 @@ elif [[ "$action" = "performance" ]]; then
 
   cpuset 0-1 0-3 0-7 0-7 0-3
 
-	exit 0
+  exit 0
 elif [[ "$action" = "fast" ]]; then
-	#fast
+  #fast
 
   min_freq 1791000 1622000
   max_freq 2000000 2600000
@@ -126,5 +126,5 @@ elif [[ "$action" = "fast" ]]; then
 
   cpuset 0 0-3 0-7 0-7 0-3
 
-	exit 0
+  exit 0
 fi

@@ -12,14 +12,14 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-	sh /system/etc/init.qcom.post_boot.sh
+  sh /system/etc/init.qcom.post_boot.sh
 fi
 if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
-	sh /system/etc/init.qcom.post_boot.sh
+  sh /system/etc/init.qcom.post_boot.sh
 fi
 
 target=`getprop ro.board.platform`

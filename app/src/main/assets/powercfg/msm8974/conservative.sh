@@ -12,7 +12,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 function set_online() {
@@ -48,20 +48,20 @@ if [[ "$action" = "powersave" ]]; then
     start mpdecision
     set_freq 300000 1958400
 
-	exit 0
+  exit 0
 elif [[ "$action" = "balance" ]]; then
     stop mpdecision
     set_freq 300000 2265600
 
-	exit 0
+  exit 0
 elif [[ "$action" = "performance" ]]; then
     stop mpdecision
     set_freq 300000 2457600
 
-	exit 0
+  exit 0
 elif [[ "$action" = "fast" ]]; then
     stop mpdecision
     set_freq 960000 2457600
 
-	exit 0
+  exit 0
 fi

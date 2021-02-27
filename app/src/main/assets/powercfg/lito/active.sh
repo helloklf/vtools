@@ -24,7 +24,7 @@ init () {
 }
 if [[ "$action" = "init" ]]; then
   init
-	exit 0
+  exit 0
 fi
 
 governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
@@ -32,18 +32,19 @@ governor6=`cat /sys/devices/system/cpu/cpufreq/policy6/scaling_governor`
 governor7=`cat /sys/devices/system/cpu/cpufreq/policy7/scaling_governor`
 
 if [[ ! "$governor0" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
 fi
 if [[ ! "$governor6" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
 fi
 if [[ ! "$governor7" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
+  echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
 fi
 
 governor_backup () {
   local governor_backup=/cache/governor_backup.prop
-  if [[ ! -f $governor_backup ]]; then
+  local backup_state=`getprop vtools.dev_freq_backup`
+  if [[ ! -f $governor_backup ]] || [[ "$backup_state" != "true" ]]; then
     echo '' > $governor_backup
     local dir=/sys/class/devfreq
     for file in `ls $dir`; do
@@ -52,29 +53,38 @@ governor_backup () {
         echo "$file#$governor" >> $governor_backup
       fi
     done
+    setprop vtools.dev_freq_backup true
   fi
 }
 
 governor_performance () {
   governor_backup
+
   local dir=/sys/class/devfreq
-  for file in `ls $dir`; do
-    if [ -f $dir/$file/governor ]; then
-      echo $dir/$file/governor
-      echo performance > $dir/$file/governor
-    fi
-  done
+  local governor_backup=/cache/governor_backup.prop
+  local backup_state=`getprop vtools.dev_freq_backup`
+
+  if [[ -f "$governor_backup" ]] && [[ "$backup_state" == "true" ]]; then
+    for file in `ls $dir`; do
+      if [ -f $dir/$file/governor ]; then
+        # echo $dir/$file/governor
+        echo performance > $dir/$file/governor
+      fi
+    done
+  fi
 }
 
 governor_restore () {
   local governor_backup=/cache/governor_backup.prop
-  local dir=/sys/class/devfreq
-  if [[ -f "$governor_backup" ]]; then
-      while read line; do
-        if [[ "$line" != "" ]]; then
-            echo ${line#*#} > $dir/${line%#*}/governor
-        fi
-      done < /cache/governor_backup.prop
+  local backup_state=`getprop vtools.dev_freq_backup`
+
+  if [[ -f "$governor_backup" ]] && [[ "$backup_state" == "true" ]]; then
+    local dir=/sys/class/devfreq
+    while read line; do
+      if [[ "$line" != "" ]]; then
+        echo ${line#*#} > $dir/${line%#*}/governor
+      fi
+    done < $governor_backup
   fi
 }
 
@@ -134,7 +144,7 @@ if [[ "$gpu_min_pl" -lt 0 ]];then
 fi;
 
 if [[ ! "$gpu_governor" = "msm-adreno-tz" ]]; then
-	echo 'msm-adreno-tz' > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+  echo 'msm-adreno-tz' > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 fi
 
 echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
@@ -145,13 +155,13 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 set_cpu_freq()
 {
   echo $1 $2 $3 $4
-	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
-	echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
-	echo $3 > /sys/devices/system/cpu/cpufreq/policy6/scaling_min_freq
-	echo $4 > /sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq
-	echo $5 > /sys/devices/system/cpu/cpufreq/policy7/scaling_min_freq
-	echo $6 > /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq
+  echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+  echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
+  echo $3 > /sys/devices/system/cpu/cpufreq/policy6/scaling_min_freq
+  echo $4 > /sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq
+  echo $5 > /sys/devices/system/cpu/cpufreq/policy7/scaling_min_freq
+  echo $6 > /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq
 }
 
 sched_config() {
@@ -166,102 +176,91 @@ sched_config() {
     echo "$4" > /proc/sys/kernel/sched_group_upmigrate
 }
 
+sched_limit() {
+    echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
+    echo $2 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
+    echo $3 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
+    echo $4 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
+    echo $5 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
+    echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+}
+
 if [[ "$action" = "powersave" ]]; then
-	set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
+  set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
 
-	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
 
-	echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	echo 1152000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
-	echo 1401600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
+  echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1152000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
+  echo 1401600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "78 78" "96 96" "300" "400"
+  sched_config "78 78" "96 96" "300" "400"
 
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
-  echo 500 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-  echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
-  echo 1000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+  sched_limit 0 500 0 1000 0 1000
 
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "balance" ]]; then
-	set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
+  set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
 
-	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
 
-	echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	echo 1152000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
-	echo 1401600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
+  echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1152000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
+  echo 1401600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "68 68" "78 78" "300" "400"
+  sched_config "68 68" "78 78" "300" "400"
 
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+  sched_limit 0 0 0 500 0 500
 
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "performance" ]]; then
-	set_cpu_freq 300000 1804800 652800 2208000 806400 2400000
+  set_cpu_freq 300000 1804800 652800 2208000 806400 2400000
 
-	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
 
-	echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	echo 1478400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
-	echo 1996800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
+  echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1478400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
+  echo 1996800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "65 65" "75 75" "300" "400"
+  sched_config "65 65" "75 75" "300" "400"
 
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+  sched_limit 0 0 0 0 0 0
 
-	exit 0
+  exit 0
 fi
 
 if [[ "$action" = "fast" ]]; then
-	set_cpu_freq 300000 1804800 1152000 2208000 1401600 2400000
+  set_cpu_freq 300000 1804800 1152000 2208000 1401600 2400000
 
-	echo 0 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo 0 > /proc/sys/kernel/sched_boost
 
-	echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-	echo 1478400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
-	echo 2188800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
+  echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1478400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
+  echo 2188800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-	sched_config "55 55" "68 68" "300" "400"
+  sched_config "55 55" "68 68" "300" "400"
 
-  echo 5000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us
-  echo 2000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
-  echo 2000 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/down_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
-  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
+  sched_limit 5000 0 2000 0 2000 0
 
-	exit 0
+  exit 0
 fi
