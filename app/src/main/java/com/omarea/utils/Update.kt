@@ -41,7 +41,7 @@ class Update {
         Thread(Runnable {
             //http://47.106.224.127/
             try {
-                val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/Scene3.json")
+                val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/Scene4.json")
                 val connection = url.openConnection()
                 // 设置连接方式：get
                 // connection.setRequestMethod("GET");
