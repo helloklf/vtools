@@ -197,9 +197,14 @@ sched_limit() {
 }
 
 if [[ "$action" = "powersave" ]]; then
+  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+
   set_cpu_freq 300000 1804800 710400 1478400 844800 1632000
   set_input_boost_freq 1248000 0 0 40
 
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1248000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -217,9 +222,14 @@ if [[ "$action" = "powersave" ]]; then
 fi
 
 if [[ "$action" = "balance" ]]; then
+  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+  echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+
   set_cpu_freq 300000 1804800 710400 2054400 844800 2361600
   set_input_boost_freq 1478400 0 0 40
 
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1420800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -237,6 +247,10 @@ if [[ "$action" = "balance" ]]; then
 fi
 
 if [[ "$action" = "performance" ]]; then
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+
   set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
   set_input_boost_freq 1420800 1286400 1305600 40
 
@@ -258,6 +272,10 @@ if [[ "$action" = "performance" ]]; then
 fi
 
 if [[ "$action" = "fast" ]]; then
+  echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+
   set_cpu_freq 1420800 1804800 1766400 2600000 1977600 3200000
   set_input_boost_freq 1804800 1670400 1862400 80
 

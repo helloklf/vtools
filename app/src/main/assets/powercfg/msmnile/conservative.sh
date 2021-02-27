@@ -154,7 +154,6 @@ echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
-
 function set_input_boost_freq() {
   local c0="$1"
   local c1="$2"
@@ -205,6 +204,7 @@ if [[ "$action" = "powersave" ]]; then
   set_cpu_freq 300000 1708800 710400 1401600 825600 1497600
   set_input_boost_freq 0 0 0 0
 
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1209600 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -232,6 +232,7 @@ if [[ "$action" = "balance" ]]; then
   set_cpu_freq 300000 1708800 710400 1708800 825600 1920000
   set_input_boost_freq 1209600 0 0 40
 
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1478400 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq

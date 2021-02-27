@@ -188,7 +188,7 @@ sched_limit() {
 if [[ "$action" = "powersave" ]]; then
   set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
 
-  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
@@ -208,7 +208,7 @@ fi
 if [[ "$action" = "balance" ]]; then
   set_cpu_freq 300000 1804800 652800 1900800 806400 2188800
 
-  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
   echo 1651200 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq

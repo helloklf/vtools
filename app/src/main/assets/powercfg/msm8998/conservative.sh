@@ -274,7 +274,7 @@ if [ "$action" = "fast" ]; then
   echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
   echo 50 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-  echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+  echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
   echo 1 > /proc/sys/kernel/sched_boost
   echo 30 > /proc/sys/kernel/sched_init_task_load
 
