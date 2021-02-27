@@ -215,7 +215,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 0-3 > /dev/cpuset/system-background/cpus
   sched_config "85 85" "96 96" "160" "260"
 
-  sched_limit 0 500 0 1000 0 1000
+  sched_limit 0 0 0 5000 0 5000
 
   echo 90 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
   echo 90 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
