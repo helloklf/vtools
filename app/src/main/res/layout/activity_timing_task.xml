@@ -256,48 +256,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:text="维护任务" />
-
-                    <LinearLayout
-                        android:id="@+id/task_compile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="dex2oat编译"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioButton
-                            android:id="@+id/task_compile_speed"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="speed" />
-
-                        <RadioButton
-                            android:id="@+id/task_compile_everything"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="everything" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/ListCardItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">

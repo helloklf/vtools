@@ -63,13 +63,9 @@ class ActivityTimingTask : ActivityBase() {
         oneOf(task_after_screen_off, task_before_execute_confirm)
         oneOf(task_battery_capacity_require, task_charge_only)
 
-        oneOf(task_compile_speed, task_compile_everything)
-
         // 更新选中状态
         updateUI()
 
-        // dex2oat
-        task_compile.visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) View.VISIBLE else View.GONE
         // 勿扰模式
         task_zen_mode.visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) View.VISIBLE else View.GONE
         // 待机模式
@@ -151,8 +147,6 @@ class ActivityTimingTask : ActivityBase() {
                 task_gps_off.isChecked = contains(TaskAction.GPS_OFF)
                 task_zen_mode_on.isChecked = contains(TaskAction.ZEN_MODE_ON)
                 task_zen_mode_off.isChecked = contains(TaskAction.ZEN_MODE_OFF)
-                task_compile_speed.isChecked = contains(TaskAction.COMPILE_SPEED)
-                task_compile_everything.isChecked = contains(TaskAction.COMPILE_EVERYTHING)
             }
 
             customTaskActions?.run {
@@ -216,8 +210,6 @@ class ActivityTimingTask : ActivityBase() {
             task_gps_off.isChecked && add(TaskAction.GPS_OFF)
             task_zen_mode_on.isChecked && add(TaskAction.ZEN_MODE_ON)
             task_zen_mode_off.isChecked && add(TaskAction.ZEN_MODE_OFF)
-            task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
-            task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)
         }
         // timingTaskInfo.taskId = taskId
 
