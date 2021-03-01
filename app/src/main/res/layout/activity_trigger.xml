@@ -202,60 +202,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:text="飞行模式"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioButton
-                            android:id="@+id/task_airplane_mode_on"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="开" />
-
-                        <RadioButton
-                            android:id="@+id/task_airplane_mode_off"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="关" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="WIFI"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioButton
-                            android:id="@+id/task_wifi_on"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="开" />
-
-                        <RadioButton
-                            android:id="@+id/task_wifi_off"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="关" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
                             android:text="定位功能"
                             android:textColor="?android:textColorPrimary" />
 
@@ -267,33 +213,6 @@
 
                         <RadioButton
                             android:id="@+id/task_gps_off"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="关" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="2/3/4/5G"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioButton
-                            android:id="@+id/task_gprs_on"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="开" />
-
-                        <RadioButton
-                            android:id="@+id/task_gprs_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="关" />
@@ -326,34 +245,6 @@
                             android:layout_height="wrap_content"
                             android:text="关" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="手机电源"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioButton
-                            android:id="@+id/task_power_off"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="关机" />
-
-                        <RadioButton
-                            android:id="@+id/task_power_reboot"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="重启" />
-                    </LinearLayout>
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -368,28 +259,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:text="维护任务" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="磁盘维护"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <CheckBox
-                            android:id="@+id/task_fstrim"
-                            android:layout_width="220dp"
-                            android:layout_height="wrap_content"
-                            android:text="fstrim" />
-                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/task_compile"
@@ -463,6 +332,45 @@
                                 android:text="极速模式" />
                         </RadioGroup>
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                            android:text="自定义命令" />
+
+                        <ImageButton
+                            android:id="@+id/task_custom_edit"
+                            android:layout_centerVertical="true"
+                            android:tint="?android:colorAccent"
+                            android:padding="5dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/edit"
+                            android:scaleType="centerInside"
+                            android:background="@null"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/task_custom_actions"
+                        android:padding="8dp"
+                        style="@style/textSmall"
+                        android:background="@drawable/in_card_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout

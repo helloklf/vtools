@@ -14,11 +14,15 @@ import com.omarea.library.shell.FstrimUtils
 import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.NetworkUtils
 import com.omarea.library.shell.ZenModeUtils
+import com.omarea.model.CustomTaskAction
 import com.omarea.model.TaskAction
 import com.omarea.vtools.R
 import java.util.*
 
-class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, private val context: Context) {
+class TaskActionsExecutor(
+        private val taskActions: ArrayList<TaskAction>?,
+        private val customTaskActions: ArrayList<CustomTaskAction>?,
+        private val context: Context) {
     private var nm = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     private lateinit var mPowerManager: PowerManager
@@ -51,7 +55,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:TaskActionsExecutor");
         mWakeLock.acquire(600 * 1000) // 默认限制10分钟
 
-        taskActions.forEach {
+        taskActions?.forEach {
             try {
                 when (it) {
                     TaskAction.AIRPLANE_MODE_OFF -> {
@@ -152,6 +156,11 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
             } catch (ex: Exception) {
                 Toast.makeText(context, "定时任务出错：" + ex.message, Toast.LENGTH_LONG).show()
             }
+        }
+
+        customTaskActions?.forEach {
+            updateNotification(it.Name)
+            keepShell.doCmdSync(it.Command)
         }
 
         if (!isCommonShell) {

@@ -24,6 +24,8 @@ public class TimingTaskInfo implements Serializable {
     public boolean chargeOnly;
     // 任务动作列表
     public ArrayList<TaskAction> taskActions;
+    // 任务动作列表（自定义）
+    public ArrayList<CustomTaskAction> customTaskActions;
 
     public TimingTaskInfo() {
     }

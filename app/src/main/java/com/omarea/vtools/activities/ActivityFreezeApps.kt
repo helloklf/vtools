@@ -616,7 +616,8 @@ class ActivityFreezeApps : ActivityBase() {
         }
         view.findViewById<View>(R.id.menu_unfreeze).setOnClickListener { _ ->
             dialog.dismiss()
-            if (freezeApps.size > config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)) {
+            val limit = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
+            if (limit > 0 && freezeApps.size > limit) {
                 Toast.makeText(context, "偏见应用数量超过[活动数量限制]，无法同时解冻全部应用~", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }

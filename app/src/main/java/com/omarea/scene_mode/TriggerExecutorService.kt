@@ -19,7 +19,7 @@ class TriggerExecutorService : IntentService("TriggerExecutorService") {
         val storage = TriggerStorage(this)
         triggers.forEach {
             storage.load(it)?.run {
-                TaskActionsExecutor(taskActions, context).run()
+                TaskActionsExecutor(taskActions, customTaskActions, context).run()
             }
         }
     }

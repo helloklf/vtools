@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:hint="标题/说明"
+                android:hint="名称（不可重复，不可修改）"
                 android:maxLength="20"
                 android:id="@+id/command_title"
                 style="@style/ListCardItem"

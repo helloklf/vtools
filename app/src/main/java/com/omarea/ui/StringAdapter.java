@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.omarea.vtools.R;
 
@@ -42,7 +43,7 @@ public class StringAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.list_item_text, null);
         }
         String text = getItem(position).toString();
-        // ((TextView) convertView).setText(text);
+        ((TextView) convertView).setText(text);
         return convertView;
     }
 }

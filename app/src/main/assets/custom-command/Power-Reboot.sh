@@ -1,0 +1,1 @@
+sync;svc power reboot || reboot

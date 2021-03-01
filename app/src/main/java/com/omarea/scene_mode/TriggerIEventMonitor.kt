@@ -22,7 +22,7 @@ class TriggerIEventMonitor(private val context: Context, override val isAsync: B
         val triggers = ArrayList<String>()
         items.forEach {
             val trigger = storage.load(it)
-            if (trigger != null && trigger.enabled && trigger.taskActions != null && trigger.taskActions.size > 0) {
+            if (trigger != null && trigger.enabled) {
                 if (trigger.timeLimited) {
                     val nowTimeValue = GetUpTime(trigger.timeStart).currentTime
                     val getUp = trigger.timeEnd

@@ -22,6 +22,8 @@ public class TriggerInfo implements Serializable {
 
     // 任务动作列表
     public ArrayList<TaskAction> taskActions;
+    // 任务动作列表（自定义）
+    public ArrayList<CustomTaskAction> customTaskActions;
 
     public TriggerInfo(String id) {
         this.id = id;

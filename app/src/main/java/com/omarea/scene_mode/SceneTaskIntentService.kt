@@ -33,17 +33,15 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
                 TimingTaskManager(this@SceneTaskIntentService).setTask(this)
             }
 
-            if (timingTask.taskActions != null && timingTask.taskActions.size > 0) {
-                if (chargeOnly && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-                    Toast.makeText(context, "未在充电状态，跳过定时任务", Toast.LENGTH_LONG).show()
-                } else if (batteryCapacityRequire > 0 && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING && GlobalStatus.batteryCapacity < batteryCapacityRequire) {
-                    Toast.makeText(context, "电量低于" + batteryCapacityRequire + "%，跳过定时任务", Toast.LENGTH_LONG).show()
-                } else if (afterScreenOff && ScreenState(context).isScreenOn()) {
-                    // 如果是个要求屏幕关闭后执行的任务，且现在屏幕还在点亮状态，放到息屏事件观测队列中
-                    EventBus.subscibe(ScreenDelayTaskReceiver(taskId, context.applicationContext))
-                } else {
-                    TaskActionsExecutor(this.taskActions, context).run()
-                }
+            if (chargeOnly && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+                Toast.makeText(context, "未在充电状态，跳过定时任务", Toast.LENGTH_LONG).show()
+            } else if (batteryCapacityRequire > 0 && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING && GlobalStatus.batteryCapacity < batteryCapacityRequire) {
+                Toast.makeText(context, "电量低于" + batteryCapacityRequire + "%，跳过定时任务", Toast.LENGTH_LONG).show()
+            } else if (afterScreenOff && ScreenState(context).isScreenOn()) {
+                // 如果是个要求屏幕关闭后执行的任务，且现在屏幕还在点亮状态，放到息屏事件观测队列中
+                EventBus.subscibe(ScreenDelayTaskReceiver(taskId, context.applicationContext))
+            } else {
+                TaskActionsExecutor(this.taskActions, this.customTaskActions, context).run()
             }
         }
     }
@@ -54,7 +52,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
             EventBus.unsubscibe(this)
             val taskIntent = Intent(context, SceneTaskIntentService::class.java)
             taskIntent.putExtra("taskId", taskId)
-            taskIntent.setAction(taskId)
+            taskIntent.action = taskId
 
             this.context.startService(taskIntent)
         }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.BatteryManager
 import android.os.Build
+import android.os.SystemClock
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.omarea.data.EventType
@@ -93,7 +94,8 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
-        if (saveLog) {
+        // 开机5分钟之内不统计耗电记录，避免刚开机时系统服务繁忙导致数据不准确
+        if (saveLog && SystemClock.elapsedRealtime() > 300000L) {
             val status = BatteryStatus()
             status.packageName = packageName
             status.mode = mode
