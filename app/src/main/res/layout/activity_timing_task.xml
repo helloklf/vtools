@@ -162,7 +162,7 @@
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:text="任务动作" />
+                        android:text="内置命令" />
 
                     <LinearLayout
                         android:id="@+id/task_standby_mode"
@@ -184,44 +184,35 @@
                             android:id="@+id/task_standby_on"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:text="开" />
+                            android:text="开启" />
 
                         <RadioButton
                             android:id="@+id/task_standby_off"
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:text="关" />
+                            android:text="关闭" />
                     </LinearLayout>
 
                     <LinearLayout
+                        style="@style/InCardListItem"
+                        android:layout_marginHorizontal="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
+                            style="@style/textSmall"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="定位功能"
-                            android:textColor="?android:textColorPrimary" />
+                            android:text="待机模式是Scene设计的一项功能，进入待机模式时会禁用所有冻结名单中的应用从而减少后台活动。应用冻结状态下图标将显示为灰色，点击时提示“此应用由ROOT管理”。" />
 
-                        <RadioButton
-                            android:id="@+id/task_gps_on"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="开" />
-
-                        <RadioButton
-                            android:id="@+id/task_gps_off"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="关" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/task_zen_mode"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -251,7 +242,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/ListCardItem"
+                    style="@style/ListCardItemLast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -287,41 +278,6 @@
                         android:background="@drawable/in_card_item"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/ListCardItemLast"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:text="说明提示" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="[待机模式] 是Scene的一项功能，其原理是冻结所有第三方应用，从而避免待机时由于后台活动掉电过快，要求Android P及更高版本！你可以在系统场景的设置界面，设置冻结名单。" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="[FSTRIM] 操作有助于缓解闪存读写导致的速度下降，大多数情况下系统会自动择机运行，当然如果你乐意也可以添加到定时任务中。" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="[注意] 关机、重启会导致dex2oat编译被中断，请不要同时勾选这两种操作。" />
                 </LinearLayout>
             </LinearLayout>
         </com.omarea.common.ui.OverScrollView>

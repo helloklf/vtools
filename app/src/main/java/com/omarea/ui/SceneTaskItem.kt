@@ -55,7 +55,7 @@ class SceneTaskItem : LinearLayout {
     private fun getTaskContentText(taskInfo: TimingTaskInfo): String {
         val buffer = StringBuffer()
         if (taskInfo.taskActions != null && taskInfo.taskActions.size > 0) {
-            taskInfo.taskActions.map {
+            taskInfo.taskActions.forEach {
                 when (it) {
                     null -> {
                     }
@@ -65,41 +65,8 @@ class SceneTaskItem : LinearLayout {
                     TaskAction.STANDBY_MODE_OFF -> {
                         buffer.append("休眠模式 ×")
                     }
-                    TaskAction.AIRPLANE_MODE_ON -> {
-                        buffer.append("飞行模式 √")
-                    }
-                    TaskAction.AIRPLANE_MODE_OFF -> {
-                        buffer.append("飞行模式 ×")
-                    }
-                    TaskAction.WIFI_ON -> {
-                        buffer.append("无线网络 √")
-                    }
-                    TaskAction.WIFI_OFF -> {
-                        buffer.append("无线网络 ×")
-                    }
-                    TaskAction.GPS_ON -> {
-                        buffer.append("定位服务 √")
-                    }
-                    TaskAction.GPS_OFF -> {
-                        buffer.append("定位服务 ×")
-                    }
-                    TaskAction.GPRS_ON -> {
-                        buffer.append("数据流量 √")
-                    }
-                    TaskAction.GPRS_OFF -> {
-                        buffer.append("数据流量 ×")
-                    }
                     TaskAction.FSTRIM -> {
                         buffer.append("FSTRIM √")
-                    }
-                    TaskAction.COMPILE_SPEED -> {
-                        buffer.append("dex2oat(speed)")
-                    }
-                    TaskAction.COMPILE_EVERYTHING -> {
-                        buffer.append("dex2oat(everything)")
-                    }
-                    TaskAction.POWER_REBOOT -> {
-                        buffer.append("重启手机 √")
                     }
                     TaskAction.POWER_OFF -> {
                         buffer.append("自动关机 √")
@@ -125,9 +92,19 @@ class SceneTaskItem : LinearLayout {
                 }
                 buffer.append("     ")
             }
-        } else {
+        }
+
+        if (taskInfo.customTaskActions != null && taskInfo.customTaskActions.size > 0) {
+            taskInfo.customTaskActions.forEach {
+                buffer.append(it.Name)
+                buffer.append("     ")
+            }
+        }
+
+        if (buffer.length == 0) {
             buffer.append("---")
         }
+
         return buffer.toString()
     }
 

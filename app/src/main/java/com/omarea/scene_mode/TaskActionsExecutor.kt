@@ -58,43 +58,9 @@ class TaskActionsExecutor(
         taskActions?.forEach {
             try {
                 when (it) {
-                    TaskAction.AIRPLANE_MODE_OFF -> {
-                        updateNotification("关闭飞行模式")
-                        NetworkUtils(context).airModeOff()
-                    }
-                    TaskAction.AIRPLANE_MODE_ON -> {
-                        updateNotification("打开飞行模式")
-                        NetworkUtils(context).airModeOn()
-                    }
-                    TaskAction.COMPILE_EVERYTHING -> {
-                        updateNotification("dex2oat everything编译")
-                        everythingDex2oatCompile()
-                    }
-                    TaskAction.COMPILE_SPEED -> {
-                        updateNotification("dex2oat speed编译")
-                        speedDex2oatCompile()
-                    }
                     TaskAction.FSTRIM -> {
                         updateNotification("执行fstrim")
                         FstrimUtils(keepShell).run()
-                    }
-                    TaskAction.GPRS_OFF -> {
-                        updateNotification("关闭数据网络")
-                        NetworkUtils(context).mobileDataOff()
-                    }
-                    TaskAction.GPRS_ON -> {
-                        updateNotification("打开数网络")
-                        if (!taskActions.contains(TaskAction.AIRPLANE_MODE_ON)) {
-                            NetworkUtils(context).mobileDataOn()
-                        }
-                    }
-                    TaskAction.GPS_OFF -> {
-                        updateNotification("关闭GPS定位")
-                        LocationHelper().disableGPS()
-                    }
-                    TaskAction.GPS_ON -> {
-                        updateNotification("打开GPS定位")
-                        LocationHelper().enableGPS()
                     }
                     TaskAction.STANDBY_MODE_OFF -> {
                         updateNotification("关闭待机模式")
@@ -104,16 +70,6 @@ class TaskActionsExecutor(
                         updateNotification("打开待机模式")
                         SceneStandbyMode(context, keepShell).on()
                     }
-                    TaskAction.WIFI_OFF -> {
-                        updateNotification("关闭WIFI")
-                        NetworkUtils(context).wifiOff()
-                    }
-                    TaskAction.WIFI_ON -> {
-                        updateNotification("打开WIFI")
-                        if (!taskActions.contains(TaskAction.AIRPLANE_MODE_ON)) {
-                            NetworkUtils(context).wifiOn()
-                        }
-                    }
                     TaskAction.ZEN_MODE_ON -> {
                         updateNotification("打开勿扰模式")
                         ZenModeUtils(context).on()
@@ -121,14 +77,6 @@ class TaskActionsExecutor(
                     TaskAction.ZEN_MODE_OFF -> {
                         updateNotification("关闭勿扰模式")
                         ZenModeUtils(context).off()
-                    }
-                    TaskAction.POWER_REBOOT -> {
-                        updateNotification("重启手机")
-                        KeepShellPublic.doCmdSync("sync;svc power reboot || reboot")
-                    }
-                    TaskAction.POWER_OFF -> {
-                        updateNotification("自动关机")
-                        KeepShellPublic.doCmdSync("sync;svc power shutdown || reboot -p")
                     }
                     TaskAction.MODE_POWERSAVE -> {
                         updateNotification("切换省电模式")

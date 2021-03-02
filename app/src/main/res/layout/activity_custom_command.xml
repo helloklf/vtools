@@ -54,12 +54,12 @@
                     android:id="@+id/btn_run"
                     style="@style/dialogCancelBtn"
                     android:layout_marginEnd="8dp"
-                    android:text="运行">
+                    android:text="测试运行">
                 </Button>
                 <Button
                     android:id="@+id/btn_confirm"
                     style="@style/dialogConfirmBtn"
-                    android:text="保存">
+                    android:text="保存命令">
                 </Button>
             </LinearLayout>
 

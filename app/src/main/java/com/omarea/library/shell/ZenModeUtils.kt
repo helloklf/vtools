@@ -24,7 +24,7 @@ class ZenModeUtils(private val context: Context) {
         if (Settings.Global.putInt(contentResolver, "zen_mode", ZEN_MODE_NO_INTERRUPTIONS)) {
             return
         } else {
-            KeepShellPublic.doCmdSync("settings put globa zen_mode $ZEN_MODE_NO_INTERRUPTIONS")
+            KeepShellPublic.doCmdSync("settings put global zen_mode $ZEN_MODE_NO_INTERRUPTIONS")
         }
     }
 
@@ -33,7 +33,7 @@ class ZenModeUtils(private val context: Context) {
         if (Settings.Global.putInt(contentResolver, "zen_mode", ZEN_MODE_OFF)) {
             return
         } else {
-            KeepShellPublic.doCmdSync("settings put globa zen_mode $ZEN_MODE_OFF")
+            KeepShellPublic.doCmdSync("settings put global zen_mode $ZEN_MODE_OFF")
         }
     }
 }

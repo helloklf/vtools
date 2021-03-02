@@ -72,7 +72,6 @@ class ActivityTrigger : ActivityBase() {
         oneOf(trigger_power_connected, trigger_power_disconnected)
 
         oneOf(task_standby_on, task_standby_off)
-        oneOf(task_gps_on, task_gps_off)
         oneOf(task_zen_mode_on, task_zen_mode_off)
 
         // 更新选中状态
@@ -149,8 +148,6 @@ class ActivityTrigger : ActivityBase() {
             taskActions?.run {
                 task_standby_on.isChecked = contains(TaskAction.STANDBY_MODE_ON)
                 task_standby_off.isChecked = contains(TaskAction.STANDBY_MODE_OFF)
-                task_gps_on.isChecked = contains(TaskAction.GPS_ON)
-                task_gps_off.isChecked = contains(TaskAction.GPS_OFF)
                 task_zen_mode_on.isChecked = contains(TaskAction.ZEN_MODE_ON)
                 task_zen_mode_off.isChecked = contains(TaskAction.ZEN_MODE_OFF)
 
@@ -221,8 +218,6 @@ class ActivityTrigger : ActivityBase() {
         triggerInfo.taskActions = ArrayList<TaskAction>().apply {
             task_standby_on.isChecked && add(TaskAction.STANDBY_MODE_ON)
             task_standby_off.isChecked && add(TaskAction.STANDBY_MODE_OFF)
-            task_gps_on.isChecked && add(TaskAction.GPS_ON)
-            task_gps_off.isChecked && add(TaskAction.GPS_OFF)
             task_zen_mode_on.isChecked && add(TaskAction.ZEN_MODE_ON)
             task_zen_mode_off.isChecked && add(TaskAction.ZEN_MODE_OFF)
 

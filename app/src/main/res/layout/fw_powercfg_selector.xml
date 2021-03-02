@@ -24,12 +24,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="10dp">
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
 
                 <TextView
                     android:id="@+id/fw_title"
@@ -38,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:lines="1"
-                    android:paddingRight="12dp"
                     android:text="@string/app_name" />
 
                 <ImageButton
@@ -51,19 +49,23 @@
                     android:src="@drawable/close" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:background="#e0e0e0" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="15dp"
                 android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp">
+                    android:paddingHorizontal="3dp">
 
                     <TextView
                         android:id="@+id/btn_powersave"
@@ -129,8 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp">
+                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/fw_app_light"
@@ -163,8 +164,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp">
+                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/fw_app_gps"
@@ -190,7 +190,7 @@
                 android:layout_marginTop="5dp"
                 android:gravity="start"
                 android:orientation="horizontal"
-                android:paddingStart="15dp"
+                android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:paddingBottom="5dp">
 
@@ -201,6 +201,7 @@
                     android:layout_gravity="center_vertical"
                     android:alpha="0.3"
                     android:background="@android:color/transparent"
+                    android:padding="2dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/fw_float_monitor" />
 
@@ -212,13 +213,27 @@
                     android:layout_marginStart="10dp"
                     android:alpha="0.3"
                     android:background="@android:color/transparent"
+                    android:padding="2dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/dialog_performance" />
+
+                <ImageButton
+                    android:id="@+id/fw_float_monitor_mini"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:alpha="0.3"
+                    android:background="@android:color/transparent"
+                    android:padding="2dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/fw_float_monitor_mini" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
+
 
                 <Switch
                     android:id="@+id/fw_dynamic_state"
