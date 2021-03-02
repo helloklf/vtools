@@ -57,7 +57,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="110dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:paddingHorizontal="8dp">
@@ -127,41 +127,42 @@
                         android:textSize="12dp" />
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
+                    android:layout_marginEnd="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="10dp">
 
                     <CheckBox
                         android:id="@+id/fw_app_light"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_alignParentStart="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="独立亮度"
                         android:textColor="#888"
                         android:textSize="12dp" />
 
                     <CheckBox
                         android:id="@+id/fw_app_dis_notice"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:text="屏蔽通知"
                         android:textColor="#888"
                         android:textSize="12dp" />
 
                     <CheckBox
                         android:id="@+id/fw_app_dis_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
                         android:text="屏蔽按键"
                         android:textColor="#888"
                         android:textSize="12dp" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
