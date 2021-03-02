@@ -1,1 +1,1 @@
-svc wifi disable
+svc data disable

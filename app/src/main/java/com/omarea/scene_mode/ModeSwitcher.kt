@@ -196,39 +196,42 @@ open class ModeSwitcher {
 
     // 切换模式
     internal fun executePowercfgMode(mode: String): ModeSwitcher {
-        val source = getCurrentSource()
-        when (source) {
-            SOURCE_SCENE_CUSTOM -> {
-                val cpuConfigStorage = CpuConfigStorage(Scene.context)
-                if (cpuConfigStorage.exists(mode)) {
-                    cpuConfigStorage.applyCpuConfig(Scene.context, mode)
-                    setCurrentPowercfg(mode)
-                } else {
-                    Log.e("Scene", "" + mode + "Profile lost!")
+        // TODO: mode == IGONED 的处理
+        if (mode != IGONED) {
+            val source = getCurrentSource()
+            when (source) {
+                SOURCE_SCENE_CUSTOM -> {
+                    val cpuConfigStorage = CpuConfigStorage(Scene.context)
+                    if (cpuConfigStorage.exists(mode)) {
+                        cpuConfigStorage.applyCpuConfig(Scene.context, mode)
+                        setCurrentPowercfg(mode)
+                    } else {
+                        Log.e("Scene", "" + mode + "Profile lost!")
+                    }
                 }
-            }
-            SOURCE_OUTSIDE -> {
-                if (!inited) {
-                    initPowerCfg()
-                }
+                SOURCE_OUTSIDE -> {
+                    if (!inited) {
+                        initPowerCfg()
+                    }
 
-                if (configProvider.isNotEmpty()) {
-                    keepShellExec("sh $configProvider $mode")
-                    setCurrentPowercfg(mode)
-                } else {
-                    Log.e("Scene", "" + mode + "Profile lost!")
+                    if (configProvider.isNotEmpty()) {
+                        keepShellExec("sh $configProvider $mode")
+                        setCurrentPowercfg(mode)
+                    } else {
+                        Log.e("Scene", "" + mode + "Profile lost!")
+                    }
                 }
-            }
-            else -> {
-                if (!inited) {
-                    initPowerCfg()
-                }
+                else -> {
+                    if (!inited) {
+                        initPowerCfg()
+                    }
 
-                if (configProvider.isNotEmpty()) {
-                    keepShellExec("sh $configProvider $mode")
-                    setCurrentPowercfg(mode)
-                } else {
-                    Log.e("Scene", "" + mode + "Profile lost!")
+                    if (configProvider.isNotEmpty()) {
+                        keepShellExec("sh $configProvider $mode")
+                        setCurrentPowercfg(mode)
+                    } else {
+                        Log.e("Scene", "" + mode + "Profile lost!")
+                    }
                 }
             }
         }

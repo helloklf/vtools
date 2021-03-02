@@ -119,7 +119,7 @@ class FloatPowercfgSelector(context: Context) {
         val powerCfgSPF = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         val serviceRunning = AccessibleServiceHelper().serviceRunning(context)
-        val dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        var dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         var selectedMode = (if (dynamic) powerCfgSPF.getString(packageName, defaultMode) else modeList.getCurrentPowerMode())!!
         val modeConfigCompleted = ModeSwitcher().modeConfigCompleted()
@@ -132,38 +132,32 @@ class FloatPowercfgSelector(context: Context) {
             titleView.text = packageName
         }
 
-        // 性能调节（动态响应）
-        view.findViewById<CompoundButton>(R.id.fw_dynamic_state).run {
-            isChecked = dynamic
-            isEnabled = serviceRunning && modeConfigCompleted
-            setOnClickListener {
-                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
-                reStartService()
-            }
-        }
+        val btn_powersave = view.findViewById<TextView>(R.id.btn_powersave)
+        val btn_defaultmode = view.findViewById<TextView>(R.id.btn_defaultmode)
+        val btn_gamemode = view.findViewById<TextView>(R.id.btn_gamemode)
+        val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
+        val btn_ignore = view.findViewById<TextView>(R.id.btn_ignore)
 
         if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
             view.findViewById<LinearLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
             titleView.setTextColor(Color.BLACK)
         }
 
-        val btn_powersave = view.findViewById<TextView>(R.id.btn_powersave)
-        val btn_defaultmode = view.findViewById<TextView>(R.id.btn_defaultmode)
-        val btn_gamemode = view.findViewById<TextView>(R.id.btn_gamemode)
-        val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
-
         val updateUI = Runnable {
             btn_powersave.setTextColor(0x66ffffff)
             btn_defaultmode.setTextColor(0x66ffffff)
             btn_gamemode.setTextColor(0x66ffffff)
             btn_fastmode.setTextColor(0x66ffffff)
+            btn_ignore.setTextColor(0x66ffffff)
             when (selectedMode) {
                 ModeSwitcher.BALANCE -> btn_defaultmode.setTextColor(Color.WHITE)
                 ModeSwitcher.PERFORMANCE -> btn_gamemode.setTextColor(Color.WHITE)
                 ModeSwitcher.POWERSAVE -> btn_powersave.setTextColor(Color.WHITE)
                 ModeSwitcher.FAST -> btn_fastmode.setTextColor(Color.WHITE)
+                ModeSwitcher.IGONED -> btn_ignore.setTextColor(Color.WHITE)
             }
         }
+
         val switchMode = Runnable {
             updateUI.run()
             modeList.executePowercfgMode(selectedMode, packageName)
@@ -179,6 +173,31 @@ class FloatPowercfgSelector(context: Context) {
                 EventBus.publish(EventType.SCENE_MODE_ACTION)
             }
         }
+
+        // 性能调节（动态响应）
+        view.findViewById<CompoundButton>(R.id.fw_dynamic_state).run {
+            isChecked = dynamic
+            isEnabled = serviceRunning && modeConfigCompleted
+            setOnClickListener {
+                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
+                reStartService()
+                dynamic = isChecked
+
+                btn_ignore.visibility = if (dynamic) View.VISIBLE else View.GONE
+
+                if (dynamic) {
+                    val mode = powerCfgSPF.getString(packageName, defaultMode)
+                    if (mode != null && selectedMode != mode) {
+                        selectedMode = mode
+                        switchMode.run()
+                    }
+                } else {
+                    selectedMode = modeList.getCurrentPowerMode()
+                    updateUI.run()
+                }
+            }
+        }
+        btn_ignore.visibility = if (dynamic) View.VISIBLE else View.GONE
 
         if (modeConfigCompleted) {
             btn_powersave.setOnClickListener {
@@ -196,6 +215,17 @@ class FloatPowercfgSelector(context: Context) {
             btn_fastmode.setOnClickListener {
                 selectedMode = ModeSwitcher.FAST
                 switchMode.run()
+            }
+            btn_ignore.setOnClickListener {
+                if (dynamic) {
+                    if (selectedMode != ModeSwitcher.IGONED) {
+                        selectedMode = ModeSwitcher.IGONED
+                        switchMode.run()
+                        Toast.makeText(context, "请返回桌面后重新打开当前活动应用，以便使配置生效~", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(context, "此选项只能在开启【动态响应】时，对单个应用设置~", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
