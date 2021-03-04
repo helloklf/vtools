@@ -76,7 +76,7 @@
                     <TextView
                         android:layout_marginBottom="6dp"
                         android:id="@+id/btn_ignore"
-                        style="@style/textSmall"
+                        style="@style/textSmallTitle"
                         android:layout_columnSpan="2"
                         android:layout_gravity="fill"
                         android:layout_columnWeight="1"
