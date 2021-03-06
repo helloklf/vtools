@@ -1,6 +1,5 @@
 package com.omarea.vtools.dialogs
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.widget.Toast

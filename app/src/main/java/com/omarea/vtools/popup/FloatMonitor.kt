@@ -16,7 +16,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.ImageView

@@ -1,7 +1,6 @@
 package com.omarea.vtools.addin
 
 import android.app.Activity
-import android.content.Context
 import com.omarea.common.ui.ProgressBarDialog
 
 /**

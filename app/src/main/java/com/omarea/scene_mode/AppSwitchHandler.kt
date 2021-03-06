@@ -31,7 +31,6 @@ import kotlin.collections.ArrayList
  * Created by helloklf on 2016/10/1.
  */
 class AppSwitchHandler(private var context: Context, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
-    private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""
@@ -132,7 +131,6 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
         if (!screenOn) {
             if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
                 sceneMode.onScreenOffDelay()
-                systemScene.onScreenOff()
                 System.gc()
             }
         }
@@ -153,8 +151,6 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
             screenOn = true
             startTimer() // 屏幕开启后开始定时更新通知
             updateModeNofity() // 屏幕点亮后更新通知
-
-            systemScene.onScreenOn()
         }
     }
 

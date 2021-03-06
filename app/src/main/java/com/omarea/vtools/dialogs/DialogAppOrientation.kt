@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.CompoundButton
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.basic.RadioGroupSimulator
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 
 class DialogAppOrientation(var context: Activity, val current: Int?, val iResultCallback: IResultCallback) {

@@ -1,7 +1,6 @@
 package com.omarea.scene_mode
 
 import android.content.Context
-import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -11,7 +10,6 @@ import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import java.io.File
 import java.nio.charset.Charset
-import java.util.*
 
 class CpuConfigInstaller {
     val rootDir = "powercfg"

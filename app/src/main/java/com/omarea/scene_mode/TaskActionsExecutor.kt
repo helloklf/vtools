@@ -11,8 +11,6 @@ import androidx.core.app.NotificationCompat
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.FstrimUtils
-import com.omarea.library.shell.LocationHelper
-import com.omarea.library.shell.NetworkUtils
 import com.omarea.library.shell.ZenModeUtils
 import com.omarea.model.CustomTaskAction
 import com.omarea.model.TaskAction

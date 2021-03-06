@@ -1,7 +1,6 @@
 package com.omarea.shell_utils
 
 import android.app.Activity
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast

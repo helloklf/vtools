@@ -275,10 +275,10 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             val path = item.path.toString()
 
             if (apk) {
-                sb.append("rm -f \${backup_path}$packageName.apk\n")
+                sb.append("rm -f '\${backup_path}$packageName.apk'\n")
                 sb.append("\n")
                 sb.append("echo '[copy $packageName.apk]'\n")
-                sb.append("busybox cp -f $path \${backup_path}$packageName.apk\n")
+                sb.append("busybox cp -f $path '\${backup_path}$packageName.apk'\n")
                 sb.append("\n")
             }
             if (data) {
@@ -334,20 +334,20 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         for (item in apps) {
             val packageName = item.packageName.toString()
             val apkPath = item.path.toString()
-            if (apk && File("$backupPath$packageName.apk").exists()) {
-                sb.append("echo '[install ${item.appName}]'\n")
-                // sb.append("pm install -r $backupPath$packageName.apk\n")
-
-                sb.append("rm -f $installApkTemp\n")
-                sb.append("cp \"$backupPath$packageName.apk\" $installApkTemp\n")
-                sb.append("pm install -r $installApkTemp 1> /dev/null\n")
-                sb.append("rm -f $installApkTemp\n")
-            } else if (apk && File(apkPath).exists()) {
+            if (apk && File(apkPath).exists()) {
                 sb.append("echo '[install ${item.appName}]'\n")
                 // sb.append("pm install -r \"$apkPath\" 1> /dev/null\n")
 
                 sb.append("rm -f $installApkTemp\n")
                 sb.append("cp \"$apkPath\" $installApkTemp\n")
+                sb.append("pm install -r $installApkTemp 1> /dev/null\n")
+                sb.append("rm -f $installApkTemp\n")
+            } else if (apk && File("$backupPath$packageName.apk").exists()) {
+                sb.append("echo '[install ${item.appName}]'\n")
+                // sb.append("pm install -r $backupPath$packageName.apk\n")
+
+                sb.append("rm -f $installApkTemp\n")
+                sb.append("cp \"$backupPath$packageName.apk\" $installApkTemp\n")
                 sb.append("pm install -r $installApkTemp 1> /dev/null\n")
                 sb.append("rm -f $installApkTemp\n")
             }
@@ -457,7 +457,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 删除选中的应用
      */
     protected fun deleteAll() {
-        confirm("删除应用", "已选择 ${apps.size} 个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
+        confirm("删除应用", "已选择 ${apps.size} 个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？") {
             if (isMagisk() && !MagiskExtend.moduleInstalled() && (isTmpfs("/system/app") || isTmpfs("/system/priv-app"))) {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
@@ -468,7 +468,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             } else {
                 _deleteAll()
             }
-        })
+        }
     }
 
     private fun _deleteAll() {
@@ -490,7 +490,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
 
                 sb.append("rm -rf $dir/oat\n")
                 sb.append("rm -rf $dir/lib\n")
-                sb.append("rm -rf ${item.path}\n")
+                sb.append("rm -rf '${item.path}'\n")
             }
         }
 
@@ -517,7 +517,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             sb.append("echo '[delete ${item.appName}]'\n")
 
             if (item.path != null) {
-                sb.append("rm -rf ${item.path}\n")
+                sb.append("rm -rf '${item.path}'\n")
                 if (item.path == "$backupPath$packageName.apk") {
                     sb.append("rm -rf $backupPath$packageName.tar.gz\n")
                 }

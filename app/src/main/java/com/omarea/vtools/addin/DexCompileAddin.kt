@@ -1,16 +1,12 @@
 package com.omarea.vtools.addin
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.widget.Toast
-import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.DialogItemChooser
 import com.omarea.library.shell.PropsUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R

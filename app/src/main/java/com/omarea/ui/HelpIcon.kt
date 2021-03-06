@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageButton
 import android.widget.RelativeLayout
-import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.ui.DialogHelper
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R

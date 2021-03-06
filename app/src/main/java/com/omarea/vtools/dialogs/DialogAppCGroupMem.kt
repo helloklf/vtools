@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import com.omarea.common.ui.DialogHelper
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 
 class DialogAppCGroupMem(var context: Activity, val current: String?, val iResultCallback: IResultCallback) {

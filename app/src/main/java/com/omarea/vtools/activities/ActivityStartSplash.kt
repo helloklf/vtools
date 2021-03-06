@@ -10,12 +10,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.service.controls.templates.ControlButton
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.CompoundButton
-import android.widget.Switch
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import com.omarea.Scene
@@ -27,7 +25,6 @@ import com.omarea.permissions.WriteSettings
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
-import kotlinx.android.synthetic.main.list_item_text.view.*
 import java.util.*
 
 class ActivityStartSplash : Activity() {

@@ -4,9 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
-import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
-import com.omarea.library.shell.ProcessUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatMonitor
 import com.omarea.vtools.popup.FloatMonitorGame

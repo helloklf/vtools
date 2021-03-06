@@ -10,7 +10,10 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.SeekBar
+import android.widget.TextView
+import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -26,7 +29,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_swap.*
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.LinkedHashMap
 

@@ -20,7 +20,6 @@ import com.omarea.model.TriggerInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.TriggerManager
 import com.omarea.store.TriggerStorage
-import com.omarea.ui.StringAdapter
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_trigger.*
 import java.io.File
@@ -112,7 +111,7 @@ class ActivityTrigger : ActivityBase() {
                         triggerInfo.customTaskActions = ArrayList(selected.map {
                             CustomTaskAction().apply {
                                 Name = it.title
-                                Command = "sh " + it.value
+                                Command = "sh '" + it.value + "'"
                             }
                         })
                         updateUI()

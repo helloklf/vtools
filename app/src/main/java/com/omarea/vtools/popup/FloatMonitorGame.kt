@@ -11,7 +11,10 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast

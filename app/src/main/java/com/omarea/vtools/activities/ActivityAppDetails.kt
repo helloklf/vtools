@@ -3,7 +3,6 @@ package com.omarea.vtools.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -19,7 +18,6 @@ import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.model.SceneConfigInfo
@@ -30,7 +28,6 @@ import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.IntInputFilter
-import com.omarea.ui.SceneModeAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -40,7 +37,6 @@ import com.omarea.vtools.dialogs.DialogAppOrientation
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
-import kotlinx.android.synthetic.main.list_item_text.view.*
 import org.json.JSONObject
 import java.io.File
 

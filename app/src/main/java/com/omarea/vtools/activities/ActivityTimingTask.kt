@@ -18,7 +18,6 @@ import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.store.TimingTaskStorage
-import com.omarea.ui.StringAdapter
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_timing_task.*
 import java.io.File
@@ -101,7 +100,7 @@ class ActivityTimingTask : ActivityBase() {
                         timingTaskInfo.customTaskActions = ArrayList(selected.map {
                             CustomTaskAction().apply {
                                 Name = it.title
-                                Command = "sh " + it.value
+                                Command = "sh '" + it.value + "'"
                             }
                         })
                         updateUI()

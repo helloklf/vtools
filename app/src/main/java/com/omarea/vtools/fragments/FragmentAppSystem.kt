@@ -6,8 +6,11 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.CheckBox
+import android.widget.HeaderViewListAdapter
+import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
@@ -76,6 +79,9 @@ class FragmentAppSystem(private val myHandler: Handler) : androidx.fragment.app.
         processBarDialog.showDialog()
         Thread {
             appList = appListHelper.getSystemAppList()
+            myHandler.post {
+                processBarDialog.hideDialog()
+            }
             app_list?.run {
                 setListData(appList, this)
             }
@@ -87,7 +93,6 @@ class FragmentAppSystem(private val myHandler: Handler) : androidx.fragment.app.
             return
         myHandler.post {
             try {
-                processBarDialog.hideDialog()
                 val adapterObj = AppListAdapter(dl, keywords)
                 val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                 lv.adapter = adapterObj

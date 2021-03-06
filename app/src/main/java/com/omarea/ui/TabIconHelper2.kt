@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.activity_app_config2.*
 
 class TabIconHelper2(
         private var tabLayout: TabLayout,

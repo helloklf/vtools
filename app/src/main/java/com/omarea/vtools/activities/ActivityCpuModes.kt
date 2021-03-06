@@ -27,7 +27,6 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import java.io.File
 import java.nio.charset.Charset
-import java.util.*
 
 
 class ActivityCpuModes : ActivityBase() {

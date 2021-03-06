@@ -8,10 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ListView
 import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.DialogAppChooser
 import com.omarea.common.ui.DialogHelper
