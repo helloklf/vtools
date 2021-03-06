@@ -15,6 +15,7 @@ import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
@@ -276,6 +277,8 @@ class SceneMode private constructor(private val context: Context, private var st
     }
 
     private var locationMode = "none"
+    // 是否需要在离开应用时隐藏迷你性能监视器
+    private var hideMonitorOnLeave = false
 
     // 备份定位设置
     private fun backupLocationModeState() {
@@ -390,6 +393,19 @@ class SceneMode private constructor(private val context: Context, private var st
                         autoLightOff(currentSceneConfig!!.aloneLightValue)
                     } else {
                         resumeBrightnessState()
+                    }
+
+                    if (currentSceneConfig!!.showMonitor) {
+                        if (FloatMonitorGame.show != true) {
+                            Scene.post {
+                                hideMonitorOnLeave = FloatMonitorGame(context).showPopupWindow()
+                            }
+                        }
+                    } else if (hideMonitorOnLeave) {
+                        Scene.post {
+                            FloatMonitorGame(context).hidePopupWindow()
+                        }
+                        hideMonitorOnLeave = false
                     }
 
                     if (currentSceneConfig!!.gpsOn) {

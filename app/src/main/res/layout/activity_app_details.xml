@@ -299,6 +299,29 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    style="@style/ListCardItem">
+                    <TextView
+                        style="@style/scene_config_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Scene功能" />
+
+                    <Switch
+                        android:id="@+id/app_monitor"
+                        style="@style/scene_config_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="性能监视器" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="进入此应用时显示Scene的迷你性能监视器(离开后自动关闭)" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     style="@style/ListCardItemLast">
                     <TextView
                         style="@style/scene_config_title"

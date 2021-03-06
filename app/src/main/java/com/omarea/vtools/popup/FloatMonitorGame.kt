@@ -1,5 +1,6 @@
 package com.omarea.vtools.popup
 
+import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
@@ -22,7 +23,7 @@ import com.omarea.library.shell.*
 import com.omarea.vtools.R
 import java.util.*
 
-class FloatMonitorGame(private val mContext: Context) {
+public class FloatMonitorGame(private val mContext: Context) {
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
     private var CpuFrequencyUtil = CpuFrequencyUtils()
@@ -31,18 +32,20 @@ class FloatMonitorGame(private val mContext: Context) {
      * 显示弹出框
      * @param context
      */
-    fun showPopupWindow() {
+    fun showPopupWindow(): Boolean {
         if (show!!) {
-            return
+            return true
         }
         startMonitorTime = System.currentTimeMillis()
         if (batteryManager == null) {
             batteryManager = mContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         }
 
-        if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
-            Toast.makeText(mContext, mContext.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
-            return
+        if (!(mContext is AccessibilityService)) {
+            if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
+                Toast.makeText(mContext, mContext.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
+                return false
+            }
         }
 
         show = true
@@ -55,10 +58,16 @@ class FloatMonitorGame(private val mContext: Context) {
 
         // 类型
         params.type = LayoutParams.TYPE_SYSTEM_ALERT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = LayoutParams.TYPE_APPLICATION_OVERLAY
+
+        // 优先使用辅助服务叠加层（如果是辅助服务Context）
+        if (mContext is AccessibilityService) {
+            params.type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         } else {
-            params.type = LayoutParams.TYPE_SYSTEM_ALERT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+                params.type = LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                params.type = LayoutParams.TYPE_SYSTEM_ALERT
+            }
         }
         params.format = PixelFormat.TRANSLUCENT
 
@@ -86,6 +95,8 @@ class FloatMonitorGame(private val mContext: Context) {
         mWindowManager!!.addView(mView, params)
 
         startTimer()
+
+        return true
     }
 
     private fun stopTimer() {

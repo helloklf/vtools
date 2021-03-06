@@ -24,4 +24,7 @@ public class SceneConfigInfo {
     public String fgCGroupMem = "";
     public String bgCGroupMem = "";
     public boolean dynamicBoostMem = false;
+
+    // 显示性能监视器
+    public boolean showMonitor = false;
 }

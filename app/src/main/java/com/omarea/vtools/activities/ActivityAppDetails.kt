@@ -113,7 +113,7 @@ class ActivityAppDetails : ActivityBase() {
 
             DialogAppPowerConfig(this,
                     spfPowercfg.getString(app, ""),
-                    object : DialogAppPowerConfig.IResultCallback{
+                    object : DialogAppPowerConfig.IResultCallback {
                         override fun onChange(mode: String?) {
                             spfPowercfg.edit().run {
                                 if (mode.isNullOrEmpty()) {
@@ -264,6 +264,10 @@ class ActivityAppDetails : ActivityBase() {
                 SceneMode.unfreezeApp(sceneConfigInfo.packageName)
             }
         }
+
+        app_monitor.setOnClickListener {
+            sceneConfigInfo.showMonitor = (it as Switch).isChecked
+        }
     }
 
     // 通知辅助服务配置变化
@@ -333,6 +337,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
         app_details_gps.isChecked = sceneConfigInfo.gpsOn
         app_details_freeze.isChecked = sceneConfigInfo.freeze
+        app_monitor.isChecked = sceneConfigInfo.showMonitor
 
         scene_mode_allow.isChecked = !sceneBlackList.contains(app)
         scene_mode_config.visibility = if (scene_mode_config.visibility == View.VISIBLE && scene_mode_allow.isChecked) View.VISIBLE else View.GONE
@@ -365,7 +370,8 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.freeze != originConfig.freeze ||
                 sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
                 sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
-                sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem
+                sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem ||
+                sceneConfigInfo.showMonitor != originConfig.showMonitor
         ) {
             setResult(RESULT_OK, this.intent)
         } else {
@@ -375,8 +381,8 @@ class ActivityAppDetails : ActivityBase() {
             Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         } else {
             if (sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
-                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
-                sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem) {
+                    sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
+                    sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem) {
                 notifyService(app)
             }
 
