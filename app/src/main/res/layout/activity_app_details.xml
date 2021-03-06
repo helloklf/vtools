@@ -317,7 +317,7 @@
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="进入此应用时显示Scene的迷你性能监视器(离开后自动关闭)" />
+                        android:text="显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)" />
 
                 </LinearLayout>
 
