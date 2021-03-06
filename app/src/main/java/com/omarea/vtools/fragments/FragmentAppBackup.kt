@@ -28,7 +28,7 @@ class FragmentAppBackup(private val myHandler: Handler) : androidx.fragment.app.
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        processBarDialog = ProgressBarDialog(activity!!)
+        processBarDialog = ProgressBarDialog(activity!!, "FragmentAppBackup")
         appListHelper = AppListHelper(context!!)
 
         return inflater.inflate(R.layout.fragment_app_list, container, false)

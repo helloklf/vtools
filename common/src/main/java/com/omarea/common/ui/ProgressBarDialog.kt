@@ -10,10 +10,19 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.R
 import com.omarea.common.shell.AsynSuShellUnit
+import java.util.LinkedHashSet
 
-open class ProgressBarDialog(private var context: Activity) {
+open class ProgressBarDialog(private var context: Activity, private var uniqueId: String? = null) {
     private var alert: DialogHelper.DialogWrap? = null
     private var textView: TextView? = null
+
+    companion object {
+        private val dialogs = LinkedHashMap<String, DialogHelper.DialogWrap>()
+    }
+
+    init {
+        hideDialog()
+    }
 
     class DefaultHandler(private var alertDialog: DialogHelper.DialogWrap?) : Handler(Looper.myLooper()!!) {
         override fun handleMessage(msg: Message) {
@@ -77,10 +86,16 @@ open class ProgressBarDialog(private var context: Activity) {
             }
         } catch (ex: Exception) {
         }
+
+        uniqueId?.run {
+            if (dialogs.containsKey(this)) {
+                dialogs.remove(this)
+            }
+        }
     }
 
     @SuppressLint("InflateParams")
-    public fun showDialog(text: String = "正在加载，请稍等..."): DialogHelper.DialogWrap? {
+    public fun showDialog(text: String = "正在加载，请稍等..."): ProgressBarDialog {
         if (textView != null && alert != null) {
             textView!!.text = text
         } else {
@@ -92,6 +107,16 @@ open class ProgressBarDialog(private var context: Activity) {
             alert = DialogHelper.customDialogBlurBg(context, dialog, false)
             // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         }
-        return alert
+
+        uniqueId?.run {
+            if (dialogs.containsKey(this)) {
+                dialogs.remove(this)
+            }
+            if (alert != null) {
+                dialogs.put(this, alert!!)
+            }
+        }
+
+        return this
     }
 }

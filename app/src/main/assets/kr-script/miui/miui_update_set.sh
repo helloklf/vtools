@@ -3,7 +3,7 @@ file="/system/etc/hosts"
 if [[ "$MAGISK_PATH" != "" ]]; then
     # Magisk 替换
 
-    if [[ -f $MAGISK_PATH$file ]]; then
+    if [[ ! -f $MAGISK_PATH$file ]]; then
         mkdir -p $MAGISK_PATH/system/etc
         cp $file $MAGISK_PATH$file
     fi

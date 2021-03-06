@@ -28,7 +28,7 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        processBarDialog = ProgressBarDialog(activity!!)
+        processBarDialog = ProgressBarDialog(activity!!, "FragmentAppUser")
         appListHelper = AppListHelper(context!!)
 
         return inflater.inflate(R.layout.fragment_app_list, container, false)
