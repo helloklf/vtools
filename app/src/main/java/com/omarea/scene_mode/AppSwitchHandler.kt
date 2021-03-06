@@ -332,13 +332,19 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
 
         sceneConfigChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                val pendingResult = goAsync()
+
                 updateConfig()
                 Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
+
+                pendingResult.finish()
             }
         }
 
         sceneAppChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
+                val pendingResult = goAsync()
+
                 val extras = intent.extras
                 if (extras != null && extras.containsKey("app")) {
                     if (extras.containsKey("mode")) {
@@ -350,6 +356,8 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
                     }
                     sceneMode.updateAppConfig()
                 }
+
+                pendingResult.finish()
             }
         }
 

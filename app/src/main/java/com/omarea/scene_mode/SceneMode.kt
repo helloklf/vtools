@@ -374,7 +374,7 @@ class SceneMode private constructor(private val context: Context, private var st
         synchronized(this) {
             try {
                 lastAppPackageName = packageName
-                if (currentSceneConfig != null) {
+                if (currentSceneConfig != null && currentSceneConfig?.packageName != packageName) {
                     onAppLeave(currentSceneConfig!!)
                 }
 

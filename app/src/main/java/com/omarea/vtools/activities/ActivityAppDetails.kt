@@ -525,11 +525,13 @@ class ActivityAppDetails : ActivityBase() {
     }
 
     // 通知辅助服务配置变化
-    private fun notifyService(app: String, mode: String) {
+    private fun notifyService(app: String, mode: String? = null) {
         if (AccessibleServiceHelper().serviceRunning(this)) {
             val intent = Intent(this.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
+            if (mode != null) {
+                intent.putExtra("mode", mode)
+            }
             sendBroadcast(intent)
         }
     }
@@ -625,7 +627,6 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.freeze != originConfig.freeze ||
                 sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
                 sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
-                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
                 sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem
         ) {
             setResult(RESULT_OK, this.intent)
@@ -641,6 +642,12 @@ class ActivityAppDetails : ActivityBase() {
         if (!SceneConfigStore(this).setAppConfig(sceneConfigInfo)) {
             Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         } else {
+            if (sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
+                sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
+                sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem) {
+                notifyService(app)
+            }
+
             if (sceneConfigInfo.freeze != originConfig.freeze) {
                 if (sceneConfigInfo.freeze) {
                     SceneMode.getCurrentInstance()?.setFreezeAppLeaveTime(sceneConfigInfo.packageName)
