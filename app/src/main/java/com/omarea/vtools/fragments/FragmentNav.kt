@@ -20,6 +20,8 @@ import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.*
+import com.omarea.vtools.dialogs.DialogXposedGlobalConfig
+import com.omarea.xposed.XposedCheck
 import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_nav.*
 
@@ -260,6 +262,23 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_app_magisk -> {
                     val intent = Intent(context, ActivityMagisk::class.java)
                     startActivity(intent)
+                    return
+                }
+                R.id.nav_xposed_app -> {
+                    if (XposedCheck.xposedIsRunning()) {
+                        val intent = Intent(context, ActivityAppXposedConfig::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
+                    }
+                    return
+                }
+                R.id.nav_xposed_global -> {
+                    if (XposedCheck.xposedIsRunning()) {
+                        DialogXposedGlobalConfig(activity!!).show()
+                    } else {
+                        Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
+                    }
                     return
                 }
                 R.id.nav_gesture -> {

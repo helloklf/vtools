@@ -275,10 +275,10 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             val path = item.path.toString()
 
             if (apk) {
-                sb.append("rm -f '\${backup_path}$packageName.apk'\n")
+                sb.append("rm -f \${backup_path}$packageName.apk\n")
                 sb.append("\n")
                 sb.append("echo '[copy $packageName.apk]'\n")
-                sb.append("busybox cp -f $path '\${backup_path}$packageName.apk'\n")
+                sb.append("busybox cp -f $path \${backup_path}$packageName.apk\n")
                 sb.append("\n")
             }
             if (data) {

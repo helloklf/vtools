@@ -24,9 +24,4 @@ public class SceneConfigInfo {
     public String fgCGroupMem = "";
     public String bgCGroupMem = "";
     public boolean dynamicBoostMem = false;
-
-    // Xposed
-    public int dpi = -1;
-    public boolean excludeRecent = false;
-    public boolean smoothScroll = false;
 }

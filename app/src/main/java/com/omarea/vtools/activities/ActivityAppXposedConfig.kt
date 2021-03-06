@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,39 +12,38 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import com.omarea.Scene
-import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.AppInfo
+import com.omarea.model.SceneConfigInfo
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.ui.SceneModeAdapter
+import com.omarea.store.XposedExtension
+import com.omarea.ui.XposedAppsAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.dialogs.DialogAppOrientation
-import com.omarea.vtools.dialogs.DialogAppPowerConfig
-import kotlinx.android.synthetic.main.activity_app_config2.*
+import kotlinx.android.synthetic.main.activity_app_xposed_config.*
+import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ActivityAppConfig2 : ActivityBase() {
+class ActivityAppXposedConfig : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
-    private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var applistHelper: AppListHelper
     private var installedList: ArrayList<AppInfo>? = null
     private var displayList: ArrayList<AppInfo>? = null
-    private lateinit var sceneConfigStore: SceneConfigStore
+    private lateinit var xposedExtension: XposedExtension
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_app_config2)
+        setContentView(R.layout.activity_app_xposed_config)
 
         setBackArrow()
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        xposedExtension = XposedExtension(this)
 
         this.onViewCreated()
     }
@@ -56,56 +54,16 @@ class ActivityAppConfig2 : ActivityBase() {
         modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(this)
         applistHelper = AppListHelper(this)
-        spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        sceneConfigStore = SceneConfigStore(this.context)
-
-        if (spfPowercfg.all.isEmpty()) {
-            initDefaultConfig()
-        }
-
 
         scene_app_list.setOnItemClickListener { parent, view2, position, _ ->
             try {
                 val item = (parent.adapter.getItem(position) as AppInfo)
-                val intent = Intent(this.context, ActivityAppDetails::class.java)
+                val intent = Intent(this.context, ActivityAppXposedDetails::class.java)
                 intent.putExtra("app", item.packageName)
                 startActivityForResult(intent, REQUEST_APP_CONFIG)
                 lastClickRow = view2
             } catch (ex: Exception) {
-            }
-        }
-
-        // 动态响应检测
-        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-
-        if (dynamicControl) {
-            scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
-                val item = (parent.adapter.getItem(position) as AppInfo)
-                val app = item.packageName.toString()
-                DialogAppPowerConfig(this,
-                        spfPowercfg.getString(app, ""),
-                        object : DialogAppPowerConfig.IResultCallback {
-                            override fun onChange(mode: String?) {
-                                spfPowercfg.edit().run {
-                                    if (mode.isNullOrEmpty()) {
-                                        remove(app)
-                                    } else {
-                                        putString(app, mode)
-                                    }
-                                }.apply()
-
-                                setAppRowDesc(item)
-                                (parent.adapter as SceneModeAdapter).updateRow(position, view)
-                                notifyService(app, "" + mode)
-                            }
-                        }).show()
-                true
-            }
-        } else {
-            scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
-                DialogHelper.helpInfo(this, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [动态响应] 功能")
-                true
             }
         }
 
@@ -117,14 +75,6 @@ class ActivityAppConfig2 : ActivityBase() {
             false
         }
 
-        configlist_modes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                loadList()
-            }
-        }
         configlist_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -134,7 +84,6 @@ class ActivityAppConfig2 : ActivityBase() {
             }
         }
 
-        loadList()
     }
 
     private val REQUEST_APP_CONFIG = 0
@@ -145,7 +94,7 @@ class ActivityAppConfig2 : ActivityBase() {
         if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
                 if (resultCode == AppCompatActivity.RESULT_OK) {
-                    val adapter = (scene_app_list.adapter as SceneModeAdapter)
+                    val adapter = (scene_app_list.adapter as XposedAppsAdapter)
                     var index = -1
                     val packageName = data.extras!!.getString("app")
                     for (i in 0 until displayList!!.size) {
@@ -158,7 +107,7 @@ class ActivityAppConfig2 : ActivityBase() {
                     }
                     val item = adapter.getItem(index)
                     setAppRowDesc(item)
-                    (scene_app_list.adapter as SceneModeAdapter?)?.run {
+                    (scene_app_list.adapter as XposedAppsAdapter?)?.run {
                         updateRow(index, lastClickRow!!)
                     }
                     //loadList(false)
@@ -166,38 +115,6 @@ class ActivityAppConfig2 : ActivityBase() {
             } catch (ex: Exception) {
                 Log.e("update-list", "" + ex.message)
             }
-        }
-    }
-
-    // 通知辅助服务配置变化
-    private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().serviceRunning(this)) {
-            val intent = Intent(getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
-            sendBroadcast(intent)
-        }
-    }
-
-    private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
-        checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnClickListener { view ->
-            spf.edit().putBoolean(prop, (view as CompoundButton).isChecked).apply()
-            if (AccessibleServiceHelper().serviceRunning(this)) {
-                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
-            }
-        }
-    }
-
-    private fun initDefaultConfig() {
-        for (item in resources.getStringArray(R.array.powercfg_igoned)) {
-            spfPowercfg.edit().putString(item, ModeSwitcher.IGONED).apply()
-        }
-        for (item in resources.getStringArray(R.array.powercfg_fast)) {
-            spfPowercfg.edit().putString(item, ModeSwitcher.FAST).apply()
-        }
-        for (item in resources.getStringArray(R.array.powercfg_game)) {
-            spfPowercfg.edit().putString(item, ModeSwitcher.PERFORMANCE).apply()
         }
     }
 
@@ -228,10 +145,9 @@ class ActivityAppConfig2 : ActivityBase() {
 
     private fun setListData(dl: ArrayList<AppInfo>?, lv: OverScrollListView) {
         Scene.post {
-            lv.adapter = SceneModeAdapter(
+            lv.adapter = XposedAppsAdapter(
                     this,
-                    dl!!,
-                    globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
+                    dl!!
             )
             processBarDialog.hideDialog()
         }
@@ -260,34 +176,22 @@ class ActivityAppConfig2 : ActivityBase() {
             }
             val keyword = config_search_box.text.toString().toLowerCase(Locale.getDefault())
             val search = keyword.isNotEmpty()
-            var filterMode = ""
             var filterAppType = ""
             when (configlist_type.selectedItemPosition) {
                 0 -> filterAppType = "/data"
                 1 -> filterAppType = "/system"
                 2 -> filterAppType = "*"
             }
-            when (configlist_modes.selectedItemPosition) {
-                0 -> filterMode = "*"
-                1 -> filterMode = ModeSwitcher.POWERSAVE
-                2 -> filterMode = ModeSwitcher.BALANCE
-                3 -> filterMode = ModeSwitcher.PERFORMANCE
-                4 -> filterMode = ModeSwitcher.FAST
-                5 -> filterMode = ""
-                6 -> filterMode = ModeSwitcher.IGONED
-            }
             displayList = ArrayList()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
                 setAppRowDesc(item)
-                val packageName = item.packageName.toString()
-                if (search && !(packageName.toLowerCase(Locale.getDefault()).contains(keyword) || item.appName.toString().toLowerCase(Locale.getDefault()).contains(keyword))) {
+                val packageName = item.packageName
+                if (search && !(packageName.toLowerCase(Locale.getDefault()).contains(keyword) || item.appName.toLowerCase(Locale.getDefault()).contains(keyword))) {
                     continue
                 } else {
-                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, "")) {
-                        if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
-                            displayList!!.add(item)
-                        }
+                    if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
+                        displayList!!.add(item)
                     }
                 }
             }
@@ -302,44 +206,40 @@ class ActivityAppConfig2 : ActivityBase() {
 
     private fun setAppRowDesc(item: AppInfo) {
         item.selected = false
-        val packageName = item.packageName.toString()
-        item.enabledState = spfPowercfg.getString(packageName, "")
-        val configInfo = sceneConfigStore.getAppConfig(packageName)
+        val packageName = item.packageName
+        val configInfo = SceneConfigInfo()
+        configInfo.packageName = packageName
         item.sceneConfigInfo = configInfo
-        val desc = StringBuilder()
-        if (configInfo.aloneLight) {
-            desc.append("独立亮度 ")
-        }
-        if (configInfo.disNotice) {
-            desc.append("屏蔽通知  ")
-        }
-        if (configInfo.disButton) {
-            desc.append("屏蔽按键  ")
-        }
-        if (configInfo.freeze) {
-            desc.append("自动冻结  ")
-        }
-        if (configInfo.gpsOn) {
-            desc.append("打开GPS  ")
-        }
-        if (configInfo.screenOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            DialogAppOrientation.Transform(this).getName(configInfo.screenOrientation).run {
-                if (isNotEmpty()) {
-                    desc.append(this)
-                    desc.append("  ")
+
+        if (xposedExtension.current != null) {
+            xposedExtension.getAppConfig(packageName)?.run {
+                val desc = StringBuilder()
+                if (dpi > 0) {
+                    desc.append("DPI:${dpi}  ")
                 }
+                if (excludeRecent) {
+                    desc.append("隐藏后台  ")
+                }
+                if (smoothScroll) {
+                    desc.append("滚动优化  ")
+                }
+                item.desc = desc.toString()
             }
         }
-        item.desc = desc.toString()
+
     }
 
     override fun onDestroy() {
+        xposedExtension.unbindService()
         processBarDialog.hideDialog()
         super.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        title = getString(R.string.menu_scene_mode)
+        xposedExtension.bindService {
+            loadList()
+        }
+        title = getString(R.string.menu_xposed_app)
     }
 }
