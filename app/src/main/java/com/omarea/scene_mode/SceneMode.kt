@@ -132,8 +132,6 @@ class SceneMode private constructor(private val context: Context, private var st
 
         freezList.add(history)
         clearFreezeAppCountLimit()
-
-
     }
 
     fun setFreezeAppStartTime(packageName: String) {
