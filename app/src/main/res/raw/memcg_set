@@ -7,13 +7,6 @@ fi
 if [[ "$scene_memcg" != "" ]]; then
     cgroup_app="%s"
     cgroup_mem="%s"
-    if [[ -e /proc/1/reclaim ]]; then
-        if [[ "$cgroup_mem" == "/scene_limit2" ]]; then
-            pgrep -f $cgroup_app | while read pid; do
-                echo 1 > /proc/$pid/reclaim
-            done
-        fi
-    fi
 
     pgrep -f $cgroup_app | while read pid; do
         echo $pid > $scene_memcg$cgroup_mem/tasks
