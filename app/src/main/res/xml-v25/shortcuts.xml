@@ -14,7 +14,7 @@
     </shortcut>-->
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/freeze_logo"
+        android:icon="@drawable/shortcut_freeze_logo"
         android:shortcutDisabledMessage="@string/shortcut_disabled"
         android:shortcutId="ActivityFreezeApps"
         android:shortcutLongLabel="@string/title_activity_freeze"
@@ -22,6 +22,30 @@
         <intent
             android:action="a"
             android:targetClass="com.omarea.vtools.activities.ActivityFreezeApps2"
+            android:targetPackage="com.omarea.vtools" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_android_logo"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="ActivityApplistions"
+        android:shortcutLongLabel="@string/menu_applictions"
+        android:shortcutShortLabel="@string/menu_applictions">
+        <intent
+            android:action="b"
+            android:targetClass="com.omarea.vtools.activities.ActivityApplistions"
+            android:targetPackage="com.omarea.vtools" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_process_logo"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="ActivityProcess"
+        android:shortcutLongLabel="@string/menu_processes"
+        android:shortcutShortLabel="@string/menu_processes">
+        <intent
+            android:action="c"
+            android:targetClass="com.omarea.vtools.activities.ActivityProcess"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
 </shortcuts>
