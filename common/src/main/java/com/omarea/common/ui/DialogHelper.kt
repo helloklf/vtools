@@ -344,7 +344,7 @@ class DialogHelper {
                     // setBackgroundDrawableResource(android.R.color.transparent)
                     try {
                         val bg = getWindowBackground(activity)
-                        if (bg == -1) {
+                        if (wallpaperMode && bg == -1) {
                             val d = ColorDrawable(Color.argb(245, 25, 25, 33))
                             setBackgroundDrawable(d)
 
