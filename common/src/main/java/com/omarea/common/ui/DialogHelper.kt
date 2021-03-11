@@ -190,6 +190,15 @@ class DialogHelper {
             return color
         }
 
+        private fun getStatusBarColor(context: Context): Int {
+            val defaultColor = Color.WHITE
+            val attrsArray = intArrayOf(android.R.attr.statusBarColor)
+            val typedArray = context.obtainStyledAttributes(attrsArray)
+            val color = typedArray.getColor(0, defaultColor)
+            typedArray.recycle()
+            return color
+        }
+
         private fun openContinueAlertBlur(context: Activity,
                                       title: String = "",
                                       message: String = "",
@@ -262,10 +271,10 @@ class DialogHelper {
         }
 
         fun customDialogBlurBg(activity: Activity, view: View, cancelable: Boolean): DialogWrap {
-            val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
-            if (wallpaperMode) {
-                return customDialog(activity, view, cancelable)
-            } else {
+            // val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
+            // if (wallpaperMode) {
+            //     return customDialog(activity, view, cancelable)
+            // } else {
                 val dialog = AlertDialog
                         .Builder(activity, R.style.custom_alert_dialog)
                         .setView(view)
@@ -298,7 +307,7 @@ class DialogHelper {
                 }
 
                 return DialogWrap(dialog)
-            }
+            // }
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {
@@ -330,12 +339,29 @@ class DialogHelper {
                 }
 
                 if (blurBitmap != null) {
-                    setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
+                    setBackgroundDrawable(BitmapDrawable(activity.resources, blurBitmap))
                 } else {
                     // setBackgroundDrawableResource(android.R.color.transparent)
                     try {
-                        val d = ColorDrawable(getWindowBackground(activity))
-                        setBackgroundDrawable(d)
+                        val bg = getWindowBackground(activity)
+                        if (bg == -1) {
+                            val d = ColorDrawable(Color.argb(245, 25, 25, 33))
+                            setBackgroundDrawable(d)
+
+                            /*
+                            val statusBarColor = getStatusBarColor(activity)
+                            if (statusBarColor == -1) {
+                                val d = ColorDrawable(Color.argb(128, 0, 0, 0))
+                                setBackgroundDrawable(d)
+                            } else {
+                                val d = ColorDrawable(statusBarColor)
+                                setBackgroundDrawable(d)
+                            }
+                            */
+                        } else {
+                            val d = ColorDrawable(bg)
+                            setBackgroundDrawable(d)
+                        }
                     } catch (ex: java.lang.Exception) {
                         val d = ColorDrawable(Color.WHITE)
                         setBackgroundDrawable(d)
