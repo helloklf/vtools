@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.omarea.common.model.SelectItem
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogItemChooser
+import com.omarea.common.ui.DialogItemChooser2
 import com.omarea.data.EventType
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.model.CustomTaskAction
@@ -97,6 +98,7 @@ class ActivityTrigger : ActivityBase() {
                     return name?.endsWith(".sh") == true
                 }
             })
+
             val fileNames = files?.map {
                 SelectItem().apply {
                     val name = URLDecoder.decode(it.name)
@@ -105,8 +107,17 @@ class ActivityTrigger : ActivityBase() {
                     selected = triggerInfo.customTaskActions?.find { it.Name == name } != null
                 }
             }?.sortedBy { it.title }
+            val selectedItems = ArrayList<SelectItem>()
+            triggerInfo.customTaskActions?.forEach { item ->
+                val name = item.Name
+                val r = fileNames?.find { it.title == name }
+                if (r != null) {
+                    selectedItems.add(r)
+                }
+            }
+
             if (fileNames != null && fileNames.size > 0) {
-                DialogItemChooser(themeMode.isDarkMode, ArrayList(fileNames), true, object : DialogItemChooser.Callback {
+                DialogItemChooser2(themeMode.isDarkMode, ArrayList(fileNames), ArrayList(selectedItems), true, object : DialogItemChooser2.Callback {
                     override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
                         triggerInfo.customTaskActions = ArrayList(selected.map {
                             CustomTaskAction().apply {

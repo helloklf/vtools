@@ -11,6 +11,7 @@ import android.widget.Toast
 import com.omarea.common.model.SelectItem
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogItemChooser
+import com.omarea.common.ui.DialogItemChooser2
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.library.calculator.GetUpTime
 import com.omarea.model.CustomTaskAction
@@ -94,8 +95,17 @@ class ActivityTimingTask : ActivityBase() {
                     selected = timingTaskInfo.customTaskActions?.find { it.Name == name } != null
                 }
             }?.sortedBy { it.title }
+            val selectedItems = ArrayList<SelectItem>()
+            timingTaskInfo.customTaskActions?.forEach { item ->
+                val name = item.Name
+                val r = fileNames?.find { it.title == name }
+                if (r != null) {
+                    selectedItems.add(r)
+                }
+            }
+
             if (fileNames != null && fileNames.size > 0) {
-                DialogItemChooser(themeMode.isDarkMode, ArrayList(fileNames), true, object : DialogItemChooser.Callback {
+                DialogItemChooser2(themeMode.isDarkMode, ArrayList(fileNames), ArrayList(selectedItems), true, object : DialogItemChooser2.Callback {
                     override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
                         timingTaskInfo.customTaskActions = ArrayList(selected.map {
                             CustomTaskAction().apply {
