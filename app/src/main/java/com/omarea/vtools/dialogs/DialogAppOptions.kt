@@ -39,7 +39,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     fun selectUserAppOptions() {
         val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
+        val dialog = DialogHelper.customDialog(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
@@ -78,7 +78,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     fun selectSystemAppOptions() {
         val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
+        val dialog = DialogHelper.customDialog(context, dialogView)
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog.dismiss()
@@ -147,7 +147,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = "正在获取权限"
-        val alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+        val alert = DialogHelper.customDialog(context, dialog, false)
         AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
     }
 
@@ -239,7 +239,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val view = context.layoutInflater.inflate(R.layout.dialog_app_backup_mode, null)
         view.findViewById<TextView>(R.id.confirm_message).text = "备份选中的 ${apps.size} 个应用和数据？"
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         val includeData = view.findViewById<CompoundButton>(R.id.backup_include_data)
 
         // 检测数据备份功能兼容性
@@ -386,7 +386,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      */
     protected fun modifyStateAll() {
         val view = context.layoutInflater.inflate(R.layout.dialog_app_disable_mode, null)
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         view.findViewById<TextView>(R.id.confirm_message).text = "选中了 ${apps.size} 个应用，你希望把它们的状态改成？"
 
         val switchSuspend = view.findViewById<CompoundButton>(R.id.disable_suspend)
@@ -538,7 +538,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val view = context.layoutInflater.inflate(R.layout.dialog_app_clear_mode, null)
         view.findViewById<TextView>(R.id.confirm_message).text = "确定将选中的 ${apps.size} 个应用数据清空？"
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.clear_user_only)
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
@@ -585,7 +585,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
         view.findViewById<TextView>(R.id.confirm_message).text = "确定卸载选中的 ${apps.size} 个应用？"
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
         val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
 
@@ -606,7 +606,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val view = context.layoutInflater.inflate(R.layout.dialog_app_uninstall_mode, null)
         view.findViewById<TextView>(R.id.confirm_message).text = "确定卸载选中的 ${apps.size} 个系统应用？"
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         val userOnly = view.findViewById<CompoundButton>(R.id.uninstall_user_only)
         val keepData = view.findViewById<CompoundButton>(R.id.uninstall_keep_data)
 
@@ -684,7 +684,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val switchEverything = view.findViewById<CompoundButton>(R.id.dex2oat_everything)
         val switchForce = view.findViewById<CompoundButton>(R.id.dex2oat_force)
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }

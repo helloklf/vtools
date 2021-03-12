@@ -180,7 +180,7 @@ class ActivitySwap : ActivityBase() {
     private fun swapOffDialog () {
         val view = layoutInflater.inflate(R.layout.dialog_swap_delete, null)
         val deleteFile = view.findViewById<CompoundButton>(R.id.swap_delete_file)
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
@@ -290,7 +290,7 @@ class ActivitySwap : ActivityBase() {
             }
         })
 
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }
@@ -370,7 +370,7 @@ class ActivitySwap : ActivityBase() {
             zramSize = totalMem
         zramSizeBar.progress = zramSize / 128
 
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }
@@ -413,7 +413,7 @@ class ActivitySwap : ActivityBase() {
         val swapSize = view.findViewById<SeekBar>(R.id.swap_size)
         val swapSizeText = view.findViewById<TextView>(R.id.swap_size_text)
 
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
 
         swapSize.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -483,7 +483,7 @@ class ActivitySwap : ActivityBase() {
 
     private fun swapActiveDialog () {
         val view = layoutInflater.inflate(R.layout.dialog_swap_active, null)
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
 
         val priorityHight = view.findViewById<CompoundButton>(R.id.swap_priority_high)
         val priorityMiddle = view.findViewById<CompoundButton>(R.id.swap_priority_middle)

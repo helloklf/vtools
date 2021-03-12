@@ -176,7 +176,7 @@ class ActivityProcess : ActivityBase() {
             } catch (ex: java.lang.Exception) {
                 detail.friendlyName = name
             }
-            val dialog = DialogHelper.customDialogBlurBg(this, view)
+            val dialog = DialogHelper.customDialog(this, view)
 
             /*
             # Android Q 可通过 /proc/[pid]/reclaim 手动回收内存

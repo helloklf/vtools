@@ -9,7 +9,7 @@ import com.omarea.vtools.R
 class DialogPower(var context: Activity) {
     fun showPowerMenu() {
         val view = context.layoutInflater.inflate(R.layout.dialog_power_operation, null)
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         view.findViewById<View>(R.id.power_shutdown).setOnClickListener {
             dialog.dismiss()
             KeepShellPublic.doCmdSync(context.getString(R.string.power_shutdown_cmd))

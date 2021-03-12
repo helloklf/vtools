@@ -63,73 +63,71 @@ class DialogAddinModifyDevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_chooser) as Button).setOnClickListener {
             templateChooser()
         }
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                //.setTitle("机型信息修改")
-                .setView(dialog).setNegativeButton("保存重启") { _, _ ->
-                    val model = editModel.text.trim()
-                    val brand = editBrand.text.trim()
-                    val product = editProductName.text.trim()
-                    val device = editDevice.text.trim()
-                    val manufacturer = editManufacturer.text.trim()
-                    if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
-                        backupDefault()
-                        if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-                            if (brand.isNotEmpty())
-                                MagiskExtend.setSystemProp(brand_prop, brand.toString())
-                            if (product.isNotEmpty())
-                                MagiskExtend.setSystemProp(name_prop, product.toString())
-                            if (model.isNotEmpty())
-                                MagiskExtend.setSystemProp(model_prop, model.toString())
-                            if (manufacturer.isNotEmpty())
-                                MagiskExtend.setSystemProp(manufacturer_prop, manufacturer.toString())
-                            if (device.isNotEmpty())
-                                MagiskExtend.setSystemProp(device_prop, device.toString())
-                            // 小米 - 改model参数以后device_features要处理下
-                            if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
-                                if (model != android.os.Build.PRODUCT) {
-                                    MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
-                                }
-                            }
-                            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            val sb = StringBuilder()
-                            sb.append(CommonCmds.MountSystemRW)
-                            sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
-
-                            if (brand.isNotEmpty())
-                                sb.append("busybox sed -i 's/^$brand_prop=.*/$brand_prop=$brand/' /data/build.prop;")
-                            if (product.isNotEmpty())
-                                sb.append("busybox sed -i 's/^$name_prop=.*/$name_prop=$product/' /data/build.prop;")
-                            if (model.isNotEmpty())
-                                sb.append("busybox sed -i 's/^$model_prop=.*/$model_prop=$model/' /data/build.prop;")
-                            if (manufacturer.isNotEmpty())
-                                sb.append("busybox sed -i 's/^$manufacturer_prop=.*/$manufacturer_prop=$manufacturer/' /data/build.prop;")
-                            if (device.isNotEmpty())
-                                sb.append("busybox sed -i 's/^$device_prop=.*/$device_prop=$device/' /data/build.prop;")
-
-                            sb.append("cp /system/build.prop /system/build.bak.prop\n")
-                            sb.append("cp /data/build.prop /system/build.prop\n")
-                            sb.append("rm /data/build.prop\n")
-                            sb.append("chmod 0755 /system/build.prop\n")
-
-                            // 小米 - 改model参数以后device_features要处理下
-                            if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
-                                if (model != android.os.Build.PRODUCT) {
-                                    KeepShellPublic.doCmdSync("cp \"/system/etc/device_features/${android.os.Build.PRODUCT}.xml\" \"/system/etc/device_features/${product}.xml\"")
-                                }
-                            }
-
-                            sb.append("sync\n")
-                            sb.append("reboot\n")
-
-                            KeepShellPublic.doCmdSync(sb.toString())
+        val confirm = DialogHelper.confirm(context, "", "", dialog, DialogHelper.DialogButton("保存重启", {
+            val model = editModel.text.trim()
+            val brand = editBrand.text.trim()
+            val product = editProductName.text.trim()
+            val device = editDevice.text.trim()
+            val manufacturer = editManufacturer.text.trim()
+            if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
+                backupDefault()
+                if (MagiskExtend.moduleInstalled()) {
+                    if (brand.isNotEmpty())
+                        MagiskExtend.setSystemProp(brand_prop, brand.toString())
+                    if (product.isNotEmpty())
+                        MagiskExtend.setSystemProp(name_prop, product.toString())
+                    if (model.isNotEmpty())
+                        MagiskExtend.setSystemProp(model_prop, model.toString())
+                    if (manufacturer.isNotEmpty())
+                        MagiskExtend.setSystemProp(manufacturer_prop, manufacturer.toString())
+                    if (device.isNotEmpty())
+                        MagiskExtend.setSystemProp(device_prop, device.toString())
+                    // 小米 - 改model参数以后device_features要处理下
+                    if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
+                        if (model != android.os.Build.PRODUCT) {
+                            MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
                         }
-                    } else {
-                        Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
                     }
-                }.setPositiveButton("使用帮助") { _, _ ->
-                    DialogHelper.animDialog(AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }))
-                })
+                    Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                } else {
+                    val sb = StringBuilder()
+                    sb.append(CommonCmds.MountSystemRW)
+                    sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
+
+                    if (brand.isNotEmpty())
+                        sb.append("busybox sed -i 's/^$brand_prop=.*/$brand_prop=$brand/' /data/build.prop;")
+                    if (product.isNotEmpty())
+                        sb.append("busybox sed -i 's/^$name_prop=.*/$name_prop=$product/' /data/build.prop;")
+                    if (model.isNotEmpty())
+                        sb.append("busybox sed -i 's/^$model_prop=.*/$model_prop=$model/' /data/build.prop;")
+                    if (manufacturer.isNotEmpty())
+                        sb.append("busybox sed -i 's/^$manufacturer_prop=.*/$manufacturer_prop=$manufacturer/' /data/build.prop;")
+                    if (device.isNotEmpty())
+                        sb.append("busybox sed -i 's/^$device_prop=.*/$device_prop=$device/' /data/build.prop;")
+
+                    sb.append("cp /system/build.prop /system/build.bak.prop\n")
+                    sb.append("cp /data/build.prop /system/build.prop\n")
+                    sb.append("rm /data/build.prop\n")
+                    sb.append("chmod 0755 /system/build.prop\n")
+
+                    // 小米 - 改model参数以后device_features要处理下
+                    if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
+                        if (model != android.os.Build.PRODUCT) {
+                            KeepShellPublic.doCmdSync("cp \"/system/etc/device_features/${android.os.Build.PRODUCT}.xml\" \"/system/etc/device_features/${product}.xml\"")
+                        }
+                    }
+
+                    sb.append("sync\n")
+                    sb.append("reboot\n")
+
+                    KeepShellPublic.doCmdSync(sb.toString())
+                }
+            } else {
+                Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
+            }
+        }), DialogHelper.DialogButton("使用帮助", {
+            DialogHelper.animDialog(AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }))
+        }, false))
         loadCurrent()
 
         try {

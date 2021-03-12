@@ -60,7 +60,7 @@ open class ProgressBarDialog(private var context: Activity, private var uniqueId
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = context.getString(R.string.execute_wait)
-        alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+        alert = DialogHelper.customDialog(context, dialog, false)
         // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
             AsynSuShellUnit(DefaultHandler(alert)).exec(cmd).waitFor()
@@ -104,7 +104,7 @@ open class ProgressBarDialog(private var context: Activity, private var uniqueId
             val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             textView = (dialog.findViewById(R.id.dialog_text) as TextView)
             textView!!.text = text
-            alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+            alert = DialogHelper.customDialog(context, dialog, false)
             // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         }
 

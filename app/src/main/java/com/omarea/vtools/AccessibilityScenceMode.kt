@@ -293,11 +293,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
             lastWindowChanged = System.currentTimeMillis()
-            if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
-                modernModeEvent(event)
-            } else {
-                startActivityPolling(600L)
-            }
+            // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
+                    modernModeEvent(event)
+            // } else {
+            //     startActivityPolling(600L)
+            // }
         } else {
             classicModelEvent(event)
         }

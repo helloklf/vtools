@@ -62,16 +62,16 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         btn_powersave.setOnClickListener {
-            installConfig(ModeSwitcher.POWERSAVE, getString(R.string.power_change_powersave))
+            installConfig(ModeSwitcher.POWERSAVE)
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(ModeSwitcher.BALANCE, getString(R.string.power_change_default))
+            installConfig(ModeSwitcher.BALANCE)
         }
         btn_gamemode.setOnClickListener {
-            installConfig(ModeSwitcher.PERFORMANCE, getString(R.string.power_change_game))
+            installConfig(ModeSwitcher.PERFORMANCE)
         }
         btn_fastmode.setOnClickListener {
-            installConfig(ModeSwitcher.FAST, getString(R.string.power_chagne_fast))
+            installConfig(ModeSwitcher.FAST)
         }
 
         if (!GlobalStatus.homeMessage.isNullOrEmpty()) {
@@ -382,20 +382,19 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         super.onPause()
     }
 
-    private fun installConfig(action: String, message: String) {
+    private fun installConfig(action: String) {
         val modeSwitcher = ModeSwitcher()
         val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (!dynamic && modeSwitcher.getCurrentPowerMode() == action) {
             modeSwitcher.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("提示")
-                    .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")
-                    .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        KeepShellPublic.doCmdSync("sync\nsleep 1\nreboot")
-                    })
+            DialogHelper.confirmBlur(this.activity!!,
+                    "提示",
+                    "需要重启手机才能恢复默认调度，是否立即重启？",
+                    {
+                        KeepShellPublic.doCmdSync("sync\nsleep 1\nsvc power reboot || reboot")
+                    },
+                    null)
             setModeState()
             return
         }
@@ -406,20 +405,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             modeSwitcher.executePowercfgMode(action)
         }
         setModeState()
-        showMsg(message)
         maxFreqs.clear()
         minFreqs.clear()
         updateInfo()
         if (dynamic) {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-            DialogHelper.animDialog(
-                    AlertDialog
-                            .Builder(context)
-                            .setTitle("提示")
-                            .setMessage("“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“动态响应”！")
-                            .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                            }
-                            .setCancelable(false))
+            DialogHelper.alert(this.activity!!,
+                    "提示",
+                    "“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“功能”菜单-“性能界面”界面关闭“动态响应”！")
         } else {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).apply()
             if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {

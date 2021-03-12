@@ -388,7 +388,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 }
                             } else {
                                 // AlertDialog.Builder(this.context).create()
-                                DialogHelper.customDialogBlurBg(activity!!, dialogView).dialog
+                                DialogHelper.customDialog(activity!!, dialogView).dialog
                             })
 
                             dialogView.findViewById<TextView>(R.id.title).text = action.title

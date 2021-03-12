@@ -13,7 +13,7 @@ class DialogAppBoostPolicy(var context: Activity, val current: Boolean, val iRes
 
     fun show() {
         val view = context.layoutInflater.inflate(R.layout.dialog_scene_app_boost, null)
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         val switch = view.findViewById<CompoundButton>(R.id.boost_policy_mem)
         switch.isChecked = current
 

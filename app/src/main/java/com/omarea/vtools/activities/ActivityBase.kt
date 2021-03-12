@@ -6,6 +6,7 @@ import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.omarea.Scene
 import com.omarea.common.ui.ThemeMode
 import com.omarea.vtools.R
 
@@ -41,5 +42,10 @@ open class ActivityBase : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        System.gc()
     }
 }

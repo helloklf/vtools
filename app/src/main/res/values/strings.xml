@@ -173,7 +173,7 @@
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
     <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps（Android 11+系统不支持备份功能）</string>
-    <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
+    <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容【应用变量】模块的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
     <string name="title_activity_shortcut">快捷启动</string>
@@ -189,10 +189,6 @@
     <string name="shortcut_p3_long">性能配置-性能</string>
     <string name="shortcut_p4">极速模式</string>
     <string name="shortcut_p4_long">性能配置-极速</string>
-    <string name="power_change_default">已切换为均衡模式，适合日常使用，速度与耗电平衡！</string>
-    <string name="power_change_game">已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！</string>
-    <string name="power_change_powersave">已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！</string>
-    <string name="power_chagne_fast">已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！</string>
     <string name="device_unsupport">该功能暂不支持您的设备！</string>
 
     <string name="addin_fullscreen_on">沉浸式体验</string>

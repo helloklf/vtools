@@ -3,59 +3,137 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="26dp"
-    android:paddingTop="10dp"
-    android:paddingRight="26dp">
+    android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:text="@string/dialog_addin_device_warn"
         android:textColor="?android:colorAccent"
         android:textSize="11dp" />
 
-    <EditText
-        android:id="@+id/dialog_addin_model"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_model"
-        android:inputType="text" />
+        android:background="@drawable/in_card_item_inactive"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp">
 
-    <EditText
-        android:id="@+id/dialog_addin_brand"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/ro_product_brand"
-        android:inputType="text" />
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ro_product_model" />
 
-    <EditText
-        android:id="@+id/dialog_addin_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/ro_product_name"
-        android:inputType="text" />
+        <EditText
+            android:id="@+id/dialog_addin_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/dialog_addin_device"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_device"
-        android:inputType="text" />
+        android:background="@drawable/in_card_item_inactive"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp">
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ro_product_brand" />
+
+        <EditText
+            android:id="@+id/dialog_addin_brand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/in_card_item_inactive"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp">
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ro_product_name" />
+
+        <EditText
+            android:id="@+id/dialog_addin_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/in_card_item_inactive"
+        android:layout_marginBottom="4dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp">
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ro_product_device" />
+
+        <EditText
+            android:id="@+id/dialog_addin_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
     <!--<EditText
         android:id="@+id/dialog_addin_product"
         android:hint="ro.build.product="
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />-->
-    <EditText
-        android:id="@+id/dialog_addin_manufacturer"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_manufacturer"
-        android:inputType="text" />
+        android:background="@drawable/in_card_item_inactive"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp">
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ro_product_manufacturer" />
+
+        <EditText
+            android:id="@+id/dialog_addin_manufacturer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="text" />
+    </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

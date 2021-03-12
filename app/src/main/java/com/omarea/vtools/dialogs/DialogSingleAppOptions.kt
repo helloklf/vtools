@@ -61,7 +61,7 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
     private fun showUserAppOptions() {
         val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
+        val dialog = DialogHelper.customDialog(context, dialogView)
         dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
@@ -125,7 +125,7 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
     private fun showSystemAppOptions() {
         val dialogView = context.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
 
-        val dialog = DialogHelper.customDialogBlurBg(context, dialogView)
+        val dialog = DialogHelper.customDialog(context, dialogView)
         dialogView.findViewById<TextView>(R.id.app_target_sdk).text = "SDK" + app.targetSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_min_sdk).text = "SDK" + app.minSdkVersion.toString()
         dialogView.findViewById<TextView>(R.id.app_version_name).text = "Version Name: " + app.versionName
@@ -311,7 +311,7 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
         switchCreateModule.isEnabled = magiskSupported
         switchCreateModule.isChecked = magiskSupported
 
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
             dialog.dismiss()
 

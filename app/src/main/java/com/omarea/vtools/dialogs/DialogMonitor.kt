@@ -13,7 +13,7 @@ import com.omarea.vtools.popup.FloatTaskManager
 class DialogMonitor(var context: Activity) {
     fun show() {
         val view = context.layoutInflater.inflate(R.layout.dialog_float_monitor, null)
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
 
         view.findViewById<CompoundButton>(R.id.monitor_perf).run {
             isChecked = FloatMonitor.show == true

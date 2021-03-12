@@ -341,7 +341,7 @@ class ActivityFreezeApps : ActivityBase() {
 
     private fun showOptions(appInfo: AppInfo) {
         val view = layoutInflater.inflate(R.layout.dialog_freeze_app_opt, null)
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
 
         view.findViewById<View>(R.id.app_options_open).setOnClickListener {
             dialog.dismiss()
@@ -599,7 +599,7 @@ class ActivityFreezeApps : ActivityBase() {
 
     private fun freezeOptionsDialog() {
         val view = layoutInflater.inflate(R.layout.dialog_freeze_menu, null)
-        val dialog = DialogHelper.customDialogBlurBg(this, view)
+        val dialog = DialogHelper.customDialog(this, view)
 
         view.findViewById<View>(R.id.menu_freeze).setOnClickListener { _ ->
             dialog.dismiss()

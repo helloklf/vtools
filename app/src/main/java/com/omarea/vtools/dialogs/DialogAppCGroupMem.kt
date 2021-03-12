@@ -43,7 +43,7 @@ class DialogAppCGroupMem(var context: Activity, val current: String?, val iResul
 
     fun show() {
         val view = context.layoutInflater.inflate(R.layout.dialog_scene_app_cgroup, null)
-        val dialog = DialogHelper.customDialogBlurBg(context, view)
+        val dialog = DialogHelper.customDialog(context, view)
 
         view.findViewById<View>(R.id.cgroup_default).setOnClickListener {
             dialog.dismiss()

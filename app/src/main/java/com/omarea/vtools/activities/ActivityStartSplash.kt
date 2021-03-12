@@ -51,7 +51,7 @@ class ActivityStartSplash : Activity() {
      */
     private fun initContractAction() {
         val view = layoutInflater.inflate(R.layout.dialog_danger_agreement, null)
-        val dialog = DialogHelper.customDialogBlurBg(this, view, false)
+        val dialog = DialogHelper.customDialog(this, view, false)
         val btnConfirm = view.findViewById<Button>(R.id.btn_confirm)
         val agreement = view.findViewById<CompoundButton>(R.id.agreement)
         val timer = Timer()
