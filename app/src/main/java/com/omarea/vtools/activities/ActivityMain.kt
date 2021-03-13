@@ -55,18 +55,6 @@ class ActivityMain : ActivityBase() {
 
             if (
                     MagiskExtend.magiskSupported() &&
-                    KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal-engine.current.ini") != ""
-            ) {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("注意事项")
-                        .setMessage("附加功 - MIUI专属 - 温控模式切换，现已全面升级。因为此前设计的模式文件，已经无法很好的兼容最新系统，建议尽快切换到新的配置模式！")
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.btn_iknow) { _, _ ->
-                        })
-            }
-
-            if (
-                    MagiskExtend.magiskSupported() &&
                     KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal.current.ini") != ""
             ) {
                 when {
@@ -87,9 +75,8 @@ class ActivityMain : ActivityBase() {
                     }
                     else -> return
                 }
-                DialogHelper.helpInfo(
-                        context,
-                        "",
+                DialogHelper.alert(context,
+                        "请留意",
                         "检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
             }
         }
