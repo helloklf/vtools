@@ -21,6 +21,10 @@ class DialogHelper {
     class DialogWrap(private val d: AlertDialog) {
         public val context = dialog.context
 
+        public fun setCancelable(cancelable: Boolean) {
+            d.setCancelable(cancelable)
+        }
+
         public val dialog: AlertDialog
             get() {
                 return d

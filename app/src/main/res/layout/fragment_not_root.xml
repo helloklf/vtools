@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:orientation="vertical">
 
@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="SCENE * 未ROOT"
+        android:text="未ROOT"
         android:textAlignment="center"
         android:textColor="?android:colorAccent"
         android:textSize="40dp" />
@@ -18,7 +18,7 @@
         style="@style/textSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="未能获取ROOT权限，大部分功能都已禁用"
+        android:text="未获取ROOT权限，部分功能已被禁用"
         android:textAlignment="center"
         android:textSize="11dp" />
 

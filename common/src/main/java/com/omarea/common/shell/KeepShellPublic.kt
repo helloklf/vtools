@@ -1,5 +1,7 @@
 package com.omarea.common.shell
 
+import android.util.Log
+
 /**
  * Created by Hello on 2018/01/23.
  */

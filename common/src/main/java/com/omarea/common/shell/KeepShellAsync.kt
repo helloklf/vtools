@@ -3,6 +3,7 @@ package com.omarea.common.shell
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import java.io.BufferedReader
 import java.io.BufferedWriter

@@ -3,19 +3,6 @@
     <resource dir="file:///android_asset/kr-script/apps" />
 
     <group title="流氓杀手">
-        <switch>
-            <title>网易云音乐首屏广告</title>
-            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
-            <get>run cloudmusic_ad_get.sh</get>
-            <set>run cloudmusic_ad_set.sh</set>
-        </switch>
-        <switch>
-            <title>抖音首屏广告</title>
-            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
-            <get>run douyin_ad_get.sh</get>
-            <set>run douyin_ad_set.sh</set>
-        </switch>
-
         <action max-sdk="29">
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
@@ -39,13 +26,13 @@
             </params>
             <set>run qq_style_set.sh</set>
         </action>
-        <action confirm="true">
+        <action confirm="true" max-sdk="29">
             <title>QQ个性化 问题修复</title>
             <desc>修复使用了禁用QQ个性化，手机双清后QQ登录不上的问题</desc>
             <summary>注意：此操作将删除QQ所有数据！</summary>
             <set>run qq_style_fix.sh</set>
         </action>
-        <action confirm="true">
+        <action confirm="true" max-sdk="29">
             <title>修复淘宝闪退</title>
             <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
             <set>run taobao_fix.sh</set>

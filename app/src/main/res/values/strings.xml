@@ -21,7 +21,8 @@
     <string name="btn_resume_selected">恢复选中</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
-    <string name="error_root">抱歉，没有获取到ROOT权限，很多功能将无法使用！</string>
+    <string name="error_root">抱歉，没有获取到ROOT权限</string>
+    <string name="error_root_desc">没有ROOT权限，将失去许多特色功能。\n如果你错过了授权提示，或未看到弹窗，请找到你的ROOT管理器，手动设置允许Scene使用ROOT权限~</string>
     <string name="question_install_busybox">安装Busybox吗？</string>
     <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
