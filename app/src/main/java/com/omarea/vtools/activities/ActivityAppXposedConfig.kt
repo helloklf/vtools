@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
-import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import com.omarea.Scene
 import com.omarea.common.ui.OverScrollListView
@@ -20,11 +19,9 @@ import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.store.XposedExtension
 import com.omarea.ui.XposedAppsAdapter
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_app_xposed_config.*
-import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 

@@ -11,7 +11,6 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import com.omarea.common.model.SelectItem
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.ui.DialogItemChooser
 import com.omarea.common.ui.DialogItemChooser2
 import com.omarea.data.EventType
 import com.omarea.krscript.executor.ExtractAssets

@@ -195,7 +195,9 @@ class DialogHelper {
                 textView?.text = text
 
                 textView?.setOnClickListener {
-                    dialog.dismiss()
+                    if (dismiss) {
+                        dialog.dismiss()
+                    }
                     onClick?.run()
                 }
             }
@@ -204,7 +206,9 @@ class DialogHelper {
                 textView?.text = text
 
                 textView.setOnClickListener {
-                    dialog.dismiss()
+                    if (dismiss) {
+                        dialog.dismiss()
+                    }
                     onClick?.run()
                 }
             }

@@ -1,7 +1,6 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build

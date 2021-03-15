@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.omarea.Scene
-import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.ThemeMode
 import com.omarea.vtools.R

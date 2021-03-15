@@ -17,13 +17,13 @@ import android.graphics.drawable.Icon;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
 import com.omarea.vtools.R;
 import com.omarea.vtools.activities.ActivityQuickStart;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.RequiresApi;
 
 public class FreezeAppShortcutHelper {
     private static int requestCount = 0;

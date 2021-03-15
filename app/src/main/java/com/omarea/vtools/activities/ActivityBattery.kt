@@ -1,7 +1,6 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.*
 import android.os.BatteryManager

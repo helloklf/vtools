@@ -1,7 +1,6 @@
 package com.omarea.utils
 
 
-import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -14,7 +13,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.omarea.common.ui.DialogHelper
-import com.omarea.vtools.R
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.File

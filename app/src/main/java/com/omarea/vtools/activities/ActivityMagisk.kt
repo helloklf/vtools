@@ -1,6 +1,5 @@
 package com.omarea.vtools.activities
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
