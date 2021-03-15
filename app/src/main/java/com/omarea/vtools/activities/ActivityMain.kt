@@ -2,7 +2,6 @@ package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -136,20 +135,20 @@ class ActivityMain : ActivityBase() {
                 if (MagiskExtend.magiskSupported() &&
                         !(MagiskExtend.moduleInstalled() || globalSPF.getBoolean("magisk_dot_show", false))
                 ) {
-                    DialogHelper.animDialog(
-                            AlertDialog.Builder(this)
-                                    .setTitle(getString(R.string.magisk_install_title))
-                                    .setMessage(getString(R.string.magisk_install_desc))
-                                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                        MagiskExtend.magiskModuleInstall(this)
-                                    }.setNegativeButton(R.string.btn_cancel) { _, _ ->
-                                    }.setNeutralButton(R.string.btn_dontshow) { _, _ ->
-                                        globalSPF.edit().putBoolean("magisk_dot_show", true).apply()
-                                    })
+                    DialogHelper.confirm(this,
+                            getString(R.string.magisk_install_title),
+                            getString(R.string.magisk_install_desc),
+                            {
+                                MagiskExtend.magiskModuleInstall(this)
+                            })
+                    // 不再提示 globalSPF.edit().putBoolean("magisk_dot_show", true).apply()
                 }
             } catch (ex: Exception) {
-                DialogHelper.animDialog(AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
-                        .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry)) { _, _ ->
+                DialogHelper.alert(
+                        this,
+                        getString(R.string.sorry),
+                        "启动应用失败\n" + ex.message,
+                        {
                             recreate()
                         })
             }

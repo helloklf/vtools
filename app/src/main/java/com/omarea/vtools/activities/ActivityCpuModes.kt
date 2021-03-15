@@ -96,14 +96,14 @@ class ActivityCpuModes : ActivityBase() {
         }
 
         cpu_mode_delete_outside.setOnClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("确定删除?")
-                    .setMessage("确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的")
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+            DialogHelper.confirm(this, "确定删除?",
+                    "确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的",
+                    {
                         configInstaller.removeOutsideConfig()
                         cpu_mode_outside.visibility = View.GONE
                         reStartService()
                         updateState()
-                    }.setNegativeButton(R.string.btn_cancel, { _, _ -> }))
+                    })
         }
 
         val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")

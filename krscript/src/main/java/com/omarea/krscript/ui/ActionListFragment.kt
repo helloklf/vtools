@@ -138,11 +138,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         if (nodeUnlocked(item)) {
             val toValue = !item.checked
             if (item.confirm) {
-                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warning(activity!!, item.title, item.desc, {
                     switchExecute(item, toValue, onCompleted)
                 })
             } else if (item.warning.isNotEmpty()) {
-                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warning(activity!!, item.title, item.warning, {
                     switchExecute(item, toValue, onCompleted)
                 })
             } else {
@@ -186,19 +186,19 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     // 长按 添加收藏
     override fun onItemLongClick(clickableNode: ClickableNode) {
         if (clickableNode.key.isEmpty()) {
-            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
-                    .setMessage(R.string.kr_ushortcut_nsupported)
-                    .setNeutralButton(R.string.btn_cancel) { _, _ ->
-                    }
+            DialogHelper.alert(
+                    this.activity!!,
+                    getString(R.string.kr_shortcut_create_fail),
+                    getString(R.string.kr_ushortcut_nsupported)
             )
         } else {
             krScriptActionHandler?.addToFavorites(clickableNode, object : KrScriptActionHandler.AddToFavoritesHandler {
                 override fun onAddToFavorites(clickableNode: ClickableNode, intent: Intent?) {
                     if (intent != null) {
-                        DialogHelper.animDialog(AlertDialog.Builder(context)
-                                .setTitle(getString(R.string.kr_shortcut_create))
-                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), clickableNode.title))
-                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        DialogHelper.confirm(activity!!,
+                                getString(R.string.kr_shortcut_create),
+                                String.format(getString(R.string.kr_shortcut_create_desc), clickableNode.title),
+                                {
                                     val result = ActionShortcutManager(context!!)
                                             .addShortcut(intent, IconPathAnalysis().loadLogo(context!!, clickableNode), clickableNode)
                                     if (!result) {
@@ -206,8 +206,6 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                     } else {
                                         Toast.makeText(context, getString(R.string.kr_shortcut_create_success), Toast.LENGTH_SHORT).show()
                                     }
-                                }
-                                .setNegativeButton(R.string.btn_cancel) { _, _ ->
                                 })
                     }
                 }
@@ -221,11 +219,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     override fun onPickerClick(item: PickerNode, onCompleted: Runnable) {
         if (nodeUnlocked(item)) {
             if (item.confirm) {
-                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warning(activity!!, item.title, item.desc, {
                     pickerExecute(item, onCompleted)
                 })
             } else if (item.warning.isNotEmpty()) {
-                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warning(activity!!, item.title, item.warning, {
                     pickerExecute(item, onCompleted)
                 })
             } else {
@@ -298,11 +296,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     override fun onActionClick(item: ActionNode, onCompleted: Runnable) {
         if (nodeUnlocked(item)) {
             if (item.confirm) {
-                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warning(activity!!, item.title, item.desc, {
                     actionExecute(item, onCompleted)
                 })
             } else if (item.warning.isNotEmpty() && (item.params == null || item.params?.size == 0)) {
-                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warning(activity!!, item.title, item.warning, {
                     actionExecute(item, onCompleted)
                 })
             } else {

@@ -262,7 +262,7 @@ class ActionPage : ActivityBase() {
         val darkMode = themeMode.isDarkMode
         val dialog = DialogLogFragment.create(
                 menuOption,
-                Runnable { },
+                { },
                 onDismiss,
                 currentPageConfig.pageHandlerSh,
                 params,

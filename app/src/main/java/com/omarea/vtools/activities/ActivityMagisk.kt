@@ -35,14 +35,12 @@ class ActivityMagisk : ActivityBase() {
     fun onViewCreated() {
         if (MagiskExtend.magiskSupported()) {
             if (!MagiskExtend.moduleInstalled()) {
-                DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("安装Magisk拓展？")
-                        .setMessage("安装Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数~")
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                DialogHelper.confirm(this, "安装Magisk拓展？",
+                        "安装Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数~",
+                        {
                             MagiskExtend.magiskModuleInstall(context)
                             Toast.makeText(context, "操作已执行~", Toast.LENGTH_LONG).show()
                             this@ActivityMagisk.recreate()
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
             }
         } else {

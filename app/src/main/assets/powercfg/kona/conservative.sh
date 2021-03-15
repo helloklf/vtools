@@ -231,7 +231,7 @@ if [[ "$action" = "powersave" ]]; then
 
   sched_config "85 85" "96 96" "160" "260"
 
-  sched_limit 0 0 0 5000 0 5000
+  sched_limit 0 0 0 10000 0 1000
 
   exit 0
 fi

@@ -104,13 +104,11 @@ class ActivityImg : ActivityBase() {
                 PERSIST_IMG -> fileName = "persist"
             }
             if (File("${CommonCmds.SDCardDir}/$fileName.img").exists()) {
-                DialogHelper.animDialog(AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.backup_file_exists))
-                        .setMessage(String.format(getString(R.string.backup_img_exists), fileName))
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            backupImgConfirm(action)
-                        })
+                DialogHelper.confirm(this,
+                        getString(R.string.backup_file_exists),
+                        String.format(getString(R.string.backup_img_exists), fileName), {
+                    backupImgConfirm(action)
+                })
             } else {
                 backupImgConfirm(action)
             }
@@ -154,18 +152,17 @@ class ActivityImg : ActivityBase() {
                 DTBO_IMG -> partition = "DTBO"
                 PERSIST_IMG -> partition = "Persist"
             }
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.flash_confirm))
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
+            DialogHelper.confirm(this,
+                    getString(R.string.flash_confirm),
+                    "此操作将刷入${imgPath}到系统${partition}分区，如果你选择了错误的文件，刷入后可能导致手机无法开机！",
+                    {
                         when (requestCode) {
                             BOOT_IMG -> BackupRestoreUtils(this).flashBoot(imgPath)
                             RECOVERY_IMG -> BackupRestoreUtils(this).flashRecovery(imgPath)
                             DTBO_IMG -> BackupRestoreUtils(this).flashDTBO(imgPath)
                             PERSIST_IMG -> BackupRestoreUtils(this).flashPersist(imgPath)
                         }
-                    }
-                    .setMessage("此操作将刷入${imgPath}到系统${partition}分区，如果你选择了错误的文件，刷入后可能导致手机无法开机！"))
+                    })
         }
     }
 

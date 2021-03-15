@@ -320,10 +320,10 @@ class ActivityFreezeApps : ActivityBase() {
             return
         }
 
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.freeze_shortcut_lost))
-                .setMessage(getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName")
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+        DialogHelper.confirm(this,
+                getString(R.string.freeze_shortcut_lost),
+                getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName",
+                {
                     processBarDialog.showDialog(getString(R.string.please_wait))
                     CreateShortcutThread(lostedShortcuts, context, Runnable {
                         handler.post {
@@ -331,11 +331,6 @@ class ActivityFreezeApps : ActivityBase() {
                             processBarDialog.hideDialog()
                         }
                     }).start()
-                }
-                .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                }
-                .setNeutralButton(R.string.btn_dontshow) { _, _ ->
-                    config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, false).apply()
                 })
     }
 
@@ -358,12 +353,10 @@ class ActivityFreezeApps : ActivityBase() {
         }
         view.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
             dialog.dismiss()
-            DialogHelper.animDialog(
-                    AlertDialog.Builder(context).setTitle("确定要卸载【${appInfo.appName}】？").setNeutralButton(R.string.btn_cancel) { _, _ ->
-                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        removeAndUninstall(appInfo)
-                        loadData()
-                    })
+            DialogHelper.confirm(this, "确认卸载？", "目标应用：${appInfo.appName}", {
+                removeAndUninstall(appInfo)
+                loadData()
+            })
         }
         view.findViewById<View>(R.id.app_options_freeze).setOnClickListener {
             dialog.dismiss()
@@ -651,18 +644,15 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     private fun createShortcutAll() {
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setMessage(R.string.freeze_batch_add_wran).setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    processBarDialog.showDialog(getString(R.string.please_wait))
-                    CreateShortcutAllThread(context, freezeApps, Runnable {
-                        handler.post {
-                            processBarDialog.hideDialog()
-                            loadData()
-                        }
-                    }).start()
+        DialogHelper.confirm(this, getString(R.string.freeze_batch_add), getString(R.string.freeze_batch_add_wran), {
+            processBarDialog.showDialog(getString(R.string.please_wait))
+            CreateShortcutAllThread(context, freezeApps, Runnable {
+                handler.post {
+                    processBarDialog.hideDialog()
+                    loadData()
                 }
-                .setNeutralButton(R.string.btn_cancel) { _, _ ->
-                })
+            }).start()
+        })
     }
 
     private class CreateShortcutAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {

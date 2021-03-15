@@ -1,6 +1,5 @@
 package com.omarea.vtools.activities
 
-import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -91,13 +90,11 @@ class ActivityAddin : ActivityBase() {
         if (item.get("Wran") == false) {
             (item["Action"] as Runnable).run()
         } else {
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(item["Title"].toString())
-                    .setNegativeButton(R.string.btn_cancel, null)
-                    .setPositiveButton(R.string.addin_continue) { _, _ ->
-                        (item["Action"] as Runnable).run()
-                    }
-                    .setMessage(item["Desc"].toString()))
+            DialogHelper.confirm(this,
+                    item["Title"].toString(),
+                    item["Desc"].toString(), {
+                (item["Action"] as Runnable).run()
+            })
         }
     }
 

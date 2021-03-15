@@ -163,10 +163,10 @@ class ActivityBattery : ActivityBase() {
             }
         }
         btn_battery_history_del.setOnClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle("需要重启")
-                    .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
-                    .setPositiveButton(R.string.btn_confirm) { _, which ->
+            DialogHelper.confirm(this,
+                    "需要重启",
+                    "删除电池使用记录需要立即重启手机，是否继续？",
+                    {
                         KeepShellPublic.doCmdSync(
                                 "rm -f /data/system/batterystats-checkin.bin;" +
                                         "rm -f /data/system/batterystats-daily.xml;" +
@@ -177,8 +177,7 @@ class ActivityBattery : ActivityBase() {
                                         "sync;" +
                                         "sleep 2;" +
                                         "reboot;")
-                    }
-                    .setNegativeButton(R.string.btn_cancel) { _, which -> })
+                    })
         }
 
         bp_disable_charge.setOnClickListener {
