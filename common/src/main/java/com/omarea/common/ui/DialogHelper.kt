@@ -2,6 +2,7 @@ package com.omarea.common.ui
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.UiModeManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -12,6 +13,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.R
 
 class DialogHelper {
@@ -173,6 +175,7 @@ class DialogHelper {
 
             return dialog
         }
+
         fun confirm(context: Context,
                     title: String = "",
                     message: String = "",
@@ -220,8 +223,8 @@ class DialogHelper {
             this.confirm(context, "", "", contentView, onConfirm, onCancel)
         }
 
-        private fun getWindowBackground(context: Context): Int {
-            val defaultColor = Color.WHITE
+        private fun getWindowBackground(context: Context, defaultColor:Int = Color.TRANSPARENT): Int {
+            // val attrsArray = intArrayOf(android.R.attr.windowBackground)
             val attrsArray = intArrayOf(android.R.attr.background)
             val typedArray = context.obtainStyledAttributes(attrsArray)
             val color = typedArray.getColor(0, defaultColor)
@@ -332,7 +335,19 @@ class DialogHelper {
             return animDialog(dialog)
         }
 
+        private fun isNightMode(context: Context): Boolean {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                return true
+            } else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+                val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+                return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+            } else {
+                return false
+            }
+        }
+
         fun setWindowBlurBg(window: Window, activity: Activity) {
+            // 是否使用了动态壁纸
             val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
 
             window.run {
@@ -356,9 +371,15 @@ class DialogHelper {
                     // setBackgroundDrawableResource(android.R.color.transparent)
                     try {
                         val bg = getWindowBackground(activity)
-                        if (wallpaperMode && bg == -1) {
-                            val d = ColorDrawable(Color.argb(245, 25, 25, 33))
-                            setBackgroundDrawable(d)
+                        if (bg == Color.TRANSPARENT) {
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            if (wallpaperMode || isNightMode(context)) {
+                                val d = ColorDrawable(Color.argb(245, 18, 18, 18))
+                                setBackgroundDrawable(d)
+                            } else {
+                                val d = ColorDrawable(Color.WHITE)
+                                setBackgroundDrawable(d)
+                            }
                         } else {
                             val d = ColorDrawable(bg)
                             setBackgroundDrawable(d)
