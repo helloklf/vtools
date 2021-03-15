@@ -147,15 +147,14 @@ class ActivityHiddenApps : ActivityBase() {
                                 }
 
                                 if (hasConfigChange) {
-                                    DialogHelper.animDialog(AlertDialog.Builder(this)
-                                            .setTitle("需要重启手机来恢复以下应用")
-                                            .setMessage(msg.toString())
-                                            .setPositiveButton(R.string.btn_reboot) { _, _ ->
+                                    DialogHelper.confirm(this,
+                                            "需要重启手机来恢复以下应用",
+                                            msg.toString(),
+                                            DialogHelper.DialogButton(getString(R.string.btn_reboot), {
                                                 keepShell.doCmdSync("sync\nsleep 2\nreboot")
-                                            }
-                                            .setNeutralButton(R.string.btn_not_now) { _, _ ->
-                                            }
-                                            .setCancelable(false))
+                                            }),
+                                            DialogHelper.DialogButton(getString(R.string.btn_not_now), {
+                                            }))
                                 } else {
                                     DialogHelper.helpInfo(this, "以下应用未能恢复", msg.toString())
                                 }

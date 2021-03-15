@@ -292,48 +292,35 @@ class ActivityAppXposedDetails : ActivityBase() {
                 app_details_dpi.text = "默认"
             }
             app_details_dpi.setOnClickListener {
-                var dialog: AlertDialog? = null
+                var dialog: DialogHelper.DialogWrap? = null
                 val view = layoutInflater.inflate(R.layout.dialog_dpi_input, null)
-                val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
-                inputDpi.setFilters(arrayOf(IntInputFilter()));
-                if (sceneConfigInfo.dpi >= 96) {
-                    inputDpi.setText(sceneConfigInfo.dpi.toString())
+                val inputDpi = view.findViewById<EditText>(R.id.input_dpi).apply {
+                    setFilters(arrayOf(IntInputFilter()));
+                    if (sceneConfigInfo.dpi >= 96) {
+                        setText(sceneConfigInfo.dpi.toString())
+                    }
                 }
-                view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
+                dialog = DialogHelper.confirm(this, "请输入DPI", "", view, DialogHelper.DialogButton(getString(R.string.btn_confirm), {
                     val dpiText = inputDpi.text.toString()
                     if (dpiText.isEmpty()) {
                         sceneConfigInfo.dpi = 0
-                        return@setOnClickListener
                     } else {
                         try {
                             val dpi = dpiText.toInt()
                             if (dpi < 96 && dpi != 0) {
                                 Toast.makeText(applicationContext, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
-                                return@setOnClickListener
+                            } else {
+                                sceneConfigInfo.dpi = dpi
+                                if (dpi == 0) {
+                                    app_details_dpi.text = "默认"
+                                } else
+                                    app_details_dpi.text = dpi.toString()
+                                dialog?.dialog
                             }
-                            sceneConfigInfo.dpi = dpi
-                            if (dpi == 0) {
-                                app_details_dpi.text = "默认"
-                            } else
-                                app_details_dpi.text = dpi.toString()
                         } catch (ex: Exception) {
-
                         }
                     }
-                    if (dialog != null) {
-                        dialog!!.dismiss()
-                    }
-                }
-                view.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
-                    if (dialog != null) {
-                        dialog!!.dismiss()
-                    }
-                }
-                dialog = AlertDialog.Builder(this)
-                        .setTitle("请输入DPI")
-                        .setView(view)
-                        .create()
-                DialogHelper.animDialog(dialog)
+                }, false), DialogHelper.DialogButton(getString(R.string.btn_cancel)))
             }
         }
     }

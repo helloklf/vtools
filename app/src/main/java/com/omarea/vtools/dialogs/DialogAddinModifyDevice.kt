@@ -138,13 +138,12 @@ class DialogAddinModifyDevice(var context: Context) {
             if (!content.isNullOrEmpty()) {
                 val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
                 if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setTitle("可用的模板")
-                            .setMessage("检测到已复制的机型信息：\n\n$copyData\n\n是否立即使用？")
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                    DialogHelper.confirm(context,
+                            "可用的模板",
+                            "检测到已复制的机型信息：\n\n$copyData\n\n是否立即使用？",
+                            {
                                 splitCodeStr(copyData)
-                            }
-                            .setNegativeButton(R.string.btn_cancel, null))
+                            })
                 }
             }
         } catch (ex: Exception) {

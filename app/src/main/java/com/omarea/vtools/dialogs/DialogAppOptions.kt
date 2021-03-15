@@ -186,7 +186,8 @@ open class DialogAppOptions(protected final var context: Activity, protected var
                             } catch (ex: Exception) {
                             }
                             if (error.isNotBlank()) {
-                                DialogHelper.animDialog(AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()))
+                                val context: Context = alert.context
+                                DialogHelper.alert(context, "出现了一些错误", error.toString())
                             }
                         }, 1200)
                         handler.handleMessage(handler.obtainMessage(2))
@@ -459,12 +460,12 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     protected fun deleteAll() {
         confirm("删除应用", "已选择 ${apps.size} 个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？") {
             if (isMagisk() && !MagiskExtend.moduleInstalled() && (isTmpfs("/system/app") || isTmpfs("/system/priv-app"))) {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("Magisk 副作用警告")
-                        .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！")
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                DialogHelper.confirm(context,
+                        "Magisk 副作用警告",
+                        "检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！",
+                        DialogHelper.DialogButton(context.getString(R.string.btn_continue), {
                             _deleteAll()
-                        })
+                        }))
             } else {
                 _deleteAll()
             }

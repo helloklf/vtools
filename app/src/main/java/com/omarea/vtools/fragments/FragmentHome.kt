@@ -2,7 +2,6 @@ package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
@@ -140,11 +139,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("调度器参数")
-                        .setMessage(msg.toString())
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        })
+                DialogHelper.alert(activity!!, "调度器参数", msg.toString())
             }
         }
 
@@ -416,17 +411,13 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         } else {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).apply()
             if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
-                DialogHelper.animDialog(
-                        AlertDialog
-                                .Builder(context)
-                                .setTitle("提示")
-                                .setMessage("如果你已允许Scene自启动，手机重启后，Scene还会自动激活刚刚选择的模式。\n\n如果需要恢复系统默认调度，请再次点击，然后重启手机！")
-                                .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                                }
-                                .setPositiveButton(R.string.btn_dontshow) { _, _ ->
-                                    globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
-                                }
-                                .setCancelable(false))
+                DialogHelper.confirm(activity!!,
+                        "提示",
+                        "如果你已允许Scene自启动，手机重启后，Scene还会自动激活刚刚选择的模式。\n\n如果需要恢复系统默认调度，请再次点击，然后重启手机！",
+                        DialogHelper.DialogButton(getString(R.string.btn_confirm)),
+                        DialogHelper.DialogButton(getString(R.string.btn_dontshow), {
+                            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
+                        })).setCancelable(false)
             }
         }
     }

@@ -480,14 +480,14 @@ class ActivityCpuModes : ActivityBase() {
             Scene.toast(getString(R.string.config_installed), Toast.LENGTH_LONG)
             reStartService()
         } else {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setMessage("配置脚本已安装，是否开启 [动态响应] ？")
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+            DialogHelper.confirm(
+                    this,
+                    "",
+                    "配置脚本已安装，是否开启 [动态响应] ？",
+                    {
                         dynamic_control.isChecked = true
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
                         reStartService()
-                    }
-                    .setNegativeButton(R.string.btn_cancel) { _, _ ->
                     })
         }
     }

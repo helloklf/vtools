@@ -1,6 +1,5 @@
 package com.omarea.permissions
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import com.omarea.common.shared.FileWrite
@@ -89,12 +88,14 @@ class Busybox(private var context: Context) {
             if (installPrivateBusybox()) {
                 next.run()
             } else {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setMessage(R.string.busybox_nonsupport)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.btn_exit) { _, _ ->
+                DialogHelper.alert(
+                        context,
+                        "",
+                        context.getString(R.string.busybox_nonsupport),
+                        {
                             android.os.Process.killProcess(android.os.Process.myPid())
-                        })
+                        }
+                ).setCancelable(false)
             }
         }
     }

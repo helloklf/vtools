@@ -173,6 +173,13 @@ class DialogHelper {
 
             return dialog
         }
+        fun confirm(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    onConfirm: DialogButton? = null,
+                    onCancel: DialogButton? = null): DialogWrap {
+            return confirm(context, title, message, onConfirm, onCancel)
+        }
 
         fun confirm(context: Context,
                     title: String = "",

@@ -199,10 +199,9 @@ class ActivitySystemScene : ActivityBase() {
             startActivity(intent)
         }
         sceneTaskItem.setOnLongClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("删除该任务？").setPositiveButton(R.string.btn_confirm) { _, _ ->
+            DialogHelper.confirm(this, "删除该任务？", "", {
                 TimingTaskManager(context).removeTask(timingTaskInfo)
                 updateCustomList()
-            }.setNeutralButton(R.string.btn_cancel) { _, _ ->
             })
             true
         }
@@ -221,10 +220,9 @@ class ActivitySystemScene : ActivityBase() {
             startActivity(intent)
         }
         itemView.setOnLongClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("删除该触发器？").setPositiveButton(R.string.btn_confirm) { _, _ ->
+            DialogHelper.confirm(this, "删除该触发器？", "", {
                 TriggerManager(context).removeTrigger(triggerInfo)
                 updateCustomList()
-            }.setNeutralButton(R.string.btn_cancel) { _, _ ->
             })
             true
         }

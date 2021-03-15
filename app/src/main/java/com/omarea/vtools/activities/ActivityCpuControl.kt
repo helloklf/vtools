@@ -795,19 +795,16 @@ class ActivityCpuControl : ActivityBase() {
             cpuModeName = intent.getStringExtra("cpuModeName")
         }
 
-        Thread(Runnable {
+        Thread {
             initData()
-        }).start()
+        }.start()
 
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         val dynamic = AccessibleServiceHelper().serviceRunning(context) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (dynamic && (cpuModeName == null)) {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("请注意")
-                    .setMessage("检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！")
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                    }
-                    .setCancelable(false))
+            DialogHelper.alert(this,
+                    "请注意",
+                    "检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！").setCancelable(false)
         }
     }
 
@@ -844,7 +841,7 @@ class ActivityCpuControl : ActivityBase() {
         if (cpuModeName == null) {
             title = getString(R.string.menu_core_control)
         } else {
-            title = "自定义[" + ModeSwitcher.getModName("" + cpuModeName)+ "]"
+            title = "自定义[" + ModeSwitcher.getModName("" + cpuModeName) + "]"
         }
 
         loadBootConfig()

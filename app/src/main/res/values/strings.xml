@@ -9,6 +9,7 @@
     <string name="btn_delete">删除</string>
     <string name="btn_dontshow">不再显示</string>
     <string name="btn_confirm">确定</string>
+    <string name="btn_continue">继续</string>
     <string name="btn_modify_confirm">确认修改</string>
     <string name="btn_help">帮助</string>
     <string name="btn_iknow">知道了</string>
