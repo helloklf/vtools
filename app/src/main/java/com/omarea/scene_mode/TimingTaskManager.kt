@@ -18,6 +18,7 @@ public class TimingTaskManager(private var context: Context) {
         val taskId = timingTaskInfo.taskId
         val taskIntent = Intent(context, SceneTaskIntentService::class.java)
         taskIntent.putExtra("taskId", taskId)
+        taskIntent.action = taskId
         taskIntent.setAction(taskId)
         val pendingIntent = PendingIntent.getService(context, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         return pendingIntent
