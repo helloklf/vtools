@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false" android:drawable="@drawable/switch_track_disabled"/>
-    <item android:drawable="@drawable/switch_track_open" android:state_checked="true" />
-    <item android:drawable="@drawable/switch_track_close" android:state_checked="false" />
+    <item android:state_checked="true" android:drawable="@drawable/switch_track_open" />
+    <item android:state_checked="false" android:drawable="@drawable/switch_track_close" />
     <item android:drawable="@drawable/switch_track_close" />
 </selector>
 
