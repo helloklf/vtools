@@ -381,6 +381,7 @@ class DialogHelper {
                     FastBlurUtility.getBlurBackgroundDrawer(activity)
                 }
 
+                // window.setDimAmount(0f)
                 if (blurBitmap != null) {
                     setBackgroundDrawable(BitmapDrawable(activity.resources, blurBitmap))
                 } else {
@@ -390,10 +391,10 @@ class DialogHelper {
                         if (bg == Color.TRANSPARENT) {
                             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                             if (wallpaperMode || isNightMode(context)) {
-                                val d = ColorDrawable(Color.argb(245, 18, 18, 18))
+                                val d = ColorDrawable(Color.argb(255, 18, 18, 18))
                                 setBackgroundDrawable(d)
                             } else {
-                                val d = ColorDrawable(Color.WHITE)
+                                val d = ColorDrawable(Color.argb(255, 245, 245, 245))
                                 setBackgroundDrawable(d)
                             }
                         } else {
@@ -401,7 +402,7 @@ class DialogHelper {
                             setBackgroundDrawable(d)
                         }
                     } catch (ex: java.lang.Exception) {
-                        val d = ColorDrawable(Color.WHITE)
+                        val d = ColorDrawable(Color.argb(255, 245, 245, 245))
                         setBackgroundDrawable(d)
                     }
                 }
