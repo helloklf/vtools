@@ -15,10 +15,12 @@ import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.Scene
+import com.omarea.common.model.SelectItem
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.DialogItemChooserMini
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.shell.LMKUtils
@@ -338,20 +340,18 @@ class ActivitySwap : ActivityBase() {
         }
         compactAlgorithm.text = currentAlgorithm
         compactAlgorithm.setOnClickListener {
-                    val current = currentAlgorithm
-                    val options = compAlgorithmOptions
-                    var selectedIndex = options.indexOf(current)
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setTitle(R.string.swap_zram_comp_options)
-                            .setSingleChoiceItems(options, selectedIndex) { _, index ->
-                                selectedIndex = index
-                            }
-                            .setNeutralButton(R.string.btn_cancel) { _, _ ->
-                            }
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                val algorithm = options[selectedIndex]
+            DialogItemChooserMini
+                    .singleChooser(context, compAlgorithmOptions, compAlgorithmOptions.indexOf(currentAlgorithm))
+                    .setTitle(R.string.swap_zram_comp_options)
+                    .setCallback(object : DialogItemChooserMini.Callback {
+                        override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                            val algorithm = selected.firstOrNull()?.value
+                            algorithm?.run {
                                 (it as TextView).text = algorithm
-                            })
+                            }
+                        }
+                    })
+                    .show()
                 }
 
         zramSizeBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{

@@ -193,34 +193,43 @@ class DialogHelper {
             val view = getCustomDialogView(context, R.layout.dialog_confirm, title, message, contentView)
 
             val dialog = customDialog(context, view)
-            onConfirm?.run {
-                val textView = view.findViewById<TextView?>(R.id.btn_confirm)
-                textView?.text = text
 
-                textView?.setOnClickListener {
-                    if (dismiss) {
+            val btnConfirm = view.findViewById<TextView?>(R.id.btn_confirm)
+            if (onConfirm != null) {
+                btnConfirm?.text = onConfirm.text
+            }
+            btnConfirm?.setOnClickListener {
+                if (onConfirm != null) {
+                    if (onConfirm.dismiss) {
                         dialog.dismiss()
                     }
-                    onClick?.run()
+                    onConfirm.onClick?.run()
+                } else {
+                    dialog.dismiss()
                 }
             }
-            onCancel?.run {
-                val textView = view.findViewById<TextView?>(R.id.btn_cancel)
-                textView?.text = text
 
-                textView.setOnClickListener {
-                    if (dismiss) {
+
+            val btnCancel = view.findViewById<TextView?>(R.id.btn_cancel)
+            if (onCancel != null) {
+                btnCancel?.text = onCancel.text
+            }
+            btnCancel.setOnClickListener {
+                if (onCancel != null) {
+                    if (onCancel.dismiss) {
                         dialog.dismiss()
                     }
-                    onClick?.run()
+                    onCancel.onClick?.run()
+                } else {
+                    dialog.dismiss()
                 }
             }
 
             return dialog
         }
 
-        fun confirm(context: Context, contentView: View? = null, onConfirm: DialogButton? = null, onCancel: DialogButton? = null) {
-            this.confirm(context, "", "", contentView, onConfirm, onCancel)
+        fun confirm(context: Context, contentView: View? = null, onConfirm: DialogButton? = null, onCancel: DialogButton? = null): DialogWrap {
+            return this.confirm(context, "", "", contentView, onConfirm, onCancel)
         }
 
         private fun getWindowBackground(context: Context, defaultColor:Int = Color.TRANSPARENT): Int {

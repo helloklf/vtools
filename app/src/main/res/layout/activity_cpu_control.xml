@@ -150,23 +150,6 @@
                     android:text=""
                     android:textAlignment="textEnd" />
 
-                <TextView
-                    android:layout_row="5"
-                    android:layout_column="0"
-                    android:layout_gravity="fill"
-                    android:gravity="center_vertical"
-                    android:text="受限制的应用" />
-
-                <TextView
-                    android:id="@+id/cpuset_restricted"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_row="5"
-                    android:layout_column="1"
-                    android:padding="5dp"
-                    android:text=""
-                    android:textAlignment="textEnd" />
-
             </GridLayout>
 
             <LinearLayout

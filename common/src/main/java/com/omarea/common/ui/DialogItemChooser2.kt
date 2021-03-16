@@ -18,7 +18,7 @@ class DialogItemChooser2(
         private var selectedItems: ArrayList<SelectItem>,
         private val multiple: Boolean = false,
         private var callback: Callback? = null) : DialogFullScreen(
-        (if (items.size > 5) {
+        (if (items.size > 7) {
             R.layout.dialog_item_chooser
         } else {
             R.layout.dialog_item_chooser_small

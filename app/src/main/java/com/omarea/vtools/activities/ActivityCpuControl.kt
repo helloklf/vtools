@@ -1,15 +1,17 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.*
+import com.omarea.common.model.SelectItem
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.DialogItemChooser
+import com.omarea.common.ui.DialogItemChooser2
 import com.omarea.library.shell.CpuFrequencyUtils
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.ThermalControlUtils
@@ -57,7 +59,7 @@ class ActivityCpuControl : ActivityBase() {
             cluterGovernors.put(cluster, CpuFrequencyUtil.getAvailableGovernors(cluster))
         }
 
-        coreCount = CpuFrequencyUtil.getCoreCount()
+        coreCount = CpuFrequencyUtil.coreCount
 
         val exynosCpuhotplugSupport = CpuFrequencyUtil.exynosCpuhotplugSupport()
         exynosHMP = CpuFrequencyUtil.exynosHMP()
@@ -167,7 +169,7 @@ class ActivityCpuControl : ActivityBase() {
             }
 
             bindExynosConfig()
-            bindCpusetConfig()
+            bindCpuSetConfig()
 
             cpu_apply_onboot.setOnClickListener {
                 saveBootConfig()
@@ -176,144 +178,132 @@ class ActivityCpuControl : ActivityBase() {
         }
     }
 
+    interface PickerCallback {
+        fun onSelected(result: String)
+    }
+
+    interface PickerCallback2 {
+        fun onSelected(result: BooleanArray)
+    }
+
+    private fun openMultiplePicker(dialogTitle: String, options: ArrayList<SelectItem>, selectedIndex: Int, pickerCallback: PickerCallback) {
+        val selected = (ArrayList<SelectItem>().apply {
+            if (selectedIndex > -1) {
+                add(options.get(selectedIndex))
+            }
+        })
+        DialogItemChooser2(themeMode.isDarkMode, options, selected, false, object : DialogItemChooser2.Callback {
+            override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                if (selected.isNotEmpty()) {
+                    pickerCallback.onSelected("" + selected.first().value)
+                }
+            }
+        }).setTitle(dialogTitle).show(supportFragmentManager, "cpu-control")
+    }
+
+    private fun openMultiplePicker(dialogTitle: String, options: ArrayList<SelectItem>, pickerCallback: PickerCallback2) {
+        DialogItemChooser(themeMode.isDarkMode, options,true, object : DialogItemChooser.Callback {
+            override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                if (status.isNotEmpty()) {
+                    pickerCallback.onSelected(status)
+                }
+            }
+        }).setTitle(dialogTitle).show(supportFragmentManager, "cpu-control")
+    }
+
+    private fun string2SelectItem(items: Array<String>): ArrayList<SelectItem> {
+        return ArrayList(items.map {
+            SelectItem().apply {
+                title = it
+                value = it
+            }
+        })
+    }
+
     private fun bindGPUConfig() {
         if (supportedGPU) {
             gpu_min_freq.setOnClickListener {
-                var currentIndex = adrenoFreqs.indexOf(status.adrenoMinFreq)
-                if (currentIndex < 0) {
-                    currentIndex = 0
-                }
-                var index = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU最小频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { _, which ->
-                            index = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (index != currentIndex) {
-                                val g = adrenoFreqs[index]
-                                if (GpuUtils.getMinFreq() == g) {
-                                    return@setPositiveButton
+                openMultiplePicker("选择GPU最小频率",
+                        parseGPUFreqList(adrenoFreqs),
+                        adrenoFreqs.indexOf(status.adrenoMinFreq),
+                        object : PickerCallback {
+                            override fun onSelected(freq: String) {
+                                if (GpuUtils.getMinFreq() != freq) {
+                                    GpuUtils.setMinFreq(freq)
+                                    status.adrenoMinFreq = freq
+                                    setText(it as TextView?, subGPUFreqStr(freq))
                                 }
-                                GpuUtils.setMinFreq(g)
-                                status.adrenoMinFreq = g
-                                setText(it as TextView?, subGPUFreqStr(g))
                             }
                         })
             }
             gpu_max_freq.setOnClickListener {
-                var currentIndex = adrenoFreqs.indexOf(status.adrenoMaxFreq)
-                if (currentIndex < 0) {
-                    currentIndex = 0
-                }
-                var index = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU最大频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { _, which ->
-                            index = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (index != currentIndex) {
-                                val g = adrenoFreqs[index]
-                                if (GpuUtils.getMaxFreq() == g) {
-                                    return@setPositiveButton
+                openMultiplePicker("选择GPU最大频率",
+                        parseGPUFreqList(adrenoFreqs),
+                        adrenoFreqs.indexOf(status.adrenoMaxFreq),
+                        object : PickerCallback {
+                            override fun onSelected(result: String) {
+                                if (GpuUtils.getMaxFreq() != result) {
+                                    GpuUtils.setMaxFreq(result)
+                                    status.adrenoMaxFreq = result
+                                    setText(it as TextView?, subGPUFreqStr(result))
                                 }
-                                GpuUtils.setMaxFreq(g)
-                                status.adrenoMaxFreq = g
-                                setText(it as TextView?, subGPUFreqStr(g))
                             }
                         })
             }
             gpu_governor.setOnClickListener {
-                var currentIndex = adrenoGovernors.indexOf(status.adrenoGovernor)
-                if (currentIndex < 0) {
-                    currentIndex = 0
-                }
-                var governor = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU调度")
-                        .setSingleChoiceItems((adrenoGovernors), currentIndex) { _, which ->
-                            governor = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (governor != currentIndex) {
-                                val g = adrenoGovernors[governor]
-                                if (GpuUtils.getGovernor() == g) {
-                                    return@setPositiveButton
+                openMultiplePicker("选择GPU调度",
+                        string2SelectItem(adrenoGovernors),
+                        adrenoGovernors.indexOf(status.adrenoGovernor),
+                        object : PickerCallback {
+                            override fun onSelected(result: String) {
+                                if (GpuUtils.getGovernor() != result) {
+                                    GpuUtils.setGovernor(result)
+                                    status.adrenoGovernor = result
+                                    setText(it as TextView?, result)
                                 }
-                                GpuUtils.setGovernor(g)
-                                status.adrenoGovernor = g
-                                setText(it as TextView?, g)
                             }
                         })
             }
             if (adrenoGPU) {
                 adreno_gpu_min_pl.setOnClickListener {
-                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
-                    if (currentIndex < 0) {
-                        currentIndex = 0
-                    }
-                    var index = currentIndex
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setTitle("选择GPU最小功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
-                                index = which
-                            }
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                if (index != currentIndex) {
-                                    val g = adrenoPLevels[index]
-                                    if (GpuUtils.getAdrenoGPUMinPowerLevel() == g) {
-                                        return@setPositiveButton
+                    openMultiplePicker("选择GPU最小功耗级别",
+                            string2SelectItem(adrenoPLevels),
+                            adrenoPLevels.indexOf(status.adrenoMinPL),
+                            object : PickerCallback {
+                                override fun onSelected(result: String) {
+                                    if (GpuUtils.getAdrenoGPUMinPowerLevel() != result) {
+                                        GpuUtils.setAdrenoGPUMinPowerLevel(result)
+                                        status.adrenoMinPL = result
+                                        setText(it as TextView?, result)
                                     }
-                                    GpuUtils.setAdrenoGPUMinPowerLevel(g)
-                                    status.adrenoMinPL = g
-                                    setText(it as TextView?, g)
                                 }
                             })
                 }
                 adreno_gpu_max_pl.setOnClickListener {
-                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMaxPL)
-                    if (currentIndex < 0) {
-                        currentIndex = 0
-                    }
-                    var index = currentIndex
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setTitle("选择GPU最大功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
-                                index = which
-                            }
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                if (index != currentIndex) {
-                                    val g = adrenoPLevels[index]
-                                    if (GpuUtils.getAdrenoGPUMaxPowerLevel() == g) {
-                                        return@setPositiveButton
+                    openMultiplePicker("选择GPU最大功耗级别",
+                            string2SelectItem(adrenoPLevels),
+                            adrenoPLevels.indexOf(status.adrenoMaxPL),
+                            object : PickerCallback {
+                                override fun onSelected(result: String) {
+                                    if (GpuUtils.getAdrenoGPUMaxPowerLevel() != result) {
+                                        GpuUtils.setAdrenoGPUMaxPowerLevel(result)
+                                        status.adrenoMaxPL = result
+                                        setText(it as TextView?, result)
                                     }
-                                    GpuUtils.setAdrenoGPUMaxPowerLevel(g)
-                                    status.adrenoMaxPL = g
-                                    setText(it as TextView?, g)
                                 }
                             })
                 }
                 adreno_gpu_default_pl.setOnClickListener {
-                    var currentIndex = adrenoPLevels.indexOf(status.adrenoDefaultPL)
-                    if (currentIndex < 0) {
-                        currentIndex = 0
-                    }
-                    var index = currentIndex
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setTitle("选择GPU默认功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
-                                index = which
-                            }
-                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                if (index != currentIndex) {
-                                    val g = adrenoPLevels[index]
-                                    if (GpuUtils.getAdrenoGPUDefaultPowerLevel() == g) {
-                                        return@setPositiveButton
+                    openMultiplePicker("选择GPU默认功耗级别",
+                            string2SelectItem(adrenoPLevels),
+                            adrenoPLevels.indexOf(status.adrenoDefaultPL),
+                            object : PickerCallback {
+                                override fun onSelected(result: String) {
+                                    if (GpuUtils.getAdrenoGPUDefaultPowerLevel() != result) {
+                                        GpuUtils.setAdrenoGPUDefaultPowerLevel(result)
+                                        status.adrenoDefaultPL = result
+                                        updateUI()
                                     }
-                                    GpuUtils.setAdrenoGPUDefaultPowerLevel(g)
-                                    status.adrenoDefaultPL = g
-                                    updateUI()
                                 }
                             })
                 }
@@ -332,91 +322,52 @@ class ActivityCpuControl : ActivityBase() {
         exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false, CpuFrequencyUtil))
     }
 
-    private fun bindCpusetConfig() {
-        cpuset_bg.setOnClickListener {
-            if (status.cpusetBackground.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetBackground)
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
-                            coreState[which] = isChecked
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetBackground = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/background/cpus", status.cpusetBackground)
+    private fun bindCpuSetConfig(currentState: String, callback: PickerCallback2) {
+        if (currentState.isNotEmpty()) {
+            val coreState = parsetCpuset(currentState)
+            openMultiplePicker("选择要使用的核心",
+                    getCoreList(coreState),
+                    object: PickerCallback2 {
+                        override fun onSelected(result: BooleanArray) {
+                            callback.onSelected(result)
                             updateUI()
                         }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        })
-            }
+                    })
+        }
+    }
+
+    private fun bindCpuSetConfig() {
+        cpuset_bg.setOnClickListener {
+            bindCpuSetConfig(status.cpusetBackground, object: PickerCallback2 {
+                override fun onSelected(result: BooleanArray) {
+                    status.cpusetBackground = parsetCpuset(result)
+                    KernelProrp.setProp("/dev/cpuset/background/cpus", status.cpusetBackground)
+                }
+            })
         }
         cpuset_system_bg.setOnClickListener {
-            if (status.cpusetSysBackground.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetSysBackground)
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
-                            coreState[which] = isChecked
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetSysBackground = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/system-background/cpus", status.cpusetSysBackground)
-                            updateUI()
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        })
-            }
+            bindCpuSetConfig(status.cpusetSysBackground, object: PickerCallback2 {
+                override fun onSelected(result: BooleanArray) {
+                    status.cpusetSysBackground = parsetCpuset(result)
+                    KernelProrp.setProp("/dev/cpuset/system-background/cpus", status.cpusetSysBackground)
+                }
+            })
         }
         cpuset_foreground.setOnClickListener {
-            if (status.cpusetForeground.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetForeground)
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
-                            coreState[which] = isChecked
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetForeground = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/foreground/cpus", status.cpusetForeground)
-                            updateUI()
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        })
-            }
+            bindCpuSetConfig(status.cpusetForeground, object: PickerCallback2 {
+                override fun onSelected(result: BooleanArray) {
+                    status.cpusetForeground = parsetCpuset(result)
+                    KernelProrp.setProp("/dev/cpuset/foreground/cpus", status.cpusetForeground)
+                }
+            })
         }
         cpuset_top_app.setOnClickListener {
-            if (status.cpusetTopApp.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetTopApp)
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
-                            coreState[which] = isChecked
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetTopApp = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/top-app/cpus", status.cpusetTopApp)
-                            updateUI()
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        })
-            }
-        }
-        cpuset_restricted.setOnClickListener {
-            if (status.cpusetRestricted.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetRestricted)
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
-                            coreState[which] = isChecked
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetRestricted = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/restricted/cpus", status.cpusetRestricted)
-                            updateUI()
-                        }
-                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        })
-            }
+            bindCpuSetConfig(status.cpusetTopApp, object: PickerCallback2 {
+                override fun onSelected(result: BooleanArray) {
+                    status.cpusetTopApp = parsetCpuset(result)
+                    KernelProrp.setProp("/dev/cpuset/top-app/cpus", status.cpusetTopApp)
+                }
+            })
         }
     }
 
@@ -449,51 +400,32 @@ class ActivityCpuControl : ActivityBase() {
 
         cluster_min_freq.setOnClickListener {
             val freqs = getClusterFreqs(cluster)
-            var currentIndex = freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].min_freq))
-            if (currentIndex < 0) {
-                currentIndex = 0
-            }
-            var index = currentIndex
-
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("选择最小频率")
-                    .setSingleChoiceItems(parseFreqList(freqs), currentIndex) { _, which ->
-                        index = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        if (index != currentIndex) {
-                            val g = freqs[index]
-                            if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
-                                return@setPositiveButton
+            openMultiplePicker("选择最小频率",
+                    parseFreqList(freqs),
+                    freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].min_freq)),
+                    object: PickerCallback {
+                        override fun onSelected(result: String) {
+                            if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) != result) {
+                                CpuFrequencyUtil.setMinFrequency(result, cluster)
+                                status.cpuClusterStatuses[cluster].min_freq = result
+                                setText(it as TextView?, subFreqStr(result))
                             }
-                            CpuFrequencyUtil.setMinFrequency(g, cluster)
-                            status.cpuClusterStatuses[cluster].min_freq = g
-                            setText(it as TextView?, subFreqStr(g))
                         }
                     })
         }
 
         cluster_max_freq.setOnClickListener {
             val freqs = getClusterFreqs(cluster)
-            var currentIndex = freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].max_freq))
-            if (currentIndex < 0) {
-                currentIndex = 0
-            }
-            var index = currentIndex
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("选择最大频率")
-                    .setSingleChoiceItems(parseFreqList(freqs), currentIndex) { _, which ->
-                        index = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        if (index != currentIndex) {
-                            val g = freqs[index]
-                            if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
-                                return@setPositiveButton
+            openMultiplePicker("选择最大频率",
+                    parseFreqList(freqs),
+                    freqs.indexOf(getApproximation(freqs, status.cpuClusterStatuses[cluster].max_freq)),
+                    object: PickerCallback {
+                        override fun onSelected(result: String) {
+                            if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) != result) {
+                                CpuFrequencyUtil.setMaxFrequency(result, cluster)
+                                status.cpuClusterStatuses[cluster].max_freq = result
+                                setText(it as TextView?, subFreqStr(result))
                             }
-                            CpuFrequencyUtil.setMaxFrequency(g, cluster)
-                            status.cpuClusterStatuses[cluster].max_freq = g
-                            setText(it as TextView?, subFreqStr(g))
                         }
                     })
         }
@@ -501,25 +433,16 @@ class ActivityCpuControl : ActivityBase() {
         // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
         cluster_governor.setOnClickListener {
             val governors = getClusterGovernors(cluster)
-            var currentIndex = governors.indexOf(status.cpuClusterStatuses[cluster].governor)
-            if (currentIndex < 0) {
-                currentIndex = 0
-            }
-            var index = currentIndex
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle("选择调度模式")
-                    .setSingleChoiceItems((governors), currentIndex) { _, which ->
-                        index = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        if (index != currentIndex) {
-                            val v = governors[index]
-                            if (CpuFrequencyUtil.getCurrentScalingGovernor(cluster) == v) {
-                                return@setPositiveButton
+            openMultiplePicker("选择调度模式",
+                    string2SelectItem(governors),
+                    governors.indexOf(status.cpuClusterStatuses[cluster].governor),
+                    object: PickerCallback {
+                        override fun onSelected(result: String) {
+                            if (CpuFrequencyUtil.getCurrentScalingGovernor(cluster) != result) {
+                                CpuFrequencyUtil.setGovernor(result, cluster)
+                                status.cpuClusterStatuses[cluster].governor = result
+                                setText(it as TextView?, result)
                             }
-                            CpuFrequencyUtil.setGovernor(v, cluster)
-                            status.cpuClusterStatuses[cluster].governor = v
-                            setText(it as TextView?, v)
                         }
                     })
             return@setOnClickListener
@@ -537,11 +460,7 @@ class ActivityCpuControl : ActivityBase() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("调度器参数")
-                        .setMessage(msg.toString())
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        })
+                DialogHelper.alert(this, "调度器参数", msg.toString())
             }
         }
     }
@@ -560,7 +479,7 @@ class ActivityCpuControl : ActivityBase() {
     }
 
     private fun parsetCpuset(value: String): BooleanArray {
-        val cores = ArrayList<Boolean>();
+        val cores = ArrayList<Boolean>()
         for (coreIndex in 0 until coreCount) {
             cores.add(false)
         }
@@ -594,21 +513,26 @@ class ActivityCpuControl : ActivityBase() {
         return cores.toBooleanArray()
     }
 
-    private fun getCoreList(): Array<String> {
-        val cores = ArrayList<String>();
+    private fun getCoreList(coreState: BooleanArray): ArrayList<SelectItem> {
+        val cores = ArrayList<SelectItem>()
         for (coreIndex in 0 until coreCount) {
-            cores.add("Cpu$coreIndex")
+            cores.add(SelectItem().apply {
+                title = "Cpu$coreIndex"
+                if (coreIndex < coreState.size) {
+                    selected = coreState[coreIndex]
+                }
+            })
         }
-        return cores.toTypedArray()
+        return cores
     }
 
     class OnSeekBarChangeListener(private var up: Boolean, private var cpuFrequencyUtils: CpuFrequencyUtils) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             if (seekBar != null) {
                 if (up)
-                    cpuFrequencyUtils.setExynosHmpUP(seekBar.progress)
+                    cpuFrequencyUtils.exynosHmpUP = seekBar.progress
                 else
-                    cpuFrequencyUtils.setExynosHmpDown(seekBar.progress)
+                    cpuFrequencyUtils.exynosHmpDown = seekBar.progress
             }
         }
 
@@ -641,10 +565,10 @@ class ActivityCpuControl : ActivityBase() {
                 status.msmThermal = thermalControlUtils.getTheramlState()
             }
 
-            status.exynosHmpUP = CpuFrequencyUtil.getExynosHmpUP()
-            status.exynosHmpDown = CpuFrequencyUtil.getExynosHmpDown()
-            status.exynosHmpBooster = CpuFrequencyUtil.getExynosBooster()
-            status.exynosHotplug = CpuFrequencyUtil.getExynosHotplug()
+            status.exynosHmpUP = CpuFrequencyUtil.exynosHmpUP
+            status.exynosHmpDown = CpuFrequencyUtil.exynosHmpDown
+            status.exynosHmpBooster = CpuFrequencyUtil.exynosBooster
+            status.exynosHotplug = CpuFrequencyUtil.exynosHotplug
 
             if (supportedGPU) {
                 if (adrenoGPU) {
@@ -700,21 +624,29 @@ class ActivityCpuControl : ActivityBase() {
         }
     }
 
-    private fun parseFreqList(arr: Array<String>): Array<String> {
-        val arrMhz = ArrayList<String>()
+    private fun parseFreqList(arr: Array<String>): ArrayList<SelectItem> {
+        val arrMhz = ArrayList<SelectItem>()
         for (item in arr) {
-            arrMhz.add(subFreqStr(item))
+            arrMhz.add(SelectItem().apply {
+                title = subFreqStr(item)
+                value = item
+            })
         }
-        return arrMhz.toTypedArray<String>()
+        return arrMhz
     }
 
 
-    private fun parseGPUFreqList(arr: Array<String>): Array<String> {
-        val arrMhz = ArrayList<String>()
+    private fun parseGPUFreqList(arr: Array<String>): ArrayList<SelectItem> {
+        val arrMhz = ArrayList<SelectItem>()
         for (item in arr) {
-            arrMhz.add(subGPUFreqStr(item))
+            arrMhz.add(
+                    SelectItem().apply {
+                        title = subGPUFreqStr(item)
+                        value = item
+                    }
+            )
         }
-        return arrMhz.toTypedArray<String>()
+        return arrMhz
     }
 
     private fun setText(view: TextView?, text: String) {
@@ -778,14 +710,13 @@ class ActivityCpuControl : ActivityBase() {
             }
 
             for (i in 0 until coreCount) {
-                cores[i].isChecked = status.coreOnline.get(i)
+                cores[i].isChecked = status.coreOnline[i]
             }
 
             cpuset_bg.text = status.cpusetBackground
             cpuset_system_bg.text = status.cpusetSysBackground
             cpuset_foreground.text = status.cpusetForeground
             cpuset_top_app.text = status.cpusetTopApp
-            cpuset_restricted.text = status.cpusetRestricted
         } catch (ex: Exception) {
         }
     }
@@ -838,7 +769,7 @@ class ActivityCpuControl : ActivityBase() {
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
-        if (cpuModeName == null) {
+        if (this.cpuModeName == null) {
             title = getString(R.string.menu_core_control)
         } else {
             title = "自定义[" + ModeSwitcher.getModName("" + cpuModeName) + "]"

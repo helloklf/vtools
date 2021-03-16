@@ -108,19 +108,32 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     }
 
     fun selectBackupOptions() {
-        AlertDialog
-                .Builder(context)
-                .setTitle("请选择操作")
-                .setCancelable(true)
-                .setItems(arrayOf("删除备份", "还原", "还原(应用)", "还原(数据)")) { _, which ->
-                    when (which) {
-                        0 -> deleteBackupAll()
-                        1 -> restoreAll(apk = true, data = true)
-                        2 -> restoreAll(apk = true, data = false)
-                        3 -> restoreAll(apk = false, data = true)
-                    }
-                }
-                .show()
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_restore, null)
+        view.findViewById<View>(R.id.app_install).run {
+            setOnClickListener {
+                restoreAll(apk = true, data = false)
+            }
+        }
+        val dataExists = (apps.find {
+            backupDataExists(it.packageName)
+        }) != null
+        view.findViewById<View>(R.id.app_restore_full).run {
+            visibility = if (dataExists) View.VISIBLE else View.GONE
+            setOnClickListener {
+                restoreAll(apk = true, data = true)
+            }
+        }
+        view.findViewById<View>(R.id.app_restore_data).run {
+            visibility = if (dataExists) View.VISIBLE else View.GONE
+            setOnClickListener {
+                restoreAll(apk = false, data = true)
+            }
+        }
+        view.findViewById<View>(R.id.app_delete_backup).setOnClickListener {
+            deleteBackupAll()
+        }
+
+        DialogHelper.customDialog(context, view)
     }
 
     private fun checkRestoreData(): Boolean {
@@ -325,6 +338,10 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         }
     }
 
+    protected fun backupDataExists(packageName: String): Boolean {
+        return File("$backupPath$packageName.tar.gz").exists()
+    }
+
     private fun _restoreAll(apk: Boolean = true, data: Boolean = true) {
         val installApkTemp = FileWrite.getPrivateFilePath(context, "app_install_cache.apk")
         checkPigz()
@@ -352,7 +369,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
                 sb.append("pm install -r $installApkTemp 1> /dev/null\n")
                 sb.append("rm -f $installApkTemp\n")
             }
-            if (data && File("$backupPath$packageName.tar.gz").exists()) {
+            if (data && backupDataExists(packageName)) {
                 sb.append("if [ -d $userdataPath/$packageName ]\n")
                 sb.append(" then ")
                 sb.append("echo '[restore ${item.appName}]'\n")

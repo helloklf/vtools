@@ -1,9 +1,12 @@
 package com.omarea.common.ui
 
+import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AbsListView
 import android.widget.EditText
@@ -12,21 +15,61 @@ import android.widget.TextView
 import com.omarea.common.R
 import com.omarea.common.model.SelectItem
 
-class DialogItemChooser(
-        private val darkMode: Boolean,
+class DialogItemChooserMini(
+        private val context: Context,
         private var items: ArrayList<SelectItem>,
-        private val multiple: Boolean = false,
-        private var callback: Callback? = null) : DialogFullScreen(
-        (if (items.size > 7) {
-            R.layout.dialog_item_chooser
-        } else {
-            R.layout.dialog_item_chooser_small
-        }),
-        darkMode
-) {
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        private var selectedItems: ArrayList<SelectItem>,
+        private val multiple: Boolean = false) {
 
+    companion object {
+        public fun singleChooser(context: Context, items: Array<String>, checkedItem: Int): DialogItemChooserMini {
+            val options = ArrayList(items.map {
+                SelectItem().apply {
+                    title = it
+                    value = title
+                }
+            })
+            val selectItems = if (checkedItem > -1) {
+                ArrayList<SelectItem>().apply {
+                    add(options[checkedItem])
+                }
+            } else {
+                ArrayList()
+            }
+
+            return DialogItemChooserMini(context, options, selectItems, false)
+        }
+    }
+
+    private val layout = R.layout.dialog_item_chooser_small
+    private var view: View? = null
+    private var dialog:DialogHelper.DialogWrap? = null
+
+    public fun show(): DialogHelper.DialogWrap {
+        if (dialog?.isShowing != true) {
+            onViewCreated(createView())
+            this.dialog = DialogHelper.customDialog(context, this.view!!)
+        }
+        return dialog!!
+    }
+
+    private fun dismiss () {
+        dialog?.dismiss()
+    }
+
+    private fun createView (): View {
+        if (view != null) {
+            return view!!
+        }
+
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(layout, null)
+        this.view = view
+
+        return view
+    }
+
+    private fun onViewCreated(view: View) {
         val absListView = view.findViewById<AbsListView>(R.id.item_list)
         setup(absListView)
 
@@ -65,6 +108,7 @@ class DialogItemChooser(
 
     private var title: String = ""
     private var message: String = ""
+    private var callback: Callback? = null
 
     private fun updateTitle() {
         view?.run {
@@ -92,22 +136,36 @@ class DialogItemChooser(
         }
     }
 
-    public fun setTitle(title: String): DialogItemChooser {
+    public fun setTitle(resId: Int): DialogItemChooserMini {
+        return setTitle(context.getString(resId))
+    }
+
+    public fun setTitle(title: String): DialogItemChooserMini {
         this.title = title
         updateTitle()
 
         return this
     }
 
-    public fun setMessage(message: String): DialogItemChooser {
+    public fun setMessage(message: String): DialogItemChooserMini {
         this.message = message
         updateMessage()
 
         return this
     }
 
+    public fun setMessage(resId: Int): DialogItemChooserMini {
+        return setMessage(context.getString(resId))
+    }
+
+    public fun setCallback(callback: Callback?): DialogItemChooserMini {
+        this.callback = callback
+
+        return this
+    }
+
     private fun setup(gridView: AbsListView) {
-        gridView.adapter = AdapterItemChooser(gridView.context, items, multiple)
+        gridView.adapter = AdapterItemChooser2(gridView.context, items, selectedItems, multiple)
     }
 
     interface Callback {
@@ -115,20 +173,12 @@ class DialogItemChooser(
     }
 
     private fun onConfirm(gridView: AbsListView) {
-        val adapter = (gridView.adapter as AdapterItemChooser)
+        val adapter = (gridView.adapter as AdapterItemChooser2)
         val items = adapter.getSelectedItems()
         val status = adapter.getSelectStatus()
 
         callback?.onConfirm(items, status)
 
         this.dismiss()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
     }
 }

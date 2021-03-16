@@ -3,13 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
+    style="@style/dialogRoot">
 
     <TextView
-        style="@style/textTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        style="@style/dialogTitle"
         android:text="请输入数值" />
 
     <LinearLayout
@@ -52,31 +49,8 @@
 
     <TextView
         android:id="@+id/number_input_help"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
-
-        <Button
-            android:id="@+id/number_input_cancel"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_gravity="end"
-            android:text="@string/btn_cancel" />
-
-        <Button
-            android:id="@+id/number_input_applay"
-            style="?android:buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="end"
-            android:text="@string/btn_confirm" />
-    </RelativeLayout>
 </LinearLayout>

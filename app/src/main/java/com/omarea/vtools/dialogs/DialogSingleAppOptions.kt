@@ -133,6 +133,17 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
         dialogView.findViewById<ImageView>(R.id.app_logo).setImageDrawable(loadAppIcon(app))
 
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
+        dialogView.findViewById<View>(R.id.app_options_backup_apk).run {
+            visibility = if (app.updated) View.VISIBLE else View.GONE
+
+            if (app.updated) {
+                setOnClickListener {
+                    dialog.dismiss()
+
+                    backupAll()
+                }
+            }
+        }
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
             dialog.dismiss()
             copyPackageName()
@@ -205,24 +216,36 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
      * 显示备份的应用选项
      */
     private fun showBackupAppOptions() {
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
-                .setCancelable(true)
-                .setItems(
-                        arrayOf("删除备份",
-                                "还原 应用（仅安装）",
-                                "还原 应用和数据",
-                                "还原 数据",
-                                "复制PackageName",
-                                "在应用商店查看")) { _, which ->
-                    when (which) {
-                        0 -> deleteBackupAll()
-                        1 -> restoreAll(apk = true, data = false)
-                        2 -> restoreAll(apk = true, data = true)
-                        3 -> restoreAll(apk = false, data = true)
-                        4 -> copyPackageName()
-                        5 -> showInMarket()
-                    }
-                })
+        val view = context.layoutInflater.inflate(R.layout.dialog_app_restore, null)
+        view.findViewById<View>(R.id.app_install).run {
+            setOnClickListener {
+                restoreAll(apk = true, data = false)
+            }
+        }
+        val dataExists = backupDataExists(app.packageName)
+        view.findViewById<View>(R.id.app_restore_full).run {
+            visibility = if (dataExists) View.VISIBLE else View.GONE
+            setOnClickListener {
+                restoreAll(apk = true, data = true)
+            }
+        }
+        view.findViewById<View>(R.id.app_restore_data).run {
+            visibility = if (dataExists) View.VISIBLE else View.GONE
+            setOnClickListener {
+                restoreAll(apk = false, data = true)
+            }
+        }
+        view.findViewById<View>(R.id.app_copy_name).setOnClickListener {
+            copyPackageName()
+        }
+        view.findViewById<View>(R.id.app_go_store).setOnClickListener {
+            showInMarket()
+        }
+        view.findViewById<View>(R.id.app_delete_backup).setOnClickListener {
+            deleteBackupAll()
+        }
+
+        DialogHelper.customDialog(context, view)
     }
 
     private fun openDetails() {
