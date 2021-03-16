@@ -217,6 +217,8 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
      */
     private fun showBackupAppOptions() {
         val view = context.layoutInflater.inflate(R.layout.dialog_app_restore, null)
+        val dialog = DialogHelper.customDialog(context, view)
+
         view.findViewById<View>(R.id.app_install).run {
             setOnClickListener {
                 restoreAll(apk = true, data = false)
@@ -226,26 +228,29 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
         view.findViewById<View>(R.id.app_restore_full).run {
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
+                dialog.dismiss()
                 restoreAll(apk = true, data = true)
             }
         }
         view.findViewById<View>(R.id.app_restore_data).run {
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
+                dialog.dismiss()
                 restoreAll(apk = false, data = true)
             }
         }
         view.findViewById<View>(R.id.app_copy_name).setOnClickListener {
+            dialog.dismiss()
             copyPackageName()
         }
         view.findViewById<View>(R.id.app_go_store).setOnClickListener {
+            dialog.dismiss()
             showInMarket()
         }
         view.findViewById<View>(R.id.app_delete_backup).setOnClickListener {
+            dialog.dismiss()
             deleteBackupAll()
         }
-
-        DialogHelper.customDialog(context, view)
     }
 
     private fun openDetails() {

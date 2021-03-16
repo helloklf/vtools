@@ -109,31 +109,37 @@ open class DialogAppOptions(protected final var context: Activity, protected var
 
     fun selectBackupOptions() {
         val view = context.layoutInflater.inflate(R.layout.dialog_app_restore, null)
+        val dialog = DialogHelper.customDialog(context, view)
         view.findViewById<View>(R.id.app_install).run {
             setOnClickListener {
+                dialog.dismiss()
                 restoreAll(apk = true, data = false)
             }
         }
+
         val dataExists = (apps.find {
             backupDataExists(it.packageName)
         }) != null
+
         view.findViewById<View>(R.id.app_restore_full).run {
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
+                dialog.dismiss()
                 restoreAll(apk = true, data = true)
             }
         }
         view.findViewById<View>(R.id.app_restore_data).run {
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
+                dialog.dismiss()
                 restoreAll(apk = false, data = true)
             }
         }
         view.findViewById<View>(R.id.app_delete_backup).setOnClickListener {
+            dialog.dismiss()
             deleteBackupAll()
         }
 
-        DialogHelper.customDialog(context, view)
     }
 
     private fun checkRestoreData(): Boolean {
