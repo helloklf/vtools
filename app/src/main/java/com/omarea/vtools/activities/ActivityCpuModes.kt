@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -51,17 +52,6 @@ class ActivityCpuModes : ActivityBase() {
         bindMode(cpu_config_p2, ModeSwitcher.PERFORMANCE)
         bindMode(cpu_config_p3, ModeSwitcher.FAST)
 
-        config_customer_powercfg.setOnClickListener {
-            if (!outsideOverrided()) {
-                chooseLocalConfig()
-            }
-        }
-        config_customer_powercfg_online.setOnClickListener {
-            if (!outsideOverrided()) {
-                getOnlineConfig()
-            }
-        }
-        checkConfig()
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
         dynamic_control.setOnClickListener {
@@ -383,26 +373,6 @@ class ActivityCpuModes : ActivityBase() {
         }
     }
 
-    //检查配置脚本是否已经安装
-    private fun checkConfig() {
-        val support = configInstaller.dynamicSupport(context)
-        if (support) {
-            config_cfg_select.visibility = View.VISIBLE
-            config_cfg_select_0.setOnClickListener {
-                if (!outsideOverrided()) {
-                    installConfig(false)
-                }
-            }
-            config_cfg_select_1.setOnClickListener {
-                if (!outsideOverrided()) {
-                    installConfig(true)
-                }
-            }
-        } else {
-            config_cfg_select.visibility = View.GONE
-        }
-    }
-
     private fun chooseLocalConfig() {
         val action = REQUEST_POWERCFG_FILE
         if (Build.VERSION.SDK_INT >= 30) {
@@ -421,7 +391,23 @@ class ActivityCpuModes : ActivityBase() {
         }
     }
 
+    private fun openUrl(link: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (ex: Exception) {
+        }
+    }
+
     private fun getOnlineConfig() {
+        DialogHelper.alert(this,
+                "提示",
+                "目前，Scene已不再提供【在线获取配置脚本】功能，如有需要，推荐使用“yc9559”提供的优化模块，通过Magisk刷入后重启手机，即可在Scene里体验调度切换功能~") {
+            openUrl("https://github.com/yc9559/uperf")
+        }
+
+        /*
         var i = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(getString(R.string.config_online_options))
@@ -440,6 +426,7 @@ class ActivityCpuModes : ActivityBase() {
                         getOnlineConfigV2()
                     }
                 })
+         */
     }
 
     private fun getOnlineConfigV1() {

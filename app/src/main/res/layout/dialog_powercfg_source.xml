@@ -144,7 +144,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="选取你自行编写或从别处下载的配置文件" />
+                    android:text="选取你自行编写或从别处下载的配置脚本" />
             </LinearLayout>
 
         </LinearLayout>
@@ -186,7 +186,7 @@
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="访问互联网获取配置文件(由yc9559提供)" />
+                    android:text="访问互联网获取更多机型的配置脚本" />
             </LinearLayout>
 
         </LinearLayout>
