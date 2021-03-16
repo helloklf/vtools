@@ -34,9 +34,12 @@ public class FastBlurUtility {
             int width = activity.getResources().getDisplayMetrics().widthPixels;
             int height = activity.getResources().getDisplayMetrics().heightPixels;
 
-            Bitmap bmp = Bitmap.createBitmap(b1, 0, 0, width, height);
-            view.destroyDrawingCache();
-            return bmp;
+            try {
+                Bitmap bmp = Bitmap.createBitmap(b1, 0, 0, width, height);
+                view.destroyDrawingCache();
+                return bmp;
+            } catch (Exception ignored) {
+            }
         }
         return null;
     }
