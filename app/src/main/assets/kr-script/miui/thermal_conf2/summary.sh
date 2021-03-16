@@ -37,6 +37,9 @@ case "$mode" in
     "pro")
         modename="深度定制 (pro)"
     ;;
+    "author")
+        modename="游戏嘟日常 (author)"
+    ;;
     "extreme" | "extreme_cmi")
         modename="极致性能 (extreme)"
     ;;

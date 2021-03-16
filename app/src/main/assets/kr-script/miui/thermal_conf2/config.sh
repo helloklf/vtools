@@ -97,9 +97,11 @@ function install_thermal() {
         if [[ -f "$resource_dir/$thermal" ]]; then
             echo '复制' $thermal
             cp "$resource_dir/$thermal" "$install_dir/$thermal"
+            chmod 644 "$install_dir/$thermal"
         elif [[ -f "$resource_dir/general.conf" ]]; then
             echo '复制' $thermal
             cp "$resource_dir/general.conf" "$install_dir/$thermal"
+            chmod 644 "$install_dir/$thermal"
         fi
     done
     echo "$mode" > "$mode_state_save"
