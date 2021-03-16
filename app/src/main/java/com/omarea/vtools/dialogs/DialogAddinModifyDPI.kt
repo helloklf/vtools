@@ -166,8 +166,8 @@ class DialogAddinModifyDPI(var context: Activity) {
         handler.postDelayed({
             val view = LayoutInflater.from(context).inflate(R.layout.dialog_addin_dpi_confirm, null)
             val timeoutView = view.findViewById<TextView>(R.id.dpi_modify_timeout)
+            val dialog = DialogHelper.customDialog(context, view, false)
 
-            val dialog = AlertDialog.Builder(context).setView(view).setCancelable(false).create()
             var timeOut = 30
             Timer().schedule(object : TimerTask() {
                 override fun run() {
@@ -195,15 +195,13 @@ class DialogAddinModifyDPI(var context: Activity) {
                 }
             }, 1000, 1000)
 
-            dialog.show()
-
             timeoutView.setText(timeOut.toString())
-            view.findViewById<Button>(R.id.dpi_modify_cancel).setOnClickListener {
+            view.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
                 dialog.dismiss()
                 resetDisplay()
                 pointerLocationOff()
             }
-            view.findViewById<Button>(R.id.dpi_modify_confirm).setOnClickListener {
+            view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
                 dialog.dismiss()
                 pointerLocationOff()
             }

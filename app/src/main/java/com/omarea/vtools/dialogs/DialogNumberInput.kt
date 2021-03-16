@@ -1,10 +1,7 @@
 package com.omarea.vtools.dialogs
 
-import android.app.AlertDialog
 import android.content.Context
-import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper

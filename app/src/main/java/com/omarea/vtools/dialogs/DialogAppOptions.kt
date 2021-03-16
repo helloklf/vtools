@@ -1,7 +1,6 @@
 package com.omarea.vtools.dialogs
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.os.*
 import android.view.LayoutInflater

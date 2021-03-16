@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.UiModeManager
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -25,6 +26,12 @@ class DialogHelper {
 
         public fun setCancelable(cancelable: Boolean) {
             d.setCancelable(cancelable)
+        }
+
+        public fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener): DialogWrap {
+            d.setOnDismissListener(onDismissListener)
+
+            return this
         }
 
         public val dialog: AlertDialog

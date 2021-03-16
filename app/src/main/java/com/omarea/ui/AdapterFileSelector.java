@@ -197,11 +197,12 @@ public class AdapterFileSelector extends BaseAdapter {
                     view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定目录？")
-                                    .setMessage(file.getAbsolutePath())
-                                    .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                            DialogHelper.Companion.confirm(view.getContext(),
+                                    "选定目录？",
+                                    file.getAbsolutePath(),
+                                    new Runnable() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                                        public void run() {
                                             if (!file.exists()) {
                                                 Toast.makeText(view.getContext(), "所选的目录已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
                                                 return;
@@ -209,13 +210,11 @@ public class AdapterFileSelector extends BaseAdapter {
                                             selectedFile = file;
                                             fileSelected.run();
                                         }
-                                    })
-                                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                    }, new Runnable() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
+                                        public void run() {
                                         }
-                                    }));
+                                    });
                             return true;
                         }
                     });
@@ -239,11 +238,12 @@ public class AdapterFileSelector extends BaseAdapter {
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定文件？")
-                                .setMessage(file.getAbsolutePath())
-                                .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                        DialogHelper.Companion.confirm(view.getContext(),
+                                "选定文件？",
+                                file.getAbsolutePath(),
+                                new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void run() {
                                         if (!file.exists()) {
                                             Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
                                             return;
@@ -251,13 +251,11 @@ public class AdapterFileSelector extends BaseAdapter {
                                         selectedFile = file;
                                         fileSelected.run();
                                     }
-                                })
-                                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                }, new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
+                                    public void run() {
                                     }
-                                }));
+                                });
                     }
                 });
             }

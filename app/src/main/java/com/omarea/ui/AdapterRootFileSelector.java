@@ -232,11 +232,12 @@ public class AdapterRootFileSelector extends BaseAdapter {
                 view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
-                                .setMessage(file.getAbsolutePath())
-                                .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                        DialogHelper.Companion.confirm(view.getContext(),
+                                "删除所选文件？",
+                                file.getAbsolutePath(),
+                                new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                    public void run() {
                                         if (!file.exists()) {
                                             Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
                                             return;
@@ -244,13 +245,11 @@ public class AdapterRootFileSelector extends BaseAdapter {
                                         selectedFile = file;
                                         fileDelete.run();
                                     }
-                                })
-                                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                }, new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
+                                    public void run() {
                                     }
-                                }));
+                                });
                         return true;
                     }
                 });

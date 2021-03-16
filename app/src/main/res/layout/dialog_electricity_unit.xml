@@ -3,93 +3,116 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        style="@style/textTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="@string/electricity_unit_adj" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/electricity_unit_adj_desc" />
+    android:padding="12dp">
 
     <LinearLayout
+        android:alpha="0.8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/electricity_adj_minus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/kr_minus"
-            android:tint="?android:colorAccent" />
+        android:minHeight="150dp"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/confirm_dialog_bg"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/electricity_adj_unit"
+            android:id="@+id/confirm_title"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
             style="@style/textTitle"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textAlignment="center" />
+            android:text="@string/electricity_unit_adj" />
+        <TextView
+            android:id="@+id/confirm_message"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:text="@string/electricity_unit_adj_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <ImageButton
-            android:id="@+id/electricity_adj_plus"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/kr_plus"
-            android:tint="?android:colorAccent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/electricity_adj_minus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/kr_minus"
+                android:tint="?android:colorAccent" />
+
+            <TextView
+                android:id="@+id/electricity_adj_unit"
+                style="@style/textTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:id="@+id/electricity_adj_plus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/kr_plus"
+                android:tint="?android:colorAccent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/electricity_unit_as" />
+
+            <TextView
+                android:id="@+id/electricity_adj_sample"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0mA"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="6dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="12dp"
+            android:text="@string/electricity_unit_adj_desc2"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/electricity_unit_as" />
-
-        <TextView
-            android:id="@+id/electricity_adj_sample"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0mA"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_marginStart="0dp"
+            style="@style/dialogConfirmBtn"
+            android:text="确定">
+        </Button>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:paddingTop="6dp"
-        android:text="@string/electricity_unit_adj_desc2"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="12dp" />
-
-    <Button
-        android:id="@+id/electricity_adj_applay"
-        style="?android:buttonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:text="@string/btn_confirm" />
 </LinearLayout>

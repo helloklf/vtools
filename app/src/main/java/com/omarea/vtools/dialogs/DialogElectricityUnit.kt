@@ -1,6 +1,5 @@
 package com.omarea.vtools.dialogs
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.BatteryManager
 import android.os.Build
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import com.omarea.common.ui.DialogHelper
 import com.omarea.data.GlobalStatus
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
@@ -50,7 +50,7 @@ class DialogElectricityUnit {
             }
         }
         var unit = globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, defaultUnit)
-        var alertDialog: AlertDialog? = null
+        var alertDialog: DialogHelper.DialogWrap? = null
         val dialog = LayoutInflater.from(context).inflate(R.layout.dialog_electricity_unit, null)
         val electricity_adj_unit = dialog.findViewById<TextView>(R.id.electricity_adj_unit)
         val electricity_adj_sample = dialog.findViewById<TextView>(R.id.electricity_adj_sample)
@@ -81,7 +81,7 @@ class DialogElectricityUnit {
             val currentMA = currentNow / unit
             electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")
         }
-        dialog.findViewById<Button>(R.id.electricity_adj_applay).setOnClickListener {
+        dialog.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
             globalSPF.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, unit).apply()
             alertDialog?.dismiss()
         }
@@ -102,10 +102,9 @@ class DialogElectricityUnit {
             }, 10, 1000)
         }
 
-        alertDialog = AlertDialog.Builder(context).setView(dialog).setCancelable(false).setOnDismissListener {
+        alertDialog = DialogHelper.customDialog(context, dialog, false).setOnDismissListener {
             ChargeSpeedStore(context).clearAll()
             timer.cancel()
-        }.create()
-        alertDialog.show()
+        }
     }
 }
