@@ -54,6 +54,8 @@ public class ReverseOptimizer {
                 param.args[3] = false;
             }
         });
+        /*
+        // 验证关闭硬件加速的效果
         XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -62,6 +64,7 @@ public class ReverseOptimizer {
                 Toast.makeText(activity, "HardwareAccelerated -> " + isHardwareAccelerated, Toast.LENGTH_SHORT).show();
             }
         });
+        */
         XposedHelpers.findAndHookMethod(Window.class, "setFlags", int.class, int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

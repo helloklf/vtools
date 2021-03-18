@@ -226,7 +226,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="禁用硬件加速，并减少UI缓存大小，手机将变得非常快" />
+                        android:text="禁用硬件加速，并减少UI缓存大小，这将卡到怀疑人生" />
                 </LinearLayout>
 
                 <Switch
