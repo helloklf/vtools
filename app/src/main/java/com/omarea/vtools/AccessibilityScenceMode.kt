@@ -25,6 +25,7 @@ import com.omarea.scene_mode.AutoSkipAd
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatLogView
+import kotlinx.coroutines.*
 import java.util.*
 
 /**
@@ -386,8 +387,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             } else {
                                 lastParsingThread = System.currentTimeMillis()
                                 // try {
-                                val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
-                                thread.start()
+                                // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
+                                // thread.start()
+                                windowAnalyse(lastWindow, lastParsingThread)
                                 if (event != null) {
                                     startActivityPolling()
                                 }
@@ -424,6 +426,40 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 } catch (ex: Exception) {
                     return
                 }
+            }
+        }
+    }
+
+    // 利用协程分析窗口
+    private fun windowAnalyse(windowInfo: AccessibilityWindowInfo, tid: Long) {
+        GlobalScope.launch(Dispatchers.IO) {
+            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
+            val root = (try {
+                windowInfo.root
+            } catch (ex: Exception) {
+                null
+            })
+            val wp = (try {
+                root?.packageName
+            } catch (ex: Exception) {
+                null
+            })
+            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
+            if (wp?.equals("com.miui.home") == true) {
+                /*
+                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
+                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
+                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
+                */
+                val node = root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
+                if (node != null) {
+                    return@launch
+                }
+            }
+
+            if (lastParsingThread == tid && wp != null) {
+                GlobalStatus.lastPackageName = wp.toString()
+                EventBus.publish(EventType.APP_SWITCH)
             }
         }
     }

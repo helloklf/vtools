@@ -3,6 +3,7 @@ package com.omarea.vtools.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,7 +94,7 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
             return
         myHandler.post {
             try {
-                val adapterObj = AppListAdapter(dl, keywords)
+                val adapterObj = AppListAdapter(context!!, dl, keywords)
                 val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                 lv.adapter = adapterObj
                 lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->

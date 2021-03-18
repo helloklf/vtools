@@ -93,7 +93,7 @@ class FragmentAppSystem(private val myHandler: Handler) : androidx.fragment.app.
             return
         myHandler.post {
             try {
-                val adapterObj = AppListAdapter(dl, keywords)
+                val adapterObj = AppListAdapter(context!!, dl, keywords)
                 val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                 lv.adapter = adapterObj
                 lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->

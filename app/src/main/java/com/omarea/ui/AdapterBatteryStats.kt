@@ -9,20 +9,20 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.BatteryAvgStatus
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class AdapterBatteryStats : BaseAdapter {
-    private var context: Context
-    private var list: List<BatteryAvgStatus>
-    private var timerRate: Int
+class AdapterBatteryStats(private var context: Context, private var list: List<BatteryAvgStatus>, private var timerRate: Int) : BaseAdapter() {
+    private var appInfoLoader: AppInfoLoader
 
-    constructor(context: Context, list: List<BatteryAvgStatus>, timerRate: Int) {
-        this.timerRate = timerRate
-        this.context = context
-        this.list = list
+    init {
+        this.appInfoLoader = AppInfoLoader(context)
     }
 
     override fun getCount(): Int {
@@ -38,26 +38,6 @@ class AdapterBatteryStats : BaseAdapter {
     }
 
     private var packageManager: PackageManager? = null
-
-    private fun loadIcon(convertView: View, packageName: String) {
-        convertView.findViewById<TextView>(R.id.itemTitle).text = packageName
-        Thread(Runnable {
-            try {
-                if (packageManager == null) {
-                    packageManager = context.packageManager
-                }
-                val installInfo = packageManager!!.getPackageInfo(packageName.toString(), 0)
-                val icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-                val appName = if (packageName != "") installInfo.applicationInfo.loadLabel(packageManager!!) else "未知场景"
-                convertView.post {
-                    convertView.findViewById<TextView>(R.id.itemTitle).text = appName
-                    convertView.findViewById<ImageView>(R.id.itemIcon).setImageDrawable(icon)
-                }
-            } catch (ex: Exception) {
-            } finally {
-            }
-        }).start()
-    }
 
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -94,7 +74,14 @@ class AdapterBatteryStats : BaseAdapter {
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
         convertView.findViewById<TextView>(R.id.itemCounts).text = "🕓 ${time}分钟"
-        loadIcon(convertView, batteryStats.packageName)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val icon = appInfoLoader.loadAppBasicInfo(batteryStats.packageName).await()
+
+            convertView.findViewById<TextView>(R.id.itemTitle).text = icon.appName
+            convertView.findViewById<ImageView>(R.id.itemIcon).setImageDrawable(icon.icon)
+        }
+
         return convertView
     }
 }

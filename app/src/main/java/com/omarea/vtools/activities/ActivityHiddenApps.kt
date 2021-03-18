@@ -72,7 +72,7 @@ class ActivityHiddenApps : ActivityBase() {
             }
             handler.post {
                 progressBarDialog.hideDialog()
-                val adapterObj = AppListAdapter(appList)
+                val adapterObj = AppListAdapter(context, appList)
                 hidden_app.adapter = adapterObj
                 adapter = WeakReference(adapterObj)
                 hidden_app.onItemClickListener = AdapterView.OnItemClickListener { _, itemView, postion, _ ->

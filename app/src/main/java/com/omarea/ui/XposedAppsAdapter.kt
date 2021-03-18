@@ -1,9 +1,7 @@
 package com.omarea.ui
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -13,9 +11,12 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.AppInfo
 import com.omarea.vtools.R
-import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -23,6 +24,7 @@ import java.util.*
  */
 
 class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) : BaseAdapter() {
+    private val appIconLoader = AppInfoLoader(context)
     private var keywords: String = ""
     private val list: ArrayList<AppInfo>?
 
@@ -43,8 +45,8 @@ class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) 
     }
 
     private fun keywordSearch(item: AppInfo, text: String): Boolean {
-        return item.packageName.toString().toLowerCase(Locale.getDefault()).contains(text)
-                || item.appName.toString().toLowerCase(Locale.getDefault()).contains(text)
+        return item.packageName.toLowerCase(Locale.getDefault()).contains(text)
+                || item.appName.toLowerCase(Locale.getDefault()).contains(text)
                 || item.path.toString().toLowerCase(Locale.getDefault()).contains(text)
     }
 
@@ -55,31 +57,6 @@ class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) 
         return ArrayList(appList.filter { item ->
             keywordSearch(item, text)
         })
-    }
-
-    private fun loadIcon(viewHolder: ViewHolder, item: AppInfo) {
-        Thread {
-            var icon: Drawable? = null
-            try {
-                val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
-                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-            } catch (ex: Exception) {
-                try {
-                    val file = File(item.path.toString())
-                    if (file.exists() && file.canRead()) {
-                        val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
-                    }
-                } catch (ex: Exception) {
-                }
-            } finally {
-                if (icon != null) {
-                    viewHolder.imgView!!.post {
-                        viewHolder.imgView!!.setImageDrawable(icon)
-                    }
-                }
-            }
-        }.start()
     }
 
     private fun keywordHightLight(str: String): SpannableString {
@@ -127,10 +104,21 @@ class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) 
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
 
         viewHolder.itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-        if (item.icon == null) {
-            loadIcon(viewHolder, item)
-        } else {
-            viewHolder.imgView?.setImageDrawable(item.icon)
+
+        viewHolder.run {
+            if (item.icon == null) {
+                val id = item.path
+                this.appPath = id
+                GlobalScope.launch(Dispatchers.Main) {
+                    val icon = appIconLoader.loadIcon(item).await()
+                    val imgView = imgView!!
+                    if (icon != null && appPath == id) {
+                        imgView.setImageDrawable(icon)
+                    }
+                }
+            } else {
+                imgView!!.setImageDrawable(item.icon)
+            }
         }
 
         if (!item.desc.isNullOrEmpty()) {
@@ -142,6 +130,8 @@ class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) 
     }
 
     inner class ViewHolder {
+        internal var appPath: CharSequence? = null
+
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
         internal var itemDesc: TextView? = null

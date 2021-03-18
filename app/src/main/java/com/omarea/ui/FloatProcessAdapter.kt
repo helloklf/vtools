@@ -12,8 +12,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.ProcessInfo
 import com.omarea.vtools.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Created by Hello on 2018/01/26.
@@ -24,6 +28,10 @@ class FloatProcessAdapter(private val context: Context,
                           private var keywords: String = "",
                           private var sortMode: Int = SORT_MODE_CPU,
                           private var filterMode: Int = FILTER_ANDROID) : BaseAdapter() {
+    private val appInfoLoader = AppInfoLoader(context, 100)
+    private val androidIcon = context.getDrawable(R.drawable.process_android)
+    private val linuxIcon = context.getDrawable(R.drawable.process_linux)
+
     companion object {
         val SORT_MODE_DEFAULT = 1;
         val SORT_MODE_CPU = 4;
@@ -87,7 +95,8 @@ class FloatProcessAdapter(private val context: Context,
     }
 
     private fun filterAppList(): ArrayList<ProcessInfo> {
-        return ArrayList(processes.filter { it -> (
+        return ArrayList(processes.filter { it ->
+            (
                     when (filterMode) {
                         FILTER_ALL -> true
                         FILTER_ANDROID -> isAndroidProcess(it)
@@ -120,33 +129,20 @@ class FloatProcessAdapter(private val context: Context,
             return
         } else {
             if (isAndroidProcess(item)) {
-                Thread {
+                GlobalScope.launch(Dispatchers.Main) {
                     var icon: Drawable? = null
                     try {
-                        if (icon == null) {
-                            val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
-                            icon = iconCaches.get(name)
-                            val installInfo = pm.getPackageInfo(name, 0)
-                            icon = installInfo.applicationInfo.loadIcon(pm)
-                            iconCaches.put(name, icon)
-                        }
+                        val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                        icon = appInfoLoader.loadIcon(name).await()
                     } catch (ex: Exception) {
-                    } finally {
-                        if (icon != null) {
-                            imageView.post {
-                                imageView.setImageDrawable(icon)
-                                imageView.tag = item.name
-                            }
-                        } else {
-                            imageView.post {
-                                imageView.setImageDrawable(context.getDrawable(R.drawable.process_android))
-                                imageView.tag = item.name
-                            }
-                        }
                     }
-                }.start()
+                    imageView.post {
+                        imageView.setImageDrawable(if (icon != null) icon else androidIcon)
+                        imageView.tag = item.name
+                    }
+                }
             } else {
-                imageView.setImageDrawable(context.getDrawable(R.drawable.process_linux))
+                imageView.setImageDrawable(linuxIcon)
                 imageView.tag = item.name
             }
         }

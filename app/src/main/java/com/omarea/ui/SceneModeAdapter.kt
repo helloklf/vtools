@@ -15,9 +15,11 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
@@ -27,8 +29,10 @@ import kotlin.collections.HashMap
  */
 
 class SceneModeAdapter(private val context: Context, apps: ArrayList<AppInfo>, private val firstMode: String) : BaseAdapter() {
+    private val appIconLoader = AppInfoLoader(context)
     private var keywords: String = ""
     private val list: ArrayList<AppInfo>?
+    private var pm: PackageManager? = null
 
     init {
         this.list = filterAppList(apps, keywords)
@@ -47,8 +51,8 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<AppInfo>, p
     }
 
     private fun keywordSearch(item: AppInfo, text: String): Boolean {
-        return item.packageName.toString().toLowerCase(Locale.getDefault()).contains(text)
-                || item.appName.toString().toLowerCase(Locale.getDefault()).contains(text)
+        return item.packageName.toLowerCase(Locale.getDefault()).contains(text)
+                || item.appName.toLowerCase(Locale.getDefault()).contains(text)
                 || item.path.toString().toLowerCase(Locale.getDefault()).contains(text)
     }
 
@@ -59,31 +63,6 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<AppInfo>, p
         return ArrayList(appList.filter { item ->
             keywordSearch(item, text)
         })
-    }
-
-    private fun loadIcon(viewHolder: ViewHolder, item: AppInfo) {
-        Thread {
-            var icon: Drawable? = null
-            try {
-                val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
-                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-            } catch (ex: Exception) {
-                try {
-                    val file = File(item.path.toString())
-                    if (file.exists() && file.canRead()) {
-                        val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
-                    }
-                } catch (ex: Exception) {
-                }
-            } finally {
-                if (icon != null) {
-                    viewHolder.imgView!!.post {
-                        viewHolder.imgView!!.setImageDrawable(icon)
-                    }
-                }
-            }
-        }.start()
     }
 
     private fun keywordHightLight(str: String): SpannableString {
@@ -153,39 +132,51 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<AppInfo>, p
     fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
         val viewHolder = ViewHolder()
-        viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
-        viewHolder.summery = convertView.findViewById(R.id.ItemSummary)
-        viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
-        viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
-
-        viewHolder.itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-        if (item.icon == null) {
-            loadIcon(viewHolder, item)
-        } else {
-            viewHolder.imgView?.setImageDrawable(item.icon)
-        }
-        if (item.enabledState != null) {
-            viewHolder.summery?.run {
-                val mode = item.enabledState.toString()
-                setTextColor(getColor(mode))
-                visibility = VISIBLE
-                text = mode.run {
-                    ModeSwitcher.getModName(mode) + (if (isEmpty()) {
-                        "(${ModeSwitcher.getModName(firstMode)})"
-                    } else {
-                        ""
-                    })
+        viewHolder.run {
+            itemTitle = convertView.findViewById(R.id.ItemTitle)
+            summery = convertView.findViewById(R.id.ItemSummary)
+            itemDesc = convertView.findViewById(R.id.ItemDesc)
+            imgView = convertView.findViewById(R.id.ItemIcon)
+            itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
+            if (item.icon == null) {
+                val id = item.path
+                this.appPath = id
+                GlobalScope.launch(Dispatchers.Main) {
+                    val icon = appIconLoader.loadIcon(item).await()
+                    val imgView = imgView!!
+                    if (icon != null && appPath == id) {
+                        imgView.setImageDrawable(icon)
+                    }
                 }
+            } else {
+                imgView!!.setImageDrawable(item.icon)
             }
-        } else {
-            viewHolder.summery?.visibility = GONE
-        }
 
-        if (viewHolder.itemDesc != null)
-            viewHolder.itemDesc?.text = item.desc
+            if (item.enabledState != null) {
+                summery?.run {
+                    val mode = item.enabledState.toString()
+                    setTextColor(getColor(mode))
+                    visibility = VISIBLE
+                    text = mode.run {
+                        ModeSwitcher.getModName(mode) + (if (isEmpty()) {
+                            "(${ModeSwitcher.getModName(firstMode)})"
+                        } else {
+                            ""
+                        })
+                    }
+                }
+            } else {
+                summery?.visibility = GONE
+            }
+
+            if (itemDesc != null)
+                itemDesc?.text = item.desc
+        }
     }
 
     inner class ViewHolder {
+        internal var appPath: CharSequence? = null
+
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
         internal var itemDesc: TextView? = null
