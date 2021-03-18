@@ -267,6 +267,11 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             new WebView().allowDebug();
         }
 
+        // 负优化（全局）
+        if (prefs.getBoolean("reverse_optimizer", false)) {
+            new ReverseOptimizer().handleLoadPackage(loadPackageParam);
+        }
+
         /*
         if (!(packageName.equals("android") || packageName.equals("com.android.systemui"))) {
             // 强制禁止缺口屏适配

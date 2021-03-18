@@ -32,7 +32,9 @@ class DialogXposedGlobalConfig(var context: Activity) {
         val fgNotificationDisable = view.findViewById<CompoundButton>(R.id.xposed_foreground_disable).apply {
             isChecked = globalConfig.fgNotificationDisable
         }
-
+        val reverseOptimizer = view.findViewById<CompoundButton>(R.id.xposed_reverse_optimizer).apply {
+            isChecked = globalConfig.reverseOptimizer
+        }
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
@@ -44,6 +46,7 @@ class DialogXposedGlobalConfig(var context: Activity) {
             globalConfig.webViewDebug = webViewDebug.isChecked
             globalConfig.hideSuIcon = hideSuIcon.isChecked
             globalConfig.fgNotificationDisable = fgNotificationDisable.isChecked
+            globalConfig.reverseOptimizer = reverseOptimizer.isChecked
 
             if (xposedExtension.setGlobalConfig(globalConfig)) {
                 xposedExtension.unbindService()

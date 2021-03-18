@@ -1,14 +1,31 @@
 package com.omarea.xposed;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.omarea.library.calculator.Flags;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+import static de.robv.android.xposed.XposedHelpers.callMethod;
+import static de.robv.android.xposed.XposedHelpers.setObjectField;
 
 /**
  * Created by Hello on 2018/03/02.
@@ -18,8 +35,8 @@ public class ViewConfig {
     static final float MULTIPLIER_SCROLL_FRICTION = 10000f;
     static float mDensity = -1;
 
-    private static void hookViewConfiguration(final Class<?> clazz) {
-        XposedBridge.hookAllConstructors(clazz, new XC_MethodHook() {
+    private void hookViewConfiguration() {
+        XposedBridge.hookAllConstructors(ViewConfiguration.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (param.args == null) return;
@@ -37,8 +54,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookMaxFlingVelocity(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(clazz, "getMaximumFlingVelocity", new XC_MethodHook() {
+    private void hookMaxFlingVelocity() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getMaximumFlingVelocity", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
@@ -46,13 +63,13 @@ public class ViewConfig {
             }
         });
 
-        XposedBridge.hookAllMethods(clazz, "getScaledMinimumFlingVelocity", new XC_MethodHook() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledMinimumFlingVelocity", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 param.setResult(5);
             }
         });
-        XposedBridge.hookAllMethods(clazz, "getScaledMaximumFlingVelocity", new XC_MethodHook() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledMaximumFlingVelocity", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
@@ -67,8 +84,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookScrollFriction(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(clazz, "getScrollFriction", new XC_MethodHook() {
+    private void hookScrollFriction() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScrollFriction", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
@@ -79,8 +96,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookOverscrollDistance(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(clazz, "getScaledOverscrollDistance", new XC_MethodHook() {
+    private void hookOverscrollDistance() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledOverscrollDistance", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
@@ -95,8 +112,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookOverflingDistance(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(clazz, "getScaledOverflingDistance", new XC_MethodHook() {
+    private void hookOverflingDistance() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledOverflingDistance", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
@@ -111,8 +128,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookLongPressTimeout(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(View.class, "getLongPressTimeout", new XC_MethodHook() {
+    private void hookLongPressTimeout() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getLongPressTimeout", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 param.setResult(200);
@@ -120,8 +137,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookTapTimeout(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(View.class, "getTapTimeout", new XC_MethodHook() {
+    private void hookTapTimeout() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getTapTimeout", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 param.setResult(100);
@@ -129,8 +146,8 @@ public class ViewConfig {
         });
     }
 
-    private static void hookScaledTouchSlop(final Class<?> clazz) {
-        XposedBridge.hookAllMethods(View.class, "getScaledTouchSlop", new XC_MethodHook() {
+    private void hookScaledTouchSlop() {
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledTouchSlop", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 param.setResult(4);
@@ -138,19 +155,56 @@ public class ViewConfig {
         });
     }
 
-    private static boolean isEnabled() {
+    private void hookRecyclerViewScroll() {
+        XposedHelpers.findAndHookMethod(
+                LinearLayoutManager.class,
+                "scrollBy",
+                int.class,
+                RecyclerView.Recycler.class,
+                RecyclerView.State.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    }
+                });
+    }
+
+    private void hookRecyclerViewScroll2() {
+        XposedHelpers.findAndHookMethod(
+                View.class,
+                "getOverScrollMode",
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            if ((RecyclerView)param.thisObject != null) {
+                                param.setResult(View.OVER_SCROLL_ALWAYS);
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                });
+    }
+
+    private boolean isEnabled() {
         return Common.DEFAULT_SCROLLING_ENABLE;
     }
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        hookViewConfiguration(ViewConfiguration.class);
-        hookOverscrollDistance(ViewConfiguration.class);
-        hookOverflingDistance(ViewConfiguration.class);
-        hookMaxFlingVelocity(ViewConfiguration.class);
-        hookScrollFriction(ViewConfiguration.class);
-        hookLongPressTimeout(ViewConfiguration.class);
-        hookTapTimeout(ViewConfiguration.class);
-        hookScaledTouchSlop(ViewConfiguration.class);
+        hookViewConfiguration();
+        hookOverscrollDistance();
+        hookOverflingDistance();
+        hookMaxFlingVelocity();
+        hookScrollFriction();
+        hookLongPressTimeout();
+        hookTapTimeout();
+        hookScaledTouchSlop();
+        // hookRecyclerViewScroll2();
+        // hookRecyclerViewScroll();
 
         /*
         XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledMaximumDrawingCacheSize",

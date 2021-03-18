@@ -21,6 +21,7 @@ public class XposedExtension(private val context: Context) {
         public var hideSuIcon = false
         public var webViewDebug = false
         public var fgNotificationDisable = false
+        public var reverseOptimizer = false
     }
 
     private var aidlConn: IAppConfigAidlInterface? = null
@@ -136,6 +137,7 @@ public class XposedExtension(private val context: Context) {
                     config.hideSuIcon = getBooleanValue("com.android.systemui_hide_su", false)
                     config.webViewDebug = getBooleanValue("android_webdebug", false)
                     config.fgNotificationDisable = getBooleanValue("android_dis_service_foreground", false)
+                    config.reverseOptimizer = getBooleanValue("reverse_optimizer", false)
 
                     return config
                 }
@@ -152,6 +154,7 @@ public class XposedExtension(private val context: Context) {
                     aidlConn!!.setBooleanValue("com.android.systemui_hide_su", globalConfig.hideSuIcon)
                     aidlConn!!.setBooleanValue("android_webdebug", globalConfig.webViewDebug)
                     aidlConn!!.setBooleanValue("android_dis_service_foreground", globalConfig.fgNotificationDisable)
+                    aidlConn!!.setBooleanValue("reverse_optimizer", globalConfig.reverseOptimizer)
                     return true
                 }
             } catch (ex: java.lang.Exception) {
