@@ -1,8 +1,13 @@
 package com.omarea.common.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.view.View;
 
@@ -10,16 +15,55 @@ public class FastBlurUtility {
 
     /**
      * 获得模糊化的背景图片
+     *
      * @param activity 获取模糊化的背景activity
      * @return 模糊化的背景图片
      */
     public static Bitmap getBlurBackgroundDrawer(Activity activity) {
         Bitmap bmp = takeScreenShot(activity);
         return startBlurBackground(bmp);
+
+        /*
+        Long startTime = System.currentTimeMillis();
+        Log.d("Scene", "takeScreenShot");
+        Bitmap bmp = takeScreenShot(activity);
+        Log.d("Scene", "startBlurBackground" + (System.currentTimeMillis() - startTime));
+        startBlurBackground(bmp);
+        // Bitmap bitmap = startBlurBackground(bmp);
+        Log.d("Scene", "Blur Completed！"+ (System.currentTimeMillis() - startTime));
+        Bitmap bitmap = blur(bmp, activity);
+        Log.d("Scene", "Blur Completed！"+ (System.currentTimeMillis() - startTime));
+        return bitmap;
+        */
+    }
+
+
+    // 实测性能反而更低...
+    private static Bitmap blur(Bitmap bitmap, Context context) {
+        if (bitmap == null) {
+            return bitmap;
+        }
+
+        //使用RenderScript对图片进行高斯模糊处理
+        Bitmap output = Bitmap.createBitmap(bitmap); // 创建输出图片
+        RenderScript rs = RenderScript.create(context); // 构建一个RenderScript对象
+        ScriptIntrinsicBlur gaussianBlue = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)); //
+        // 创建高斯模糊脚本
+        Allocation allIn = Allocation.createFromBitmap(rs, bitmap); // 开辟输入内存
+        Allocation allOut = Allocation.createFromBitmap(rs, output); // 开辟输出内存
+        float radius = 10f; //设置模糊半径
+        gaussianBlue.setRadius(radius); // 设置模糊半径，范围0f<radius<=25f
+        gaussianBlue.setInput(allIn); // 设置输入内存
+        gaussianBlue.forEach(allOut); // 模糊编码，并将内存填入输出内存
+        allOut.copyTo(output); // 将输出内存编码为Bitmap，图片大小必须注意
+        rs.destroy();
+        //rs.releaseAllContexts(); // 关闭RenderScript对象，API>=23则使用rs.releaseAllContexts()
+        return output;
     }
 
     /**
      * 截屏
+     *
      * @param activity 截屏的activity
      * @return 截屏图片
      */
@@ -51,7 +95,7 @@ public class FastBlurUtility {
         long startMs = System.currentTimeMillis();
         float radius = 10; //模糊程度
 
-        Bitmap overlay = fastblur(small(bkg), (int) radius);
+        Bitmap overlay = fastBlur(small(bkg), (int) radius);
 
         Log.i("FastBlurUtility", "=====blur time:" + (System.currentTimeMillis() - startMs));
         return big(overlay);
@@ -59,18 +103,19 @@ public class FastBlurUtility {
 
     /**
      * 放大图片
+     *
      * @param bitmap 需要放大的图片
      * @return 放大的图片
      */
     private static Bitmap big(Bitmap bitmap) {
         Matrix matrix = new Matrix();
         matrix.postScale(4f, 4f);
-        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizeBmp;
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**
      * 缩小图片
+     *
      * @param bitmap 需要缩小的图片
      * @return 缩小的图片
      */
@@ -82,12 +127,12 @@ public class FastBlurUtility {
 
     /**
      * 将图片模糊化
+     *
      * @param sentBitmap 需要模糊的图片
-     * @param radius  模糊程度
+     * @param radius     模糊程度
      * @return 模糊后的图片
      */
-    private static Bitmap fastblur(Bitmap sentBitmap, int radius) {
-
+    private static Bitmap fastBlur(Bitmap sentBitmap, int radius) {
         Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
 
         if (radius < 1) {
@@ -105,15 +150,15 @@ public class FastBlurUtility {
         int wh = w * h;
         int div = radius + radius + 1;
 
-        int r[] = new int[wh];
-        int g[] = new int[wh];
-        int b[] = new int[wh];
+        int[] r = new int[wh];
+        int[] g = new int[wh];
+        int[] b = new int[wh];
         int rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
-        int vmin[] = new int[Math.max(w, h)];
+        int[] vmin = new int[Math.max(w, h)];
 
         int divsum = (div + 1) >> 1;
         divsum *= divsum;
-        int dv[] = new int[256 * divsum];
+        int[] dv = new int[256 * divsum];
         for (i = 0; i < 256 * divsum; i++) {
             dv[i] = (i / divsum);
         }
