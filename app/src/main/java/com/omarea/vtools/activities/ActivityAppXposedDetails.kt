@@ -313,7 +313,7 @@ class ActivityAppXposedDetails : ActivityBase() {
                                     app_details_dpi.text = "默认"
                                 } else
                                     app_details_dpi.text = dpi.toString()
-                                dialog?.dialog
+                                dialog?.dismiss()
                             }
                         } catch (ex: Exception) {
                         }
