@@ -34,13 +34,13 @@ import java.util.*
 public class AccessibilityScenceMode : AccessibilityService() {
     private var flagRequestKeyEvent = true
     private var sceneConfigChanged: BroadcastReceiver? = null
-    private var isLandscapf = false
+    private var isLandscap = false
 
     private var displayWidth = 1080
     private var displayHeight = 2340
 
     companion object {
-        private var lastParsingThread: Long = 0
+        private var lastAnalyseThread: Long = 0
     }
 
     private var floatLogView: FloatLogView? = null
@@ -59,9 +59,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private fun onScreenConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            isLandscapf = false
+            isLandscap = false
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscapf = true
+            isLandscap = true
         }
         getDisplaySize()
     }
@@ -155,7 +155,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
 
         // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
-        if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
+        if (isLandscap && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
             return
         }
 
@@ -385,11 +385,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                                 GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             } else {
-                                lastParsingThread = System.currentTimeMillis()
+                                lastAnalyseThread = System.currentTimeMillis()
                                 // try {
                                 // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
                                 // thread.start()
-                                windowAnalyse(lastWindow, lastParsingThread)
+                                windowAnalyse(lastWindow, lastAnalyseThread)
                                 if (event != null) {
                                     startActivityPolling()
                                 }
@@ -457,7 +457,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
             }
 
-            if (lastParsingThread == tid && wp != null) {
+            if (lastAnalyseThread == tid && wp != null) {
                 GlobalStatus.lastPackageName = wp.toString()
                 EventBus.publish(EventType.APP_SWITCH)
             }
@@ -490,7 +490,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
             }
 
-            if (lastParsingThread == tid && wp != null) {
+            if (lastAnalyseThread == tid && wp != null) {
                 GlobalStatus.lastPackageName = wp.toString()
                 EventBus.publish(EventType.APP_SWITCH)
             }
