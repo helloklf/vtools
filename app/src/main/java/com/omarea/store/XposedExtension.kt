@@ -15,13 +15,14 @@ public class XposedExtension(private val context: Context) {
         public var dpi = -1
         public var excludeRecent = false
         public var smoothScroll = false
+        public var webDebug = false
     }
 
     open class GlobalConfig {
         public var hideSuIcon = false
-        public var webViewDebug = false
         public var fgNotificationDisable = false
         public var reverseOptimizer = false
+        public var androidScroll = false
     }
 
     private var aidlConn: IAppConfigAidlInterface? = null
@@ -95,7 +96,7 @@ public class XposedExtension(private val context: Context) {
 
     public fun getAppConfig(appConfig: AppConfig): AppConfig? {
         try {
-            val configJson = current!!.getAppConfig(appConfig.packageName)
+            val configJson = current!!.getStringValue(appConfig.packageName, "{}")
             val config = JSONObject(configJson)
             for (key in config.keys()) {
                 when (key) {
@@ -107,6 +108,9 @@ public class XposedExtension(private val context: Context) {
                     }
                     "smoothScroll" -> {
                         appConfig.smoothScroll = config.getBoolean(key)
+                    }
+                    "webDebug" -> {
+                        appConfig.webDebug = config.getBoolean(key)
                     }
                 }
             }
@@ -120,8 +124,15 @@ public class XposedExtension(private val context: Context) {
     public fun setAppConfig(appConfig: AppConfig): Boolean {
         if (current != null) {
             try {
+                val config = JSONObject().apply {
+                    put("dpi", appConfig.dpi)
+                    put("excludeRecent", appConfig.excludeRecent)
+                    put("smoothScroll", appConfig.smoothScroll)
+                    put("webDebug", appConfig.webDebug)
+                }.toString(0)
+
                 current?.run {
-                    return updateAppConfig(appConfig.packageName, appConfig.dpi, appConfig.excludeRecent, appConfig.smoothScroll)
+                    return setStringValue(appConfig.packageName, config)
                 }
             } catch (ex: java.lang.Exception) {
             }
@@ -135,9 +146,9 @@ public class XposedExtension(private val context: Context) {
                 current?.run {
                     val config = GlobalConfig()
                     config.hideSuIcon = getBooleanValue("com.android.systemui_hide_su", false)
-                    config.webViewDebug = getBooleanValue("android_webdebug", false)
                     config.fgNotificationDisable = getBooleanValue("android_dis_service_foreground", false)
                     config.reverseOptimizer = getBooleanValue("reverse_optimizer", false)
+                    config.androidScroll = getBooleanValue("android_scroll", false)
 
                     return config
                 }
@@ -152,9 +163,9 @@ public class XposedExtension(private val context: Context) {
             try {
                 current?.run {
                     aidlConn!!.setBooleanValue("com.android.systemui_hide_su", globalConfig.hideSuIcon)
-                    aidlConn!!.setBooleanValue("android_webdebug", globalConfig.webViewDebug)
                     aidlConn!!.setBooleanValue("android_dis_service_foreground", globalConfig.fgNotificationDisable)
                     aidlConn!!.setBooleanValue("reverse_optimizer", globalConfig.reverseOptimizer)
+                    aidlConn!!.setBooleanValue("android_scroll", globalConfig.androidScroll)
                     return true
                 }
             } catch (ex: java.lang.Exception) {

@@ -182,13 +182,13 @@ class ActivityAppXposedConfig : ActivityBase() {
             displayList = ArrayList()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
-                setAppRowDesc(item)
                 val packageName = item.packageName
                 if (search && !(packageName.toLowerCase(Locale.getDefault()).contains(keyword) || item.appName.toLowerCase(Locale.getDefault()).contains(keyword))) {
                     continue
                 } else {
                     if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
                         displayList!!.add(item)
+                        setAppRowDesc(item)
                     }
                 }
             }
@@ -218,7 +218,10 @@ class ActivityAppXposedConfig : ActivityBase() {
                     desc.append("隐藏后台  ")
                 }
                 if (smoothScroll) {
-                    desc.append("滚动优化  ")
+                    desc.append("弹性慢速滚动  ")
+                }
+                if (webDebug) {
+                    desc.append("Web调试  ")
                 }
                 item.desc = desc.toString()
             }

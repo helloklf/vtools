@@ -80,7 +80,7 @@ class ActivityAppXposedDetails : ActivityBase() {
                     }
                     installVAddin()
                 } else {
-                    val configJson = aidlConn!!.getAppConfig(app)
+                    val configJson = aidlConn!!.getStringValue(app, "{}")
                     val config = JSONObject(configJson)
                     for (key in config.keys()) {
                         when (key) {
@@ -96,10 +96,15 @@ class ActivityAppXposedDetails : ActivityBase() {
                                 sceneConfigInfo.smoothScroll = config.getBoolean(key)
                                 originConfig.smoothScroll = sceneConfigInfo.smoothScroll
                             }
+                            "webDebug" -> {
+                                sceneConfigInfo.webDebug = config.getBoolean(key)
+                                originConfig.webDebug = sceneConfigInfo.webDebug
+                            }
                         }
                     }
                     app_details_scrollopt.isChecked = sceneConfigInfo.smoothScroll
                     app_details_excludetask.isChecked = sceneConfigInfo.excludeRecent
+                    app_details_web_debug.isChecked = sceneConfigInfo.webDebug
                     if (sceneConfigInfo.dpi >= 96) {
                         app_details_dpi.text = sceneConfigInfo.dpi.toString()
                     } else {
@@ -118,7 +123,7 @@ class ActivityAppXposedDetails : ActivityBase() {
     private fun installVAddin() {
         val addin = "addin/xposed-addin.apk"
         // 解压应用内部集成的插件文件
-        val addinPath = com.omarea.common.shared.FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
+        val addinPath = FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
 
         // 如果应用内部集成的插件文件获取失败
         if (addinPath == null) {
@@ -223,6 +228,7 @@ class ActivityAppXposedDetails : ActivityBase() {
         app_details_dpi.isEnabled = allowXposedConfig
         app_details_excludetask.isEnabled = allowXposedConfig
         app_details_scrollopt.isEnabled = allowXposedConfig
+        app_details_web_debug.isEnabled = allowXposedConfig
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -282,6 +288,9 @@ class ActivityAppXposedDetails : ActivityBase() {
         app_details_scrollopt.setOnClickListener {
             sceneConfigInfo.smoothScroll = (it as Switch).isChecked
         }
+        app_details_web_debug.setOnClickListener {
+            sceneConfigInfo.webDebug = (it as Switch).isChecked
+        }
 
         if (XposedCheck.xposedIsRunning()) {
             if (sceneConfigInfo.dpi >= 96) {
@@ -313,7 +322,7 @@ class ActivityAppXposedDetails : ActivityBase() {
                                     app_details_dpi.text = "默认"
                                 } else
                                     app_details_dpi.text = dpi.toString()
-                                dialog?.dialog
+                                dialog?.dismiss()
                             }
                         } catch (ex: Exception) {
                         }
@@ -376,14 +385,27 @@ class ActivityAppXposedDetails : ActivityBase() {
             if (
                     sceneConfigInfo.dpi != originConfig.dpi ||
                     sceneConfigInfo.excludeRecent != originConfig.excludeRecent ||
-                    sceneConfigInfo.smoothScroll != originConfig.smoothScroll
+                    sceneConfigInfo.smoothScroll != originConfig.smoothScroll ||
+                    sceneConfigInfo.webDebug != originConfig.webDebug
             ) {
                 setResult(RESULT_OK, this.intent)
             } else {
                 setResult(_result, this.intent)
             }
             if (aidlConn != null) {
-                aidlConn!!.updateAppConfig(app, sceneConfigInfo.dpi, sceneConfigInfo.excludeRecent, sceneConfigInfo.smoothScroll)
+                try {
+                    val config = JSONObject().apply {
+                        put("dpi", sceneConfigInfo.dpi)
+                        put("excludeRecent", sceneConfigInfo.excludeRecent)
+                        put("smoothScroll", sceneConfigInfo.smoothScroll)
+                        put("webDebug", sceneConfigInfo.webDebug)
+                    }.toString(0)
+
+                    aidlConn!!.run {
+                        setStringValue(sceneConfigInfo.packageName, config)
+                    }
+                } catch (ex: java.lang.Exception) {
+                }
             }
         } catch (ex: Exception) {
         }

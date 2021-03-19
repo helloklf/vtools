@@ -85,23 +85,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="隐藏ROOT图标" />
+                        android:text="弹性缓慢滚动" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="隐藏CM、LineageOS集成ROOT的状态栏提示图标" />
+                        android:text="调整滚动速度和惯性阻尼、长按与短按触发时长等参数，使触控体验更佳" />
                 </LinearLayout>
 
                 <Switch
-                    android:id="@+id/xposed_root_icon_hide"
+                    android:id="@+id/xposed_android_scroll"
                     android:checked="false"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,17 +131,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="WebView调试" />
+                        android:text="隐藏ROOT图标" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="将手机与电脑进行连接(ADB)后，可通过chrome://inspect调试手机打开的网页" />
+                        android:text="隐藏CM、LineageOS集成ROOT的状态栏提示图标" />
                 </LinearLayout>
 
                 <Switch
-                    android:id="@+id/xposed_webview_debug"
+                    android:id="@+id/xposed_root_icon_hide"
                     android:checked="false"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
