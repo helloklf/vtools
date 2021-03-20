@@ -320,9 +320,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
         if (System.currentTimeMillis() - lastWindowChanged < 5000) {
-            GlobalScope.launch(Dispatchers.Main) {
-                autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
-            }
+            autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
         }
     }
 
