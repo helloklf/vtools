@@ -268,9 +268,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             val packageName = event.packageName
             if (packageName != null) {
                 when {
-                    packageName == "com.omarea.vtools" -> {
-                        return
-                    }
+                    // packageName == "com.omarea.vtools" -> return
                     packageName.contains("packageinstaller") -> {
                         if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
                             return
@@ -322,7 +320,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
         if (System.currentTimeMillis() - lastWindowChanged < 5000) {
-            autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
+            GlobalScope.launch(Dispatchers.Main) {
+                autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
+            }
         }
     }
 
