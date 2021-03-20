@@ -93,9 +93,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
                 // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
-            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
-                info.notificationTimeout = 1000
-            }
         }
 
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
@@ -297,8 +294,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
 
-            if (lastWindowChanged != event.eventTime) {
-                lastWindowChanged = event.eventTime
+            val t = event.eventTime
+            if (lastOriginEventTime != t && t > lastOriginEventTime) {
+                lastOriginEventTime = t
+                lastWindowChanged = System.currentTimeMillis()
                 // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
                 modernModeEvent(event)
                 // } else {
@@ -310,7 +309,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
+
     private var lastWindowChanged = 0L
+    private var lastOriginEventTime = 0L
     private var autoSkipAd: AutoSkipAd? = null
     private fun trySkipAD(event: AccessibilityEvent) {
         if (autoSkipAd == null) {
@@ -318,7 +319,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
 
         // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
-        if (System.currentTimeMillis() - lastWindowChanged < 5000 || !spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
+        if (System.currentTimeMillis() - lastWindowChanged < 5000) {
             autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
         }
     }

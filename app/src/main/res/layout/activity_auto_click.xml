@@ -57,19 +57,6 @@
                 android:layout_height="match_parent"
                 android:text="@string/scene_install_skip_ad_precise_desc" />
 
-            <Switch
-                android:id="@+id/settings_skip_ad_delay"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/scene_install_skip_ad_delay" />
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/scene_install_skip_ad_delay_desc" />
-
         </LinearLayout>
 
     </LinearLayout>
