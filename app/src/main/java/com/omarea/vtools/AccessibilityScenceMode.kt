@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -180,7 +181,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
             spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                trySkipAD(event)
+                if (event.contentChangeTypes and AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE != 0) {
+                    trySkipAD(event)
+                }
             }
         }
 
@@ -265,6 +268,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
             val packageName = event.packageName
             if (packageName != null) {
                 when {
+                    packageName == "com.omarea.vtools" -> {
+                        return
+                    }
                     packageName.contains("packageinstaller") -> {
                         if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
                             return
@@ -298,11 +304,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (lastOriginEventTime != t && t > lastOriginEventTime) {
                 lastOriginEventTime = t
                 lastWindowChanged = System.currentTimeMillis()
-                // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
                 modernModeEvent(event)
-                // } else {
-                //     startActivityPolling(600L)
-                // }
             }
         } else {
             classicModelEvent(event)
@@ -324,7 +326,12 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-    private val blackTypeList = arrayListOf<Int>(AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY, AccessibilityWindowInfo.TYPE_INPUT_METHOD, AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER, AccessibilityWindowInfo.TYPE_SYSTEM)
+    private val blackTypeList = arrayListOf(
+        AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY,
+        AccessibilityWindowInfo.TYPE_INPUT_METHOD,
+        AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER,
+        AccessibilityWindowInfo.TYPE_SYSTEM
+    )
 
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {

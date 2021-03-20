@@ -89,6 +89,8 @@ class AutoSkipAd(private val service: AccessibilityService) {
         return true
     }
 
+    // 如果自动点击成功，记录时间的eventTime（目的在于 同一时间发生的事件，不要重复执行多次点击）
+    private var lastCompletedEventTime = 0L
     fun skipAd(event: AccessibilityEvent, precise: Boolean, displayWidth: Int, displayHeight: Int) {
         this.displayWidth = displayWidth
         this.displayHeight = displayHeight
@@ -98,6 +100,12 @@ class AutoSkipAd(private val service: AccessibilityService) {
         }
 
         val source = event.source ?: return
+
+        val t = event.eventTime
+        if (!(lastCompletedEventTime != t && t > lastCompletedEventTime)) {
+            return
+        }
+
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             lastActivity = event.className?.toString()
         } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
@@ -135,6 +143,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                     autoClickBase.touchOrClickNode(node, service, true)
                                     lastClickedApp = packageName.toString()
                                     lastClickedNode = node
+                                    lastCompletedEventTime = t
                                     Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
                                 }
                                 return
@@ -166,6 +175,8 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                     autoClickBase.touchOrClickNode(node, service, true)
                                     lastClickedApp = packageName.toString()
                                     lastClickedNode = node
+                                    lastCompletedEventTime = t
+
                                     Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
                                 }
                             }
