@@ -25,7 +25,10 @@ import com.omarea.scene_mode.AutoSkipAd
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatLogView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -293,12 +296,15 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
                 return
             }
-            lastWindowChanged = System.currentTimeMillis()
-            // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
-                    modernModeEvent(event)
-            // } else {
-            //     startActivityPolling(600L)
-            // }
+
+            if (lastWindowChanged != event.eventTime) {
+                lastWindowChanged = event.eventTime
+                // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
+                modernModeEvent(event)
+                // } else {
+                //     startActivityPolling(600L)
+                // }
+            }
         } else {
             classicModelEvent(event)
         }
@@ -317,6 +323,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
+    private val blackTypeList = arrayListOf<Int>(AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY, AccessibilityWindowInfo.TYPE_INPUT_METHOD, AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER, AccessibilityWindowInfo.TYPE_SYSTEM)
+
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
         val windowsList = windows
@@ -324,7 +332,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
             return
         } else if (windowsList.size > 1) {
             val effectiveWindows = windowsList.filter {
-                (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                // 现在不过滤画中画应用了，因为有遇到像Telegram这样的应用，从画中画切换到全屏后仍检测到处于画中画模式，并且类型是 -1（可能是MIUI魔改出来的），但对用户来说全屏就是前台应用
+                !blackTypeList.contains(it.type)
+
+                // (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
             } // .sortedBy { it.layer }
 
             if (effectiveWindows.isNotEmpty()) {
