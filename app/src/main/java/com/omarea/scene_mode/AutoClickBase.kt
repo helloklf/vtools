@@ -6,6 +6,7 @@ import android.graphics.Path
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
+import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 
@@ -20,43 +21,59 @@ open class AutoClickBase {
         val position = Point(rect.left + (width / 2), rect.top + (height / 2))
         val builder = GestureDescription.Builder()
         val p = Path()
-        p.moveTo(position.x.toFloat(), position.y.toFloat())
-        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 10L))
+        // 故意歪那么一丢丢，显得更真实？
+        p.moveTo(position.x.toFloat() + Math.random().toFloat(), position.y.toFloat() + Math.random().toFloat())
+        // p.moveTo(position.x.toFloat(), position.y.toFloat())
+        p.close()
+        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 50L))
         val gesture = builder.build()
         return gesture
     }
 
-    /**
-     * 触摸或点击按钮（由于模拟触摸可靠性比 直接ACTION_CLICK更可靠，所以只要支持就优先使用模拟触摸）
-     */
-    fun touchOrClickNode(node: AccessibilityNodeInfo, service: AccessibilityService, reClick: Boolean = false) {
+    fun tryTouchNodeRect(node: AccessibilityNodeInfo, service: AccessibilityService): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val rect = Rect()
             node.getBoundsInScreen(rect)
-            service.dispatchGesture(buildGesture(rect), object : AccessibilityService.GestureResultCallback() {
+
+            /*
+            try {
+                if (!node.isFocusable) {
+                    node.isFocusable = true
+                }
+                node.isFocusable = true
+            } catch (ex: Exception) {
+                // Log.e("@Scene", "" + ex.message)
+            }
+            */
+
+            return service.dispatchGesture(buildGesture(rect), object : AccessibilityService.GestureResultCallback() {
                 @Override
                 override fun onCompleted(gestureDescription: GestureDescription) {
                     super.onCompleted(gestureDescription);
-                    if (reClick) {
-                        clickNode(node)
-                    }
                     // Log.d("@Scene", "onCompleted: 完成..........");
                 }
 
                 override fun onCancelled(gestureDescription: GestureDescription) {
                     super.onCancelled(gestureDescription);
-                    // Log.d("@Scene", "onCompleted: 取消..........");
+                    // Log.d("@Scene", "onCancelled: 取消..........");
                 }
             }, null)
-        } else {
-            node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
         }
+        return false
+    }
+
+    fun nodeClickable(node: AccessibilityNodeInfo): Boolean {
+        return node.actionList.contains(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
     }
 
     /**
      * 普通点击
      */
-    fun clickNode(node: AccessibilityNodeInfo) {
-        node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+    fun clickNode(node: AccessibilityNodeInfo): Boolean {
+        if (nodeClickable(node)) {
+            node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            return true
+        }
+        return false
     }
 }

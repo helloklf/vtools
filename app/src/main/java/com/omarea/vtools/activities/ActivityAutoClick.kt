@@ -27,6 +27,14 @@ class ActivityAutoClick : ActivityBase() {
         bindSPF(settings_skip_ad, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD, false)
         bindSPF(settings_skip_ad_precise, globalSPF, SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)
 
+        settings_skip_ad.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
+                    AutoSkipCloudData().updateConfig(context, true)
+                }
+            }
+        }
+
         settings_skip_ad_precise.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AutoSkipCloudData().updateConfig(context, true)

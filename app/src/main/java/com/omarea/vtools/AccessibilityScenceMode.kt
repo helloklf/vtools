@@ -25,6 +25,7 @@ import com.omarea.scene_mode.AutoClickInstall
 import com.omarea.scene_mode.AutoSkipAd
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vtools.popup.FloatLogView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -138,6 +139,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
             floatLogView = FloatLogView(this)
+        }
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) && spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
+            AutoSkipCloudData().updateConfig(this, true)
         }
     }
 
