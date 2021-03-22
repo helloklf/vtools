@@ -81,6 +81,10 @@ class AutoSkipAd(private val service: AccessibilityService) {
         return true
     }
 
+    // 文字匹配正则
+    private val textRegx1 = Regex("^[0-9]+[\\ss]*跳过[广告]*\$")
+    private val textRegx2 = Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$")
+
     // 如果自动点击成功，记录时间的eventTime（目的在于 同一时间发生的事件，不要重复执行多次点击）
     private var lastCompletedEventTime = 0L
     fun skipAd(event: AccessibilityEvent, precise: Boolean, displayWidth: Int, displayHeight: Int) {
@@ -117,11 +121,11 @@ class AutoSkipAd(private val service: AccessibilityService) {
                     if (
                             className == "android.widget.textview" || className.toLowerCase(Locale.getDefault()).contains("button")
                     ) {
-                        val text = node.text.trim().toString()
+                        val text = node.text.trim().replace(Regex("[\nsS秒]", RegexOption.MULTILINE), "").toString()
                         if (
                                 text == "跳过" || text == "跳过广告" ||
-                                Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) ||
-                                Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$").matches(text)
+                                textRegx1.matches(text) ||
+                                textRegx2.matches(text)
                         ) {
                             if (!(lastClickedApp == packageName && (lastClickedNode == node && lastClickedNodeText == node.text))) {
                                 val viewId = node.viewIdResourceName
@@ -131,6 +135,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                 if (splash || pointFilter(p)) {
                                     if (autoClickBase.clickNode(node)) {
                                         Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${viewId}, text:" + node.text)
+                                        Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
                                     } else {
                                         val pp = Rect()
                                         val wrapNode = node.parent
