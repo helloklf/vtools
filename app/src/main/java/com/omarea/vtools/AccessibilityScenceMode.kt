@@ -143,7 +143,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             floatLogView = FloatLogView(this)
         }
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) && spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
-            AutoSkipCloudData().updateConfig(this, true)
+            AutoSkipCloudData().updateConfig(this, false)
         }
     }
 
