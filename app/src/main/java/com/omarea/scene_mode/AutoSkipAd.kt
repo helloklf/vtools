@@ -133,30 +133,39 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                 node.getBoundsInScreen(p)
                                 val splash = lastActivity?.toLowerCase(Locale.getDefault())?.contains("splash") == true
                                 if (splash || pointFilter(p)) {
+                                    // 尝试点子节点
                                     if (autoClickBase.clickNode(node)) {
                                         Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${viewId}, text:" + node.text)
                                         Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
-                                    } else {
-                                        val pp = Rect()
-                                        val wrapNode = node.parent
-                                        if (wrapNode != null) {
-                                            wrapNode.getBoundsInScreen(pp)
-                                            if ((splash || pointFilter(pp)) && autoClickBase.clickNode(wrapNode)) {
-                                                Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${wrapNode.viewIdResourceName}, text:" + node.text)
-                                            }
+                                        return
+                                    }
 
+                                    // 尝试点父节点
+                                    val pp = Rect()
+                                    val wrapNode = node.parent
+                                    if (wrapNode != null) {
+                                        wrapNode.getBoundsInScreen(pp)
+                                        if ((splash || pointFilter(pp)) && autoClickBase.clickNode(wrapNode)) {
+                                            Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${wrapNode.viewIdResourceName}, text:" + node.text)
                                             lastClickedApp = packageName.toString()
                                             lastClickedNode = node
                                             lastCompletedEventTime = t
                                             Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
-                                        } else if (autoClickBase.tryTouchNodeRect(node, service)) {
-                                            lastClickedApp = packageName.toString()
-                                            lastClickedNode = node
-                                            lastCompletedEventTime = t
-                                            Scene.toast("Scene尝试触摸了(${text})", Toast.LENGTH_SHORT)
+                                            return
                                         }
                                     }
+
+                                    // 尝试触摸子节点
+                                    if (autoClickBase.tryTouchNodeRect(node, service)) {
+                                        lastClickedApp = packageName.toString()
+                                        lastClickedNode = node
+                                        lastCompletedEventTime = t
+                                        Scene.toast("Scene尝试触摸了(${text})", Toast.LENGTH_SHORT)
+                                        return
+                                    }
                                 } else {
+                                    /*
+                                    // 去掉了跳过广告确认弹窗 因为目前此逻辑并不可靠
                                     val clickableNode = if (autoClickBase.nodeClickable(node)) {
                                         node
                                     } else {
@@ -173,6 +182,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                                         }
                                         Log.d("@Scene", "SkipAD SKip -> $packageName, ${source.className} ${p} id: ${viewId}, text:" + node.text)
                                     }
+                                    */
                                 }
                                 return
                             }

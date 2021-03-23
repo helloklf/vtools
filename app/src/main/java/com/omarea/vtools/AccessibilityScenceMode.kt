@@ -52,6 +52,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     internal var appSwitchHandler: AppSwitchHandler? = null
 
+    private var classicModel = false
+
     private lateinit var spf: SharedPreferences
 
     /**
@@ -144,8 +146,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             AutoSkipCloudData().updateConfig(this, true)
         }
     }
-
-    private var classicModel = false
 
     // 经典模式
     private fun classicModelEvent(event: AccessibilityEvent) {
@@ -251,6 +251,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+
         if (!classicModel) {
             /*
             when(event.eventType) {

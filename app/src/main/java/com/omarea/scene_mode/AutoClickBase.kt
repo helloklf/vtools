@@ -21,11 +21,8 @@ open class AutoClickBase {
         val position = Point(rect.left + (width / 2), rect.top + (height / 2))
         val builder = GestureDescription.Builder()
         val p = Path()
-        // 故意歪那么一丢丢，显得更真实？
-        p.moveTo(position.x.toFloat() + Math.random().toFloat(), position.y.toFloat() + Math.random().toFloat())
-        // p.moveTo(position.x.toFloat(), position.y.toFloat())
-        p.close()
-        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 50L))
+        p.moveTo(position.x.toFloat(), position.y.toFloat())
+        builder.addStroke(GestureDescription.StrokeDescription(p, 0L, 20L))
         val gesture = builder.build()
         return gesture
     }
