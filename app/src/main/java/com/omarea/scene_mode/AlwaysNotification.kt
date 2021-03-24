@@ -145,7 +145,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             remoteViews.setImageViewBitmap(R.id.notify_battery_icon, batteryImage)
         }
 
-        val intent = PendingIntent.getBroadcast(
+        val clickIntent = PendingIntent.getBroadcast(
                 context,
                 0,
                 Intent(context, ReceiverSceneMode::class.java).putExtra("packageName", packageName),
@@ -166,11 +166,12 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
                         .setContent(remoteViews)
                         .setWhen(System.currentTimeMillis())
                         .setAutoCancel(true)
+                        .setOngoing(false)
                         //.setDefaults(Notification.DEFAULT_SOUND)
-                        .setContentIntent(intent)
+                        .setContentIntent(clickIntent)
                         .build()
 
-        notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+        notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT or Notification.FLAG_FOREGROUND_SERVICE
         notificationManager?.notify(0x100, notification)
     }
 
