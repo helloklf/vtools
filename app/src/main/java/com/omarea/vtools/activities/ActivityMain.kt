@@ -200,11 +200,15 @@ class ActivityMain : ActivityBase() {
     override fun onResume() {
         super.onResume()
 
+        /*
+        // 典藏版 不检查更新
+
         // 如果距离上次检查更新超过 24 小时
         if (globalSPF.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
             Update().checkUpdate(this)
             globalSPF.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
         }
+        */
     }
 
     private fun setHomePage() {
