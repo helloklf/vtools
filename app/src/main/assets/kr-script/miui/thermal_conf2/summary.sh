@@ -6,10 +6,10 @@ install_dir="/data/vendor/thermal/config"
 
 if [[ -f "$install_dir/thermal-engine.current.ini" ]]; then
     # 旧版
-    mode=`cat "$install_dir/thermal-engine.current.ini"`
+    mode=`cat "$install_dir/thermal-engine.current.ini" | cut -f1 -d '_'`
 elif [[ -f "$install_dir/thermal.current.ini" ]]; then
     # 新版
-    mode=`cat "$install_dir/thermal.current.ini"`
+    mode=`cat "$install_dir/thermal.current.ini" | cut -f1 -d '_'`
 else
     mode=''
 fi
@@ -19,18 +19,9 @@ case "$mode" in
     "default")
         modename="系统默认 (default)"
      ;;
-    "powerfrugal" | "powerfrugal_cmi")
+    "powerfrugal")
         modename="节能降温 (powerfrugal)"
      ;;
-    "high")
-        modename="提高阈值 (旧版配置)"
-    ;;
-    "high2")
-        modename="稳定性能 (旧版配置)"
-    ;;
-    "nolimits")
-        modename="极致性能 (旧版配置)"
-    ;;
     "performance")
         modename="提高阈值 (performance)"
     ;;
@@ -40,7 +31,7 @@ case "$mode" in
     "author")
         modename="游戏嘟日常 (author)"
     ;;
-    "extreme" | "extreme_cmi")
+    "extreme")
         modename="极致性能 (extreme)"
     ;;
     "danger")
