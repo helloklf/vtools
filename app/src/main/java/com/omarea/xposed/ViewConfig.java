@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.omarea.library.calculator.Flags;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -153,6 +156,41 @@ public class ViewConfig {
                 param.setResult(4);
             }
         });
+    }
+
+    private void hookRecyclerViewScroll() {
+        XposedHelpers.findAndHookMethod(
+                LinearLayoutManager.class,
+                "scrollBy",
+                int.class,
+                RecyclerView.Recycler.class,
+                RecyclerView.State.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    }
+                });
+    }
+
+    private void hookRecyclerViewScroll2() {
+        XposedHelpers.findAndHookMethod(
+                View.class,
+                "getOverScrollMode",
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    }
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            if ((RecyclerView) param.thisObject != null) {
+                                param.setResult(View.OVER_SCROLL_ALWAYS);
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                });
     }
 
     private boolean isEnabled() {

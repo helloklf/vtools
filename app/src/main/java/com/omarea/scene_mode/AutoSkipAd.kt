@@ -8,6 +8,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.store.AutoSkipConfigStore
+import com.omarea.vtools.popup.FloatAdSkipConfirm
 import java.util.*
 
 /**
@@ -35,15 +36,6 @@ class AutoSkipAd(private val service: AccessibilityService) {
 
     private val autoClickBase = AutoClickBase()
 
-    private var autoClickKeyWords: ArrayList<String> = object : ArrayList<String>() {
-        /*
-        init {
-            add("暂不升级")
-            add("忽略此版本")
-        }
-        */
-    }
-
     private val blackList = arrayListOf("android", "com.android.systemui", "com.miui.home", "com.tencent.mobileqq", "com.tencent.mm", "com.omarea.vtools", "com.omarea.gesture", "com.android.settings")
 
     private fun preciseSkip(root: AccessibilityNodeInfo): Boolean {
@@ -55,7 +47,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                     if (!(lastClickedNode == node)) {
                         lastClickedNode = node
                         lastClickedApp = root.packageName?.toString()
-                        autoClickBase.touchOrClickNode(node, service, true)
+                        autoClickBase.clickNode(node) || autoClickBase.tryTouchNodeRect(node, service)
                         Scene.toast("Scene自动点了(${id})", Toast.LENGTH_SHORT)
                     }
                 }
@@ -89,6 +81,12 @@ class AutoSkipAd(private val service: AccessibilityService) {
         return true
     }
 
+    // 文字匹配正则
+    private val textRegx1 = Regex("^[0-9]+[\\ss]*跳过[广告]*\$")
+    private val textRegx2 = Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$")
+
+    // 如果自动点击成功，记录时间的eventTime（目的在于 同一时间发生的事件，不要重复执行多次点击）
+    private var lastCompletedEventTime = 0L
     fun skipAd(event: AccessibilityEvent, precise: Boolean, displayWidth: Int, displayHeight: Int) {
         this.displayWidth = displayWidth
         this.displayHeight = displayHeight
@@ -98,6 +96,12 @@ class AutoSkipAd(private val service: AccessibilityService) {
         }
 
         val source = event.source ?: return
+
+        val t = event.eventTime
+        if (!(lastCompletedEventTime != t && t > lastCompletedEventTime)) {
+            return
+        }
+
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             lastActivity = event.className?.toString()
         } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
@@ -115,27 +119,70 @@ class AutoSkipAd(private val service: AccessibilityService) {
                     node = get(i)
                     val className = node.className.toString().toLowerCase(Locale.getDefault())
                     if (
-                            className == "android.widget.textview" ||
-                            className.toLowerCase(Locale.getDefault()).contains("button")
+                            className == "android.widget.textview" || className.toLowerCase(Locale.getDefault()).contains("button")
                     ) {
-                        val text = node.text.trim().toString()
+                        val text = node.text.trim().replace(Regex("[\nsS秒]", RegexOption.MULTILINE), "").toString()
                         if (
                                 text == "跳过" || text == "跳过广告" ||
-                                Regex("^[0-9]+[\\ss]*跳过[广告]*\$").matches(text) ||
-                                Regex("^[点击]*跳过[广告]*[\\ss]{0,}[0-9]+\$").matches(text)
+                                textRegx1.matches(text) ||
+                                textRegx2.matches(text)
                         ) {
                             if (!(lastClickedApp == packageName && (lastClickedNode == node && lastClickedNodeText == node.text))) {
                                 val viewId = node.viewIdResourceName
                                 val p = Rect()
                                 node.getBoundsInScreen(p)
-                                if (pointFilter(p)) {
-                                    val parentId = node.parent.viewIdResourceName
-                                    val pParentId = node.parent.parent.viewIdResourceName
-                                    Log.d("@Scene", "SkipAD √ $packageName ${p} ${viewId}" + node.text)
-                                    autoClickBase.touchOrClickNode(node, service, true)
-                                    lastClickedApp = packageName.toString()
-                                    lastClickedNode = node
-                                    Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                val splash = lastActivity?.toLowerCase(Locale.getDefault())?.contains("splash") == true
+                                if (splash || pointFilter(p)) {
+                                    // 尝试点子节点
+                                    if (autoClickBase.clickNode(node)) {
+                                        Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${viewId}, text:" + node.text)
+                                        Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                        return
+                                    }
+
+                                    // 尝试点父节点
+                                    val pp = Rect()
+                                    val wrapNode = node.parent
+                                    if (wrapNode != null) {
+                                        wrapNode.getBoundsInScreen(pp)
+                                        if ((splash || pointFilter(pp)) && autoClickBase.clickNode(wrapNode)) {
+                                            Log.d("@Scene", "SkipAD √ $packageName ${p} id: ${wrapNode.viewIdResourceName}, text:" + node.text)
+                                            lastClickedApp = packageName.toString()
+                                            lastClickedNode = node
+                                            lastCompletedEventTime = t
+                                            Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
+                                            return
+                                        }
+                                    }
+
+                                    // 尝试触摸子节点
+                                    if (autoClickBase.tryTouchNodeRect(node, service)) {
+                                        lastClickedApp = packageName.toString()
+                                        lastClickedNode = node
+                                        lastCompletedEventTime = t
+                                        Scene.toast("Scene尝试触摸了(${text})", Toast.LENGTH_SHORT)
+                                        return
+                                    }
+                                } else {
+                                    /*
+                                    // 去掉了跳过广告确认弹窗 因为目前此逻辑并不可靠
+                                    val clickableNode = if (autoClickBase.nodeClickable(node)) {
+                                        node
+                                    } else {
+                                        val wrapNode = node.parent
+                                        if (autoClickBase.nodeClickable(wrapNode)) {
+                                            wrapNode
+                                        } else {
+                                            null
+                                        }
+                                    }
+                                    if (clickableNode != null) {
+                                        FloatAdSkipConfirm(service).showConfirm(packageName, p) {
+                                            autoClickBase.clickNode(clickableNode)
+                                        }
+                                        Log.d("@Scene", "SkipAD SKip -> $packageName, ${source.className} ${p} id: ${viewId}, text:" + node.text)
+                                    }
+                                    */
                                 }
                                 return
                             }
@@ -148,6 +195,14 @@ class AutoSkipAd(private val service: AccessibilityService) {
                 }
             }
 
+
+            /*
+            var autoClickKeyWords: ArrayList<String> = object : ArrayList<String>() {
+                init {
+                    add("暂不升级")
+                    add("忽略此版本")
+                }
+            }
             for (ki in autoClickKeyWords.indices) {
                 val nextNodes = source.findAccessibilityNodeInfosByText(autoClickKeyWords[ki])
                 val keyword = autoClickKeyWords[ki]
@@ -163,9 +218,11 @@ class AutoSkipAd(private val service: AccessibilityService) {
                             val text = node.text.trim().toString()
                             if (text == keyword) {
                                 if (!(lastClickedApp == packageName && lastClickedNode == node)) {
-                                    autoClickBase.touchOrClickNode(node, service, true)
+                                    autoClickBase.touchOrClickNode(node, service)
                                     lastClickedApp = packageName.toString()
                                     lastClickedNode = node
+                                    lastCompletedEventTime = t
+
                                     Scene.toast("Scene自动点了(${text})", Toast.LENGTH_SHORT)
                                 }
                             }
@@ -175,6 +232,7 @@ class AutoSkipAd(private val service: AccessibilityService) {
                     break
                 }
             }
+            */
         } catch (ex: java.lang.Exception) {
             Log.e("@Scene", "SkipAD Error -> ${ex.message}")
         }

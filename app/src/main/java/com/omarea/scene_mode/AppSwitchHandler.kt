@@ -23,6 +23,10 @@ import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -326,9 +330,9 @@ class AppSwitchHandler(private var context: Context, override val isAsync: Boole
             KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
         }
 
-        Thread(Runnable {
+        GlobalScope.launch (Dispatchers.IO) {
             initConfig()
-        }).start()
+        }
 
         sceneConfigChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {

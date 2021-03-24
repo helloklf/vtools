@@ -60,6 +60,9 @@ class DialogHelper {
     }
 
     companion object {
+        // 是否禁用模糊背景
+        public var disableBlurBg = false
+
         fun animDialog(dialog: AlertDialog?): DialogWrap? {
             if (dialog != null && !dialog.isShowing) {
                 dialog.window?.run {
@@ -375,7 +378,7 @@ class DialogHelper {
                 // attributes =attrs
                 // decorView.setPadding(0, 0, 0, 0)
 
-                val blurBitmap = if (wallpaperMode) {
+                val blurBitmap = if (disableBlurBg || wallpaperMode) {
                     null
                 } else {
                     FastBlurUtility.getBlurBackgroundDrawer(activity)

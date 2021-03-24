@@ -3,6 +3,9 @@ package com.omarea.utils
 import android.content.Context
 import com.omarea.Scene
 import com.omarea.store.AutoSkipConfigStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -10,7 +13,7 @@ import java.net.URL
 
 class AutoSkipCloudData {
     fun updateConfig(context: Context, showMsg: Boolean) {
-        Thread {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/addin/auto-skip-config-v1.json")
                 val connection = url.openConnection()
@@ -48,6 +51,6 @@ class AutoSkipCloudData {
                     Scene.toast("获取云端配置数据失败~")
                 }
             }
-        }.start()
+        }
     }
 }

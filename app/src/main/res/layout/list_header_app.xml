@@ -5,6 +5,7 @@
     android:padding="6dp">
 
     <CheckBox
+        android:layout_marginStart="8dp"
         android:id="@+id/select_state_all"
         android:layout_width="40dp"
         android:layout_height="30dp"

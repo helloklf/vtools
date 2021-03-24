@@ -85,6 +85,52 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:text="弹性缓慢滚动" />
+                    <TextView
+                        style="@style/textSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="调整滚动速度和惯性阻尼、长按与短按触发时长等参数，使触控体验更佳" />
+                </LinearLayout>
+
+                <Switch
+                    android:id="@+id/xposed_android_scroll"
+                    android:checked="false"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="70dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <ImageView
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#2196F3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_menu_addon"
+                    app:tint="@android:color/white" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="隐藏ROOT图标" />
                     <TextView
                         style="@style/textSecondary"
@@ -130,17 +176,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="WebView调试" />
+                        android:text="禁止前台服务" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="将手机与电脑进行连接(ADB)后，可通过chrome://inspect调试手机打开的网页" />
+                        android:text="禁止应用创建前台(foreground)服务，有助于消除“**正在后台运行”通知" />
                 </LinearLayout>
 
                 <Switch
-                    android:id="@+id/xposed_webview_debug"
+                    android:id="@+id/xposed_foreground_disable"
                     android:checked="false"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
@@ -175,17 +221,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="禁止前台服务" />
+                        android:text="全局负优化" />
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="禁止应用创建前台(foreground)服务，有助于消除“**正在后台运行”通知" />
+                        android:text="禁用硬件加速，并减少UI缓存大小，这将卡到怀疑人生" />
                 </LinearLayout>
 
                 <Switch
-                    android:id="@+id/xposed_foreground_disable"
+                    android:id="@+id/xposed_reverse_optimizer"
                     android:checked="false"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"

@@ -8,14 +8,17 @@ import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.AppInfo
 import com.omarea.vtools.R
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
@@ -25,8 +28,9 @@ import kotlin.Comparator
  * Created by Hello on 2018/01/26.
  */
 
-class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
+class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<AppInfo>?
+    private val appInfoLoader = AppInfoLoader(context)
 
     @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
@@ -51,7 +55,7 @@ class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = ""
         return count == this.list!!.size
     }
 
-    fun hasSelected () : Boolean {
+    fun hasSelected(): Boolean {
         return this.states.filter { it.value == true }.isNotEmpty()
     }
 
@@ -75,8 +79,8 @@ class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = ""
     }
 
     private fun keywordSearch(item: AppInfo, text: String): Boolean {
-        return item.packageName.toString().toLowerCase().contains(text)
-                || item.appName.toString().toLowerCase().contains(text)
+        return item.packageName.toLowerCase().contains(text)
+                || item.appName.toLowerCase().contains(text)
                 || item.path.toString().toLowerCase().contains(text)
     }
 
@@ -122,31 +126,6 @@ class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = ""
         return selectedItems
     }
 
-    private fun loadIcon(context: Context, viewHolder: ViewHolder, item: AppInfo) {
-        Thread(Runnable {
-            var icon: Drawable? = null
-            try {
-                val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
-                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-            } catch (ex: Exception) {
-                try {
-                    val file = File(item.path.toString())
-                    if (file.exists() && file.canRead()) {
-                        val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
-                    }
-                } catch (ex: Exception) {
-                }
-            } finally {
-                if (icon != null) {
-                    viewHolder.imgView!!.post {
-                        viewHolder.imgView!!.setImageDrawable(icon)
-                    }
-                }
-            }
-        }).start()
-    }
-
     private fun keywordHightLight(str: String): SpannableString {
         val spannableString = SpannableString(str)
         var index = 0
@@ -167,50 +146,64 @@ class AppListAdapter(apps: ArrayList<AppInfo>, private var keywords: String = ""
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = View.inflate(context, R.layout.list_item_app, null)
-            viewHolder!!.itemTitle = convertView!!.findViewById(R.id.ItemTitle)
-            viewHolder!!.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
-            viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
-            viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
-            viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
-            // viewHolder!!.itemPath = convertView.findViewById(R.id.ItemPath)
-            viewHolder!!.imgView!!.setTag(getItem(position).packageName)
+            viewHolder?.run {
+                itemTitle = convertView!!.findViewById(R.id.ItemTitle)
+                enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
+                itemText = convertView.findViewById(R.id.ItemText)
+                imgView = convertView.findViewById(R.id.ItemIcon)
+                itemChecke = convertView.findViewById(R.id.select_state)
+                // itemPath = convertView.findViewById(R.id.ItemPath)
+                imgView!!.setTag(getItem(position).packageName)
+            }
             convertView.tag = viewHolder
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
+        viewHolder?.run {
+            val item = getItem(position)
+            itemTitle?.text = keywordHightLight(item.appName)
+            itemText?.text = keywordHightLight(item.packageName)
 
-        val item = getItem(position)
-        viewHolder!!.itemTitle?.text = keywordHightLight(item.appName.toString())
-        viewHolder!!.itemText?.text = keywordHightLight(item.packageName.toString())
-        if (item.icon == null) {
-            loadIcon(context, viewHolder!!, item)
-        } else {
-            viewHolder!!.imgView!!.setImageDrawable(item.icon)
-        }
-
-        viewHolder!!.enabledStateText?.run {
-            if (item.enabledState.isNullOrEmpty()) {
-                text = ""
-                visibility = View.GONE
+            if (item.icon == null) {
+                val id = item.path
+                this.appPath = id
+                GlobalScope.launch(Dispatchers.Main) {
+                    val icon = appInfoLoader.loadIcon(item).await()
+                    val imgView = imgView!!
+                    if (icon != null && appPath == id) {
+                        imgView.setImageDrawable(icon)
+                    }
+                }
             } else {
-                text = item.enabledState
-                visibility = View.VISIBLE
+                imgView!!.setImageDrawable(item.icon)
             }
+
+            enabledStateText?.run {
+                if (item.enabledState.isNullOrEmpty()) {
+                    text = ""
+                    visibility = View.GONE
+                } else {
+                    text = item.enabledState
+                    visibility = View.VISIBLE
+                }
+            }
+
+            //为checkbox添加复选监听,把当前位置的checkbox的状态存进一个HashMap里面
+            itemChecke?.setOnCheckedChangeListener { buttonView, isChecked ->
+                states[position] = isChecked
+            }
+            //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
+            itemChecke?.setChecked(states[position] == true)
+
+            // viewHolder?.itemPath?.text = item.path
         }
 
-        //为checkbox添加复选监听,把当前位置的checkbox的状态存进一个HashMap里面
-        viewHolder!!.itemChecke?.setOnCheckedChangeListener { buttonView, isChecked ->
-            states[position] = isChecked
-        }
-        //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
-        viewHolder!!.itemChecke?.setChecked(states[position] == true)
-
-        // viewHolder?.itemPath?.text = item.path
-
-        return convertView
+        return convertView!!
     }
 
     inner class ViewHolder {
+        internal var appPath: CharSequence? = null
+
         internal var itemTitle: TextView? = null
         internal var itemChecke: CheckBox? = null
         internal var imgView: ImageView? = null

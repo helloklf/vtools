@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.R
+import kotlinx.coroutines.*
 import java.util.*
 
 class AdapterAppChooser(private val context: Context, private var apps: ArrayList<AppInfo>, private val multiple: Boolean) : BaseAdapter(), Filterable {
@@ -33,7 +34,7 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
             }
         }
 
-        private fun searchStr (valueText: String, keyword: String): Boolean {
+        private fun searchStr(valueText: String, keyword: String): Boolean {
             // First match against the whole, non-splitted value
             if (valueText.contains(keyword)) {
                 return true
@@ -117,26 +118,26 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
         return position.toLong()
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, app: AppInfo) {
-        Thread {
+    private fun loadIcon(app: AppInfo): Deferred<Drawable?> {
+        return GlobalScope.async(Dispatchers.IO) {
             val packageName = app.packageName
-            try {
-                val icon: Drawable? = iconCaches.get(packageName)
-                if (icon == null) {
+            val icon: Drawable? = iconCaches.get(packageName)
+            if (icon == null && !app.notFound) {
+                try {
                     val installInfo = context.packageManager.getPackageInfo(packageName, 0)
-                    iconCaches.put(packageName, installInfo.applicationInfo.loadIcon(context.packageManager))
+                    iconCaches.put(
+                            packageName,
+                            installInfo.applicationInfo.loadIcon(context.packageManager)
+                    )
+                } catch (ex: Exception) {
+                    app.notFound = true
+                } finally {
                 }
-            } catch (ex: Exception) {
-                app.notFound = true
-            } finally {
-                val icon: Drawable? = iconCaches.get(packageName)
-                if (icon != null) {
-                    viewHolder.imgView!!.post {
-                        viewHolder.imgView!!.setImageDrawable(icon)
-                    }
-                }
+                return@async iconCaches.get(packageName)
+            } else {
+                return@async icon
             }
-        }.start()
+        }
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -169,6 +170,9 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
     fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
         val viewHolder = ViewHolder()
+        val packageName = item.packageName
+        viewHolder.packageName = packageName
+
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
@@ -190,8 +194,15 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
         viewHolder.itemTitle?.text = item.appName
         viewHolder.itemDesc?.text = item.packageName
         viewHolder.checkBox?.isChecked = item.selected
-
-        loadIcon(viewHolder, item)
+        viewHolder.run {
+            GlobalScope.launch(Dispatchers.Main) {
+                val icon = loadIcon(item).await()
+                val imgView = imgView!!
+                if (icon != null && viewHolder.packageName == packageName) {
+                    imgView.setImageDrawable(icon)
+                }
+            }
+        }
     }
 
     fun getSelectedItems(): List<AppInfo> {
@@ -199,6 +210,8 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
     }
 
     inner class ViewHolder {
+        internal var packageName: String? = null
+
         internal var itemTitle: TextView? = null
         internal var itemDesc: TextView? = null
         internal var imgView: ImageView? = null

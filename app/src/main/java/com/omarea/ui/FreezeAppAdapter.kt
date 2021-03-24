@@ -6,15 +6,19 @@ import android.util.LruCache
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.OverScrollGridView
+import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.AppInfo
 import com.omarea.vtools.R
+import kotlinx.coroutines.*
 import java.util.*
 
 /**
  * Created by Hello on 2018/01/26.
  */
 class FreezeAppAdapter(private val context: Context, private var apps: ArrayList<AppInfo>) : BaseAdapter(), Filterable {
+    private val appIconLoader = AppInfoLoader(context)
     private var filter: Filter? = null
     internal var filterApps: ArrayList<AppInfo> = apps
     private val mLock = Any()
@@ -106,26 +110,6 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
         return position.toLong()
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, packageName: String) {
-        Thread(Runnable {
-            try {
-                val icon: Drawable? = iconCaches.get(packageName)
-                if (icon == null) {
-                    val installInfo = context.packageManager.getPackageInfo(packageName, 0)
-                    iconCaches.put(packageName, installInfo.applicationInfo.loadIcon(context.packageManager))
-                }
-            } catch (ex: Exception) {
-            } finally {
-                val icon: Drawable? = iconCaches.get(packageName)
-                if (icon != null) {
-                    viewHolder.imgView!!.post {
-                        viewHolder.imgView!!.setImageDrawable(icon)
-                    }
-                }
-            }
-        }).start()
-    }
-
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
@@ -153,19 +137,32 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
     fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
         val viewHolder = ViewHolder()
+        val packageName = item.packageName
+        viewHolder.packageName = packageName
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
         viewHolder.imgView!!.setTag(getItem(position).packageName)
         viewHolder.itemTitle!!.text = item.appName.toString()
         viewHolder.imgView!!.alpha = if (item.enabled && !item.suspended) 1f else 0.3f
+
         if (item.icon == null) {
-            loadIcon(viewHolder, item.packageName.toString())
+            viewHolder.run {
+                GlobalScope.launch(Dispatchers.Main) {
+                    val icon = appIconLoader.loadIcon(item.packageName).await()
+                    val imgView = imgView!!
+                    if (icon != null && viewHolder.packageName == packageName) {
+                        imgView.setImageDrawable(icon)
+                    }
+                }
+            }
         } else {
             viewHolder.imgView!!.setImageDrawable(item.icon)
         }
     }
 
     inner class ViewHolder {
+        internal var packageName: String? = null
+
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
     }

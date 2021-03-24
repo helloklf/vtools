@@ -120,6 +120,13 @@
                     android:layout_height="wrap_content"
                     android:text="弹性缓慢滚动" />
 
+                <Switch
+                    android:id="@+id/app_details_web_debug"
+                    style="@style/scene_config_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="强制开启WebView调试" />
+
                 <TextView
                     android:id="@+id/addin_auto_run_help"
                     style="@style/textSmall"

@@ -214,7 +214,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "85 85" "96 96" "160" "260"
+  sched_config "85 85" "96 96" "150" "400"
 
   sched_limit 0 0 0 10000 0 1000
 
@@ -239,7 +239,7 @@ if [[ "$action" = "balance" ]]; then
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "78 85" "89 96" "120" "200"
+  sched_config "78 85" "89 96" "150" "400"
 
   sched_limit 0 0 0 500 0 500
 
@@ -264,7 +264,7 @@ if [[ "$action" = "performance" ]]; then
   echo 0-1 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "62 78" "72 85" "85" "100"
+  sched_config "62 78" "72 85" "150" "400"
 
   sched_limit 0 0 0 0 0 0
 
@@ -289,7 +289,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "55 75" "68 82" "85" "100"
+  sched_config "55 75" "68 82" "150" "400"
 
   sched_limit 5000 0 2000 0 2000 0
 

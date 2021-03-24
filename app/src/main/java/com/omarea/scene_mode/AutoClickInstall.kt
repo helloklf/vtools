@@ -44,7 +44,7 @@ class AutoClickInstall : AutoClickBase() {
                         if (node.className.toString().toLowerCase(Locale.getDefault()).contains("button") && node.isEnabled) {
                             if (node.text.trim().toString() != autoClickKeyWords[ki])
                                 continue
-                            super.touchOrClickNode(node, service, false)
+                            super.clickNode(node) || super.tryTouchNodeRect(node, service)
                             try {
                                 Thread.sleep(300)
                             } catch (ex: Exception) {
@@ -69,7 +69,7 @@ class AutoClickInstall : AutoClickBase() {
                             }
                             if (node.text.trim().toString() != autoClickKeyWords2[ki])
                                 continue
-                            super.touchOrClickNode(node, service, false)
+                            super.clickNode(node) || super.tryTouchNodeRect(node, service)
                         }
                     }
                 }
@@ -94,7 +94,7 @@ class AutoClickInstall : AutoClickBase() {
                         if (!node.isEnabled) {
                             node.isEnabled = true
                         }
-                        super.touchOrClickNode(node, service, false)
+                        super.clickNode(node) || super.tryTouchNodeRect(node, service)
                     }
                 }
             }

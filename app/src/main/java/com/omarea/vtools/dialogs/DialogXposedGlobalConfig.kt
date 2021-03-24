@@ -23,8 +23,8 @@ class DialogXposedGlobalConfig(var context: Activity) {
         val view = context.layoutInflater.inflate(R.layout.dialog_xposed_global_config, null)
         val dialog = DialogHelper.customDialog(context, view)
 
-        val webViewDebug = view.findViewById<CompoundButton>(R.id.xposed_webview_debug).apply {
-            isChecked = globalConfig.webViewDebug
+        val androidScroll = view.findViewById<CompoundButton>(R.id.xposed_android_scroll).apply {
+            isChecked = globalConfig.androidScroll
         }
         val hideSuIcon = view.findViewById<CompoundButton>(R.id.xposed_root_icon_hide).apply {
             isChecked = globalConfig.hideSuIcon
@@ -32,7 +32,9 @@ class DialogXposedGlobalConfig(var context: Activity) {
         val fgNotificationDisable = view.findViewById<CompoundButton>(R.id.xposed_foreground_disable).apply {
             isChecked = globalConfig.fgNotificationDisable
         }
-
+        val reverseOptimizer = view.findViewById<CompoundButton>(R.id.xposed_reverse_optimizer).apply {
+            isChecked = globalConfig.reverseOptimizer
+        }
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
@@ -41,9 +43,10 @@ class DialogXposedGlobalConfig(var context: Activity) {
 
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
             dialog.dismiss()
-            globalConfig.webViewDebug = webViewDebug.isChecked
+            globalConfig.androidScroll = androidScroll.isChecked
             globalConfig.hideSuIcon = hideSuIcon.isChecked
             globalConfig.fgNotificationDisable = fgNotificationDisable.isChecked
+            globalConfig.reverseOptimizer = reverseOptimizer.isChecked
 
             if (xposedExtension.setGlobalConfig(globalConfig)) {
                 xposedExtension.unbindService()

@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -24,7 +25,12 @@ import com.omarea.scene_mode.AutoClickInstall
 import com.omarea.scene_mode.AutoSkipAd
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vtools.popup.FloatLogView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -33,18 +39,20 @@ import java.util.*
 public class AccessibilityScenceMode : AccessibilityService() {
     private var flagRequestKeyEvent = true
     private var sceneConfigChanged: BroadcastReceiver? = null
-    private var isLandscapf = false
+    private var isLandscap = false
 
     private var displayWidth = 1080
     private var displayHeight = 2340
 
     companion object {
-        private var lastParsingThread: Long = 0
+        private var lastAnalyseThread: Long = 0
     }
 
     private var floatLogView: FloatLogView? = null
 
     internal var appSwitchHandler: AppSwitchHandler? = null
+
+    private var classicModel = false
 
     private lateinit var spf: SharedPreferences
 
@@ -58,9 +66,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private fun onScreenConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            isLandscapf = false
+            isLandscap = false
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscapf = true
+            isLandscap = true
         }
         getDisplaySize()
     }
@@ -88,9 +96,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
                 // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
-            }
-            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
-                info.notificationTimeout = 1000
             }
         }
 
@@ -137,9 +142,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
             floatLogView = FloatLogView(this)
         }
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) && spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
+            AutoSkipCloudData().updateConfig(this, false)
+        }
     }
-
-    private var classicModel = false
 
     // 经典模式
     private fun classicModelEvent(event: AccessibilityEvent) {
@@ -154,7 +160,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
 
         // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
-        if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
+        if (isLandscap && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
             return
         }
 
@@ -179,7 +185,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 return
             }
             spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                trySkipAD(event)
+                if (event.contentChangeTypes and AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE != 0) {
+                    trySkipAD(event)
+                }
             }
         }
 
@@ -243,6 +251,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+
         if (!classicModel) {
             /*
             when(event.eventType) {
@@ -264,6 +273,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             val packageName = event.packageName
             if (packageName != null) {
                 when {
+                    // packageName == "com.omarea.vtools" -> return
                     packageName.contains("packageinstaller") -> {
                         if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
                             return
@@ -292,18 +302,21 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
                 return
             }
-            lastWindowChanged = System.currentTimeMillis()
-            // if (!spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)) {
-                    modernModeEvent(event)
-            // } else {
-            //     startActivityPolling(600L)
-            // }
+
+            val t = event.eventTime
+            if (lastOriginEventTime != t && t > lastOriginEventTime) {
+                lastOriginEventTime = t
+                lastWindowChanged = System.currentTimeMillis()
+                modernModeEvent(event)
+            }
         } else {
             classicModelEvent(event)
         }
     }
 
+
     private var lastWindowChanged = 0L
+    private var lastOriginEventTime = 0L
     private var autoSkipAd: AutoSkipAd? = null
     private fun trySkipAD(event: AccessibilityEvent) {
         if (autoSkipAd == null) {
@@ -311,10 +324,17 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
 
         // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
-        if (System.currentTimeMillis() - lastWindowChanged < 5000 || !spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_DELAY, true)) {
+        if (System.currentTimeMillis() - lastWindowChanged < 5000) {
             autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
         }
     }
+
+    private val blackTypeList = arrayListOf(
+        AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY,
+        AccessibilityWindowInfo.TYPE_INPUT_METHOD,
+        AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER,
+        AccessibilityWindowInfo.TYPE_SYSTEM
+    )
 
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
@@ -323,7 +343,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
             return
         } else if (windowsList.size > 1) {
             val effectiveWindows = windowsList.filter {
-                (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                // 现在不过滤画中画应用了，因为有遇到像Telegram这样的应用，从画中画切换到全屏后仍检测到处于画中画模式，并且类型是 -1（可能是MIUI魔改出来的），但对用户来说全屏就是前台应用
+                !blackTypeList.contains(it.type)
+
+                // (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
             } // .sortedBy { it.layer }
 
             if (effectiveWindows.isNotEmpty()) {
@@ -384,10 +407,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                                 GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             } else {
-                                lastParsingThread = System.currentTimeMillis()
+                                lastAnalyseThread = System.currentTimeMillis()
                                 // try {
-                                val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
-                                thread.start()
+                                // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
+                                // thread.start()
+                                windowAnalyse(lastWindow, lastAnalyseThread)
                                 if (event != null) {
                                     startActivityPolling()
                                 }
@@ -428,6 +452,40 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
+    // 利用协程分析窗口
+    private fun windowAnalyse(windowInfo: AccessibilityWindowInfo, tid: Long) {
+        GlobalScope.launch(Dispatchers.IO) {
+            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
+            val root = (try {
+                windowInfo.root
+            } catch (ex: Exception) {
+                null
+            })
+            val wp = (try {
+                root?.packageName
+            } catch (ex: Exception) {
+                null
+            })
+            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
+            if (wp?.equals("com.miui.home") == true) {
+                /*
+                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
+                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
+                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
+                */
+                val node = root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
+                if (node != null) {
+                    return@launch
+                }
+            }
+
+            if (lastAnalyseThread == tid && wp != null) {
+                GlobalStatus.lastPackageName = wp.toString()
+                EventBus.publish(EventType.APP_SWITCH)
+            }
+        }
+    }
+
     class WindowAnalyzeThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
         override fun run() {
             // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
@@ -454,7 +512,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
             }
 
-            if (lastParsingThread == tid && wp != null) {
+            if (lastAnalyseThread == tid && wp != null) {
                 GlobalStatus.lastPackageName = wp.toString()
                 EventBus.publish(EventType.APP_SWITCH)
             }
