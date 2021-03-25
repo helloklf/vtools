@@ -72,6 +72,7 @@ public class WeChatScanHook {
     // 打印所有后置摄像头的Id
     private void dumpCameraList() {
         // 枚举所有摄像头
+        XposedBridge.log("Scene: 摄像头数量 " + Camera.getNumberOfCameras());
         for (int cameraId = 0; cameraId < Camera.getNumberOfCameras(); cameraId++) {
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
             Camera.getCameraInfo(cameraId, cameraInfo);
@@ -83,15 +84,24 @@ public class WeChatScanHook {
     }
 
     private int hackParam = -1; // -1 表示不hook cameraId
+    private boolean valueKeepOnece = false;
     private void setCameraIdHook (int cameraId) {
         hackParam = cameraId;
+        valueKeepOnece = true;
+        XposedBridge.log("Scene: 切换摄像头 " + cameraId);
     }
     private int getCameraIdHook() {
         return hackParam;
     }
+    private void resetHooK() {
+        if (valueKeepOnece) {
+            valueKeepOnece = false;
+        } else {
+            setCameraIdHook(-1);
+        }
+    }
 
     public void hook(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-
         XposedHelpers.findAndHookMethod(Camera.class, "open", int.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -146,7 +156,7 @@ public class WeChatScanHook {
                                 @Override
                                 public void onClick(View v) {
                                     // 0 广角，2 长焦，3 超广角
-                                    if (cameraId == 0) {
+                                    if (cameraId == 0 || cameraId == -1) {
                                         setCameraIdHook(2);
                                     } else if (cameraId == 2) {
                                         setCameraIdHook(3);
@@ -172,7 +182,7 @@ public class WeChatScanHook {
                         super.afterHookedMethod(param);
 
                         // 离开扫码页面后，还原Hook参数，以免影响其它页面调用摄像头
-                        setCameraIdHook(-1);
+                        resetHooK();
                     }
                 });
 
