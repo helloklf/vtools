@@ -26,7 +26,7 @@ public class WeChatScanHook {
         return stringBuilder.toString();
     }
 
-    // 寻找ScanMaskView的下一个节点
+    // 寻找ScanMaskView的下一个节点（微信7.0）
     private RelativeLayout getScanMaskViewNext(View view, int level) {
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
@@ -45,6 +45,44 @@ public class WeChatScanHook {
                 } else {
                     // 遍历子节点
                     RelativeLayout relativeLayout = getScanMaskViewNext(child, level + 1);
+                    if (relativeLayout != null) {
+                        return relativeLayout;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    // 在ScanSharedMaskView的子节点里找RelativeLayout
+    private RelativeLayout getRelativeLayout(ViewGroup scanSharedMaskView) {
+        for (int i = 0; i < scanSharedMaskView.getChildCount(); i++) {
+            View sc = scanSharedMaskView.getChildAt(i);
+            String className2 = sc.getClass().getName();
+            if (className2.equals("android.widget.RelativeLayout")) {
+                return (RelativeLayout) sc;
+            }
+        }
+        return null;
+    }
+
+    // 寻找ScanMaskView的下一个节点（微信8.0）
+    private RelativeLayout getScanSharedMaskViewChild(View view, int level) {
+        if (view instanceof ViewGroup) {
+            ViewGroup vp = (ViewGroup) view;
+            for (int i = 0; i < vp.getChildCount(); i++) {
+                View child = vp.getChildAt(i);
+                String className = child.getClass().getName();
+                // 输出日志，用于分析Layout层级
+                // XposedBridge.log("Scene WeChat " + prefixSpace(level) + className);
+
+                // 根据日志得出的结论 ScanSharedMaskView里有个适于插入控件的容器
+                // 所以找到ScanSharedMaskView后，就返回它里面的一个容器控件
+                if (className.equals("com.tencent.mm.plugin.scanner.ui.widget.ScanSharedMaskView")) {
+                    return getRelativeLayout((ViewGroup) child);
+                } else {
+                    // 遍历子节点
+                    RelativeLayout relativeLayout = getScanSharedMaskViewChild(child, level + 1);
                     if (relativeLayout != null) {
                         return relativeLayout;
                     }
@@ -116,7 +154,8 @@ public class WeChatScanHook {
             }
         });
 
-        // 进入扫码页
+        /*
+        // 进入扫码页（微信7.0可用，8.0 hook不到）
         XposedHelpers.findAndHookMethod(
                 "com.tencent.mm.plugin.scanner.ui.BaseScanUI",
                 loadPackageParam.classLoader,
@@ -125,54 +164,27 @@ public class WeChatScanHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         super.afterHookedMethod(param);
 
-                        // TODO:进入界面时添摄像头切换按钮
-                        final Activity activity = (Activity) param.thisObject;
-                        View rootView = activity.getWindow().getDecorView();
-                        // 找到一个合适插入按钮的容器
-                        RelativeLayout container = getScanMaskViewNext(rootView, 0);
-                        if (container != null) {
-                            // 创建一个按钮设置外观样式
-                            TextView textView = new TextView(activity);
-                            textView.setTextColor(Color.YELLOW);
-                            textView.setPadding(30, 30, 30, 30);
-                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT
-                            );
-                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-                            final int cameraId = getCameraIdHook();
-
-                            if (cameraId == 0 || cameraId == -1) {
-                                textView.setText("0.6x (1x) 2x");
-                            } else if (cameraId == 2) {
-                                textView.setText("0.6x 1x (2x)");
-                            } else if (cameraId == 3) {
-                                textView.setText("(0.6x) 1x 2x");
-                            }
-
-                            // 设置点击后切换摄像头
-                            textView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    // 0 广角，2 长焦，3 超广角
-                                    if (cameraId == 0 || cameraId == -1) {
-                                        setCameraIdHook(2);
-                                    } else if (cameraId == 2) {
-                                        setCameraIdHook(3);
-                                    } else if (cameraId == 3) {
-                                        setCameraIdHook(0);
-                                    }
-                                    // 其实就是改变hook参数并重启activity啦
-                                    activity.recreate();
-                                }
-                            });
-                            container.addView(textView, layoutParams);
-                        }
+                        scanActivityInject(param);
                     }
                 });
+         */
 
-        // 离开扫码页
+        // hook所有Activity再过滤扫码页（微信8.0也可用）
+        XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String className = param.thisObject.getClass().getName();
+                if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
+                    scanActivityInject(param);
+                }
+            }
+        });
+
+
+        /*
+
+        // 离开扫码页（微信7.0可用）
         XposedHelpers.findAndHookMethod(
                 "com.tencent.mm.plugin.scanner.ui.BaseScanUI",
                 loadPackageParam.classLoader,
@@ -185,15 +197,95 @@ public class WeChatScanHook {
                         resetHooK();
                     }
                 });
+        */
 
-                /*
-                XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-                        XposedBridge.log("Scene: Activity onResume [" + param.thisObject.getClass().getName() + "]");
+        // hook所有Activity再过滤扫码页（微信8.0也可用）
+        XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String className = param.thisObject.getClass().getName();
+                if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
+                    // 离开扫码页面后，还原Hook参数，以免影响其它页面调用摄像头
+                    resetHooK();
+                }
+            }
+        });
+
+        /*
+        XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                String className = param.thisObject.getClass().getName();
+                if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
+                    XposedBridge.log("Scene WeChat BaseScanUI onResume2");
+                }
+                XposedBridge.log("Scene: Activity onResume [" + className + "]");
+            }
+        });
+        */
+    }
+
+    private void scanActivityInject(XC_MethodHook.MethodHookParam param) {
+        final Activity activity = (Activity) param.thisObject;
+
+        String version = "8.0.0";
+        try {
+            version = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
+        } catch (Exception ignored) {}
+        XposedBridge.log("Scene WeChat (" + version + ") BaseScanUI onResume");
+
+        View rootView = activity.getWindow().getDecorView();
+        boolean gt7 = version.startsWith("8");
+
+        // 找到一个合适插入按钮的容器
+        RelativeLayout container = gt7 ? getScanSharedMaskViewChild(rootView, 0) : getScanMaskViewNext(rootView, 0);
+        if (container != null) {
+            dumpCameraList();
+
+            // 创建一个按钮设置外观样式
+            TextView textView = new TextView(activity);
+            textView.setTextColor(Color.YELLOW);
+            textView.setPadding(30, 30, 30, 30);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+            final int cameraId = getCameraIdHook();
+
+            if (cameraId == 0 || cameraId == -1) {
+                textView.setText("0.6x (1x) 2x 4x");
+            } else if (cameraId == 2) {
+                textView.setText("0.6x 1x (2x) 4x");
+            } else if (cameraId == 3) {
+                textView.setText("(0.6x) 1x 2x 4x");
+            } else if (cameraId == 5) {
+                textView.setText("0.6x 1x 2x (4x)");
+            }
+
+            // 设置点击后切换摄像头
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Mi9      0 广角，2 长焦， 3 超广角
+                    // CC9Pro   0 广角  2 长焦  3 超广角  4 微距  5 超长焦
+                    if (cameraId == 0 || cameraId == -1) {
+                        setCameraIdHook(2);
+                    } else if (cameraId == 2) {
+                        setCameraIdHook(5);
+                    } else if (cameraId == 5) {
+                        setCameraIdHook(3);
+                    } else if (cameraId == 3) {
+                        setCameraIdHook(0);
                     }
-                });
-                */
+                    // 其实就是改变hook参数并重启activity啦
+                    activity.recreate();
+                }
+            });
+            container.addView(textView, layoutParams);
+        }
     }
 }
