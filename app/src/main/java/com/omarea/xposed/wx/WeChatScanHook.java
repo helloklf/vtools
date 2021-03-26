@@ -87,12 +87,13 @@ public class WeChatScanHook {
     // 创建按钮并添加到容器
     private TextView createControls(ViewGroup container) {// 创建一个按钮设置外观样式
         TextView textView = new TextView(container.getContext());
-        textView.setTextColor(Color.YELLOW);
-        textView.setPadding(30, 30, 30, 30);
+        textView.setTextColor(Color.WHITE);
+        textView.setPadding(100, 0, 100, 120);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+        textView.setTextSize(40);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         // 显示当前变焦倍率

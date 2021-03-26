@@ -31,10 +31,10 @@ public class CameraHookProvider {
                 // Mi9      0 广角，2 长焦， 3 超广角
                 this.cameraList = new VirtualCameraInfo[]{
                         // Gnew VirtualCameraInfo(3, 0.6), // 超广角扫码没啥意义，去掉
-                        new VirtualCameraInfo(0, 1.0),
-                        new VirtualCameraInfo(2, 2.0)
+                        new VirtualCameraInfo(0, "❶"),
+                        new VirtualCameraInfo(2, "❷")
                 };
-                this.defaultCameraIndex = 1; // 默认摄像头在cameraList中的索引
+                this.defaultCameraIndex = 0; // 默认摄像头在cameraList中的索引
                 break;
             }
             case "MI CC9 Pro": {
@@ -42,11 +42,11 @@ public class CameraHookProvider {
                 // CC9Pro   0 广角  2 长焦  3 超广角  4 微距  5 超长焦
                 this.cameraList = new VirtualCameraInfo[]{
                         // new VirtualCameraInfo(3, 0.6), // 超广角扫码没啥意义，去掉
-                        new VirtualCameraInfo(0, 1.0),
-                        new VirtualCameraInfo(2, 2.0),
-                        new VirtualCameraInfo(5, 4.0),
+                        new VirtualCameraInfo(0, "❶"),
+                        new VirtualCameraInfo(2, "❷"),
+                        new VirtualCameraInfo(5, "❹"),
                 };
-                this.defaultCameraIndex = 1; // 默认摄像头在cameraList中的索引
+                this.defaultCameraIndex = 0; // 默认摄像头在cameraList中的索引
                 break;
             }
             default: {
