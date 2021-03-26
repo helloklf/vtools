@@ -30,7 +30,7 @@ public class CameraHookProvider {
                 // 相机列表因机型而异
                 // Mi9      0 广角，2 长焦， 3 超广角
                 this.cameraList = new VirtualCameraInfo[]{
-                        new VirtualCameraInfo(3, 0.6),
+                        // Gnew VirtualCameraInfo(3, 0.6), // 超广角扫码没啥意义，去掉
                         new VirtualCameraInfo(0, 1.0),
                         new VirtualCameraInfo(2, 2.0)
                 };
@@ -41,7 +41,7 @@ public class CameraHookProvider {
                 // 相机列表因机型而异
                 // CC9Pro   0 广角  2 长焦  3 超广角  4 微距  5 超长焦
                 this.cameraList = new VirtualCameraInfo[]{
-                        new VirtualCameraInfo(3, 0.6),
+                        // new VirtualCameraInfo(3, 0.6), // 超广角扫码没啥意义，去掉
                         new VirtualCameraInfo(0, 1.0),
                         new VirtualCameraInfo(2, 2.0),
                         new VirtualCameraInfo(5, 4.0),
