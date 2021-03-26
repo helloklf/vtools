@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.omarea.xposed.wx.CameraHookProvider;
-import com.omarea.xposed.wx.VirtualCameraInfo;
-import com.omarea.xposed.wx.WeChatLayoutAnalyser;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;

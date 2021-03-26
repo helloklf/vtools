@@ -8,7 +8,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.store.AutoSkipConfigStore
-import com.omarea.vtools.popup.FloatAdSkipConfirm
 import java.util.*
 
 /**

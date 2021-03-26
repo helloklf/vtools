@@ -1,7 +1,5 @@
 package com.omarea.ui;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;

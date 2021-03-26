@@ -2,13 +2,10 @@ package com.omarea.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -19,7 +16,6 @@ import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.AppInfo
 import com.omarea.vtools.R
 import kotlinx.coroutines.*
-import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
 import kotlin.Comparator

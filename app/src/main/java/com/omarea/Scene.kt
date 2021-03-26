@@ -3,11 +3,8 @@ package com.omarea
 import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.view.Window
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
@@ -15,7 +12,6 @@ import com.omarea.data.EventBus
 import com.omarea.data.customer.ChargeCurve
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
-import com.omarea.library.calculator.Flags
 import com.omarea.permissions.Busybox
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerIEventMonitor

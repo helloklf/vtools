@@ -3,7 +3,6 @@ package com.omarea.ui
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -20,7 +19,6 @@ import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import kotlinx.coroutines.*
-import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 

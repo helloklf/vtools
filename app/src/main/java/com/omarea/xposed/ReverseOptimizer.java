@@ -1,12 +1,13 @@
 package com.omarea.xposed;
 
-import android.app.Activity;
 import android.os.IBinder;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.omarea.library.calculator.Flags;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;

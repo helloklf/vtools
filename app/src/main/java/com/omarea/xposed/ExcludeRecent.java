@@ -3,22 +3,12 @@ package com.omarea.xposed;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.view.Window;
-import android.view.WindowManager;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.omarea.library.calculator.Flags;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static android.content.Context.ACTIVITY_SERVICE;
-import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.setObjectField;
 
 public class ExcludeRecent {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
