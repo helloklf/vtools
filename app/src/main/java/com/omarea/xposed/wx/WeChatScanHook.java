@@ -3,6 +3,7 @@ package com.omarea.xposed.wx;
 import android.app.Activity;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -14,45 +15,56 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class WeChatScanHook {
+
+
+    public boolean supported() {
+        if (CameraHookProvider.devices.contains(Build.MODEL)) {
+            return Camera.getNumberOfCameras() > 2;
+        }
+        return false;
+    }
+
     public void hook(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        // hook 相机启动，以便于更改目标相机id
-        XposedHelpers.findAndHookMethod(Camera.class, "open", int.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                VirtualCameraInfo targetCamera = cameraHookProvider.getCameraIdHook();
-                param.args[0] = targetCamera.cameraId;
+        if (supported()) {
+            // hook 相机启动，以便于更改目标相机id
+            XposedHelpers.findAndHookMethod(Camera.class, "open", int.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    VirtualCameraInfo targetCamera = cameraHookProvider.getCameraIdHook();
+                    param.args[0] = targetCamera.cameraId;
 
-                XposedBridge.log("Scene: 微信启动相机 CameraId [" + param.args[0] + "] Total: " + Camera.getNumberOfCameras());
-            }
-        });
-
-        // hook所有Activity再过滤扫码页（微信7.0，8.0 测试可用）
-        XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                String className = param.thisObject.getClass().getName();
-                if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
-                    scanActivityInject(param);
+                    XposedBridge.log("Scene: 微信启动相机 CameraId [" + param.args[0] + "] Total: " + Camera.getNumberOfCameras());
                 }
-                // XposedBridge.log("Scene: Activity onResume [" + className + "]");
-            }
-        });
+            });
 
-
-        // hook所有Activity再过滤扫码页（微信7.0，8.0 测试可用）
-        XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                String className = param.thisObject.getClass().getName();
-                if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
-                    // 离开扫码页面后，还原Hook参数，以免影响其它页面调用摄像头
-                    cameraHookProvider.resetHooK();
+            // hook所有Activity再过滤扫码页（微信7.0，8.0 测试可用）
+            XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    String className = param.thisObject.getClass().getName();
+                    if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
+                        scanActivityInject(param);
+                    }
+                    // XposedBridge.log("Scene: Activity onResume [" + className + "]");
                 }
-            }
-        });
+            });
+
+
+            // hook所有Activity再过滤扫码页（微信7.0，8.0 测试可用）
+            XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    super.beforeHookedMethod(param);
+                    String className = param.thisObject.getClass().getName();
+                    if (className.equals("com.tencent.mm.plugin.scanner.ui.BaseScanUI")) {
+                        // 离开扫码页面后，还原Hook参数，以免影响其它页面调用摄像头
+                        cameraHookProvider.resetHooK();
+                    }
+                }
+            });
+        }
     }
 
     private final CameraHookProvider cameraHookProvider = new CameraHookProvider();
@@ -88,7 +100,7 @@ public class WeChatScanHook {
     private TextView createControls(ViewGroup container) {// 创建一个按钮设置外观样式
         TextView textView = new TextView(container.getContext());
         textView.setTextColor(Color.WHITE);
-        textView.setPadding(100, 0, 100, 120);
+        textView.setPadding(100, 0, 100, 0);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT

@@ -3,9 +3,16 @@ package com.omarea.xposed.wx;
 import android.hardware.Camera;
 import android.os.Build;
 
+import java.util.ArrayList;
+
 import de.robv.android.xposed.XposedBridge;
 
 public class CameraHookProvider {
+    public static ArrayList<String> devices = new ArrayList<String>() {{
+            add("MI 9");
+            add("MI CC9 Pro");
+    }};
+
     public VirtualCameraInfo[] cameraList;
     private int defaultCameraIndex;
 
@@ -24,6 +31,7 @@ public class CameraHookProvider {
     }
 
     public CameraHookProvider() {
+
         String model = Build.MODEL;
         switch (model) {
             case "MI 9": {
