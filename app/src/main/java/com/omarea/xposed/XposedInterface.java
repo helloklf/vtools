@@ -227,18 +227,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 }
             });
 
-            XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "setToDefaults", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    DisplayMetrics displayMetrics = (DisplayMetrics) getObjectField(param.thisObject, "mMetrics");
-                    if (displayMetrics != null) {
-                        displayMetrics.scaledDensity = dpi / 160.0f;
-                        displayMetrics.densityDpi = dpi;
-                        displayMetrics.density = dpi / 160.0f;
-                    }
-                }
-            });
-
             // Resources wrapper, @NonNull TypedValue value, int id, int density, @Nullable Resources.Theme theme
             XposedHelpers.findAndHookMethod("android.content.res.ResourcesImpl", loadPackageParam.classLoader, "loadDrawable", Resources.class, TypedValue.class, int.class, int.class, Resources.Theme.class, new XC_MethodHook() {
                 @Override
