@@ -25,6 +25,9 @@ case "$mode" in
     "performance")
         modename="提高阈值 (performance)"
     ;;
+    "slight")
+        modename="轻微调整 (slight)"
+    ;;
     "pro")
         modename="深度定制 (pro)"
     ;;
