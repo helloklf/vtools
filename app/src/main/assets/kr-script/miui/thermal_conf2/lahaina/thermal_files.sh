@@ -43,7 +43,7 @@ thermal_files=(
 )
 
 # K40 Pro
-elif [[ $device == "M2011K2C" ]]; then
+elif [[ $device == "M2012K11C" ]]; then
 thermal_file_prefix2="thermal-india-"
 thermal_files=(
 "${thermal_file_prefix}camera${thermal_file_suffix}"
