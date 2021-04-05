@@ -17,9 +17,9 @@ thermal_files=(
 source ./kr-script/miui/thermal_conf/$platform/thermal_files.sh
 
 function ulock_dir() {
-    local dir="$1"
-    chattr -R -i "$dir" 2> /dev/null
-    rm -rf "$dir" 2> /dev/null
+  local dir="$1"
+  chattr -R -i "$dir" 2> /dev/null
+  rm -rf "$dir" 2> /dev/null
 }
 
 function uninstall_thermal() {

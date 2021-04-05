@@ -13,8 +13,8 @@ extreme_11pro|极致性能 (extreme)
 danger|丧心病狂(danger)"
 elif [ $device == "M2012K11C" ]; then
 echo "default|系统默认(default)
-slight_k40pro|轻微调整(slight_k40pro)
-pro_k40pro|深度定制(pro_k40pro)
+slight_k40pro|轻微调整(slight)
+pro_k40pro|深度定制(pro)
 danger|丧心病狂(danger)"
 else
 echo "default|系统默认(default)

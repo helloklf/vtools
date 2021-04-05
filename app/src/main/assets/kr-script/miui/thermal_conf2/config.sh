@@ -35,90 +35,94 @@ function clear_old() {
   fi
 }
 
+function ulock_dir() {
+  local dir="$1"
+  if [[ -e "$dir" ]]; then
+    chattr -R -i "$dir" 2> /dev/null
+    # rm -rf "$dir" 2> /dev/null
+  fi
+}
+
 function uninstall_thermal() {
-    clear_old
+  clear_old
 
-    echo "从 $install_dir 目录"
-    echo '卸载已安装的自定义配置……'
-    echo ''
+  echo "从 $install_dir 目录"
+  echo '卸载已安装的自定义配置……'
+  echo ''
 
-    # ulock_dir /data/thermal
-    # ulock_dir /data/vendor/thermal
-    # for thermal in ${thermal_files[@]}; do
-    #     if [[ -f $install_dir/$thermal ]]; then
-    #         echo '移除' $thermal
-    #         rm -f $install_dir/$thermal
-    #     fi
-    # done
+  # ulock_dir /data/thermal
+  # ulock_dir /data/vendor/thermal
+  # for thermal in ${thermal_files[@]}; do
+  #     if [[ -f $install_dir/$thermal ]]; then
+  #         echo '移除' $thermal
+  #         rm -f $install_dir/$thermal
+  #     fi
+  # done
 
-    rm $install_dir/* 2>/dev/null
-    rm -f "$mode_state_save" 2> /dev/null
+  ulock_dir $install_dir
+  rm $install_dir/* 2>/dev/null
+  rm -f "$mode_state_save" 2> /dev/null
 
-    echo ''
+  echo ''
 }
 
 function install_thermal() {
-    uninstall_thermal
+  uninstall_thermal
 
-    echo '检测模块间是否存在冲突……'
-    echo ''
+  echo '检测模块间是否存在冲突……'
+  echo ''
 
-    # 检查其它模块是否更改温控
-    local magisk_dir=`echo $MAGISK_PATH | awk -F '/[^/]*$' '{print $1}'`
-    local modules=`ls $magisk_dir`
-    for module in ${modules[@]}; do
-        if [[ ! "$magisk_dir/$module" = "$MAGISK_PATH" ]] && [[ -d "$magisk_dir/$module" ]] && [[ ! -f "$magisk_dir/$module/disable" ]]; then
-            local result=`find "$magisk_dir/$module" -name "*thermal*" -type f`
-            if [[ -n "$result" ]]; then
-                echo '发现其它修改温控的模块：' 1>&2
-                echo "$result" 1>&2
-                echo '请删除以上位置的文件，或禁用相关模块！' 1>&2
-                echo '否则，Scene无法正常替换系统温控！' 1>&2
-                exit 5
-            fi
-        fi
-    done
-
-    echo ''
-    echo ''
-    echo '#################################'
-    cat $resource_dir/info.txt
-    echo ''
-    echo '#################################'
-    echo ''
-    echo ''
-    echo ''
-
-    if [[ ! -d "$install_dir" ]]; then
-        mkdir -p "$install_dir"
+  # 检查其它模块是否更改温控
+  local magisk_dir=`echo $MAGISK_PATH | awk -F '/[^/]*$' '{print $1}'`
+  local modules=`ls $magisk_dir`
+  for module in ${modules[@]}; do
+    if [[ ! "$magisk_dir/$module" = "$MAGISK_PATH" ]] && [[ -d "$magisk_dir/$module" ]] && [[ ! -f "$magisk_dir/$module/disable" ]]; then
+      local result=`find "$magisk_dir/$module" -name "*thermal*" -type f`
+      if [[ -n "$result" ]]; then
+        echo '发现其它修改温控的模块：' 1>&2
+        echo "$result" 1>&2
+        echo '请删除以上位置的文件，或禁用相关模块！' 1>&2
+        echo '否则，Scene无法正常替换系统温控！' 1>&2
+        exit 5
+      fi
     fi
+  done
 
-    for thermal in ${thermal_files[@]}; do
-        if [[ -f "$resource_dir/$thermal" ]]; then
-            echo '复制' $thermal
-            cp "$resource_dir/$thermal" "$install_dir/$thermal"
-            chmod 644 "$install_dir/$thermal"
-        elif [[ -f "$resource_dir/general.conf" ]]; then
-            echo '复制' $thermal
-            cp "$resource_dir/general.conf" "$install_dir/$thermal"
-            chmod 644 "$install_dir/$thermal"
-        fi
-    done
-    echo "$mode" > "$mode_state_save"
+  echo ''
+  echo ''
+  echo '#################################'
+  cat $resource_dir/info.txt
+  echo ''
+  echo '#################################'
+  echo ''
+  echo ''
+  echo ''
 
-    echo 'OK~'
+  if [[ ! -d "$install_dir" ]]; then
+    mkdir -p "$install_dir"
+  fi
+
+  for thermal in ${thermal_files[@]}; do
+    if [[ -f "$resource_dir/$thermal" ]]; then
+      echo '复制' $thermal
+      cp "$resource_dir/$thermal" "$install_dir/$thermal"
+      chmod 644 "$install_dir/$thermal"
+    elif [[ -f "$resource_dir/general.conf" ]]; then
+      echo '复制' $thermal
+      cp "$resource_dir/general.conf" "$install_dir/$thermal"
+      chmod 644 "$install_dir/$thermal"
+    fi
+  done
+  echo "$mode" > "$mode_state_save"
+
+  echo 'OK~'
 }
 
-case "$mode" in
-  "default")
-      uninstall_thermal
-   ;;
-  *)
-    if [[ -d $resource_dir ]]; then
-      install_thermal
-    else
-      echo '错误，选择的模式'$mode'无效' 1>&2
-      exit 1
-    fi
-  ;;
-esac
+if [[ "$mode" == "default" ]]; then
+  uninstall_thermal
+elif [[ -d $resource_dir ]]; then
+  install_thermal
+else
+  echo '错误，选择的模式'$mode'无效' 1>&2
+  exit 1
+fi
