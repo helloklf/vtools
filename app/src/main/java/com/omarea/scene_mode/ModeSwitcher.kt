@@ -172,6 +172,7 @@ open class ModeSwitcher {
                 }
                 configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
 
+                /*
                 FileWrite.writePrivateFile(
                         RawText.getRawText(Scene.context, R.raw.general_optimize).toByteArray(Charset.defaultCharset()),
                         "powercfg/general_optimize.sh",
@@ -182,6 +183,7 @@ open class ModeSwitcher {
                         keepShellExec("nohup $file >/dev/null 2>&1 &")
                     }
                 }
+                */
             }
         }
 
