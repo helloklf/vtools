@@ -301,7 +301,7 @@ if [[ "$action" = "fast" ]]; then
   echo 0-1 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "55 75" "68 82" "85" "100"
+  sched_config "55 70" "68 79" "300" "400"
 
   sched_limit 50000 0 20000 0 20000 0
 

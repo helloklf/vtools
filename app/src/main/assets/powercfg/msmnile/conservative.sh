@@ -295,12 +295,12 @@ if [[ "$action" = "fast" ]]; then
   echo 1708800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-  echo 1 > /proc/sys/kernel/sched_boost
+  echo 0 > /proc/sys/kernel/sched_boost
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
 
-  sched_config "55 75" "68 82" "85" "100"
+  sched_config "55 70" "68 79" "300" "400"
 
   sched_limit 50000 0 20000 0 20000 0
 
