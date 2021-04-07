@@ -196,6 +196,29 @@ sched_limit() {
   echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 }
 
+surfaceflinger_top_app()
+{
+  pgrep -f surfaceflinger | while read pid; do
+    echo $pid > /dev/cpuset/top-app/tasks
+    # echo $pid > /dev/stune/top-app/tasks
+  done
+  pgrep -f system_server | while read pid; do
+    echo $pid > /dev/cpuset/top-app/tasks
+    echo $pid > /dev/stune/top-app/tasks
+  done
+}
+surfaceflinger_bg_app()
+{
+  pgrep -f surfaceflinger | while read pid; do
+    echo $pid > /dev/cpuset/system-background/tasks
+    # echo $pid > /dev/stune/foreground/tasks
+  done
+  pgrep -f system_server | while read pid; do
+    echo $pid > /dev/cpuset/system-background/tasks
+    echo $pid > /dev/stune/background/tasks
+  done
+}
+
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -217,6 +240,8 @@ if [[ "$action" = "powersave" ]]; then
   sched_config "85 85" "96 96" "150" "400"
 
   sched_limit 0 0 0 10000 0 1000
+
+  surfaceflinger_bg_app
 
   exit 0
 fi
@@ -243,6 +268,8 @@ if [[ "$action" = "balance" ]]; then
 
   sched_limit 0 0 0 500 0 500
 
+  surfaceflinger_top_app
+
   exit 0
 fi
 
@@ -268,6 +295,8 @@ if [[ "$action" = "performance" ]]; then
 
   sched_limit 0 0 0 0 0 0
 
+  surfaceflinger_top_app
+
   exit 0
 fi
 
@@ -292,6 +321,8 @@ if [[ "$action" = "fast" ]]; then
   sched_config "62 75" "70 80" "300" "400"
 
   sched_limit 5000 0 2000 0 2000 0
+
+  surfaceflinger_top_app
 
   exit 0
 fi

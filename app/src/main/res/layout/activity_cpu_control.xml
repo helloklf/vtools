@@ -173,7 +173,7 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:text="一般来说，默认的调度器就是最好的，不需要更换，除非你使用的内核有特殊的优化，或者你有特殊的需求。\n\n最大最小频率，建议配合功耗级(如果你有看到的话)别设置更改" />
+                        app:text="一般来说，默认的调度器就是最好的，不需要更换，除非你使用的内核有特殊的优化，或者你有特殊的需求。\n\n最大\最小频率选项，建议配合功耗级别选项(如果你有看到的话)使用" />
 
                     <TextView
                         style="@style/textTitle"
