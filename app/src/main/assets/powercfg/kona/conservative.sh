@@ -245,9 +245,9 @@ if [[ "$action" = "powersave" ]]; then
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
-  echo 1248000 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
-  echo 710400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
-  echo 844800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
+  echo 1612800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1056000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
+  echo 1305600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
@@ -272,7 +272,7 @@ if [[ "$action" = "balance" ]]; then
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo 0 > /proc/sys/kernel/sched_boost
 
-  echo 1420800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
+  echo 1612800 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
   echo 1056000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
   echo 1305600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
