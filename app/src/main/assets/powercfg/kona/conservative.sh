@@ -257,6 +257,7 @@ if [[ "$action" = "powersave" ]]; then
   sched_limit 0 0 0 10000 0 1000
 
   surfaceflinger_bg_app
+  echo 0-3 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -284,6 +285,7 @@ if [[ "$action" = "balance" ]]; then
   sched_limit 0 0 0 500 0 500
 
   surfaceflinger_top_app
+  echo 0-6 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -311,6 +313,7 @@ if [[ "$action" = "performance" ]]; then
   sched_limit 0 0 0 0 0 0
 
   surfaceflinger_top_app
+  echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -338,6 +341,7 @@ if [[ "$action" = "fast" ]]; then
   sched_limit 5000 0 2000 0 2000 0
 
   surfaceflinger_top_app
+  echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
