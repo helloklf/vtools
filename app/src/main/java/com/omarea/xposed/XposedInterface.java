@@ -1,23 +1,17 @@
 package com.omarea.xposed;
 
 import android.app.Activity;
-import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.XModuleResources;
-import android.content.res.XResources;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
-import android.view.Window;
 
 import com.omarea.store.XposedExtension;
-import com.omarea.xposed.wx.CameraHookProvider;
 import com.omarea.xposed.wx.WeChatScanHook;
 
 import org.json.JSONObject;
@@ -33,7 +27,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.getFloatField;
 import static de.robv.android.xposed.XposedHelpers.getObjectField;
 
 /**

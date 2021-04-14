@@ -1,8 +1,8 @@
 package com.omarea
 
 import android.app.Application
-import android.app.UiModeManager
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -52,13 +52,37 @@ class Scene : Application() {
     // 锁屏状态监听
     private lateinit var screenState: ScreenState
 
+    private var lastThemeId = R.style.AppTheme
+    private fun setAppTheme(theme: Int) {
+        if (lastThemeId != theme) {
+            setTheme(theme)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        /*
+        try {
+            val theme = (if ((newConfig.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0) {
+                R.style.AppThemeNight
+            } else {
+                R.style.AppTheme
+            })
+            setAppTheme(theme)
+        } catch (ex: Exception) {
+        }
+        */
+    }
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         CrashHandler().init(this)
+        /*
         val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
-            setTheme(R.style.AppThemeNight)
+            setAppTheme(R.style.AppThemeNight)
         }
+        */
 
         context = this
 

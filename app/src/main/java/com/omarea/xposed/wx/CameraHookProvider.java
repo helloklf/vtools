@@ -11,6 +11,8 @@ public class CameraHookProvider {
     public static ArrayList<String> devices = new ArrayList<String>() {{
             add("MI 9");
             add("MI CC9 Pro");
+            // 目前 Mi 10 Pro还没测试通过
+            // add("Mi 10 Pro");
     }};
 
     public VirtualCameraInfo[] cameraList;
@@ -53,6 +55,13 @@ public class CameraHookProvider {
                         new VirtualCameraInfo(0, "❶"),
                         new VirtualCameraInfo(2, "❷"),
                         new VirtualCameraInfo(5, "❹"),
+                };
+                this.defaultCameraIndex = 0; // 默认摄像头在cameraList中的索引
+                break;
+            }
+            case "Mi 10 Pro": {
+                this.cameraList = new VirtualCameraInfo[]{
+                        new VirtualCameraInfo(0, "❶")
                 };
                 this.defaultCameraIndex = 0; // 默认摄像头在cameraList中的索引
                 break;

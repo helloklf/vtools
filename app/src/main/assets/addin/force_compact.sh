@@ -1,6 +1,9 @@
-level="$1" # 清理级别（1：轻微，2：更重，3：极端）
+level="$1" # 清理级别（0:极微, 1：轻微，2：更重，3：极端）
 
-echo 3 > /proc/sys/vm/drop_caches
+# 级别0用在实时加速中，一般处于内存负载较高的状态下，此时缓存占用本就不高，无需再清理
+if [[ "$level" != "0" ]]; then
+  echo 3 > /proc/sys/vm/drop_caches
+fi
 
 modify_path=''
 friendly=false
