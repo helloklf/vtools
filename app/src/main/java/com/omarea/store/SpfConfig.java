@@ -80,6 +80,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_FREEZE_ITEM_LIMIT = "freeze_suspend_item_limit";
     public static String GLOBAL_SPF_FREEZE_XPOSED_OPEN = "freeze_xposed_open";
     public static String GLOBAL_SPF_FREEZE_CLICK_OPEN = "freeze_click_open";
+    public static String GLOBAL_NIGHT_BLACK_NOTIFICATION = "night_black_notification";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

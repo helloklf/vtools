@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.SystemClock
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import com.omarea.Scene
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
@@ -137,7 +138,7 @@ internal class AlwaysNotification(
         } catch (ex: Exception) {
         }
 
-        val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification).apply {
+        val remoteViews = this.getRemoteViews().apply {
             setTextViewText(R.id.notify_title, getAppName(packageName))
             setTextViewText(R.id.notify_text, getModName(mode))
             setTextViewText(R.id.notify_battery_text, "$batteryIO ${GlobalStatus.batteryCapacity}% $batteryTemp")
@@ -177,6 +178,15 @@ internal class AlwaysNotification(
 
         notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT or Notification.FLAG_FOREGROUND_SERVICE
         notificationManager?.notify(0x100, notification)
+    }
+
+    private fun getRemoteViews(): RemoteViews {
+        val layout = (if (Scene.isNightMode && globalSPF.getBoolean(SpfConfig.GLOBAL_NIGHT_BLACK_NOTIFICATION, false)) {
+            R.layout.layout_notification_dark
+        } else {
+            R.layout.layout_notification
+        })
+        return RemoteViews(context.packageName, layout)
     }
 
     //隐藏通知

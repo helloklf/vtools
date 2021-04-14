@@ -1,6 +1,7 @@
 package com.omarea
 
 import android.app.Application
+import android.app.UiModeManager
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
@@ -22,6 +23,11 @@ class Scene : Application() {
     companion object {
         private val handler = Handler(Looper.getMainLooper())
         public lateinit var context: Application
+        private var nightMode = false
+        public val isNightMode: Boolean
+            get() {
+                return nightMode
+            }
         public fun toast(message: String, time: Int) {
             handler.post {
                 Toast.makeText(context, message, time).show()
@@ -72,6 +78,7 @@ class Scene : Application() {
         } catch (ex: Exception) {
         }
         */
+        nightMode = ((newConfig.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0)
     }
 
     override fun attachBaseContext(base: Context?) {
@@ -83,6 +90,10 @@ class Scene : Application() {
             setAppTheme(R.style.AppThemeNight)
         }
         */
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
+            nightMode = true
+        }
 
         context = this
 
