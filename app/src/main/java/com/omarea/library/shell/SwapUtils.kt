@@ -13,6 +13,8 @@ import java.io.File
  */
 
 class SwapUtils(private val context: Context) {
+
+
     private var swapfilePath: String = "/data/swapfile"
     private var swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
     private var swapForceKswapdScript:String? = null
