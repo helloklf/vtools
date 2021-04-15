@@ -127,9 +127,9 @@ class SceneModeAdapter2(private val context: Context, apps: ArrayList<AppInfo>, 
         } else {
             viewHolder.imgView?.setImageDrawable(item.icon)
         }
-        if (item.enabledState != null) {
+        if (item.stateTags != null) {
             viewHolder.summery?.run {
-                val mode = item.enabledState.toString()
+                val mode = item.stateTags.toString()
                 setTextColor(getColor(mode))
                 visibility = VISIBLE
                 text = mode.run {

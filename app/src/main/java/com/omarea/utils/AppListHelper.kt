@@ -14,7 +14,7 @@ import java.util.*
 /**
  * Created by helloklf on 2017/12/01.
  */
-class AppListHelper(context: Context) {
+class AppListHelper(context: Context, private val getTags: Boolean = true) {
     var packageManager: PackageManager
 
     private fun exclude(packageName: String): Boolean {
@@ -128,7 +128,9 @@ class AppListHelper(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
         }
-        item.enabledState = getTags(applicationInfo)
+        if (getTags) {
+            item.stateTags = getTags(applicationInfo)
+        }
         item.path = appPath
         item.updated = isSystemApp(applicationInfo) && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)
         item.appType = (if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -199,7 +201,7 @@ class AppListHelper(context: Context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
             }
-            item.enabledState = getTags(applicationInfo)
+            item.stateTags = getTags(applicationInfo)
             item.path = applicationInfo.sourceDir
             item.updated = isSystemApp(applicationInfo) && file.parent.startsWith("/data")
             // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
@@ -254,7 +256,7 @@ class AppListHelper(context: Context) {
                     item.appName = applicationInfo.loadLabel(packageManager).toString() + "  (" + packageInfo.versionCode + ")"
                     item.packageName = applicationInfo.packageName
                     item.path = applicationInfo.sourceDir
-                    item.enabledState = checkInstall(packageInfo)
+                    item.stateTags = checkInstall(packageInfo)
                     item.versionName = packageInfo.versionName
                     item.versionCode = packageInfo.versionCode
                     item.appType = AppInfo.AppType.BACKUPFILE

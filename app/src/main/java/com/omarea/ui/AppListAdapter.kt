@@ -58,7 +58,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, pri
     init {
         this.list = sortAppList(filterAppList(apps, keywords))
         for (i in this.list.indices) {
-            states[i] = !(this.list[i].enabledState == null || !this.list[i].selected)
+            states[i] = !(this.list[i].stateTags == null || !this.list[i].selected)
         }
     }
 
@@ -91,8 +91,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, pri
 
     private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
         list.sortWith(Comparator { l, r ->
-            val les = l.enabledState.toString()
-            val res = r.enabledState.toString()
+            val les = l.stateTags.toString()
+            val res = r.stateTags.toString()
             when {
                 les < res -> -1
                 les > res -> 1
@@ -175,11 +175,11 @@ class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, pri
             }
 
             enabledStateText?.run {
-                if (item.enabledState.isNullOrEmpty()) {
+                if (item.stateTags.isNullOrEmpty()) {
                     text = ""
                     visibility = View.GONE
                 } else {
-                    text = item.enabledState
+                    text = item.stateTags
                     visibility = View.VISIBLE
                 }
             }

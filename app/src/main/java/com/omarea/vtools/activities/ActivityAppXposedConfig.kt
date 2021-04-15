@@ -118,8 +118,8 @@ class ActivityAppXposedConfig : ActivityBase() {
     private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
         list.sortWith { l, r ->
             try {
-                val les = l.enabledState.toString()
-                val res = r.enabledState.toString()
+                val les = l.stateTags.toString()
+                val res = r.stateTags.toString()
                 when {
                     les < res -> -1
                     les > res -> 1

@@ -55,7 +55,7 @@ class ActivityAppConfig2 : ActivityBase() {
     private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(this)
-        applistHelper = AppListHelper(this)
+        applistHelper = AppListHelper(this, false)
         spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         sceneConfigStore = SceneConfigStore(this.context)
@@ -204,8 +204,8 @@ class ActivityAppConfig2 : ActivityBase() {
     private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
         list.sortWith { l, r ->
             try {
-                val les = l.enabledState.toString()
-                val res = r.enabledState.toString()
+                val les = l.stateTags.toString()
+                val res = r.stateTags.toString()
                 when {
                     les < res -> -1
                     les > res -> 1
@@ -303,7 +303,7 @@ class ActivityAppConfig2 : ActivityBase() {
     private fun setAppRowDesc(item: AppInfo) {
         item.selected = false
         val packageName = item.packageName.toString()
-        item.enabledState = spfPowercfg.getString(packageName, "")
+        item.stateTags = spfPowercfg.getString(packageName, "")
         val configInfo = sceneConfigStore.getAppConfig(packageName)
         item.sceneConfigInfo = configInfo
         val desc = StringBuilder()
