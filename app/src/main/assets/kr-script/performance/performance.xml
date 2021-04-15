@@ -41,7 +41,7 @@
 
         <action visible=". ./kr-script/common/android_n.sh">
             <title>执行dex2oat编译</title>
-            <desc>适用于Android N+，使用Speed模式进行dex2oat编译</desc>
+            <desc>适用于Android N+，对指定应用进行dex2oat编译</desc>
             <param name="app" value="1" title="要编译的应用" desc="如果是首次执行，可能需要几十分钟，已经处理过的应用不会重复处理。系统更新后此操作失效，且应用更新后也需要处理~~">
                 <option value=" ">全部</option>
                 <option value="-s">仅系统应用</option>
