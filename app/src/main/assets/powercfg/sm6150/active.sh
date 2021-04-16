@@ -196,6 +196,8 @@ if [ "$action" = "powersave" ]; then
   echo 500 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 1000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
+  echo 0-3 > /dev/cpuset/foreground/cpus
+
 elif [ "$action" = "balance" ]; then
   set_cpu_freq 5000 1708800 5000 1843200
   set_input_boost_freq 1324800 0 40
@@ -215,6 +217,8 @@ elif [ "$action" = "balance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
+
+  echo 0-5 > /dev/cpuset/foreground/cpus
 
 elif [ "$action" = "performance" ]; then
   set_cpu_freq 300000 2500000 300000 2750000
@@ -236,6 +240,8 @@ elif [ "$action" = "performance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
+  echo 0-7 > /dev/cpuset/foreground/cpus
+
 elif [ "$action" = "fast" ]; then
   set_cpu_freq 1708800 2500000 1209600 2750000
   set_input_boost_freq 1804800 1939200 120
@@ -255,5 +261,7 @@ elif [ "$action" = "fast" ]; then
   echo 2000 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/down_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
+
+  echo 0-7 > /dev/cpuset/foreground/cpus
 
 fi
