@@ -1,5 +1,8 @@
 #!/system/bin/sh
 
+# 默认通常是 5555，但为了保持相对安全，改了个别的
+port="33445"
+
 if [[ ! "$state" = "1" ]]
 then
     setprop service.adb.tcp.port -1
@@ -11,7 +14,7 @@ then
     return 0
 fi
 
-setprop service.adb.tcp.port 5555;
+setprop service.adb.tcp.port $port;
 stop adbd;
 killall -9 adbd 2>/dev/null
 sleep 1;
@@ -29,9 +32,9 @@ echo ''
 
 if [[ -n "$ip" ]]
 then
-    echo "adb connect $ip:5555"
+    echo "adb connect $ip:$port"
 else
-    echo "adb connect 手机IP:5555"
+    echo "adb connect 手机IP:$port"
 fi
 
 echo '来连接手机'

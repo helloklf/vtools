@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -366,10 +367,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     //      当然，这并不意味着完美，只是暂时没有更好的解决方案……
 
                     var lastWindowSize = 0
+                    var lastWindowFocus = false
                     for (window in effectiveWindows) {
-
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
+                        Log.d("Scene", "${window.isActive} ${window.isFocused}")
 
                         /*
                         val wp = window.root?.packageName
@@ -378,20 +380,43 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             continue
                         }
                         */
-
-                        logs?.run {
-                            val wp = try {
-                                window.root?.packageName
-                            } catch (ex: java.lang.Exception) {
-                                null
+                        if (isLandscap) {
+                            logs?.run {
+                                val wp = try {
+                                    window.root?.packageName
+                                } catch (ex: java.lang.Exception) {
+                                    null
+                                }
+                                append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
                             }
-                            append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                        }
 
-                        val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
-                        if (size >= lastWindowSize) {
-                            lastWindow = window
-                            lastWindowSize = size
+                            val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
+                            if (size >= lastWindowSize) {
+                                lastWindow = window
+                                lastWindowSize = size
+                            }
+                        } else {
+                            val windowFocused = (window.isActive || window.isFocused)
+
+                            logs?.run {
+                                val wp = try {
+                                    window.root?.packageName
+                                } catch (ex: java.lang.Exception) {
+                                    null
+                                }
+                                append("\n层级: ${window.layer} ${wp} Focused：${windowFocused}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                            }
+
+                            if (lastWindowFocus && !windowFocused) {
+                                continue
+                            }
+
+                            val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
+                            if (size >= lastWindowSize || (windowFocused && !lastWindowFocus)) {
+                                lastWindow = window
+                                lastWindowSize = size
+                                lastWindowFocus = windowFocused
+                            }
                         }
                     }
                     logs?.append("\n")
@@ -424,6 +449,18 @@ public class AccessibilityScenceMode : AccessibilityService() {
                                     lastWindow.root.packageName
                                 } catch (ex: java.lang.Exception) {
                                     null
+                                }
+                            }
+                            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
+                            if (wp?.equals("com.miui.home") == true) {
+                                /*
+                                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
+                                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
+                                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
+                                */
+                                val node = lastWindow.root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
+                                if (node != null) {
+                                    return
                                 }
                             }
                             if (wp != null) {
