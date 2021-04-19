@@ -15,13 +15,14 @@ import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.AccessibilityScenceMode
 import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class SceneMode private constructor(private val context: Context, private var store: SceneConfigStore) {
+class SceneMode private constructor(private val context: AccessibilityScenceMode, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
@@ -75,7 +76,7 @@ class SceneMode private constructor(private val context: Context, private var st
         }
 
         // 获取当前实例或初始化
-        fun getInstanceOrInit(context: Context, store: SceneConfigStore): SceneMode? {
+        fun getInstanceOrInit(context: AccessibilityScenceMode, store: SceneConfigStore): SceneMode? {
             if (instance == null) {
                 synchronized(SceneMode::class) {
                     instance = SceneMode(context, store)
@@ -158,9 +159,13 @@ class SceneMode private constructor(private val context: Context, private var st
 
     // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
     fun clearFreezeAppCountLimit() {
-        if (freezeAppLimit > 0) {
+        if (freezeAppLimit > 0 && freezList.size > freezeAppLimit) {
+            val foregroundApps = context.getForegroundApps()
             while (freezList.size > freezeAppLimit) {
-                freezeApp(freezList.first())
+                val app = freezList.first()
+                if (!foregroundApps.contains(app.packageName)) {
+                    freezeApp(app)
+                }
             }
         }
     }
@@ -170,9 +175,17 @@ class SceneMode private constructor(private val context: Context, private var st
         val freezAppTimeLimit = this.freezeAppTimeLimit
         if (freezAppTimeLimit > 0) {
             val currentTime = System.currentTimeMillis()
-            freezList.filter {
+            val targetApps = freezList.filter {
                 it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
-            }.forEach { freezeApp(it) }
+            }
+            if (targetApps.isNotEmpty()) {
+                val foregroundApps = context.getForegroundApps()
+                targetApps.forEach {
+                    if(!foregroundApps.contains(it.packageName)) {
+                        freezeApp(it)
+                    }
+                }
+            }
         }
     }
 
