@@ -13,13 +13,13 @@ fi
 modename=""
 case "$mode" in
   "default")
-      modename="系统默认 (default)"
+    modename="系统默认 (default)"
    ;;
   "powerfrugal")
-      modename="节能降温 (powerfrugal)"
+    modename="节能降温 (powerfrugal)"
    ;;
   "performance")
-      modename="提高阈值 (performance)"
+    modename="提高阈值 (performance)"
   ;;
   "slight")
     modename="轻微调整 (slight)"

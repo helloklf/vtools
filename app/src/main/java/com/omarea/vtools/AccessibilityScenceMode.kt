@@ -329,160 +329,181 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private val blackTypeList = arrayListOf(
-        AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY,
-        AccessibilityWindowInfo.TYPE_INPUT_METHOD,
-        AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER,
-        AccessibilityWindowInfo.TYPE_SYSTEM
+            AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY,
+            AccessibilityWindowInfo.TYPE_INPUT_METHOD,
+            AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER,
+            AccessibilityWindowInfo.TYPE_SYSTEM
     )
 
-    // 新的前台应用窗口判定逻辑
-    private fun modernModeEvent(event: AccessibilityEvent? = null) {
+    private val blackTypeListBasic = arrayListOf(
+            AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY,
+            AccessibilityWindowInfo.TYPE_INPUT_METHOD,
+            AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER
+    )
+
+    public fun getEffectiveWindows(includeSystemApp: Boolean = false): List<AccessibilityWindowInfo> {
         val windowsList = windows
-        if (windowsList == null || windowsList.isEmpty()) {
-            return
-        } else if (windowsList.size > 1) {
+        if (windowsList != null && windowsList.size > 1) {
             val effectiveWindows = windowsList.filter {
                 // 现在不过滤画中画应用了，因为有遇到像Telegram这样的应用，从画中画切换到全屏后仍检测到处于画中画模式，并且类型是 -1（可能是MIUI魔改出来的），但对用户来说全屏就是前台应用
-                !blackTypeList.contains(it.type)
+                if (includeSystemApp) {
+                    !blackTypeListBasic.contains(it.type)
+                } else {
+                    !blackTypeList.contains(it.type)
+                }
 
                 // (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
             } // .sortedBy { it.layer }
+            return effectiveWindows
+        }
+        return ArrayList()
+    }
 
-            if (effectiveWindows.isNotEmpty()) {
-                try {
-                    var lastWindow: AccessibilityWindowInfo? = null
-                    val logs = if (floatLogView == null) null else StringBuilder()
-                    logs?.run {
-                        append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-                        if (event != null) {
-                            append("事件: ${event.source?.packageName}\n")
-                        } else {
-                            append("事件: 主动轮询${Date().time / 1000}\n")
-                        }
+    public fun getForegroundApps (): Array<String> {
+        val windows = this.getEffectiveWindows(true)
+        return windows.map {
+            it.root?.packageName
+        }.filter { it != null }.map { it.toString() }.toTypedArray()
+    }
+
+    // 新的前台应用窗口判定逻辑
+    private fun modernModeEvent(event: AccessibilityEvent? = null) {
+        val effectiveWindows = this.getEffectiveWindows()
+
+        if (effectiveWindows.isNotEmpty()) {
+            try {
+                var lastWindow: AccessibilityWindowInfo? = null
+                val logs = if (floatLogView == null) null else StringBuilder()
+                logs?.run {
+                    append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+                    if (event != null) {
+                        append("事件: ${event.source?.packageName}\n")
+                    } else {
+                        append("事件: 主动轮询${Date().time / 1000}\n")
                     }
-                    // TODO:
-                    //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
-                    //      但在类原生系统上表现并不好，例如：有缺口的屏幕或有导航键的系统，报告的窗口大小则可能不包括缺口高度区域和导航键区域高度
-                    //      因此，现在将逻辑调整为：从所有应用窗口中选出最接近全屏的一个，判定为前台应用
-                    //      当然，这并不意味着完美，只是暂时没有更好的解决方案……
+                }
+                // TODO:
+                //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
+                //      但在类原生系统上表现并不好，例如：有缺口的屏幕或有导航键的系统，报告的窗口大小则可能不包括缺口高度区域和导航键区域高度
+                //      因此，现在将逻辑调整为：从所有应用窗口中选出最接近全屏的一个，判定为前台应用
+                //      当然，这并不意味着完美，只是暂时没有更好的解决方案……
 
-                    var lastWindowSize = 0
-                    var lastWindowFocus = false
-                    for (window in effectiveWindows) {
-                        val outBounds = Rect()
-                        window.getBoundsInScreen(outBounds)
-                        Log.d("Scene", "${window.isActive} ${window.isFocused}")
+                var lastWindowSize = 0
+                var lastWindowFocus = false
+                for (window in effectiveWindows) {
+                    val outBounds = Rect()
+                    window.getBoundsInScreen(outBounds)
+                    Log.d("Scene", "${window.isActive} ${window.isFocused}")
 
-                        /*
-                        val wp = window.root?.packageName
-                        // 获取窗口 root节点 会有性能问题，因此去掉此判断逻辑
-                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter" || wp == "com.android.permissioncontroller") {
-                            continue
-                        }
-                        */
-                        if (isLandscap) {
-                            logs?.run {
-                                val wp = try {
-                                    window.root?.packageName
-                                } catch (ex: java.lang.Exception) {
-                                    null
-                                }
-                                append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                            }
-
-                            val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
-                            if (size >= lastWindowSize) {
-                                lastWindow = window
-                                lastWindowSize = size
-                            }
-                        } else {
-                            val windowFocused = (window.isActive || window.isFocused)
-
-                            logs?.run {
-                                val wp = try {
-                                    window.root?.packageName
-                                } catch (ex: java.lang.Exception) {
-                                    null
-                                }
-                                append("\n层级: ${window.layer} ${wp} Focused：${windowFocused}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                            }
-
-                            if (lastWindowFocus && !windowFocused) {
-                                continue
-                            }
-
-                            val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
-                            if (size >= lastWindowSize || (windowFocused && !lastWindowFocus)) {
-                                lastWindow = window
-                                lastWindowSize = size
-                                lastWindowFocus = windowFocused
-                            }
-                        }
+                    /*
+                    val wp = window.root?.packageName
+                    // 获取窗口 root节点 会有性能问题，因此去掉此判断逻辑
+                    if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter" || wp == "com.android.permissioncontroller") {
+                        continue
                     }
-                    logs?.append("\n")
-                    if (lastWindow != null) {
-                        val eventWindowId = event?.windowId
-                        val lastWindowId = lastWindow.id
+                    */
+                    if (isLandscap) {
+                        logs?.run {
+                            val wp = try {
+                                window.root?.packageName
+                            } catch (ex: java.lang.Exception) {
+                                null
+                            }
+                            append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                        }
 
-                        if (logs == null) {
-                            if (eventWindowId == lastWindowId && event.packageName != null) {
-                                val pa = event.packageName
-                                GlobalStatus.lastPackageName = pa.toString()
-                                EventBus.publish(EventType.APP_SWITCH)
-                            } else {
-                                lastAnalyseThread = System.currentTimeMillis()
-                                // try {
-                                // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
-                                // thread.start()
-                                windowAnalyse(lastWindow, lastAnalyseThread)
-                                if (event != null) {
-                                    startActivityPolling()
-                                }
-                                // thread.wait(300);
-                                // } catch (Exception ignored){}
-                            }
-                        } else {
-                            val wp = if (eventWindowId == lastWindowId) {
-                                event.packageName
-                            } else {
-                                try {
-                                    lastWindow.root.packageName
-                                } catch (ex: java.lang.Exception) {
-                                    null
-                                }
-                            }
-                            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
-                            if (wp?.equals("com.miui.home") == true) {
-                                /*
-                                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
-                                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
-                                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
-                                */
-                                val node = lastWindow.root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
-                                if (node != null) {
-                                    return
-                                }
-                            }
-                            if (wp != null) {
-                                logs.append("\n此前: ${GlobalStatus.lastPackageName}")
-                                GlobalStatus.lastPackageName = wp.toString()
-                                EventBus.publish(EventType.APP_SWITCH)
-                                if (event != null) {
-                                    startActivityPolling()
-                                }
-                            }
-
-                            logs.append("\n现在: ${GlobalStatus.lastPackageName}")
-                            floatLogView?.update(logs.toString())
+                        val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
+                        if (size >= lastWindowSize) {
+                            lastWindow = window
+                            lastWindowSize = size
                         }
                     } else {
-                        logs?.append("\n现在: ${GlobalStatus.lastPackageName}")
-                        floatLogView?.update(logs.toString())
-                        return
+                        val windowFocused = (window.isActive || window.isFocused)
+
+                        logs?.run {
+                            val wp = try {
+                                window.root?.packageName
+                            } catch (ex: java.lang.Exception) {
+                                null
+                            }
+                            append("\n层级: ${window.layer} ${wp} Focused：${windowFocused}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                        }
+
+                        if (lastWindowFocus && !windowFocused) {
+                            continue
+                        }
+
+                        val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
+                        if (size >= lastWindowSize || (windowFocused && !lastWindowFocus)) {
+                            lastWindow = window
+                            lastWindowSize = size
+                            lastWindowFocus = windowFocused
+                        }
                     }
-                } catch (ex: Exception) {
+                }
+                logs?.append("\n")
+                if (lastWindow != null) {
+                    val eventWindowId = event?.windowId
+                    val lastWindowId = lastWindow.id
+
+                    if (logs == null) {
+                        if (eventWindowId == lastWindowId && event.packageName != null) {
+                            val pa = event.packageName
+                            GlobalStatus.lastPackageName = pa.toString()
+                            EventBus.publish(EventType.APP_SWITCH)
+                        } else {
+                            lastAnalyseThread = System.currentTimeMillis()
+                            // try {
+                            // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
+                            // thread.start()
+                            windowAnalyse(lastWindow, lastAnalyseThread)
+                            if (event != null) {
+                                startActivityPolling()
+                            }
+                            // thread.wait(300);
+                            // } catch (Exception ignored){}
+                        }
+                    } else {
+                        val wp = if (eventWindowId == lastWindowId) {
+                            event.packageName
+                        } else {
+                            try {
+                                lastWindow.root.packageName
+                            } catch (ex: java.lang.Exception) {
+                                null
+                            }
+                        }
+                        // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
+                        if (wp?.equals("com.miui.home") == true) {
+                            /*
+                            val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
+                            Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
+                            Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
+                            */
+                            val node = lastWindow.root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
+                            if (node != null) {
+                                return
+                            }
+                        }
+                        if (wp != null) {
+                            logs.append("\n此前: ${GlobalStatus.lastPackageName}")
+                            GlobalStatus.lastPackageName = wp.toString()
+                            EventBus.publish(EventType.APP_SWITCH)
+                            if (event != null) {
+                                startActivityPolling()
+                            }
+                        }
+
+                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
+                        floatLogView?.update(logs.toString())
+                    }
+                } else {
+                    logs?.append("\n现在: ${GlobalStatus.lastPackageName}")
+                    floatLogView?.update(logs.toString())
                     return
                 }
+            } catch (ex: Exception) {
+                return
             }
         }
     }
