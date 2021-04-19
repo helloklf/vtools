@@ -245,7 +245,6 @@ if [[ "$action" = "powersave" ]]; then
   echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   surfaceflinger_bg_app
-  echo 0-3 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -277,7 +276,6 @@ if [[ "$action" = "balance" ]]; then
   echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   surfaceflinger_top_app
-  echo 0-6 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -309,7 +307,6 @@ if [[ "$action" = "performance" ]]; then
   echo 80 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   surfaceflinger_top_app
-  echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
@@ -341,7 +338,6 @@ if [[ "$action" = "fast" ]]; then
   echo 70 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
   surfaceflinger_top_app
-  echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
 fi
