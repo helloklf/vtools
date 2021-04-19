@@ -194,6 +194,7 @@ if [ "$action" = "powersave" ]; then
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+  echo 0-3 > /dev/cpuset/foreground/cpus
 
   set_value "85 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
   set_value 518400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
@@ -223,6 +224,7 @@ if [ "$action" = "balance" ]; then
 
   echo 0-2 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+  echo 0-5 > /dev/cpuset/foreground/cpus
 
   set_value "84 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
   set_value 960000 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
@@ -252,6 +254,7 @@ if [ "$action" = "performance" ]; then
 
   echo 0-1 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+  echo 0-7 > /dev/cpuset/foreground/cpus
 
   set_value "73 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
   set_value 1478400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
@@ -280,6 +283,7 @@ if [ "$action" = "fast" ]; then
 
   echo 0 > /dev/cpuset/background/cpus
   echo 0-3 > /dev/cpuset/system-background/cpus
+  echo 0-7 > /dev/cpuset/foreground/cpus
 
   set_value "72 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
   set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq

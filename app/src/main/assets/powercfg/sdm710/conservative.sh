@@ -185,6 +185,7 @@ if [ "$action" = "powersave" ]; then
   echo 0 > /proc/sys/kernel/sched_boost
 
   sched_config 100 120 300 400
+  echo 0-3 > /dev/cpuset/foreground/cpus
 
 elif [ "$action" = "balance" ]; then
   echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -200,6 +201,7 @@ elif [ "$action" = "balance" ]; then
   echo 0 > /proc/sys/kernel/sched_boost
 
   sched_config 89 99 300 400
+  echo 0-5 > /dev/cpuset/foreground/cpus
 
 elif [ "$action" = "performance" ]; then
   echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -215,6 +217,7 @@ elif [ "$action" = "performance" ]; then
   echo 0 > /proc/sys/kernel/sched_boost
 
   sched_config 89 98 300 400
+  echo 0-7 > /dev/cpuset/foreground/cpus
 
 elif [ "$action" = "fast" ]; then
   echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -230,4 +233,5 @@ elif [ "$action" = "fast" ]; then
   echo 1 > /proc/sys/kernel/sched_boost
 
   sched_config 75 96 320 420
+  echo 0-7 > /dev/cpuset/foreground/cpus
 fi
