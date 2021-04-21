@@ -1,5 +1,3 @@
-#!/system/bin/sh
-
 action=$1
 
 init () {
@@ -10,9 +8,16 @@ init () {
     sh /data/powercfg-base.sh
   fi
 }
+
 if [[ "$action" = "init" ]]; then
   init
   exit 0
+fi
+
+
+# 当前被打开的前台应用（需要Scene 4.3+版本，并开启【严格模式】才会获得此值）
+if [[ "$top_app" != "" ]]; then
+  echo "应用切换到前台 [$top_app]" >> /cache/scene_powercfg.log
 fi
 
 if [[ "$action" = "powersave" ]]; then

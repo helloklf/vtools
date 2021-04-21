@@ -147,7 +147,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         lastScreenOnOff = System.currentTimeMillis()
 
         if (dyamicCore && lastMode.isNotEmpty()) {
-            toggleConfig(lastMode)
+            toggleConfig(lastMode, context.packageName)
         }
         sceneMode.onScreenOn()
 
@@ -203,13 +203,12 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(packageName, firstMode)!!
                 if (
-                        mode != IGONED &&
-                        (lastMode != mode || spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false))
+                        mode != IGONED && (lastMode != mode || spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false))
                 ) {
                     if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, false)) {
-                        delayToggleConfig(mode)
+                        delayToggleConfig(mode, packageName)
                     } else {
-                        toggleConfig(mode)
+                        toggleConfig(mode, packageName)
                     }
                 }
             }
@@ -219,15 +218,15 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         }
     }
 
-    private fun toggleConfig(mode: String) {
-        executePowercfgMode(mode)
+    private fun toggleConfig(mode: String, packageName: String) {
+        executePowercfgMode(mode, packageName)
         lastMode = mode
     }
 
-    private fun delayToggleConfig(mode: String) {
+    private fun delayToggleConfig(mode: String, packageName: String) {
         handler.postDelayed({
             if (lastMode == mode) {
-                executePowercfgMode(mode)
+                executePowercfgMode(mode, packageName)
             }
         }, 5000)
         lastMode = mode
@@ -354,8 +353,8 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                     if (extras.containsKey("mode")) {
                         val mode = intent.getStringExtra("mode")!!
                         val app = intent.getStringExtra("app")
-                        if (dyamicCore && screenOn && app == lastModePackage) {
-                            toggleConfig(mode)
+                        if (dyamicCore && screenOn && app != null && app == lastModePackage) {
+                            toggleConfig(mode, app)
                         }
                     }
                     sceneMode.updateAppConfig()

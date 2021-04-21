@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
+import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.vtools.R
@@ -46,8 +47,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
                 ""
             })
             val cmd = String.format(memcgShell!!, packageName, groupPath)
-            // Log.e("Scene", cmd)
-            KeepShellPublic.doCmdSync(cmd)
+            KeepShellAsync.getInstance("CGroup").doCmd(cmd)
         } else {
             Log.e("Scene", "CGroup Init Fail!")
             return

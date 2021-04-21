@@ -21,7 +21,6 @@ import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class SceneMode private constructor(private val context: AccessibilityScenceMode, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
@@ -480,13 +479,13 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
                 if (currentSceneConfig?.packageName != app) {
                     util.setGroup(app, mode)
                 }
-            }, 2000)
+            }, 3000)
         } else if (mode == "scene_limit2") {
             Scene.postDelayed({
                 if (currentSceneConfig?.packageName != app) {
                     util.setGroup(app, mode)
                 }
-            }, 5000)
+            }, 8000)
         } else {
             util.setGroup(app, mode)
         }

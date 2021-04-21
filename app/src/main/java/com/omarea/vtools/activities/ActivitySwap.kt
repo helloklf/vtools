@@ -62,12 +62,6 @@ class ActivitySwap : ActivityBase() {
     }
 
     private fun swapOffAwait(): Timer {
-        ModeSwitcher().run {
-            if (modeConfigCompleted()) {
-                executePowercfgMode(ModeSwitcher.FAST)
-            }
-        }
-
         val timer = Timer()
         val totalUsed = swapUtils.swapUsedSize
         val startTime = System.currentTimeMillis()
@@ -91,12 +85,6 @@ class ActivitySwap : ActivityBase() {
     }
 
     private fun zramOffAwait(): Timer {
-        ModeSwitcher().run {
-            if (modeConfigCompleted()) {
-                executePowercfgMode(ModeSwitcher.FAST)
-            }
-        }
-
         val timer = Timer()
         val totalUsed = swapUtils.zramUsedSize
         val startTime = System.currentTimeMillis()

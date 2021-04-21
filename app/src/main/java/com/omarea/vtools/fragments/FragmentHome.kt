@@ -388,11 +388,13 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private fun toggleMode(modeSwitcher: ModeSwitcher, mode: String): Deferred<Unit> {
         return GlobalScope.async {
-            if (modeSwitcher.modeConfigCompleted()) {
-                modeSwitcher.executePowercfgMode(mode, context!!.packageName)
-            } else {
-                CpuConfigInstaller().installOfficialConfig(context!!)
-                modeSwitcher.executePowercfgMode(mode)
+            context?.run {
+                if (modeSwitcher.modeConfigCompleted()) {
+                    modeSwitcher.executePowercfgMode(mode, packageName)
+                } else {
+                    CpuConfigInstaller().installOfficialConfig(context!!)
+                    modeSwitcher.executePowercfgMode(mode, packageName)
+                }
             }
         }
     }

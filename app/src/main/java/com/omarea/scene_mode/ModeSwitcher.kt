@@ -195,7 +195,7 @@ open class ModeSwitcher {
     }
 
     // 切换模式
-    internal fun executePowercfgMode(mode: String): ModeSwitcher {
+    private fun executeMode(mode: String, packageName: String): ModeSwitcher {
         // TODO: mode == IGONED 的处理
         if (mode != IGONED) {
             val source = getCurrentSource()
@@ -215,7 +215,10 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        keepShellExec("sh $configProvider $mode")
+                        keepShellExec(
+                            "export top_app=$packageName\n" +
+                            "sh $configProvider '$mode' &"
+                        )
                         setCurrentPowercfg(mode)
                     } else {
                         Log.e("Scene", "" + mode + "Profile lost!")
@@ -227,7 +230,10 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        keepShellExec("sh $configProvider $mode")
+                        keepShellExec(
+                        "export top_app=$packageName\n" +
+                            "sh $configProvider '$mode' &"
+                        )
                         setCurrentPowercfg(mode)
                     } else {
                         Log.e("Scene", "" + mode + "Profile lost!")
@@ -240,8 +246,13 @@ open class ModeSwitcher {
     }
 
     internal fun executePowercfgMode(mode: String, app: String): ModeSwitcher {
-        executePowercfgMode(mode)
-        setCurrentPowercfgApp(app)
+        if (app != Scene.thisPackageName) {
+            executeMode(mode, app)
+            setCurrentPowercfgApp(app)
+        } else {
+            executeMode(mode, "")
+            setCurrentPowercfgApp("")
+        }
         return this
     }
 

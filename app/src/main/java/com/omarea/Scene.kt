@@ -23,6 +23,7 @@ class Scene : Application() {
     companion object {
         private val handler = Handler(Looper.getMainLooper())
         public lateinit var context: Application
+        public lateinit var thisPackageName: String
         private var nightMode = false
         public val isNightMode: Boolean
             get() {
@@ -96,6 +97,7 @@ class Scene : Application() {
         }
 
         context = this
+        thisPackageName = this.packageName
 
         // 安装busybox
         if (!Busybox.systemBusyboxInstalled()) {

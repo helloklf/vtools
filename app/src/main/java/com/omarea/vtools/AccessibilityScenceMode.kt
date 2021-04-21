@@ -393,7 +393,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 for (window in effectiveWindows) {
                     val outBounds = Rect()
                     window.getBoundsInScreen(outBounds)
-                    Log.d("Scene", "${window.isActive} ${window.isFocused}")
 
                     /*
                     val wp = window.root?.packageName
