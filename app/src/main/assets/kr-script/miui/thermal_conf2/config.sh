@@ -6,7 +6,6 @@ if [[ ! -n "$MAGISK_PATH" ]]; then
     exit 4
 fi
 
-install_dir="${MAGISK_PATH}/system/vendor/etc"
 # 方案2 - 替换到 /data
 install_dir="/data/vendor/thermal/config"
 mode_state_save="$install_dir/thermal.current.ini"
@@ -35,14 +34,6 @@ function clear_old() {
   fi
 }
 
-function ulock_dir() {
-  local dir="$1"
-  if [[ -e "$dir" ]]; then
-    chattr -R -i "$dir" 2> /dev/null
-    # rm -rf "$dir" 2> /dev/null
-  fi
-}
-
 function uninstall_thermal() {
   clear_old
 
@@ -50,16 +41,17 @@ function uninstall_thermal() {
   echo '卸载已安装的自定义配置……'
   echo ''
 
-  # ulock_dir /data/thermal
-  # ulock_dir /data/vendor/thermal
-  # for thermal in ${thermal_files[@]}; do
-  #     if [[ -f $install_dir/$thermal ]]; then
-  #         echo '移除' $thermal
-  #         rm -f $install_dir/$thermal
-  #     fi
-  # done
+  if [[ -d "$install_dir" ]]; then
+    chattr -R -i "$install_dir" # 2> /dev/null
+    rm -rf "$install_dir/*" 2> /dev/null
+  elif [[ -f "$install_dir" ]]; then
+    chattr -i "$install_dir" # 2> /dev/null
+    rm -f "$install_dir"
+    echo '系统目录遭到破坏，切换温控可能无法顺利进行' 1>&2
+    echo '你大概需要重启手机，温控配置才[有可能]生效~' 1>&2
+    sleep 8
+  fi
 
-  ulock_dir $install_dir
   rm $install_dir/* 2>/dev/null
   rm -f "$mode_state_save" 2> /dev/null
 
@@ -89,12 +81,10 @@ function install_thermal() {
   done
 
   echo ''
-  echo ''
   echo '#################################'
   cat $resource_dir/info.txt
   echo ''
   echo '#################################'
-  echo ''
   echo ''
   echo ''
 
@@ -116,6 +106,9 @@ function install_thermal() {
   echo "$mode" > "$mode_state_save"
 
   echo 'OK~'
+  echo ''
+  echo '留意，如果你使用的不是官方原版系统，或曾使用其它工具或模块更改温控，此操作可能不会生效'
+  echo '如遇温控切换不生效情况，可尝试重启手机，如果重启后依然无效，那……'
 }
 
 if [[ "$mode" == "default" ]]; then

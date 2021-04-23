@@ -35,8 +35,17 @@ extra_free_kbytes=98304
  */
 
 class SwapModuleUtils {
+    private var installed: Boolean? = null
+
     // 是否已经安装用于处理自启动的magisk模块
-    val magiskModuleInstalled = RootFile.fileExists("/data/swap_config.conf") && PropsUtils.getProp("vtools.swap.controller") == "magisk"
+    val magiskModuleInstalled: Boolean
+        get () {
+            if (installed == null) {
+                installed = RootFile.fileExists("/data/swap_config.conf") && PropsUtils.getProp("vtools.swap.controller") == "magisk"
+            }
+
+            return installed!!
+        }
 
     private val swapEnable = "swap"
     private val swapSize = "swap_size"
@@ -67,6 +76,7 @@ class SwapModuleUtils {
         KeepShellPublic.doCmdSync("busybox sed -i 's/^$prop=.*/$prop=$value/' /data/swap_config.conf")
     }
 
+    // 保存模块配置
     fun saveModuleConfig(spf: SharedPreferences) {
         setProp(swapEnable, spf.getBoolean(SpfConfig.SWAP_SPF_SWAP, false))
         setProp(swapSize, spf.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0))
@@ -82,6 +92,7 @@ class SwapModuleUtils {
         setProp(watermarkScaleFactor, spf.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100))
     }
 
+    // 加载模块配置
     fun loadModuleConfig(spf: SharedPreferences) {
         // 如果模块没有安装，就不要再去读取配置了
         if (!magiskModuleInstalled) {
@@ -117,5 +128,22 @@ class SwapModuleUtils {
         }
 
         editor.apply()
+    }
+
+    // 当前模块版本
+    fun getModuleVersion(): Int {
+        val version = PropsUtils.getProp("vtools.swap.module")
+        if (version == "error") {
+            return Int.MAX_VALUE
+        } else if (version == "") {
+            return 0
+        } else {
+            try {
+                return version.toInt()
+            } catch (ex:java.lang.Exception) {
+
+            }
+        }
+        return 0
     }
 }

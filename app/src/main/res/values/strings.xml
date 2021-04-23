@@ -248,7 +248,12 @@
     <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_auto_start_desc">注意：你需要允许Scene自启动，下次开机才会生效！</string>
     <string name="swap_zram_stat">ZRAM 状态</string>
-    <string name="swap_outside_module_installed">外部附加(Magisk)模块已激活</string>
+    <string name="swap_outside_module">外部附加(Magisk)模块</string>
+    <string name="swap_outside_module_desc">您已安装Magisk框架，建议使用附加模块最新版本增强SWAP控制的可靠性，附加主要作用如下：</string>
+    <string name="swap_outside_effect1">1.提高手机重启后还原ZRAM、Swapfile设置的速度</string>
+    <string name="swap_outside_effect2">2.根据设备RAM容量调整LMK参数，加强后台留存能力</string>
+    <string name="swap_outside_effect3">3.调整VM参数，提高ZRAM、Swapfile使用积极性</string>
+    <string name="swap_module_install_desc">模块下载后，请自行在Magisk Manager中刷入,并重启手机！</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率　　　：%s</string>
     <string name="swap_zram_stat_format2">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n压缩率　　　：%s</string>

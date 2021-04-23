@@ -109,7 +109,7 @@
     <group title="温控">
         <picker
             visible="run thermal_conf/support.sh"
-            title="温控配置切换" desc="小米骁龙710、730、835、845、855、865、天玑820系列机型专享！"
+            title="温控配置切换" desc="切换后重启生效，目前仅适配骁龙骁龙710、730、835、845、855、865、天玑820系列机型"
             options-sh="run thermal_conf/options.sh">
             <summary sh="run thermal_conf/summary.sh" />
             <get>run thermal_conf/current.sh</get>
@@ -117,7 +117,7 @@
         </picker>
         <picker
             visible="run thermal_conf2/support.sh"
-            title="温控配置切换（2）" desc="切换温控配置，免于重启即时生效（目前仅限855、865、888机型）"
+            title="温控配置切换（2）" desc="切换后无需重启立即生效，目前仅适配855、865、870、888机型）"
             options-sh="run thermal_conf2/options.sh">
             <summary sh="run thermal_conf2/summary.sh" />
             <get>run thermal_conf2/current.sh</get>

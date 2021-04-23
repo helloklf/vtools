@@ -152,4 +152,7 @@
         <!--百度贴吧-->
         <item>com.baidu.tieba:id/splash_ad_btn_skip</item>
     </string-array>
+
+    <string name="swap_module_target_version">2500</string>
+    <string name="swap_module_download_url">https://vtools.oss-cn-beijing.aliyuncs.com/addin/swap-controller-2.5.0.zip</string>
 </resources>

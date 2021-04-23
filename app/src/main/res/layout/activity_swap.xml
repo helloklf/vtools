@@ -21,13 +21,47 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <TextView
-                android:id="@+id/swap_module_state"
+            <LinearLayout
                 style="@style/ListCardItem"
-                android:text="@string/swap_outside_module_installed"
-                android:textAlignment="center"
-                android:textColor="?android:colorAccent"
-                android:visibility="gone" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/swap_outside_module" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/swap_module_installed"
+                        android:visibility="gone"
+                        style="@style/textDefault"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="已激活"
+                        android:textColor="?android:colorAccent" />
+                    <TextView
+                        android:id="@+id/swap_module_uninstalled"
+                        android:visibility="gone"
+                        style="@style/textDefault"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="已激活"
+                        android:textColor="@android:color/darker_gray" />
+                    <TextView
+                        android:id="@+id/swap_module_downloadable"
+                        style="@style/textDefault"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="有可用更新"
+                        android:textColor="@android:color/holo_green_light" />
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 style="@style/ListCardItem"
