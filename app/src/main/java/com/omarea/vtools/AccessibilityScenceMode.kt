@@ -19,6 +19,7 @@ import com.omarea.Scene
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.scene_mode.AutoClickInstall
@@ -54,6 +55,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private var classicModel = false
 
     private lateinit var spf: SharedPreferences
+
+    // 已安装的输入法
+    private var inputMethods = ArrayList<String>()
 
     /**
      * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
@@ -143,6 +147,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) && spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
             AutoSkipCloudData().updateConfig(this, false)
+        }
+
+        // 获取输入法
+        GlobalScope.launch(Dispatchers.IO) {
+            inputMethods = InputMethodApp(applicationContext).getInputMethods()
         }
     }
 
@@ -250,7 +259,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-
         if (!classicModel) {
             /*
             when(event.eventType) {
@@ -272,6 +280,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
             val packageName = event.packageName
             if (packageName != null) {
                 when {
+                    packageName == "com.android.systemui" -> {
+                        return
+                    }
                     // packageName == "com.omarea.vtools" -> return
                     packageName.contains("packageinstaller") -> {
                         if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
@@ -313,17 +324,21 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-
     private var lastWindowChanged = 0L
     private var lastOriginEventTime = 0L
     private var autoSkipAd: AutoSkipAd? = null
     private fun trySkipAD(event: AccessibilityEvent) {
-        if (autoSkipAd == null) {
-            autoSkipAd = AutoSkipAd(this)
-        }
+        // 只在窗口界面发生变化后的3秒内自动跳过广告，可以降低性能消耗，并降低误点几率
+        if (System.currentTimeMillis() - lastWindowChanged < 3000) {
+            if (autoSkipAd == null) {
+                autoSkipAd = AutoSkipAd(this)
+            }
 
-        // 只在窗口界面发生变化后的5秒内自动跳过广告，可以降低性能消耗，并降低误点几率
-        if (System.currentTimeMillis() - lastWindowChanged < 5000) {
+            val packageName = event.packageName
+            if (packageName == null || inputMethods.contains(packageName)) {
+                return
+            }
+
             autoSkipAd?.skipAd(event, spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false), displayWidth, displayHeight)
         }
     }
