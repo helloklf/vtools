@@ -169,14 +169,20 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
 
     fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
-        val viewHolder = ViewHolder()
+
+        val viewHolder = if (convertView.tag != null) {
+            convertView.tag as ViewHolder
+        } else {
+            ViewHolder().apply {
+                itemTitle = convertView.findViewById(R.id.ItemTitle)
+                itemDesc = convertView.findViewById(R.id.ItemDesc)
+                imgView = convertView.findViewById(R.id.ItemIcon)
+                checkBox = convertView.findViewById(R.id.ItemChecBox)
+            }
+        }
+
         val packageName = item.packageName
         viewHolder.packageName = packageName
-
-        viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
-        viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
-        viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
-        viewHolder.checkBox = convertView.findViewById(R.id.ItemChecBox)
 
         convertView.setOnClickListener {
             if (multiple || item.selected) {
@@ -190,15 +196,16 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
             }
         }
 
-        viewHolder.imgView!!.setTag(getItem(position).packageName)
-        viewHolder.itemTitle?.text = item.appName
-        viewHolder.itemDesc?.text = item.packageName
-        viewHolder.checkBox?.isChecked = item.selected
         viewHolder.run {
+            itemTitle?.text = item.appName
+            itemDesc?.text = item.packageName
+            checkBox?.isChecked = item.selected
+
+            val imgView = imgView!!
+            imgView.tag = packageName
             GlobalScope.launch(Dispatchers.Main) {
                 val icon = loadIcon(item).await()
-                val imgView = imgView!!
-                if (icon != null && viewHolder.packageName == packageName) {
+                if (icon != null && imgView.tag == packageName) {
                     imgView.setImageDrawable(icon)
                 }
             }
