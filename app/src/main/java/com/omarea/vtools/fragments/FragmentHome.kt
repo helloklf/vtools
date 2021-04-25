@@ -47,9 +47,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private var CpuFrequencyUtil = CpuFrequencyUtils()
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
-    private fun showMsg(msg: String) {
-        this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
-    }
 
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler(Looper.getMainLooper())
@@ -185,12 +182,13 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         maxFreqs.clear()
         minFreqs.clear()
         stopTimer()
-        timer = Timer()
-        timer!!.schedule(object : TimerTask() {
-            override fun run() {
-                updateInfo()
-            }
-        }, 0, 1500)
+        timer = Timer().apply {
+            schedule(object : TimerTask() {
+                override fun run() {
+                    updateInfo()
+                }
+            }, 0, 1500)
+        }
     }
 
     private var coreCount = -1
