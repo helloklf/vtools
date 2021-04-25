@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -20,6 +19,7 @@ import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.library.basic.InputMethodApp
+import com.omarea.library.basic.LauncherApps
 import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.scene_mode.AutoClickInstall
@@ -56,8 +56,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private lateinit var spf: SharedPreferences
 
-    // 已安装的输入法
-    private var inputMethods = ArrayList<String>()
+    // 跳过广告功能需要忽略的App
+    private var skipAdIgnoredApps = ArrayList<String>()
 
     /**
      * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
@@ -152,7 +152,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         // 获取输入法
         GlobalScope.launch(Dispatchers.IO) {
-            inputMethods = InputMethodApp(applicationContext).getInputMethods()
+            skipAdIgnoredApps.addAll(LauncherApps(applicationContext).launcherApps)
+            skipAdIgnoredApps.addAll(InputMethodApp(applicationContext).getInputMethods())
         }
     }
 
@@ -343,7 +344,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
             }
 
             val packageName = event.packageName
-            if (packageName == null || inputMethods.contains(packageName)) {
+            if (packageName == null || skipAdIgnoredApps.contains(packageName) || event.className === "android.widget.EditText") {
+                // Log.d("@Scene", "SkipAD -> ignore")
                 return
             }
 
