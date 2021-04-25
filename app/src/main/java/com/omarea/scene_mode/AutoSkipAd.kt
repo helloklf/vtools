@@ -103,9 +103,6 @@ class AutoSkipAd(private val service: AccessibilityService) {
 
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             lastActivity = event.className?.toString()
-        } else if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-            val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
-            Log.d("@Scene", "点击了$viewId")
         }
         if (precise && preciseSkip(source)) {
             return

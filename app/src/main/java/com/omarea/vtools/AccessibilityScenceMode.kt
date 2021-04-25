@@ -98,6 +98,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
             info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
             if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false)) {
+                // 仅用于调试时捕获广告按钮，发布时硬移除此flag
                 // info.eventTypes = Flags(info.eventTypes).addFlag(AccessibilityEvent.TYPE_VIEW_CLICKED)
             }
         }
@@ -259,6 +260,13 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        /* // 开发过程中用于分析界面点击（捕获广告按钮）
+        if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED || event.eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
+            val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
+            Log.d("@Scene", "点击了[$viewId]，在 ${event.className}")
+        }
+        */
+
         if (!classicModel) {
             /*
             when(event.eventType) {
