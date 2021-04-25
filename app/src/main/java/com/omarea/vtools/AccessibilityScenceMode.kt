@@ -57,7 +57,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private lateinit var spf: SharedPreferences
 
     // 跳过广告功能需要忽略的App
-    private var skipAdIgnoredApps = ArrayList<String>()
+    private var skipAdIgnoredApps = ArrayList<String>().apply {
+        add("com.android.systemui")
+    }
 
     /**
      * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
@@ -289,9 +291,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
             val packageName = event.packageName
             if (packageName != null) {
                 when {
+                    /*
                     packageName == "com.android.systemui" -> {
                         return
                     }
+                    */
                     // packageName == "com.omarea.vtools" -> return
                     packageName.contains("packageinstaller") -> {
                         if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
