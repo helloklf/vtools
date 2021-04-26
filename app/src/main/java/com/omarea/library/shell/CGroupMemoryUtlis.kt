@@ -37,7 +37,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
                 val shellPath = FileWrite.getPrivateFilePath(context, initOutName)
                 KeepShellPublic.doCmdSync("sh $shellPath")
                 val fullExecPath = FileWrite.getPrivateFilePath(context, execOutName)
-                memcgShell = "sh $fullExecPath '%s' '%s' &"
+                memcgShell = "sh $fullExecPath '%s' '%s' > /dev/null 2>&1 &"
             }
         }
         if (memcgShell != null) {
