@@ -300,6 +300,18 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         // 添加输入法到忽略列表
         ignoredList.addAll(InputMethodApp(context).getInputMethods())
 
+        if (spfPowercfg.all.isEmpty()) {
+            for (item in context.resources.getStringArray(R.array.powercfg_igoned)) {
+                spfPowercfg.edit().putString(item, IGONED).apply()
+            }
+            for (item in context.resources.getStringArray(R.array.powercfg_fast)) {
+                spfPowercfg.edit().putString(item, FAST).apply()
+            }
+            for (item in context.resources.getStringArray(R.array.powercfg_game)) {
+                spfPowercfg.edit().putString(item, PERFORMANCE).apply()
+            }
+        }
+
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             // 是否已经完成性能调节配置安装或自定义
             if (modeConfigCompleted()) {

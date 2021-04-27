@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
@@ -51,6 +53,26 @@ class ActivityAppConfig2 : ActivityBase() {
     }
 
     private lateinit var modeSwitcher: ModeSwitcher
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.scene_apps, menu)
+        return true
+    }
+
+    //右上角菜单
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_reset -> {
+                DialogHelper.confirm(this, "确定重置？", "这将清空你对单个应用配置的【性能调节、独立亮度、屏幕旋转、内存(cgroup)、自动加速、性能监视器】选项！", {
+                    sceneConfigStore.resetAll()
+                    spfPowercfg.all.clear()
+                    initDefaultConfig()
+                    recreate()
+                })
+            }
+        }
+        return true
+    }
 
     private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
@@ -340,6 +362,6 @@ class ActivityAppConfig2 : ActivityBase() {
 
     override fun onResume() {
         super.onResume()
-        title = getString(R.string.menu_scene_mode)
+        title = getString(R.string.menu_app_scene)
     }
 }

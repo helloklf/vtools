@@ -1,6 +1,7 @@
 package com.omarea.store;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -102,7 +103,7 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("delete from  scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
+            database.execSQL("delete from scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
             database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation, fg_cgroup_mem, bg_cgroup_mem, dynamic_boost_mem, show_monitor) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     sceneConfigInfo.packageName,
                     sceneConfigInfo.aloneLight ? 1 : 0,
@@ -127,10 +128,23 @@ public class SceneConfigStore extends SQLiteOpenHelper {
     }
 
 
+    public boolean resetAll() {
+        try {
+            SQLiteDatabase database = getWritableDatabase();
+            database.execSQL("update scene_config3 set alone_light = 0, fg_cgroup_mem = '', screen_orientation = ?, bg_cgroup_mem = '', dynamic_boost_mem = 0, show_monitor = 0", new Object[]{
+                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            });
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+
     public boolean removeAppConfig(String packageName) {
         try {
             SQLiteDatabase database = getWritableDatabase();
-            database.execSQL("delete from  scene_config3 where id = ?", new String[]{packageName});
+            database.execSQL("delete from scene_config3 where id = ?", new String[]{packageName});
             return true;
         } catch (Exception ex) {
             return false;

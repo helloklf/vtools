@@ -235,9 +235,9 @@ surfaceflinger_bg_app()
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
-  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1804800 710400 1478400 844800 1632000
+  set_cpu_freq 300000 1804800 710400 1574400 844800 1747200
   set_input_boost_freq 1248000 0 0 40
 
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
@@ -252,7 +252,7 @@ if [[ "$action" = "powersave" ]]; then
 
   sched_config "85 85" "96 96" "150" "400"
 
-  sched_limit 0 0 0 10000 0 1000
+  sched_limit 0 0 0 2000 0 1000
 
   surfaceflinger_bg_app
   echo 0-3 > /dev/cpuset/foreground/cpus
@@ -263,7 +263,7 @@ fi
 if [[ "$action" = "balance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
-  echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
   set_cpu_freq 300000 1804800 710400 1862400 844800 2073600
   set_input_boost_freq 1478400 0 0 40
