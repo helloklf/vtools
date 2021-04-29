@@ -51,14 +51,14 @@
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="已激活"
+                        android:text="未激活"
                         android:textColor="@android:color/darker_gray" />
                     <TextView
                         android:id="@+id/swap_module_downloadable"
                         style="@style/textDefault"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="有可用更新"
+                        android:text="有可用更新/下载"
                         android:textColor="@android:color/holo_green_light" />
                 </LinearLayout>
             </LinearLayout>
