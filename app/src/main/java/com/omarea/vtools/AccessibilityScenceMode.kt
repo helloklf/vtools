@@ -137,7 +137,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         if (appSwitchHandler == null) {
             appSwitchHandler = AppSwitchHandler(this)
-            EventBus.subscibe(appSwitchHandler)
         }
         getDisplaySize()
 

@@ -151,10 +151,14 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     private fun _onScreenOn() {
         lastScreenOnOff = System.currentTimeMillis()
 
-        if (dyamicCore && lastMode.isNotEmpty()) {
-            context.notifyScreenOn()
-            // toggleConfig(lastMode, context.packageName)
-        }
+        handler.postDelayed({
+            if (dyamicCore && lastMode.isNotEmpty()) {
+                lastPackage = null
+                lastModePackage = null
+                context.notifyScreenOn()
+                // toggleConfig(lastMode, context.packageName)
+            }
+        }, 1000)
         sceneMode.onScreenOn()
 
         if (!screenOn) {
@@ -294,7 +298,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             context.unregisterReceiver(sceneAppChanged)
             sceneAppChanged = null
         }
-        EventBus.subscibe(notifyHelper)
+        EventBus.unsubscibe(notifyHelper)
         EventBus.unsubscibe(this)
     }
 
@@ -386,5 +390,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         context.registerReceiver(sceneAppChanged, IntentFilter(context.getString(R.string.scene_appchange_action)))
 
         EventBus.subscibe(notifyHelper)
+        EventBus.subscibe(this)
     }
 }
