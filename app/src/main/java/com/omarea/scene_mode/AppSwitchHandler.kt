@@ -107,8 +107,8 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     /**
      * 屏幕关闭时执行
      */
-    private fun _onScreenOff() {
-        if (screenOn == false)
+    private fun onScreenOff() {
+        if (!screenOn)
             return
 
         screenOn = false
@@ -126,8 +126,8 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                 setTimingTask()
 
                 // 息屏后自动切换为省电模式
-                if (dyamicCore) {
-                    executePowercfgMode(POWERSAVE, context.packageName)
+                if (dyamicCore && lastMode.isNotEmpty()) {
+                    toggleConfig(POWERSAVE, context.packageName)
                 }
             }
         }, 10000)
@@ -148,7 +148,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     /**
      * 点亮屏幕且解锁后执行
      */
-    private fun _onScreenOn() {
+    private fun onScreenOn() {
         lastScreenOnOff = System.currentTimeMillis()
 
         handler.postDelayed({
@@ -248,11 +248,11 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             EventType.APP_SWITCH ->
                 onFocusAppChanged(GlobalStatus.lastPackageName)
             EventType.SCREEN_ON -> {
-                _onScreenOn()
+                onScreenOn()
             }
             EventType.SCREEN_OFF -> {
                 if (ScreenState(context).isScreenLocked()) {
-                    _onScreenOff()
+                    onScreenOff()
                 }
             }
             else -> return
@@ -271,7 +271,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
      */
     fun onFocusAppChanged(packageName: String) {
         if (!screenOn && screenState.isScreenOn()) {
-            _onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
+            onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
         }
 
         if (lastPackage == packageName || ignoredList.contains(packageName) || sceneBlackList.contains(packageName)) return

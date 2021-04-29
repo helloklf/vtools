@@ -213,9 +213,13 @@ surfaceflinger_top_app()
 {
   pgrep -f surfaceflinger | while read pid; do
     echo $pid > /dev/cpuset/top-app/tasks
-    # echo $pid > /dev/stune/top-app/tasks
+    echo $pid > /dev/stune/top-app/tasks
   done
   pgrep -f system_server | while read pid; do
+    echo $pid > /dev/cpuset/top-app/tasks
+    echo $pid > /dev/stune/top-app/tasks
+  done
+  pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
     echo $pid > /dev/cpuset/top-app/tasks
     echo $pid > /dev/stune/top-app/tasks
   done
@@ -224,9 +228,13 @@ surfaceflinger_bg_app()
 {
   pgrep -f surfaceflinger | while read pid; do
     echo $pid > /dev/cpuset/system-background/tasks
-    # echo $pid > /dev/stune/foreground/tasks
+    echo $pid > /dev/stune/foreground/tasks
   done
   pgrep -f system_server | while read pid; do
+    echo $pid > /dev/cpuset/system-background/tasks
+    echo $pid > /dev/stune/background/tasks
+  done
+  pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
     echo $pid > /dev/cpuset/system-background/tasks
     echo $pid > /dev/stune/background/tasks
   done
