@@ -66,25 +66,6 @@ class ActivityOtherSettings : ActivityBase() {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, (it as Switch).isChecked).apply()
         }
 
-        settings_classic_mode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
-        settings_classic_mode.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, (it as Switch).isChecked).apply()
-            if (it.isChecked) {
-                settings_delay_detection.isChecked = false
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false).apply()
-            }
-        }
-
-        settings_delay_detection.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, false)
-        settings_delay_detection.setOnClickListener {
-            if ((it as CompoundButton).isChecked && settings_classic_mode.isChecked) {
-                it.isChecked = false
-                Toast.makeText(context, R.string.settings_delay_detection_disabled, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY_DETECTION, (it as Switch).isChecked).apply()
-        }
-
         settings_auto_exit.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, true)
         settings_auto_exit.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, (it as Switch).isChecked).apply()

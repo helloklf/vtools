@@ -74,11 +74,6 @@
     <string name="settings_debug_layer_desc">显示Scene判定前台应用过程的日志（需重启辅助服务）</string>
     <string name="settings_help_icon">提示图标</string>
     <string name="settings_help_icon_desc">在功能项旁边显示功能说明提示（问号）图标</string>
-    <string name="settings_delay_detection">延迟检测</string>
-    <string name="settings_delay_detection_desc">应用界面发生变化时，延迟(而不是立即)检测最上层应用</string>
-    <string name="settings_delay_detection_disabled">经典模式开启时，无法使用延迟检测！</string>
-    <string name="settings_classic_mode">经典模式</string>
-    <string name="settings_classic_mode_desc">场景模式使用旧版Scene(3.2以前)的前台应用检测逻辑（需重启辅助服务）</string>
     <string name="settings_auto_exit">异常时自动退出</string>
     <string name="settings_auto_exit_desc">运行过程出现异常时自动结束进程，避免卡死白屏</string>
     <string name="settings_logcat_title">错误日志</string>

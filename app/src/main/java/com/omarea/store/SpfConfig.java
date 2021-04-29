@@ -52,8 +52,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_SCENE_LOG = "scene_logview";
-    public static String GLOBAL_SPF_SCENE_CLASSIC = "classic_mode";
-    public static String GLOBAL_SPF_DELAY_DETECTION = "delay_detection2";
     public static String GLOBAL_SPF_AUTO_EXIT = "auto_exit";
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";
     public static String GLOBAL_SPF_THEME = "app_theme2";

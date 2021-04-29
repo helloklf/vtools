@@ -208,38 +208,6 @@
                     android:text="@string/settings_help_icon_desc" />
 
                 <Switch
-                    android:visibility="gone"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:id="@+id/settings_delay_detection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:onClick="onThemeClick"
-                    android:tag="10"
-                    android:text="@string/settings_delay_detection" />
-
-                <TextView
-                    android:visibility="gone"
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_delay_detection_desc" />
-
-                <Switch
-                    android:id="@+id/settings_classic_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:onClick="onThemeClick"
-                    android:tag="10"
-                    android:text="@string/settings_classic_mode" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_classic_mode_desc" />
-
-                <Switch
                     android:id="@+id/settings_auto_exit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

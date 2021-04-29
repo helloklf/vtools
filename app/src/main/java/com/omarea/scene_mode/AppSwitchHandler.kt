@@ -123,7 +123,12 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (!screenOn) {
                 notifyHelper.hideNotify()
                 stopTimer()
-                setTimingTask();
+                setTimingTask()
+
+                // 息屏后自动切换为省电模式
+                if (dyamicCore) {
+                    executePowercfgMode(POWERSAVE, context.packageName)
+                }
             }
         }, 10000)
     }
@@ -147,7 +152,8 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         lastScreenOnOff = System.currentTimeMillis()
 
         if (dyamicCore && lastMode.isNotEmpty()) {
-            toggleConfig(lastMode, context.packageName)
+            context.notifyScreenOn()
+            // toggleConfig(lastMode, context.packageName)
         }
         sceneMode.onScreenOn()
 

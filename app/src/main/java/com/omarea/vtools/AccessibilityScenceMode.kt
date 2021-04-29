@@ -52,8 +52,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     internal var appSwitchHandler: AppSwitchHandler? = null
 
-    private var classicModel = false
-
     private lateinit var spf: SharedPreferences
 
     // 跳过广告功能需要忽略的App
@@ -125,8 +123,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         serviceIsConnected = true
 
-        classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
-
         updateConfig()
         if (sceneConfigChanged == null) {
             sceneConfigChanged = object : BroadcastReceiver() {
@@ -159,45 +155,60 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-    // 经典模式
-    private fun classicModelEvent(event: AccessibilityEvent) {
-        if (event.packageName == null || event.className == null)
-            return
-
-        var packageName = event.packageName.toString()
-
-        // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture" || packageName == "com.omarea.filter") {
-            return
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        /* // 开发过程中用于分析界面点击（捕获广告按钮）
+        if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED || event.eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
+            val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
+            Log.d("@Scene", "点击了[$viewId]，在 ${event.className}")
         }
+        */
 
-        // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
-        if (isLandscap && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
-            return
+        /*
+        when(event.eventType) {
+            AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+                Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
+            }
+            AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
+                Log.e(">>>>", "TYPE_WINDOWS_CHANGED " + event.eventType)
+            }
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
+                Log.e(">>>>", "TYPE_WINDOW_STATE_CHANGED " + event.eventType)
+            }
+            else -> {
+                Log.e(">>>>", "???? " + event.eventType)
+            }
         }
+        */
 
-        when {
-            packageName.contains("packageinstaller") -> {
-                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
+        val packageName = event.packageName
+        if (packageName != null) {
+            when {
+                /*
+                packageName == "com.android.systemui" -> {
                     return
+                }
+                */
+                // packageName == "com.omarea.vtools" -> return
+                packageName.contains("packageinstaller") -> {
+                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
+                        return
 
-                try {
-                    AutoClickInstall().packageinstallerAutoClick(this, event)
-                } catch (ex: Exception) {
+                    try {
+                        AutoClickInstall().packageinstallerAutoClick(this, event)
+                    } catch (ex: Exception) {
+                    }
                 }
-            }
-            packageName == "com.miui.securitycenter" -> {
-                try {
-                    AutoClickInstall().miuiUsbInstallAutoClick(this, event)
-                } catch (ex: Exception) {
+                packageName == "com.miui.securitycenter" -> {
+                    try {
+                        AutoClickInstall().miuiUsbInstallAutoClick(this, event)
+                    } catch (ex: Exception) {
+                    }
+                    return
                 }
-                return
-            }
-            packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
-                return
-            }
-            spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                if (event.contentChangeTypes and AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE != 0) {
+                packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
+                    return
+                }
+                spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
                     trySkipAD(event)
                 }
             }
@@ -207,133 +218,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
             return
         }
 
-        lastWindowChanged = System.currentTimeMillis()
-
-        // 针对一加部分系统的修复
-        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-            return
-        }
-
-        val source = event.source
-        if (source != null) {
-            val logs = StringBuilder()
-            logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-            logs.append("事件: ${source.packageName}\n")
-
-            val windowsList = windows
-            if (windowsList == null || windowsList.isEmpty()) {
-                return
-            } else if (windowsList.size > 1) {
-                val effectiveWindows = windowsList.filter {
-                    (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-                }.sortedBy { it.layer }
-
-                if (effectiveWindows.isNotEmpty()) {
-                    val lastWindow = effectiveWindows[0]
-
-                    for (window in effectiveWindows) {
-                        val wp = window.root?.packageName
-                        if (wp != null) {
-                            logs.append("\n层级: ${window.layer} $wp")
-                        }
-                    }
-
-                    try {
-                        if (source.windowId != lastWindow.id) {
-                            val windowRoot = lastWindow!!.root
-                            if (windowRoot == null || windowRoot.packageName == null) {
-                                return
-                            }
-                            packageName = windowRoot.packageName!!.toString()
-                        }
-                    } catch (ex: Exception) {
-                        return
-                    } finally {
-                        logs.append("\n\n命中: $packageName")
-                        floatLogView?.update(logs.toString())
-                    }
-                }
-            }
-            GlobalStatus.lastPackageName = packageName
-            EventBus.publish(EventType.APP_SWITCH)
-        } else {
-            GlobalStatus.lastPackageName = packageName
-            EventBus.publish(EventType.APP_SWITCH)
-        }
-    }
-
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        /* // 开发过程中用于分析界面点击（捕获广告按钮）
-        if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED || event.eventType == AccessibilityEvent.TYPE_VIEW_FOCUSED) {
-            val viewId = event.source?.viewIdResourceName // 有些跳过按钮不是文字来的 // if (event.text?.contains("跳过") == true) event.source?.viewIdResourceName else null
-            Log.d("@Scene", "点击了[$viewId]，在 ${event.className}")
-        }
-        */
-
-        if (!classicModel) {
-            /*
-            when(event.eventType) {
-                AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
-                    Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
-                }
-                AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
-                    Log.e(">>>>", "TYPE_WINDOWS_CHANGED " + event.eventType)
-                }
-                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
-                    Log.e(">>>>", "TYPE_WINDOW_STATE_CHANGED " + event.eventType)
-                }
-                else -> {
-                    Log.e(">>>>", "???? " + event.eventType)
-                }
-            }
-            */
-
-            val packageName = event.packageName
-            if (packageName != null) {
-                when {
-                    /*
-                    packageName == "com.android.systemui" -> {
-                        return
-                    }
-                    */
-                    // packageName == "com.omarea.vtools" -> return
-                    packageName.contains("packageinstaller") -> {
-                        if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
-                            return
-
-                        try {
-                            AutoClickInstall().packageinstallerAutoClick(this, event)
-                        } catch (ex: Exception) {
-                        }
-                    }
-                    packageName == "com.miui.securitycenter" -> {
-                        try {
-                            AutoClickInstall().miuiUsbInstallAutoClick(this, event)
-                        } catch (ex: Exception) {
-                        }
-                        return
-                    }
-                    packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
-                        return
-                    }
-                    spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) -> {
-                        trySkipAD(event)
-                    }
-                }
-            }
-
-            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-                return
-            }
-
-            val t = event.eventTime
-            if (lastOriginEventTime != t && t > lastOriginEventTime) {
-                lastOriginEventTime = t
-                lastWindowChanged = System.currentTimeMillis()
-                modernModeEvent(event)
-            }
-        } else {
-            classicModelEvent(event)
+        val t = event.eventTime
+        if (lastOriginEventTime != t && t > lastOriginEventTime) {
+            lastOriginEventTime = t
+            lastWindowChanged = System.currentTimeMillis()
+            modernModeEvent(event)
         }
     }
 
@@ -393,6 +282,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
         return windows.map {
             it.root?.packageName
         }.filter { it != null }.map { it.toString() }.toTypedArray()
+    }
+
+    public fun notifyScreenOn () {
+        this.modernModeEvent(null);
     }
 
     // 新的前台应用窗口判定逻辑
