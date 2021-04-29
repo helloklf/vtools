@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.omarea.model.SceneConfigInfo;
 import com.omarea.vtools.R;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 6;
-    private Context context;
+    private final Context context;
 
     public SceneConfigStore(Context context) {
         super(context, "scene3_config", null, DB_VERSION);
@@ -38,15 +39,16 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     "dynamic_boost_mem int default(0)," + //
                     "show_monitor int default(0)" + //
                 ")");
-        } catch (Exception ignored) {
-        }
 
-        // 初始化默认配置
-        String[] gpsOnApps = this.context.getResources().getStringArray(R.array.scene_gps_on);
-        for (String app: gpsOnApps) {
-            SceneConfigInfo sceneConfigInfo = getAppConfig(app);
-            sceneConfigInfo.gpsOn = true;
-            setAppConfig(sceneConfigInfo);
+            // 初始化默认配置
+            String[] gpsOnApps = this.context.getResources().getStringArray(R.array.scene_gps_on);
+            for (String app: gpsOnApps) {
+                db.execSQL("insert into scene_config3(id, gps_on) values (?, ?)", new Object[]{
+                    app,
+                    1
+                });
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -138,7 +140,6 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         }
     }
 
-
     public boolean resetAll() {
         try {
             SQLiteDatabase database = getWritableDatabase();
@@ -151,7 +152,6 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         }
     }
 
-
     public boolean removeAppConfig(String packageName) {
         try {
             SQLiteDatabase database = getWritableDatabase();
@@ -161,7 +161,6 @@ public class SceneConfigStore extends SQLiteOpenHelper {
             return false;
         }
     }
-
 
     public ArrayList<String> getFreezeAppList() {
         ArrayList<String> list = new ArrayList<String>();

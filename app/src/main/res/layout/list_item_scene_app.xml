@@ -14,7 +14,7 @@
         android:maxHeight="50dp"
         android:minWidth="50dp"
         android:minHeight="50dp"
-        android:src="@drawable/linux" />
+        android:src="@android:drawable/sym_def_app_icon" />
 
     <LinearLayout
         android:id="@+id/center"
