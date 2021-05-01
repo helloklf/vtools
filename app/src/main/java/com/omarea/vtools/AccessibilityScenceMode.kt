@@ -184,6 +184,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
         val packageName = event.packageName
         if (packageName != null) {
             when {
+                packageName == "com.omarea.filter" -> {
+                    return
+                }
                 /*
                 packageName == "com.android.systemui" -> {
                     return
