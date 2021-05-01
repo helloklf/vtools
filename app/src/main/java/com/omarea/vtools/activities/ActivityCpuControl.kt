@@ -70,7 +70,7 @@ class ActivityCpuControl : ActivityBase() {
 
         if (supportedGPU) {
             adrenoGovernors = GpuUtils.getGovernors()
-            adrenoFreqs = GpuUtils.getFreqs()
+            adrenoFreqs = GpuUtils.getAvailableFreqs()
             adrenoPLevels = GpuUtils.getAdrenoGPUPowerLevels()
         }
 

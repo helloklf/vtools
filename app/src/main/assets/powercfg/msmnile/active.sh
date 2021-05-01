@@ -222,7 +222,7 @@ surfaceflinger_bg_app()
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
-  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
   set_cpu_freq 300000 1785600 710400 1612800 825600 1920000
   set_input_boost_freq 1209600 0 0 40
@@ -254,7 +254,7 @@ fi
 if [[ "$action" = "balance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
-  echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
   set_cpu_freq 300000 1785600 710400 1920000 825600 2323200
   set_input_boost_freq 1478400 0 0 40

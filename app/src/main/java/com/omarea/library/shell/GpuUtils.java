@@ -116,9 +116,20 @@ public class GpuUtils {
         }
     }
 
-    public static String[] getFreqs() {
+    public static String[] getAvailableFreqs() {
         String freqs = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_frequencies");
-        return freqs.split("[ ]+");
+        return freqs.isEmpty() ? (new String[]{}) : freqs.split("[ ]+");
+    }
+
+    // Adreno /sys/class/kgsl/kgsl-3d0/freq_table_mhz
+    public static String[] getFreqTableMhz() {
+        if (isAdrenoGPU()) {
+            String freqs = KernelProrp.INSTANCE.getProp(gpuParamsDirAdreno + "/freq_table_mhz");
+            if (!freqs.isEmpty()) {
+                return freqs.split("[ ]+");
+            }
+        }
+        return new String[]{};
     }
 
     public static boolean supported() {
@@ -154,7 +165,7 @@ public class GpuUtils {
 
     public static String[] getGovernors() {
         String g = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_governors");
-        return g.split("[ ]+");
+        return g.isEmpty() ? (new String[]{}) : g.split("[ ]+");
     }
 
     public static String getMinFreq() {

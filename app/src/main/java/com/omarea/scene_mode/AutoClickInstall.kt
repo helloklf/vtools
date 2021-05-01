@@ -13,6 +13,8 @@ import java.util.*
 class AutoClickInstall : AutoClickBase() {
     internal var autoClickKeyWords: ArrayList<String> = object : ArrayList<String>() {
         init {
+            add("继续安装")
+            add("继续安装")
             add("下一步")
             add("下一步")
             add("Next")

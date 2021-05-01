@@ -6,12 +6,14 @@ import android.content.*
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import android.util.LruCache
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.Scene
@@ -276,16 +278,17 @@ public class AccessibilityScenceMode : AccessibilityService() {
         return ArrayList()
     }
 
-    public fun getForegroundApps (): Array<String> {
+    public fun getForegroundApps(): Array<String> {
         val windows = this.getEffectiveWindows(true)
         return windows.map {
             it.root?.packageName
         }.filter { it != null }.map { it.toString() }.toTypedArray()
     }
 
-    public fun notifyScreenOn () {
+    public fun notifyScreenOn() {
         this.modernModeEvent(null);
     }
+
 
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
@@ -428,17 +431,31 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
+    // 窗口id缓存（检测到相同的窗口id时，直接读取缓存的packageName，避免重复分析窗口节点获取packageName，降低性能消耗）
+    private val windowIdCaches = LruCache<Int, String>(10)
     // 利用协程分析窗口
     private fun windowAnalyse(windowInfo: AccessibilityWindowInfo, tid: Long) {
         GlobalScope.launch(Dispatchers.IO) {
-            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
-            val root = (try {
-                windowInfo.root
-            } catch (ex: Exception) {
-                null
-            })
+            var root: AccessibilityNodeInfo? = null
+            val windowId = windowInfo.id
             val wp = (try {
-                root?.packageName
+                val cache = windowIdCaches.get(windowId)
+                if (cache == null) {
+                    // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
+                    root = (try {
+                        windowInfo.root
+                    } catch (ex: Exception) {
+                        null
+                    })
+                    root?.packageName.apply {
+                        if (this != null) {
+                            windowIdCaches.put(windowId, toString())
+                        }
+                    }
+                } else {
+                    // Log.d("@Scene", "windowCacheHit " + cache)
+                    cache
+                }
             } catch (ex: Exception) {
                 null
             })
