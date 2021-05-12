@@ -109,7 +109,7 @@
     <group title="温控">
         <picker
             visible="run thermal_conf/support.sh"
-            title="温控配置切换" desc="切换后重启生效，目前仅适配骁龙骁龙710、730、835、845、855、865、天玑820系列机型"
+            title="温控配置切换" desc="切换后重启生效，目前仅适配骁龙骁龙710、730、835、845、855、天玑820系列机型"
             options-sh="run thermal_conf/options.sh">
             <summary sh="run thermal_conf/summary.sh" />
             <get>run thermal_conf/current.sh</get>

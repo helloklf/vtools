@@ -239,7 +239,7 @@ elif [ "$action" = "performance" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
-  echo 0-7 > /dev/cpuset/foreground/cpus
+  echo 0-5 > /dev/cpuset/foreground/cpus
 
 elif [ "$action" = "fast" ]; then
   set_cpu_freq 1708800 2500000 1209600 2750000
@@ -261,5 +261,5 @@ elif [ "$action" = "fast" ]; then
   echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/up_rate_limit_us
   echo 0 > /sys/devices/system/cpu/cpufreq/policy6/schedutil/up_rate_limit_us
 
-  echo 0-7 > /dev/cpuset/foreground/cpus
+  echo 0-5 > /dev/cpuset/foreground/cpus
 fi

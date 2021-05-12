@@ -15,6 +15,9 @@ case "$mode" in
   "default")
     modename="系统默认 (default)"
    ;;
+  "cool")
+    modename="清爽酷凉 (cool)"
+   ;;
   "powerfrugal")
     modename="节能降温 (powerfrugal)"
    ;;

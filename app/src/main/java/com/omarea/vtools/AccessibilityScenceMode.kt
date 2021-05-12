@@ -184,7 +184,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         val packageName = event.packageName
         if (packageName != null) {
             when {
-                packageName == "com.omarea.filter" -> {
+                packageName == "com.omarea.gesture" || packageName == "com.omarea.filter" -> {
                     return
                 }
                 /*

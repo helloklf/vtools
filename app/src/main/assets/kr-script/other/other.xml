@@ -22,6 +22,12 @@
             <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
             <set>run disk_test.sh</set>
         </action>
+        <action>
+            <title>UFS存储寿命</title>
+            <summary sh="run ufs/ufs_summary.sh" />
+            <set>run ufs/ufs_detail.sh</set>
+            <desc>*数据仅供参考</desc>
+        </action>
     </group>
 
     <group>

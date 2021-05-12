@@ -1,311 +1,328 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<com.omarea.common.ui.OverScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/krscript_item_ripple_inactive"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/confirm_title"
-            android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            style="@style/textTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="屏幕显示方式" />
-        <TextView
-            android:id="@+id/confirm_message"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:paddingTop="8dp"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:text="指定此应用运行期间，屏幕显示方向"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:visibility="gone"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <SeekBar
-                android:id="@+id/swap_size"
-                style="@style/SceneSeekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:progress="8"
-                android:max="64" />
-
-            <TextView
-                android:id="@+id/swap_size_text"
-                android:text="0MB"
-                style="@style/textSmall"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:background="@drawable/in_card_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/krscript_item_ripple_inactive"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/confirm_title"
+                style="@style/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="屏幕显示方式" />
+
+            <TextView
+                android:id="@+id/confirm_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:paddingTop="8dp"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:text="指定此应用运行期间，屏幕显示方向" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:visibility="gone">
+
+                <SeekBar
+                    android:id="@+id/swap_size"
+                    style="@style/SceneSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:max="64"
+                    android:orientation="horizontal"
+                    android:progress="8" />
+
+                <TextView
+                    android:id="@+id/swap_size_text"
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0MB" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#8A8E8E8E"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="6dp"
-                    android:padding="7dp"
-                    android:src="@drawable/orientation_default"
-                    app:tint="@android:color/white" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:background="@drawable/in_card_item"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#8A8E8E8E"
+                        android:padding="7dp"
+                        android:src="@drawable/orientation_default"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="默认" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="默认" />
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="保持应用程序清单声明的显示方式" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/orientation_default"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="保持应用程序清单声明的显示方式" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:checked="true" />
                 </LinearLayout>
-
-                <Switch
-                    android:id="@+id/orientation_default"
-                    android:checked="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#81C784"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/orientation_auto"
-                    app:tint="@android:color/white" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#81C784"
+                        android:src="@drawable/orientation_auto"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="自动旋转" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="自动旋转" />
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="根据传感器自动旋转屏幕方向" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/orientation_sensor_auto"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="根据传感器自动旋转屏幕方向" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:checked="false" />
                 </LinearLayout>
-
-                <Switch
-                    android:id="@+id/orientation_sensor_auto"
-                    android:checked="false"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#FFB74D"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/orientation_auto"
-                    app:tint="@android:color/white" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FFB74D"
+                        android:src="@drawable/orientation_auto"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="强制旋转" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="强制旋转" />
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="根据传感器自动旋转屏幕方向" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/orientation_sensor_force"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="根据传感器自动旋转屏幕方向" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:checked="false" />
                 </LinearLayout>
-
-                <Switch
-                    android:id="@+id/orientation_sensor_force"
-                    android:checked="false"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#4DD0E1"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/orientation_lock"
-                    app:tint="@android:color/white" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#4DD0E1"
+                        android:src="@drawable/orientation_lock"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="强制横屏" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="强制横屏" />
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="强制横屏显示此应用" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/orientation_landscape"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="强制横屏显示此应用" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:checked="false" />
                 </LinearLayout>
-
-                <Switch
-                    android:id="@+id/orientation_landscape"
-                    android:checked="false"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#4FC3F7"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/orientation_lock"
-                    app:tint="@android:color/white" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="强制竖屏" />
-                    <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="强制此应用竖屏显示" />
-                </LinearLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
 
-                <Switch
-                    android:id="@+id/orientation_portrait"
-                    android:checked="false"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#4FC3F7"
+                        android:src="@drawable/orientation_lock"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="强制竖屏" />
+
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="强制此应用竖屏显示" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/orientation_portrait"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:checked="false" />
+                </LinearLayout>
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/dialogCancelBtn"
+                android:text="取消" />
+
+            <Button
+                android:id="@+id/btn_confirm"
+                style="@style/dialogConfirmBtn"
+                android:layout_marginStart="8dp"
+                android:text="确定" />
         </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/btn_cancel"
-            style="@style/dialogCancelBtn"
-            android:text="取消" />
-
-        <Button
-            android:layout_marginStart="8dp"
-            android:id="@+id/btn_confirm"
-            style="@style/dialogConfirmBtn"
-            android:text="确定" />
-    </LinearLayout>
-
-</LinearLayout>
+</com.omarea.common.ui.OverScrollView>
