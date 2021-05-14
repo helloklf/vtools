@@ -9,8 +9,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.MagiskExtend
@@ -49,34 +51,57 @@ class ActivityMain : ActivityBase() {
     }
 
     private class ThermalCheckThread(private var context: Context) : Thread() {
+        private fun deleteThermalCopyWarn(onYes: Runnable) {
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete_thermal, null)
+            val dialog = DialogHelper.customDialog(context, view)
+            view.findViewById<View>(R.id.btn_no).setOnClickListener {
+                dialog.dismiss()
+            }
+            view.findViewById<View>(R.id.btn_yes).setOnClickListener {
+                dialog.dismiss()
+                onYes.run()
+            }
+        }
+
         override fun run() {
             super.run()
 
+            Thread.sleep(500)
             if (
                     MagiskExtend.magiskSupported() &&
                     KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal.current.ini") != ""
             ) {
                 when {
                     RootFile.list("/data/thermal/config").size > 0 -> {
-                        KeepShellPublic.doCmdSync(
-                                "chattr -R -i /data/thermal 2> /dev/null\n" +
-                                        "rm -rf /data/thermal 2> /dev/null\n")
+                        deleteThermalCopyWarn {
+                            KeepShellPublic.doCmdSync(
+                                    "chattr -R -i /data/thermal 2> /dev/null\n" +
+                                            "rm -rf /data/thermal 2> /dev/null\n" +
+                                            "sync;svc power reboot || reboot;"
+                            )
+                        }
                     }
                     RootFile.list("/data/vendor/thermal/config").size > 0 -> {
-                        if (RootFile.fileEquals("/data/vendor/thermal/config/thermal-normal.conf", MagiskExtend.getMagiskReplaceFilePath("/system/vendor/etc/thermal-normal.conf"))) {
+                        if (
+                                RootFile.fileEquals(
+                                        "/data/vendor/thermal/config/thermal-normal.conf",
+                                        MagiskExtend.getMagiskReplaceFilePath("/system/vendor/etc/thermal-normal.conf")
+                                )
+                        ) {
                             // Scene.toast("文件相同，跳过温控清理", Toast.LENGTH_SHORT)
                             return
                         } else {
-                            KeepShellPublic.doCmdSync(
-                                    "chattr -R -i /data/vendor/thermal 2> /dev/null\n" +
-                                            "rm -rf /data/vendor/thermal 2> /dev/null\n")
+                            deleteThermalCopyWarn {
+                                KeepShellPublic.doCmdSync(
+                                        "chattr -R -i /data/vendor/thermal 2> /dev/null\n" +
+                                                "rm -rf /data/vendor/thermal 2> /dev/null\n" +
+                                                "sync;svc power reboot || reboot;"
+                                )
+                            }
                         }
                     }
                     else -> return
                 }
-                DialogHelper.alert(context,
-                        "请留意",
-                        "检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
             }
         }
     }

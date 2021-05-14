@@ -69,11 +69,13 @@ internal class AlwaysNotification(
             }
 
             var currentApp = getCurrentPowermodeApp()
-            if (currentApp.length == 0) {
-                currentApp = context.packageName
-            }
+            if (currentApp.isEmpty()) {
+                currentApp = "android"
 
-            notifyPowerModeChange(currentApp, currentMode, saveLog)
+                notifyPowerModeChange(currentApp, currentMode, false)
+            } else {
+                notifyPowerModeChange(currentApp, currentMode, saveLog)
+            }
         } catch (ex: Exception) {
         }
     }

@@ -91,11 +91,10 @@ class Busybox(private var context: Context) {
                 DialogHelper.alert(
                         context,
                         "",
-                        context.getString(R.string.busybox_nonsupport),
-                        {
-                            android.os.Process.killProcess(android.os.Process.myPid())
-                        }
-                ).setCancelable(false)
+                        context.getString(R.string.busybox_nonsupport)
+                ) {
+                    android.os.Process.killProcess(android.os.Process.myPid())
+                }.setCancelable(false)
             }
         }
     }

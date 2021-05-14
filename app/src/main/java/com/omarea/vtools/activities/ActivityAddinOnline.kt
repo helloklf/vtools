@@ -77,13 +77,12 @@ class ActivityAddinOnline : ActivityBase() {
                 DialogHelper.animDialog(
                         AlertDialog.Builder(context)
                                 .setMessage(message)
-                                .setCancelable(false)
                                 .setPositiveButton(R.string.btn_confirm, { _, _ -> })
                                 .setOnDismissListener {
                                     result?.confirm()
                                 }
                                 .create()
-                )
+                )?.setCancelable(false)
                 return true // super.onJsAlert(view, url, message, result)
             }
 
@@ -91,7 +90,6 @@ class ActivityAddinOnline : ActivityBase() {
                 DialogHelper.animDialog(
                         AlertDialog.Builder(context)
                                 .setMessage(message)
-                                .setCancelable(false)
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     result?.confirm()
                                 }
@@ -99,7 +97,7 @@ class ActivityAddinOnline : ActivityBase() {
                                     result?.cancel()
                                 }
                                 .create()
-                )
+                )?.setCancelable(false)
                 return true // super.onJsConfirm(view, url, message, result)
             }
         }
@@ -134,10 +132,9 @@ class ActivityAddinOnline : ActivityBase() {
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     downloadPowercfg(configAbsPath)
                                 }
-                                .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel) { _, _ ->
                                     view.loadUrl(url)
-                                })
+                                })?.setCancelable(false)
                     } else if (url.startsWith("https://github.com/yc9559/wipe-v2/releases/download/") && url.endsWith(".zip")) {
                         // v2
                         // https://github.com/yc9559/wipe-v2/releases/download/0.1.190503-dev/sdm625.zip
@@ -149,10 +146,9 @@ class ActivityAddinOnline : ActivityBase() {
                                     val configAbsPath = url
                                     downloadPowercfgV2(configAbsPath)
                                 }
-                                .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel) { _, _ ->
                                     view.loadUrl(url)
-                                })
+                                })?.setCancelable(false)
                     } else {
                         view.loadUrl(url)
                     }
@@ -271,8 +267,7 @@ class ActivityAddinOnline : ActivityBase() {
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     setResult(Activity.RESULT_OK)
                                     finish()
-                                }
-                                .setCancelable(false))
+                                }).setCancelable(false)
                     }
                 } else {
                     vtools_online.post {
@@ -321,8 +316,7 @@ class ActivityAddinOnline : ActivityBase() {
                                             .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                                 setResult(Activity.RESULT_OK)
                                                 finish()
-                                            }
-                                            .setCancelable(false))
+                                            }).setCancelable(false)
                                 }
                             } else {
                                 vtools_online.post {
