@@ -320,6 +320,9 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             for (item in context.resources.getStringArray(R.array.powercfg_game)) {
                 spfPowercfg.edit().putString(item, PERFORMANCE).apply()
             }
+            for (item in context.resources.getStringArray(R.array.powercfg_powersave)) {
+                spfPowercfg.edit().putString(item, POWERSAVE).apply()
+            }
         }
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {

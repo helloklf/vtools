@@ -41,6 +41,30 @@
         <item>com.miui.notification</item>
         <item>com.xiaomi.gamecenter.sdk.service</item>
     </string-array>
+    <string-array name="powercfg_powersave">
+        <item>com.ss.android.ugc.aweme</item>
+        <item>org.videolan.vlc</item>
+        <item>com.bilibili.app.in</item>
+        <item>tv.danmaku.bili</item>
+        <item>com.qiyi.video</item>
+        <item>com.qiyi.video.sdkplayer</item>
+        <item>com.tencent.qqlive</item>
+        <item>com.mxtech.videoplayer.pro</item>
+        <item>com.mxtech.videoplayer.ad</item>
+        <item>com.ss.android.ugc.aweme.lite</item>
+        <item>com.ss.android.ugc.trill</item>
+        <item>com.ss.android.ugc.live</item>
+        <item>com.smile.gifmaker</item>
+        <item>com.kuaishou.nebula</item>
+        <item>com.ss.android.article.video</item>
+        <item>com.kmxs.reader</item>
+        <item>com.qidian.QDReader</item>
+        <item>com.tencent.weread</item>
+        <item>com.dragon.read</item>
+        <item>com.chaozh.iReaderFree</item>
+        <item>com.qidian.QDReader</item>
+        <item>com.duokan.free</item>
+    </string-array>
     <string-array name="powercfg_game">
         <item>com.tencent.tmgp.speedmobile</item>
         <item>com.tencent.tmgp.pubgm</item>
@@ -60,6 +84,8 @@
         <item>com.netease.dwrg</item>
         <item>com.netease.mrzh</item>
         <item>com.netease.mrzh.aligames</item>
+        <item>com.android.camera</item>
+        <item>com.miHoYo.Yuanshen</item>
     </string-array>
     <string-array name="powercfg_fast">
         <item>com.ludashi.benchmark</item>
@@ -75,10 +101,8 @@
         <item>com.google.android.packageinstaller</item>
         <item>com.miui.backup</item>
         <item>com.ludashi.vrbench</item>
-        <item>com.android.camera</item>
         <item>com.futuremark.dmandroid.application</item>
         <item>com.miui.huanji</item>
-        <item>com.miHoYo.Yuanshen</item>
     </string-array>
     <string-array name="scene_gps_on">
         <!--饿了么-->

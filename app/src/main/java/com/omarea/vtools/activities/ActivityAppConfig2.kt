@@ -221,6 +221,9 @@ class ActivityAppConfig2 : ActivityBase() {
         for (item in resources.getStringArray(R.array.powercfg_game)) {
             spfPowercfg.edit().putString(item, ModeSwitcher.PERFORMANCE).apply()
         }
+        for (item in context.resources.getStringArray(R.array.powercfg_powersave)) {
+            spfPowercfg.edit().putString(item, ModeSwitcher.POWERSAVE).apply()
+        }
     }
 
     private fun sortAppList(list: ArrayList<AppInfo>): ArrayList<AppInfo> {
