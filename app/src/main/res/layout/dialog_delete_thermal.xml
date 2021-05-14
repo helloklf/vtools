@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        style="@style/dialogRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/krscript_item_ripple_inactive"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/confirm_title"
+                style="@style/dialogTitle"
+                android:text="发现温控副本" />
+            <TextView
+                android:layout_marginBottom="16dp"
+                android:id="@+id/confirm_message"
+                style="@style/dialogDesc"
+                android:text="检测到温控副本，这会导致在附加功能中切换的温控失效。\n\n你要立刻将其删除并立即重启手机，以解决此问题吗？"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="@string/btn_no"
+                android:id="@+id/btn_no"
+                style="@style/dialogCancelBtn"
+                android:layout_marginEnd="8dp">
+            </Button>
+            <Button
+                android:id="@+id/btn_yes"
+                style="@style/dialogConfirmBtn"
+                android:text="@string/btn_yes">
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
+</com.omarea.common.ui.OverScrollView>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        style="@style/dialogRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/krscript_item_ripple_inactive"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/confirm_title"
+                style="@style/dialogTitle"
+                android:text="应用温控" />
+            <TextView
+                android:layout_marginBottom="16dp"
+                android:id="@+id/confirm_message"
+                style="@style/dialogDesc"
+                android:text="将修改后的温控配置拷贝到 /data/vendor/thermal/config 目录，使配置立即生效。\n\n经测试，在未遭到破坏性修改的 MIUI 12&amp;12.5系统上，此功能工作正常。其中测试设备包括：855、865\870、888处理器机型\n\n配置生效情况自行检查 /data/vendor/thermal/decrypt.txt 或 /data/vendor/thermal/thermal.dump 判断！"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:background="@drawable/in_card_item_inactive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#2196F3"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@drawable/swap_data"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="保存修改" />
+                        <TextView
+                            style="@style/textSecondary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="保存对温控的修改到选中的源文件" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/save_thermal"
+                        android:checked="false"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="@string/btn_cancel"
+                android:id="@+id/btn_cancel"
+                style="@style/dialogCancelBtn"
+                android:layout_marginEnd="8dp">
+            </Button>
+            <Button
+                android:id="@+id/btn_applay"
+                style="@style/dialogConfirmBtn"
+                android:text="@string/btn_apply">
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
+</com.omarea.common.ui.OverScrollView>

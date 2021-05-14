@@ -7,6 +7,10 @@
         android:orderInCategory="100"
         android:title="打开文件" />
     <item
+        android:id="@+id/action_apply"
+        android:orderInCategory="100"
+        android:title="应用配置" />
+    <item
         android:id="@+id/action_save"
         android:orderInCategory="100"
         android:title="保存修改" />

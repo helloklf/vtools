@@ -9,6 +9,8 @@
     <string name="btn_delete">删除</string>
     <string name="btn_dontshow">不再显示</string>
     <string name="btn_confirm">确定</string>
+    <string name="btn_no">否</string>
+    <string name="btn_yes">是</string>
     <string name="btn_continue">继续</string>
     <string name="btn_modify_confirm">确认修改</string>
     <string name="btn_help">帮助</string>
@@ -18,6 +20,7 @@
     <string name="btn_resume">恢复</string>
     <string name="btn_skip">跳过</string>
     <string name="btn_retry">重试</string>
+    <string name="btn_apply">应用</string>
     <string name="btn_reboot">重启</string>
     <string name="btn_resume_selected">恢复选中</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>

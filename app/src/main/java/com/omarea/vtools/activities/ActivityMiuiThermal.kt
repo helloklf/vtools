@@ -7,8 +7,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.CompoundButton
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.device.MiuiThermalAESUtil
 import com.omarea.vtools.R
@@ -129,6 +133,46 @@ class ActivityMiuiThermal : ActivityBase() {
         }
     }
 
+
+    private fun applyThermal(saveConfig: Boolean) {
+        val currentContent = thermal_config.text.toString().trim()
+        val bytes = currentContent.toByteArray(Charset.forName("UTF-8"))
+        val data = if (encrypted) MiuiThermalAESUtil.encrypt(bytes) else bytes
+        val file_path = filesDir.path + File.separator + "thermal-temp.conf"
+        val fileName = File(currentFile).name
+        val outPath = "/data/vendor/thermal/config/$fileName"
+        File(file_path).writeBytes(data)
+        if (RootFile.dirExists("/data/vendor/thermal/config")) {
+            // TODO:
+            val result = KeepShellPublic.doCmdSync(
+                    "cp \"$file_path\" \"$outPath\"\n" +
+                            "chmod 664 \"$outPath\""
+            )
+            File(file_path).delete()
+            if (result == "error") {
+                Toast.makeText(this, "未能应用温控配置！", Toast.LENGTH_LONG).show()
+            } else {
+                val savedContent = KernelProrp.getProp("/data/vendor/thermal/decrypt.txt").trim()
+                if (savedContent.equals(currentContent)) {
+                    Toast.makeText(this, "应用温控配置成功~", Toast.LENGTH_LONG).show()
+                } else if (!RootFile.fileExists(outPath)) {
+                    Toast.makeText(this, "未能应用温控配置！", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(
+                            this,
+                            "无法确认温控是否应用成功，请检查日志或通过dump thermal-engine验证生效情况！",
+                            Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        } else {
+            Toast.makeText(this, "系统不支持或目录已被破坏，无法应用温控配置！", Toast.LENGTH_LONG).show()
+        }
+        if (saveConfig) {
+            saveConfig()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_miui_thermal, menu)
         return true
@@ -155,6 +199,22 @@ class ActivityMiuiThermal : ActivityBase() {
                 saveConfig()
             } else {
                 Toast.makeText(this, "你都还没打开文件呢，保存个毛啊！", Toast.LENGTH_SHORT).show()
+            }
+            true
+        } else if (id == R.id.action_apply) {
+            if (currentFile.isNotEmpty()) {
+                val view = layoutInflater.inflate(R.layout.dialog_apply_thermal, null)
+                val dialog = DialogHelper.customDialog(this, view)
+                view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+                    dialog.dismiss()
+                }
+                view.findViewById<View>(R.id.btn_applay).setOnClickListener {
+                    val saveConfig = view.findViewById<CompoundButton>(R.id.save_thermal).isChecked
+                    dialog.dismiss()
+                    this.applyThermal(saveConfig)
+                }
+            } else {
+                Toast.makeText(this, "你都还没打开文件呢，应用个毛啊！", Toast.LENGTH_SHORT).show()
             }
             true
         } else if (id == R.id.action_hele) {
