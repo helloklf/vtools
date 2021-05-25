@@ -15,6 +15,8 @@ danger|丧心病狂(danger)"
 
 elif [[ $device == "umi" ]]; then
 echo "default|系统默认(default)
+cool_umi|清爽酷凉(cool)
+pro_umi|深度定制(pro)
 danger|丧心病狂(danger)"
 
 elif [[ $device == "lmi" ]] || [[ $device == "lmipro" ]]; then

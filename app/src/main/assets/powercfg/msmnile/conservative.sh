@@ -265,7 +265,7 @@ if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1785600 710400 1401600 825600 1497600
+  set_cpu_freq 300000 1708800 710400 1401600 825600 1497600
   set_input_boost_freq 0 0 0 0
 
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
@@ -296,7 +296,7 @@ if [[ "$action" = "balance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 
-  set_cpu_freq 300000 1785600 710400 1708800 825600 1920000
+  set_cpu_freq 300000 1708800 710400 1708800 825600 1920000
   set_input_boost_freq 1209600 0 0 40
 
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
