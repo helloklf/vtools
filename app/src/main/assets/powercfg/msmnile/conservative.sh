@@ -73,6 +73,37 @@ governor_performance () {
       fi
     done
   fi
+
+  set_value 100 /sys/class/devfreq/soc:qcom,cpu0-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 100 /sys/class/devfreq/soc:qcom,cpu0-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 100 /sys/class/devfreq/soc:qcom,cpu0-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 1000 /sys/class/devfreq/soc:qcom,cpu4-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 100 /sys/class/devfreq/soc:qcom,cpu4-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 100 /sys/class/devfreq/soc:qcom,cpu4-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 5000 /sys/class/devfreq/soc:qcom,cpu7-cpu-l3-lat/mem_latency/ratio_ceil
+}
+
+governor_powersave () {
+  governor_backup
+
+  local dir=/sys/class/devfreq
+  local governor_backup=/cache/governor_backup.prop
+  local backup_state=`getprop vtools.dev_freq_backup`
+
+  if [[ -f "$governor_backup" ]] && [[ "$backup_state" == "true" ]]; then
+    paths='/sys/class/devfreq/1d84000.ufshc /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+    for row in $paths; do
+      echo powersave > $row/governor
+    done
+  fi
+
+  set_value 400 /sys/class/devfreq/soc:qcom,cpu0-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 400 /sys/class/devfreq/soc:qcom,cpu0-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 400 /sys/class/devfreq/soc:qcom,cpu0-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu4-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 400 /sys/class/devfreq/soc:qcom,cpu4-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 400 /sys/class/devfreq/soc:qcom,cpu4-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 20000 /sys/class/devfreq/soc:qcom,cpu7-cpu-l3-lat/mem_latency/ratio_ceil
 }
 
 governor_restore () {
@@ -87,10 +118,20 @@ governor_restore () {
       fi
     done < $governor_backup
   fi
+
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu0-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu0-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu0-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 40000 /sys/class/devfreq/soc:qcom,cpu4-cpu-l3-lat/mem_latency/ratio_ceil
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu4-cpu-llcc-lat/mem_latency/ratio_ceil
+  set_value 4000 /sys/class/devfreq/soc:qcom,cpu4-llcc-ddr-lat/mem_latency/ratio_ceil
+  set_value 200000 /sys/class/devfreq/soc:qcom,cpu7-cpu-l3-lat/mem_latency/ratio_ceil
 }
 
 if [[ "$action" == "fast" ]]; then
   governor_performance
+elif [[ "$action" == "powersave" ]]; then
+  governor_powersave
 else
   governor_restore
 fi

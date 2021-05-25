@@ -127,6 +127,7 @@
             <set>run thermal_conf/config.sh</set>
         </picker>
         <picker
+            id="mi-thermal"
             visible="run thermal_conf2/support.sh"
             title="温控配置切换（2）" desc="切换后无需重启立即生效，目前仅适配855、865、870、888机型）"
             options-sh="run thermal_conf2/options.sh">
