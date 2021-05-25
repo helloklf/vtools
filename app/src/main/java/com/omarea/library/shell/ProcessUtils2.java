@@ -1,6 +1,7 @@
 package com.omarea.library.shell;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.model.ProcessInfo;
@@ -110,7 +111,9 @@ public class ProcessUtils2 {
             for (String row : rows) {
                 if (isFristRow) {
                     isFristRow = false;
-                    continue;
+                    if (row.trim().contains("CPU") && row.trim().contains("NAME")) {
+                        continue;
+                    }
                 }
 
                 ProcessInfo processInfo = readRow(row.trim());
