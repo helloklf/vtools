@@ -138,8 +138,10 @@ class AdapterItemChooser2(
 
         convertView.setOnClickListener {
             if (currentSelected.contains(item)) {
-                currentSelected.remove(item)
-                viewHolder.checkBox?.isChecked = false
+                if (multiple) {
+                    currentSelected.remove(item)
+                    viewHolder.checkBox?.isChecked = false
+                }
             } else {
                 if (multiple) {
                     currentSelected.add(item)

@@ -186,8 +186,10 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
 
         convertView.setOnClickListener {
             if (multiple || item.selected) {
-                item.selected = !item.selected
-                viewHolder.checkBox?.isChecked = item.selected
+                if (multiple) {
+                    item.selected = !item.selected
+                    viewHolder.checkBox?.isChecked = item.selected
+                }
             } else {
                 val current = apps.find { it.selected }
                 current?.selected = false
