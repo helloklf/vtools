@@ -106,3 +106,16 @@ echo 2000 > /proc/sys/vm/dirty_expire_centisecs
 echo 5000 > /proc/sys/vm/dirty_writeback_centisecs
 
 killall -9 vendor.qti.hardware.perf@1.0-service
+
+pgrep -f surfaceflinger | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done
+pgrep -f system_server | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done
+pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done

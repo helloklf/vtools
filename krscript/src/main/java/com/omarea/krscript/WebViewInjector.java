@@ -88,8 +88,7 @@ public class WebViewInjector {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                     }
-                                })
-                                .setCancelable(false));
+                                })).setCancelable(false);
                     }
                 }
             });

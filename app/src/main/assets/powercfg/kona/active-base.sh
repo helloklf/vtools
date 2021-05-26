@@ -93,3 +93,16 @@ case "$target" in
     echo N > /sys/module/lpm_levels/parameters/sleep_disabled
   ;;
 esac
+
+pgrep -f surfaceflinger | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done
+pgrep -f system_server | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done
+pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done

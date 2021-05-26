@@ -210,37 +210,6 @@ sched_limit() {
   echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 }
 
-surfaceflinger_top_app()
-{
-  pgrep -f surfaceflinger | while read pid; do
-    echo $pid > /dev/cpuset/top-app/tasks
-    echo $pid > /dev/stune/top-app/tasks
-  done
-  pgrep -f system_server | while read pid; do
-    echo $pid > /dev/cpuset/top-app/tasks
-    echo $pid > /dev/stune/top-app/tasks
-  done
-  pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
-    echo $pid > /dev/cpuset/top-app/tasks
-    echo $pid > /dev/stune/top-app/tasks
-  done
-}
-surfaceflinger_bg_app()
-{
-  pgrep -f surfaceflinger | while read pid; do
-    echo $pid > /dev/cpuset/system-background/tasks
-    echo $pid > /dev/stune/foreground/tasks
-  done
-  pgrep -f system_server | while read pid; do
-    echo $pid > /dev/cpuset/system-background/tasks
-    echo $pid > /dev/stune/background/tasks
-  done
-  pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
-    echo $pid > /dev/cpuset/system-background/tasks
-    echo $pid > /dev/stune/background/tasks
-  done
-}
-
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -274,7 +243,6 @@ if [[ "$action" = "powersave" ]]; then
 
   sched_limit 0 0 0 2000 0 1000
 
-  surfaceflinger_bg_app
   echo 0-3 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -313,7 +281,6 @@ if [[ "$action" = "balance" ]]; then
 
   sched_limit 0 0 0 500 0 500
 
-  surfaceflinger_top_app
   echo 0-6 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -345,7 +312,6 @@ if [[ "$action" = "performance" ]]; then
 
   sched_limit 0 0 0 0 0 0
 
-  surfaceflinger_top_app
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -377,7 +343,6 @@ if [[ "$action" = "fast" ]]; then
 
   sched_limit 5000 0 2000 0 2000 0
 
-  surfaceflinger_top_app
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0

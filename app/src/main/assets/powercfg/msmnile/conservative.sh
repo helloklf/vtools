@@ -237,28 +237,6 @@ sched_limit() {
   echo $6 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/up_rate_limit_us
 }
 
-surfaceflinger_top_app()
-{
-  pgrep -f surfaceflinger | while read pid; do
-    echo $pid > /dev/cpuset/top-app/tasks
-    # echo $pid > /dev/stune/top-app/tasks
-  done
-  pgrep -f system_server | while read pid; do
-    echo $pid > /dev/cpuset/top-app/tasks
-    echo $pid > /dev/stune/top-app/tasks
-  done
-}
-surfaceflinger_bg_app()
-{
-  pgrep -f surfaceflinger | while read pid; do
-    echo $pid > /dev/cpuset/system-background/tasks
-    # echo $pid > /dev/stune/foreground/tasks
-  done
-  pgrep -f system_server | while read pid; do
-    echo $pid > /dev/cpuset/system-background/tasks
-    echo $pid > /dev/stune/background/tasks
-  done
-}
 
 if [[ "$action" = "powersave" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
@@ -285,7 +263,6 @@ if [[ "$action" = "powersave" ]]; then
   echo 90 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
   echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
-  surfaceflinger_bg_app
   echo 0-3 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -317,7 +294,6 @@ if [[ "$action" = "balance" ]]; then
   echo 90 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
   echo 90 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
-  surfaceflinger_top_app
   echo 0-6 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -349,7 +325,6 @@ if [[ "$action" = "performance" ]]; then
   echo 70 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
   echo 80 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
-  surfaceflinger_top_app
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
@@ -381,7 +356,6 @@ if [[ "$action" = "fast" ]]; then
   echo 60 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_load
   echo 70 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_load
 
-  surfaceflinger_top_app
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
   exit 0
