@@ -245,10 +245,10 @@ if [[ "$action" = "powersave" ]]; then
 
   echo 0-3 > /dev/cpuset/foreground/cpus
 
-  exit 0
-fi
+  echo 0 > /dev/stune/top-app/schedtune.prefer_idle
+  echo 0 > /dev/stune/top-app/schedtune.boost
 
-if [[ "$action" = "balance" ]]; then
+elif [[ "$action" = "balance" ]]; then
   echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
@@ -283,10 +283,10 @@ if [[ "$action" = "balance" ]]; then
 
   echo 0-6 > /dev/cpuset/foreground/cpus
 
-  exit 0
-fi
+  echo 0 > /dev/stune/top-app/schedtune.prefer_idle
+  echo 0 > /dev/stune/top-app/schedtune.boost
 
-if [[ "$action" = "performance" ]]; then
+elif [[ "$action" = "performance" ]]; then
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -314,10 +314,10 @@ if [[ "$action" = "performance" ]]; then
 
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
-  exit 0
-fi
+  echo 0 > /dev/stune/top-app/schedtune.prefer_idle
+  echo 0 > /dev/stune/top-app/schedtune.boost
 
-if [[ "$action" = "fast" ]]; then
+elif [[ "$action" = "fast" ]]; then
   echo 3 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
   echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
   echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -345,5 +345,47 @@ if [[ "$action" = "fast" ]]; then
 
   echo 0-2,4-7 > /dev/cpuset/foreground/cpus
 
+  echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+  echo 0 > /dev/stune/top-app/schedtune.boost
+
   exit 0
+fi
+
+
+# YuanShen
+if [[ "$top_app" == "com.miHoYo.Yuanshen" ]]; then
+  current_mode=$(getprop vtools.powercfg)
+
+  if [[ "$action" = "powersave" ]]; then
+    echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+  elif [[ "$action" = "balance" ]]; then
+    echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+  elif [[ "$action" = "performance" ]]; then
+    echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+    echo 100 > /dev/stune/top-app/schedtune.boost
+  elif [[ "$action" = "fast" ]]; then
+    echo 1 > /dev/stune/top-app/schedtune.prefer_idle
+    echo 100 > /dev/stune/top-app/schedtune.boost
+  fi
+
+# DouYin
+elif [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+  echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+  echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+
+  echo 85 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
+  echo 45 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+  echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
+  echo 80 > /sys/devices/system/cpu/cpu7/core_ctl/busy_up_thres
+  echo 35 > /sys/devices/system/cpu/cpu7/core_ctl/busy_down_thres
+  echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/offline_delay_ms
+
+  echo 0 > /proc/sys/kernel/sched_boost_top_app
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/pl
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/pl
+  echo 0 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
+
+  echo 0 > /dev/stune/top-app/schedtune.prefer_idle
+  echo 0 > /dev/stune/top-app/schedtune.boost
 fi
