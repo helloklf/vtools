@@ -86,7 +86,7 @@ class ActivityCpuModes : ActivityBase() {
 
         cpu_mode_delete_outside.setOnClickListener {
             DialogHelper.confirm(this, "确定删除?",
-                    "确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的",
+                    "确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的\n（删除后建议重启手机一次）",
                     {
                         configInstaller.removeOutsideConfig()
                         cpu_mode_outside.visibility = View.GONE
@@ -95,16 +95,29 @@ class ActivityCpuModes : ActivityBase() {
                     })
         }
 
-        val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
-        when (modeValue) {
-            ModeSwitcher.POWERSAVE -> first_mode.setSelection(0)
-            ModeSwitcher.BALANCE -> first_mode.setSelection(1)
-            ModeSwitcher.PERFORMANCE -> first_mode.setSelection(2)
-            ModeSwitcher.FAST -> first_mode.setSelection(3)
-            ModeSwitcher.IGONED -> first_mode.setSelection(4)
+        first_mode.run {
+            when (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE)) {
+                ModeSwitcher.POWERSAVE -> setSelection(0)
+                ModeSwitcher.BALANCE -> setSelection(1)
+                ModeSwitcher.PERFORMANCE -> setSelection(2)
+                ModeSwitcher.FAST -> setSelection(3)
+                ModeSwitcher.IGONED -> setSelection(4)
+            }
+
+            onItemSelectedListener = ModeOnItemSelectedListener(globalSPF) {
+                reStartService()
+            }
         }
-        first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF) {
-            reStartService()
+
+        sleep_mode.run {
+            when (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_SLEEP_MODE, ModeSwitcher.POWERSAVE)) {
+                ModeSwitcher.POWERSAVE -> setSelection(0)
+                ModeSwitcher.BALANCE -> setSelection(1)
+                ModeSwitcher.PERFORMANCE -> setSelection(2)
+                ModeSwitcher.IGONED -> setSelection(3)
+            }
+            onItemSelectedListener = ModeOnItemSelectedListener2(globalSPF) {
+            }
         }
 
         val sourceClick = object : View.OnClickListener {
@@ -211,6 +224,26 @@ class ActivityCpuModes : ActivityBase() {
             }
             if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT) != mode) {
                 globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
+                runnable.run()
+            }
+        }
+    }
+
+    private class ModeOnItemSelectedListener2(private var globalSPF: SharedPreferences, private var runnable: Runnable) : AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+        }
+
+        @SuppressLint("ApplySharedPref")
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            var mode = ModeSwitcher.POWERSAVE
+            when (position) {
+                0 -> mode = ModeSwitcher.POWERSAVE
+                1 -> mode = ModeSwitcher.BALANCE
+                2 -> mode = ModeSwitcher.PERFORMANCE
+                3 -> mode = ModeSwitcher.IGONED
+            }
+            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_SLEEP_MODE, ModeSwitcher.POWERSAVE) != mode) {
+                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_SLEEP_MODE, mode).commit()
                 runnable.run()
             }
         }

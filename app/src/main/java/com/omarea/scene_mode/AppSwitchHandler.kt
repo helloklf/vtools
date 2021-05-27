@@ -127,7 +127,10 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
 
                 // 息屏后自动切换为省电模式
                 if (dyamicCore && lastMode.isNotEmpty()) {
-                    toggleConfig(POWERSAVE, context.packageName)
+                    val sleepMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_SLEEP_MODE, POWERSAVE)
+                    if (sleepMode != null && sleepMode != IGONED) {
+                        toggleConfig(sleepMode, context.packageName)
+                    }
                 }
             }
         }, 10000)

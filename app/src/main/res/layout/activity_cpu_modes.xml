@@ -340,7 +340,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="全局默认" />
+                            android:text="全局默认（亮屏状态）" />
 
                         <Spinner
                             android:id="@+id/first_mode"
@@ -349,6 +349,34 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical|right"
                             android:entries="@array/default_powercfg_mode_options"
+                            android:paddingRight="0dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <com.omarea.ui.HelpIcon
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:text="手机进入待机状态后，将切换至选定的模式" />
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="待机时切换" />
+
+                        <Spinner
+                            android:id="@+id/sleep_mode"
+                            style="@style/SceneSpinner"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|right"
+                            android:entries="@array/sleep_powercfg_mode_options"
                             android:paddingRight="0dp" />
                     </LinearLayout>
 

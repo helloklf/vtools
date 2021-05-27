@@ -312,6 +312,12 @@
         <item>性能模式</item>
         <item>极速模式</item>
     </string-array>
+    <string-array name="sleep_powercfg_mode_options">
+        <item>省电模式</item>
+        <item>均衡模式</item>
+        <item>性能模式</item>
+        <item>保持状态</item>
+    </string-array>
     <string-array name="powercfg_modes_filter">
         <item>全部</item>
         <item>省电</item>
