@@ -249,7 +249,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     override fun onReceive(eventType: EventType) {
         when (eventType) {
             EventType.APP_SWITCH ->
-                onFocusAppChanged(GlobalStatus.lastPackageName)
+                onFocusedAppChanged(GlobalStatus.lastPackageName)
             EventType.SCREEN_ON -> {
                 onScreenOn()
             }
@@ -272,7 +272,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     /**
      * 焦点应用改变
      */
-    fun onFocusAppChanged(packageName: String) {
+    private fun onFocusedAppChanged(packageName: String) {
         if (!screenOn && screenState.isScreenOn()) {
             onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
         }

@@ -102,7 +102,7 @@ class Scene : Application() {
         // 安装busybox
         if (!Busybox.systemBusyboxInstalled()) {
             ShellExecutor.setExtraEnvPath(
-                    FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
+                FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
             )
         }
 

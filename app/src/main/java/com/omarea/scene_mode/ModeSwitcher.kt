@@ -26,12 +26,22 @@ open class ModeSwitcher {
         const val SOURCE_SCENE_ONLINE = "SOURCE_SCENE_ONLINE"
         const val SOURCE_OUTSIDE = "SOURCE_OUTSIDE"
         const val SOURCE_NONE = "SOURCE_NONE"
+        // 安装在 数据目录的配置文件
+        const val PROVIDER_INSIDE = "PROVIDER_INSIDE"
+        // 安装在 /data目录的配置文件
+        const val PROVIDER_OUTSIDE = "PROVIDER_OUTSIDE"
+        const val PROVIDER_NONE = "PROVIDER_NONE"
+
+        // 最后使用的配置提供者
+        var lastInitProvider = PROVIDER_NONE
 
         fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
                 return SOURCE_OUTSIDE
             }
-            val config = Scene.context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, SOURCE_UNKNOWN)
+            val config = Scene.context
+                    .getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                    .getString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, SOURCE_UNKNOWN)
             if (config == SOURCE_SCENE_CUSTOM || CpuConfigInstaller().insideConfigInstalled()) {
                 return config!!
             }
@@ -74,12 +84,12 @@ open class ModeSwitcher {
         const val OUTSIDE_POWER_CFG_PATH = "/data/powercfg.sh"
         const val OUTSIDE_POWER_CFG_BASE = "/data/powercfg-base.sh"
 
-        internal var DEFAULT = "balance"
         internal var POWERSAVE = "powersave"
         internal var PERFORMANCE = "performance"
         internal var FAST = "fast"
         internal var BALANCE = "balance"
         internal var IGONED = "igoned"
+        internal var DEFAULT = BALANCE
         private var INIT = "init"
 
         internal fun getModName(mode: String): String {
@@ -159,38 +169,39 @@ open class ModeSwitcher {
     // init
     // TODO:看什么时候清空缓存
     internal fun initPowerCfg(): ModeSwitcher {
-        if (configProvider.isEmpty()) {
-            val installer = CpuConfigInstaller()
-            if (installer.outsideConfigInstalled()) {
-                configProvider = OUTSIDE_POWER_CFG_PATH
-            } else {
-                if (!(innerConfigUpdated)) {
-                    installer.applyConfigNewVersion(Scene.context)
-                    innerConfigUpdated = true
-                }
-                configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
-
-                /*
-                FileWrite.writePrivateFile(
-                        RawText.getRawText(Scene.context, R.raw.general_optimize).toByteArray(Charset.defaultCharset()),
-                        "powercfg/general_optimize.sh",
-                        Scene.context).run {
-                    if (this) {
-                        val file = FileWrite.getPrivateFilePath(Scene.context, "powercfg/general_optimize.sh")
-                        // keepShellExec("sh $file")
-                        keepShellExec("nohup $file >/dev/null 2>&1 &")
-                    }
-                }
-                */
+        val installer = CpuConfigInstaller()
+        if (installer.outsideConfigInstalled()) {
+            configProvider = OUTSIDE_POWER_CFG_PATH
+            installer.configCodeVerify()
+            lastInitProvider = PROVIDER_OUTSIDE
+        } else {
+            if (!(innerConfigUpdated)) {
+                installer.applyConfigNewVersion(Scene.context)
+                innerConfigUpdated = true
             }
+            lastInitProvider = PROVIDER_INSIDE
+            configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
+
+            /*
+            FileWrite.writePrivateFile(
+                    RawText.getRawText(Scene.context, R.raw.general_optimize).toByteArray(Charset.defaultCharset()),
+                    "powercfg/general_optimize.sh",
+                    Scene.context).run {
+                if (this) {
+                    val file = FileWrite.getPrivateFilePath(Scene.context, "powercfg/general_optimize.sh")
+                    // keepShellExec("sh $file")
+                    keepShellExec("nohup $file >/dev/null 2>&1 &")
+                }
+            }
+            */
         }
 
         if (configProvider.isNotEmpty()) {
             keepShellExec("sh $configProvider $INIT")
             setCurrentPowercfg("")
-        }
 
-        inited = true
+            inited = true
+        }
         return this
     }
 
@@ -210,7 +221,7 @@ open class ModeSwitcher {
                     }
                 }
                 SOURCE_OUTSIDE -> {
-                    if (!inited) {
+                    if (!inited || lastInitProvider != PROVIDER_OUTSIDE) {
                         initPowerCfg()
                     }
 
@@ -225,7 +236,7 @@ open class ModeSwitcher {
                     }
                 }
                 else -> {
-                    if (!inited) {
+                    if (!inited || lastInitProvider != PROVIDER_INSIDE) {
                         initPowerCfg()
                     }
 
