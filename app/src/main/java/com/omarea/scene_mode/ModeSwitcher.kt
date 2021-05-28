@@ -242,7 +242,7 @@ open class ModeSwitcher {
 
                     if (configProvider.isNotEmpty()) {
                         keepShellExec(
-                        "export top_app=$packageName\n" +
+                            "export top_app=$packageName\n" +
                             "sh $configProvider '$mode' > /dev/null 2>&1 &"
                         )
                         setCurrentPowercfg(mode)
