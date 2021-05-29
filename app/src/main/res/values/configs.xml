@@ -86,6 +86,9 @@
         <item>com.netease.mrzh.aligames</item>
         <item>com.android.camera</item>
         <item>com.miHoYo.Yuanshen</item>
+        <item>com.miHoYo.ys.mi</item>
+        <item>com.miHoYo.ys.mi</item>
+        <item>com.miHoYo.ys.bilibili</item>
     </string-array>
     <string-array name="powercfg_fast">
         <item>com.ludashi.benchmark</item>

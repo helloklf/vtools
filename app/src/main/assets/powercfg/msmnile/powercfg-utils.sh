@@ -11,6 +11,40 @@
 # 257000000 345000000 427000000 499200000 585000000 675000000 810000000
 
 
+throttle() {
+hint_group=""
+if [[ "$top_app" != "" ]]; then
+distinct_apps="
+game=com.miHoYo.Yuanshen,com.miHoYo.ys.bilibili,com.miHoYo.ys.mi
+
+mgame=com.bilibili.gcg2.bili
+
+heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,com.baidu.tieba_mini,com.baidu.tieba,com.jingdong.app.mall
+
+music=com.netease.cloudmusic,com.kugou.android,com.kugou.android.lite
+
+video=com.ss.android.ugc.awem,tv.danmaku.bili
+"
+
+  hint_group=$(echo -e "$distinct_apps" | grep "$top_app" | cut -f1 -d "=")
+  current_hint=$(getprop vtools.powercfg_hint)
+  hint_mode="${action}:${hint_group}"
+
+  if [[ "$hint_mode" == "$current_hint" ]]; then
+    echo "$top_app [$hint_mode > $current_hint] skip!" >> /cache/powercfg_skip.log
+    exit 0
+  fi
+
+else
+  hint_mode="${action}"
+fi
+
+setprop vtools.powercfg_hint "$hint_mode"
+}
+
+# throttle
+
+
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
@@ -248,6 +282,8 @@ gpu_pl_up() {
   local offset="$1"
   if [[ "$offset" != "" ]] && [[ ! "$offset" -gt "$gpu_min_pl" ]]; then
     echo `expr $gpu_min_pl - $offset` > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  elif [[ "$offset" -gt "$gpu_min_pl" ]]; then
+    echo 0 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   else
     echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   fi
@@ -257,18 +293,20 @@ gpu_pl_up() {
 gpu_pl_down() {
   local offset="$1"
   if [[ "$offset" != "" ]] && [[ ! "$offset" -gt "$gpu_min_pl" ]]; then
-    echo `$offset` > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+    echo $offset > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  elif [[ "$offset" -gt "$gpu_min_pl" ]]; then
+    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
   else
-    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
   fi
 }
 
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
-    "com.miHoYo.Yuanshen")
-        echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
-        echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+    "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
+        ctl_off cpu4
+        ctl_off cpu7
         if [[ "$action" = "powersave" ]]; then
           sched_boost 1 0
           stune_top_app 0 0
@@ -287,13 +325,28 @@ adjustment_by_top_app() {
           stune_top_app 1 100
           # sched_config "40 60" "50 75" "120" "150"
         fi
-        echo 0-1 > /dev/cpuset/background/cpus
-        echo 0-3 > /dev/cpuset/system-background/cpus
-        echo 0-3 > /dev/cpuset/foreground/cpus
+        cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba")
+    # ShuangShengShiJie
+    "com.bilibili.gcg2.bili")
+        if [[ "$action" = "powersave" ]]; then
+          gpu_pl_down 4
+        elif [[ "$action" = "balance" ]]; then
+          gpu_pl_down 3
+        elif [[ "$action" = "performance" ]]; then
+          gpu_pl_down 1
+        elif [[ "$action" = "fast" ]]; then
+          gpu_pl_down 0
+        fi
+        sched_config "60 68" "68 72" "140" "200"
+        stune_top_app 0 0
+        sched_boost 1 0
+        cpuset '0-1' '0-3' '0-3' '0-7'
+    ;;
+
+    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless")
       if [[ "$action" != "powersave" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
