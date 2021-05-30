@@ -17,8 +17,32 @@ class FpsUtils {
 
     val currentFps: String?
         get() {
-            // 优先使用GPU的内核级帧数数据
-            if (fpsFilePath == null) {
+            // 优先使用系统帧率
+            if (fpsCommand2.isNotEmpty()) {
+                val result = doCmdSync(fpsCommand2).trim()
+                if (result != "error" && !result.contains("Parcel")) {
+                    fpsCommand2 = ""
+                } else {
+                    try {
+                        val index = result.indexOf("(") + 1
+                        val frames = Integer.parseInt(result.substring(index, index + 8), 16)
+                        val time = System.currentTimeMillis()
+                        var fps = 0F
+                        if (lastTime > 0 && lastFrames > 0) {
+                            fps = (frames - lastFrames) * 1000.0f / (time - lastTime)
+                        }
+                        lastFrames = frames
+                        lastTime = time
+                        return String.format("%.1f", fps)
+                    } catch (ex: Exception) {
+                        if (!(lastTime > 0 && lastFrames > 0)) {
+                            fpsCommand2 = ""
+                        }
+                    }
+                }
+            }
+            // 如果系统帧率不可用使用GPU的内核级帧数数据
+            else if (fpsFilePath == null) {
                 when {
                     fileExists("/sys/class/drm/sde-crtc-0/measured_fps") -> {
                         fpsFilePath = "/sys/class/drm/sde-crtc-0/measured_fps"
@@ -57,30 +81,6 @@ class FpsUtils {
             // 优先使用GPU的内核级帧数数据
             else if (!fpsFilePath.isNullOrEmpty()) {
                 return doCmdSync("cat $fpsFilePath $subStrCommand")
-            }
-            // 如果内核数据取不到，再尝试获得系统级帧数数据
-            else if (fpsCommand2.isNotEmpty()) {
-                val result = doCmdSync(fpsCommand2).trim()
-                if (result != "error" && !result.contains("Parcel")) {
-                    fpsCommand2 = ""
-                } else {
-                    try {
-                        val index = result.indexOf("(") + 1
-                        val frames = Integer.parseInt(result.substring(index, index + 8), 16)
-                        val time = System.currentTimeMillis()
-                        var fps = 0F
-                        if (lastTime > 0 && lastFrames > 0) {
-                            fps = (frames - lastFrames) * 1000.0f / (time - lastTime)
-                        }
-                        lastFrames = frames
-                        lastTime = time
-                        return String.format("%.1f", fps)
-                    } catch (ex: Exception) {
-                        if (!(lastTime > 0 && lastFrames > 0)) {
-                            fpsCommand2 = ""
-                        }
-                    }
-                }
             }
             return null
         }

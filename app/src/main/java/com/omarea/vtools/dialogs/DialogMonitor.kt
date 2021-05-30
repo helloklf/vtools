@@ -6,6 +6,7 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
+import com.omarea.vtools.popup.FloatFpsWatch
 import com.omarea.vtools.popup.FloatMonitor
 import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatTaskManager
@@ -48,6 +49,16 @@ class DialogMonitor(var context: Activity) {
                     FloatMonitorGame(context).showPopupWindow()
                 } else {
                     FloatMonitorGame(context).hidePopupWindow()
+                }
+            }
+        }
+        view.findViewById<CompoundButton>(R.id.monitor_watch).run {
+            isChecked = FloatFpsWatch.show == true
+            setOnClickListener {
+                if (isChecked) {
+                    FloatFpsWatch(context).showPopupWindow()
+                } else {
+                    FloatFpsWatch(context).hidePopupWindow()
                 }
             }
         }
