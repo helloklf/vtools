@@ -1,15 +1,14 @@
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-# 300000 403200 499200 576000 672000 768000 844800 940800 1036800 1113600 1209600 1305600 1382400 1478400 1555200 1632000 1708800 1785600
+# 300000 403200 518400 614400 691200 787200 883200 979200 1075200 1171200 1248000 1344000 1420800 1516800 1612800 1708800 1804800
 
 # /sys/devices/system/cpu/cpu4/cpufreq/scaling_available_frequencies
-# 710400 825600 940800 1056000 1171200 1286400 1401600 1497600 1612800 1708800 1804800 1920000 2016000 2131200 2227200 2323200 2419200
+# 710400 825600 940800 1056000 1171200 1286400 1382400 1478400 1574400 1670400 1766400 1862400 1958400 2054400 2150400 2246400 2342400 2419200
 
 # /sys/devices/system/cpu/cpu7/cpufreq/scaling_available_frequencies
-# 825600  940800 1056000 1171200 1286400 1401600 1497600 1612800 1708800 1804800 1920000 2016000 2131200 2227200 2323200 2419200 2534400 2649600 2745600 2841600
+#  844800 960000 1075200 1190400 1305600 1401600 1516800 1632000 1747200 1862400 1977600 2073600 2169600 2265600 2361600 2457600 2553600 2649600 2745600 2841600
 
 # GPU
-# 257000000 345000000 427000000 499200000 585000000 675000000 810000000
-
+# 587000000 525000000 490000000 441600000 400000000 305000000
 
 throttle() {
 hint_group=""
@@ -307,21 +306,32 @@ adjustment_by_top_app() {
         ctl_off cpu4
         ctl_off cpu7
         if [[ "$action" = "powersave" ]]; then
-          sched_boost 1 0
+          sched_boost 0 0
           stune_top_app 0 0
-          sched_config "50 70" "67 85" "250" "400"
-          gpu_pl_down 2
+          sched_config "50 80" "67 95" "300" "400"
+          gpu_pl_down 4
+          set_cpu_freq 1036800 1804800 1478400 1766400 1075200 2265600
+          set_hispeed_freq 1708800 1766400 2073600
+          sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "balance" ]]; then
-          sched_config "60 68" "68 72" "140" "200"
           sched_boost 1 0
           stune_top_app 1 10
+          sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
+          set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
+          set_hispeed_freq 1708800 1056000 1075200
+          sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
+          gpu_pl_down 1
+          set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
+          set_hispeed_freq 1708800 1766400 1747200
+          sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 1
           stune_top_app 1 100
+          sched_limit 5000 0 10000 0 5000 0
           # sched_config "40 60" "50 75" "120" "150"
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'
@@ -330,7 +340,7 @@ adjustment_by_top_app() {
     # ShuangShengShiJie
     "com.bilibili.gcg2.bili")
         if [[ "$action" = "powersave" ]]; then
-          gpu_pl_down 4
+          gpu_pl_down 5
         elif [[ "$action" = "balance" ]]; then
           gpu_pl_down 3
         elif [[ "$action" = "performance" ]]; then
@@ -341,6 +351,7 @@ adjustment_by_top_app() {
         sched_config "60 68" "68 72" "140" "200"
         stune_top_app 0 0
         sched_boost 1 0
+        cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
     # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao

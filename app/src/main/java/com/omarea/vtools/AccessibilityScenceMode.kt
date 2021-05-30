@@ -285,7 +285,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         val windows = this.getEffectiveWindows(true)
         return windows.map {
             it.root?.packageName
-        }.filter { it != null }.map { it.toString() }.toTypedArray()
+        }.filter { it != null && it != "com.android.systemui" }.map { it.toString() }.toTypedArray()
     }
 
     public fun notifyScreenOn() {

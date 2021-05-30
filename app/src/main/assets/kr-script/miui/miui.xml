@@ -120,7 +120,7 @@
     <group title="温控">
         <picker
             visible="run thermal_conf/support.sh"
-            title="温控配置切换" desc="切换后重启生效，目前仅适配骁龙骁龙710、730、835、845、855、天玑820系列机型"
+            title="温控配置切换" desc="通过Magisk模块将温控替换到系统目录(需重启手机生效)，适于710|730(g)|835|845|855(plus)、天玑820系列机型"
             options-sh="run thermal_conf/options.sh">
             <summary sh="run thermal_conf/summary.sh" />
             <get>run thermal_conf/current.sh</get>
@@ -129,7 +129,7 @@
         <picker
             id="mi-thermal"
             visible="run thermal_conf2/support.sh"
-            title="温控配置切换（2）" desc="切换后无需重启立即生效，目前仅适配855、865、870、888机型）"
+            title="温控配置切换（2）" desc="将温控替换到/data/vendor/thermal，可能无需重启手机就能立即生效，适于骁龙865、870、888机型）"
             options-sh="run thermal_conf2/options.sh">
             <summary sh="run thermal_conf2/summary.sh" />
             <get>run thermal_conf2/current.sh</get>
