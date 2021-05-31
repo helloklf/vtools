@@ -102,6 +102,7 @@
     <string name="menu_charge">充电统计</string>
     <string name="menu_custom_command">自定义命令</string>
     <string name="menu_processes">进程管理</string>
+    <string name="menu_fps_chart">帧率记录</string>
     <string name="menu_app_magisk">Magisk助手</string>
     <string name="menu_gesture">手势导航</string>
     <string name="menu_xposed_app">应用设置</string>

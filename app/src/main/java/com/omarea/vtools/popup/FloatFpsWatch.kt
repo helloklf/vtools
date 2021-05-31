@@ -17,6 +17,10 @@ import android.view.WindowManager.LayoutParams
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.library.shell.SurfaceFlingerFpsUtils2
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.FpsWatchStore
@@ -27,6 +31,7 @@ public class FloatFpsWatch(private val mContext: Context) {
     private var startMonitorTime = 0L
     private val fpsWatchStore = FpsWatchStore(mContext)
     private var sessionId = 0L
+    private var sessionApp: String? = null
 
     /**
      * 显示弹出框
@@ -92,6 +97,28 @@ public class FloatFpsWatch(private val mContext: Context) {
         mWindowManager!!.addView(mView, params)
 
         startTimer()
+        EventBus.subscibe(object : IEventReceiver{
+            override fun eventFilter(eventType: EventType): Boolean {
+                return (eventType == EventType.APP_SWITCH)
+            }
+
+            override fun onReceive(eventType: EventType) {
+                if (sessionId > 0) {
+                    val app = GlobalStatus.lastPackageName
+                    if (app != sessionApp) {
+                        sessionId = -1
+                        Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                        recordBtn?.run {
+                            setImageResource(R.drawable.play)
+                            view?.alpha = 1f
+                        }
+                    }
+                }
+            }
+
+            override val isAsync: Boolean
+                get() = false
+        })
 
         return true
     }
@@ -143,6 +170,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             mView = null
             show = false
         }
+        sessionId = -1
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
@@ -157,9 +185,12 @@ public class FloatFpsWatch(private val mContext: Context) {
                     setImageResource(R.drawable.play)
                     view?.alpha = 1f
                 } else {
-                    sessionId = fpsWatchStore.createSession("android")
+                    val app = if (GlobalStatus.lastPackageName.isNullOrEmpty()) "android" else GlobalStatus.lastPackageName
+                    sessionId = fpsWatchStore.createSession(app)
+                    sessionApp = GlobalStatus.lastPackageName
                     setImageResource(R.drawable.stop)
                     view?.alpha = 0.6f
+                    Toast.makeText(mContext, "帧率录制开始，请勿使用游戏工具箱或离开当前应用！", Toast.LENGTH_LONG).show()
                 }
             }
         }

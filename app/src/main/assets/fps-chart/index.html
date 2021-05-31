@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="address=no" />
+    <!--<title><%= htmlWebpackPlugin.options.title %></title>-->
+    <title>正在进入页面~</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://lib.baomitu.com/vue/2.6.12/vue.min.js"></script>
+    <style>
+        * {
+            transition: all 0.2s linear;
+        }
+        .sessions {
+            padding: 5px;
+            box-shadow: 2px 3px 10px rgba(170, 170, 170, 0.4);
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            font-size: 14px;
+            color: #444;
+        }
+        .sessions > div {
+            padding: 3px 5px;
+            display: flex;
+            align-items: center;
+        }
+        .sessions.empty {
+            text-align: center;
+            padding: 10px;
+            color: #a0a0a0;
+        }
+        .sessions .logo,
+        .sessions .logo img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            display: inline-block;
+        }
+        .sessions .logo + div {
+            flex: 1;
+            padding-left: 5px;
+        }
+        .sessions div[data-selected='true'] {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transform: scale(1.05);
+        }
+        .date {
+            margin-top: 3px;
+            font-size: 11px;
+            color: #909090;
+        }
+        .summary {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .rows {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+            background-color: #fff;
+            padding: 0 15px;
+            border-radius: 5px;
+            box-shadow: 2px 3px 10px rgba(170, 170, 170, 0.4);
+        }
+        .row {
+            display: flex;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+        .row:not(:last-child) {
+            border-bottom: 1px solid #fff;
+        }
+        .row .col {
+            text-align: center;
+        }
+        .t-row {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding-right: 20px;
+            color: #aaa;
+            font-size: 10px;
+        }
+        .fps-row {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .row .st {
+            font-size: 10px;
+            font-weight: 100;
+            color: #888;
+        }
+        .row .unit {
+            font-size: 10px;
+            color: #bbb;
+            font-weight: 100;
+        }
+        .row .number {
+            font-size: 20px;
+            padding: 5px 0;
+            color: #BC8DE4;
+        }
+
+        .row > div {
+            flex: 1;
+        }
+        #myChart {
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            padding-top: 15px;
+            box-shadow: 2px 3px 10px rgba(170, 170, 170, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="sessions" v-if="sessions.length > 0">
+            <div v-for="session in sessions" :key="session.sessionId" @click="onSessionClick(session)" :data-selected="detail.sessionId === session.sessionId">
+                <div class="logo">
+                    <img src="./android.png" alt="">
+                </div>
+                <div>
+                    <div>{{session.appName || session.packageName}}</div>
+                    <div class="date">{{session.beginTime | dateFormat}}</div>
+                </div>
+            </div>
+        </div>
+        <div v-else class="sessions empty">
+            <div>尚无应用帧率记录</div>
+        </div>
+        <div class="rows">
+            <div class="row">{{detail.packageName || 'APP'}}</div>
+            <div class="row t-row">
+                <div>{{detail.beginTime | dateFormat}}</div>
+            </div>
+            <div class="row fps-row">
+                <div class="col">
+                    <div class="st">MAX</div>
+                    <div class="number">{{(detail.max || 0).toFixed(1)}}</div>
+                    <div class="unit">FPS</div>
+                </div>
+                <div class="col">
+                    <div class="st">MIN</div>
+                    <div class="number">{{(detail.min || 0).toFixed(1)}}</div>
+                    <div class="unit">FPS</div>
+                </div>
+                <div class="col">
+                    <div class="st">AVG</div>
+                    <div class="number">{{(detail.avg || 0).toFixed(1)}}</div>
+                    <div class="unit">FPS</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <canvas id="myChart"></canvas>
+</body>
+<script>
+    function dateFormat(timeLong, fmt) {
+        if (!timeLong) {
+            return ''
+        }
+
+        let date = new Date(timeLong)
+        let ret;
+        const opt = {
+            "Y+": date.getFullYear().toString(),        // 年
+            "m+": (date.getMonth() + 1).toString(),     // 月
+            "d+": date.getDate().toString(),            // 日
+            "H+": date.getHours().toString(),           // 时
+            "M+": date.getMinutes().toString(),         // 分
+            "S+": date.getSeconds().toString()          // 秒
+            // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        };
+        for (let k in opt) {
+            ret = new RegExp("(" + k + ")").exec(fmt);
+            if (ret) {
+                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+            };
+        };
+        return fmt;
+    }
+
+    var sessions = window.SceneJS && window.SceneJS.getSessions();
+    var last = {};
+    var data = [];
+    if (sessions) {
+        sessions = JSON.parse(sessions);
+        // 超过10条，只显示最后10条
+        if (sessions.length > 10) {
+            sessions = sessions.slice(sessions.length - 10, sessions.length);
+        }
+    } else {
+        sessions = [];
+    }
+    var detail = {
+        max: 0,
+        min: 0,
+        avg: 0
+    };
+    if (sessions.length > 0) {
+        last = sessions[sessions.length - 1];
+        var detail = JSON.parse(window.SceneJS.getSessionData(last.sessionId));
+        data = detail.data;
+    }
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var stackedLine = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: data.map((it, i) => {
+                const minutes = parseInt(i / 60)
+                const seconds = i % 60
+                return '' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+            }),
+            datasets: [{
+                data: data,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255,99,132,1)',
+                borderWidth: 0.1,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        // max: 5,
+                        min: 0,
+                        // stepSize: 5
+                    }
+                }]
+            },
+            legend: {
+                display: false
+            },
+            elements: {
+                line: {
+                    tension: 0 // 禁用贝塞尔曲线
+                }
+            },
+            animation: {
+                duration: 0 // 一般动画时间
+            },
+            hover: {
+                animationDuration: 0 // 悬停项目时动画的持续时间
+            },
+            responsiveAnimationDuration: 0 // 调整大小后的动画持续时间
+        }
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            sessions,
+            detail: {
+                ...detail,
+                ...last
+            }
+        },
+        filters: {
+            dateFormat: (date) => {
+                return dateFormat(date, 'YYYY-mm-dd HH:MM')
+            }
+        },
+        methods: {
+            onSessionClick (session) {
+                const detail = {
+                    ...(JSON.parse(window.SceneJS.getSessionData(session.sessionId))),
+                    ...session
+                }
+                this.detail = detail;
+                const data = detail.data;
+
+                stackedLine.data = {
+                    labels: data.map((it, i) => {
+                        const minutes = parseInt(i / 60)
+                        const seconds = i % 60
+                        return '' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+                    }),
+                    datasets: [{
+                        label: 'FPS/TIME',
+                        data: data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255,99,132,1)',
+                        borderWidth: 0.1,
+                        pointRadius: 0
+                    }]
+                };
+                stackedLine.update();
+            }
+        }
+    });
+</script>
+
+</html>

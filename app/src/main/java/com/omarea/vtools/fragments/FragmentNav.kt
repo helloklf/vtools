@@ -294,6 +294,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
+                R.id.nav_fps_chart -> {
+                    val intent = Intent(context, ActivityFpsChart::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_additional -> {
                     val intent = Intent(context, ActivityAddin::class.java)
                     startActivity(intent)

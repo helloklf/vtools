@@ -198,6 +198,12 @@
                 android:tag="root"
                 app:drawable="@drawable/ic_processes"
                 app:text="@string/menu_processes" />
+
+            <com.omarea.ui.NavItem
+                android:id="@+id/nav_fps_chart"
+                style="@style/nav_item_wrap_right"
+                app:drawable="@drawable/fw_float_fps"
+                app:text="@string/menu_fps_chart" />
         </GridLayout>
 
         <TextView

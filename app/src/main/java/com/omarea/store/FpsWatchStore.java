@@ -79,7 +79,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 获取会话的详情
-    public ArrayList<Float> sessionDetail(int sessionId) {
+    public ArrayList<Float> sessionDetail(long sessionId) {
         ArrayList<Float> histories = new ArrayList<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
@@ -98,11 +98,11 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 获取会话中的平静帧率
-    public float sessionAvgFps(int sessionId) {
+    public float sessionAvgFps(long sessionId) {
         float result = 0;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            final Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) from fps_history where session = ?", new String[]{
+            final Cursor cursor = sqLiteDatabase.rawQuery("select avg(fps) from fps_history where session = ?", new String[]{
                     "" + sessionId
             });
             while (cursor.moveToNext()) {
@@ -117,11 +117,11 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 获取会话中的最低帧率
-    public float sessionMinFps(int sessionId) {
+    public float sessionMinFps(long sessionId) {
         float result = 0;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            final Cursor cursor = sqLiteDatabase.rawQuery("select min(io) from fps_history where session = ?", new String[]{
+            final Cursor cursor = sqLiteDatabase.rawQuery("select min(fps) from fps_history where session = ?", new String[]{
                     "" + sessionId
             });
             while (cursor.moveToNext()) {
@@ -136,11 +136,11 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 获取会话中的最高帧率
-    public float sessionMaxFps(int sessionId) {
+    public float sessionMaxFps(long sessionId) {
         float result = 0;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            final Cursor cursor = sqLiteDatabase.rawQuery("select max(io) from fps_history where session = ?", new String[]{
+            final Cursor cursor = sqLiteDatabase.rawQuery("select max(fps) from fps_history where session = ?", new String[]{
                     "" + sessionId
             });
             while (cursor.moveToNext()) {
@@ -179,7 +179,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("insert into fps_history(time, session, fps, power_mode) values (?, ?, ?)", new Object[]{
+            database.execSQL("insert into fps_history(time, session, fps, power_mode) values (?, ?, ?, ?)", new Object[]{
                     System.currentTimeMillis(),
                     session,
                     fps,
