@@ -402,6 +402,7 @@ class BatteryUtils {
     /**
      * 获取电池温度
      */
+    @Deprecated("", ReplaceWith("GlobalStatus"), DeprecationLevel.ERROR)
     public fun getBatteryTemperature(): BatteryStatus {
         val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")

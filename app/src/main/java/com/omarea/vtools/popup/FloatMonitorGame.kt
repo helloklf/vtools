@@ -19,6 +19,7 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.*
 import com.omarea.vtools.R
 import java.util.*
@@ -163,8 +164,6 @@ public class FloatMonitorGame(private val mContext: Context) {
             cpuLoad = 0.toDouble()
         }
 
-        val batteryStatus = batteryUnit.getBatteryTemperature()
-
         val fps = fpsUtils.currentFps
 
         myHandler.post {
@@ -175,7 +174,7 @@ public class FloatMonitorGame(private val mContext: Context) {
                 gpuLoadTextView?.text = "--"
             }
 
-            temperatureText!!.setText(batteryStatus.temperature.toString())
+            temperatureText!!.setText(GlobalStatus.batteryTemperature.toString())
             if (fps != null) {
                 fpsText?.text = fps.toString()
             }

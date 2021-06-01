@@ -13,7 +13,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     public FpsWatchStore(Context context) {
-        super(context, "fps_watch", null, DB_VERSION);
+        super(context, "fps_watch_log", null, DB_VERSION);
     }
 
     @Override
@@ -30,6 +30,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
                     "time INTEGER," +
                     "session INTEGER," +
                     "fps REAL," +
+                    "temperature REAL," +
                     "power_mode text" +
                     ")");
         } catch (Exception ignored) {
@@ -78,12 +79,30 @@ public class FpsWatchStore extends SQLiteOpenHelper {
         return histories;
     }
 
-    // 获取会话的详情
-    public ArrayList<Float> sessionDetail(long sessionId) {
+    // 获取会话的详情（帧率）
+    public ArrayList<Float> sessionFpsData(long sessionId) {
         ArrayList<Float> histories = new ArrayList<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             final Cursor cursor = sqLiteDatabase.rawQuery("select fps from fps_history where session = ?", new String[]{
+                    "" + sessionId
+            });
+            while (cursor.moveToNext()) {
+                histories.add(cursor.getFloat(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return histories;
+    }
+    // 获取会话的详情（温度）
+    public ArrayList<Float> sessionTemperatureData(long sessionId) {
+        ArrayList<Float> histories = new ArrayList<>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select temperature from fps_history where session = ?", new String[]{
                     "" + sessionId
             });
             while (cursor.moveToNext()) {
@@ -175,14 +194,15 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 添加记录
-    public boolean addHistory(long session, float fps, String powerMode) {
+    public boolean addHistory(long session, float fps, float temperature, String powerMode) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("insert into fps_history(time, session, fps, power_mode) values (?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into fps_history(time, session, fps, temperature, power_mode) values (?, ?, ?, ?, ?)", new Object[]{
                     System.currentTimeMillis(),
                     session,
                     fps,
+                    temperature,
                     powerMode
             });
             database.setTransactionSuccessful();

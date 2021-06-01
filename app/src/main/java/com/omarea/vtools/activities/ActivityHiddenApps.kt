@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
@@ -125,7 +126,7 @@ class ActivityHiddenApps : ActivityBase() {
                     progressBarDialog.showDialog(getString(R.string.please_wait))
                     Thread {
                         keepShell.doCmdSync(cmds.toString())
-                        val hasConfigChange = reInstallAppShell(items)
+                        reInstallAppShell(items)
 
                         val uninstalledApp = UninstalledApp().getUninstalledApp(this)
                         val fail: ArrayList<AppInfo> = ArrayList()
@@ -145,18 +146,7 @@ class ActivityHiddenApps : ActivityBase() {
                                     msg.append("\n")
                                 }
 
-                                if (hasConfigChange) {
-                                    DialogHelper.confirm(this,
-                                            "需要重启手机来恢复以下应用",
-                                            msg.toString(),
-                                            DialogHelper.DialogButton(getString(R.string.btn_reboot), {
-                                                keepShell.doCmdSync("sync\nsleep 2\nreboot")
-                                            }),
-                                            DialogHelper.DialogButton(getString(R.string.btn_not_now), {
-                                            }))
-                                } else {
-                                    DialogHelper.helpInfo(this, "以下应用未能恢复", msg.toString())
-                                }
+                                DialogHelper.helpInfo(this, "以下应用未能恢复", msg.toString() + "\n\n可尝试在Recovery(TWRP)模式备份并删除 /data/system/users/0/package-restrictions.xml")
 
                                 if (uninstalledApp.size != items.size) {
                                     loadData()
@@ -172,12 +162,13 @@ class ActivityHiddenApps : ActivityBase() {
         return super.onOptionsItemSelected(item)
     }
 
-    // 重新安装应用到当前用户（修改 /data/system/users/$uid/package-restrictions.xml 也可以做到，但是需要重启）
-    private fun reInstallAppShell(apps: ArrayList<AppInfo>): Boolean {
+    // 如果恢复不了，也可修改 /data/system/users/$uid/package-restrictions.xml
+    private fun reInstallAppShell(apps: ArrayList<AppInfo>) {
         val uid = FileOwner(this).userId
         for (app in apps) {
-            keepShell.doCmdSync("pm install-existing --user $uid ${app.packageName}")
+            val cmd = "pm install-existing --user $uid ${app.packageName}"
+            Log.d("Scene", cmd)
+            keepShell.doCmdSync(cmd)
         }
-        return true
     }
 }

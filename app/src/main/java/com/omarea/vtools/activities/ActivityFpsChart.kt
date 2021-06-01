@@ -170,19 +170,21 @@ class ActivityFpsChart : ActivityBase() {
 
             @JavascriptInterface
             public fun getSessionData(sessionId: Long): String {
-                val obj = JSONObject().apply {
-                    val ticks = JSONArray()
-                    fpsWatchStore.sessionDetail(sessionId).forEach {
-                        ticks.put(it)
-                    }
-
-                    put("data", ticks)
+                return JSONObject().apply {
+                    put("fps", JSONArray().apply {
+                        fpsWatchStore.sessionFpsData(sessionId).forEach {
+                            put(it)
+                        }
+                    })
+                    put("temperature", JSONArray().apply {
+                        fpsWatchStore.sessionTemperatureData(sessionId).forEach {
+                            put(it)
+                        }
+                    })
                     put("min", fpsWatchStore.sessionMinFps(sessionId))
                     put("max", fpsWatchStore.sessionMaxFps(sessionId))
                     put("avg", fpsWatchStore.sessionAvgFps(sessionId))
-                }
-
-                return obj.toString(2)
+                }.toString(2)
             }
 
             @JavascriptInterface

@@ -148,7 +148,12 @@ public class FloatFpsWatch(private val mContext: Context) {
     private fun updateInfo() {
         val fps = fpsUtils.getFps()
         if (sessionId > 0) {
-            fpsWatchStore.addHistory(sessionId, fps, ModeSwitcher.DEFAULT)
+            fpsWatchStore.addHistory(
+                sessionId,
+                fps,
+                GlobalStatus.batteryTemperature,
+                ModeSwitcher.DEFAULT
+            )
         }
 
         myHandler.post {

@@ -24,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.*
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FloatMonitorBatteryView
@@ -246,8 +247,6 @@ class FloatMonitor(private val mContext: Context) {
             cpuLoad = 0.toDouble();
         }
 
-        val batteryStatus = batteryUnit.getBatteryTemperature()
-
         // 电池电流
         val batteryCurrentNow = batteryManager?.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         val batteryCurrentNowMa = if (batteryCurrentNow != null) {
@@ -351,10 +350,11 @@ class FloatMonitor(private val mContext: Context) {
                 gpuChart!!.setData(100f, (100f - gpuLoad))
             }
 
-            temperatureChart!!.setData(100f, 100f - batteryStatus.level, batteryStatus.temperature)
-            temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
-            batteryLevelText!!.setText(batteryStatus.level.toString() + "%")
-            if (batteryStatus.statusText == "2") {
+            GlobalStatus.batteryCapacity
+            temperatureChart!!.setData(100f, 100f - GlobalStatus.batteryCapacity, GlobalStatus.batteryTemperature)
+            temperatureText!!.setText(GlobalStatus.batteryTemperature.toString() + "°C")
+            batteryLevelText!!.setText(GlobalStatus.batteryCapacity.toString() + "%")
+            if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
                 chargerView!!.visibility = View.VISIBLE
             } else {
                 chargerView!!.visibility = View.GONE

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,15 +7,23 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true">
 
+    <TextView
+        android:layout_marginTop="?android:actionBarSize"
+        android:id="@+id/tip"
+        android:padding="10dp"
+        android:textColor="?android:colorAccent"
+        android:text="如果应用无法恢复，可尝试在Recovery(TWRP)模式备份并删除 /data/system/users/0/package-restrictions.xml"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <com.omarea.common.ui.OverScrollListView
+        android:layout_below="@id/tip"
         android:id="@+id/hidden_app"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?android:actionBarSize" />
+        android:layout_height="match_parent" />
 
     <include
         layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</FrameLayout>
+</RelativeLayout>
