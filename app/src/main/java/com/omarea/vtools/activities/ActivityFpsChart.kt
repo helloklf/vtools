@@ -17,6 +17,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.basic.AppInfoLoader
 import com.omarea.library.calculator.Flags
+import com.omarea.library.shell.PlatformUtils
 import com.omarea.store.FpsWatchStore
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
@@ -135,6 +136,21 @@ class ActivityFpsChart : ActivityBase() {
                 }
 
                 return AppInfoLoader.AppBasicInfo(name, icon)
+            }
+
+            @JavascriptInterface
+            public fun deleteSession(sessionId: Long) {
+                fpsWatchStore.deleteSession(sessionId);
+            }
+
+            @JavascriptInterface
+            public fun getDeviceInfo(): String {
+                val obj = JSONObject()
+                obj.put("soc", PlatformUtils().getCPUName())
+                obj.put("model", Build.MODEL)
+                obj.put("sdk", Build.VERSION.SDK_INT)
+
+                return obj.toString(2)
             }
 
             @JavascriptInterface

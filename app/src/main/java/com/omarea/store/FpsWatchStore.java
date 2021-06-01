@@ -207,7 +207,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 删除会话记录
-    public boolean deleteSession(int sessionId) {
+    public boolean deleteSession(long sessionId) {
         try {
             SQLiteDatabase database = getWritableDatabase();
             database.execSQL("delete from session where id = ?", new Object[]{

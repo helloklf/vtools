@@ -4,7 +4,6 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_marginTop="40dp"
         android:background="@drawable/fw_fps_watch_bg"
         android:layout_width="wrap_content"
         android:layout_height="21dp">
@@ -24,6 +23,7 @@
             android:layout_centerInParent="true"
             android:layout_toEndOf="@+id/fw_action"
             android:alpha="0.8"
+            android:layout_marginStart="2dp"
             android:fontFamily="sans-serif-condensed-medium"
             android:minWidth="25dp"
             android:text="00.0"

@@ -202,6 +202,7 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_fps_chart"
                 style="@style/nav_item_wrap_right"
+                android:tag="root"
                 app:drawable="@drawable/fw_float_fps"
                 app:text="@string/menu_fps_chart" />
         </GridLayout>

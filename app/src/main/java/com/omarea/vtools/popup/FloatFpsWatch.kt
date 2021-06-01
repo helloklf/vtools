@@ -34,6 +34,14 @@ public class FloatFpsWatch(private val mContext: Context) {
     private var sessionApp: String? = null
 
     /**
+     * dp转换成px
+     */
+    private fun dp2px(context: Context, dpValue: Float): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+
+    /**
      * 显示弹出框
      * @param context
      */
@@ -56,7 +64,6 @@ public class FloatFpsWatch(private val mContext: Context) {
         mView = setUpView(mContext)
 
         val params = LayoutParams()
-        val monitorStorage = mContext.getSharedPreferences("float_monitor2_storage", Context.MODE_PRIVATE)
 
         // 类型
         params.type = LayoutParams.TYPE_SYSTEM_ALERT
@@ -77,8 +84,8 @@ public class FloatFpsWatch(private val mContext: Context) {
         params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.TOP or Gravity.RIGHT
-        params.x = monitorStorage.getInt("x", 0)
-        params.y = monitorStorage.getInt("y", 0)
+        // params.x = 0
+        params.y = dp2px(mContext, 40f)
 
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN
 

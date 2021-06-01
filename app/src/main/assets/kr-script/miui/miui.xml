@@ -129,7 +129,7 @@
         <picker
             id="mi-thermal"
             visible="run thermal_conf2/support.sh"
-            title="温控配置切换（2）" desc="将温控替换到/data/vendor/thermal，可能无需重启手机就能立即生效，适于骁龙865、870、888机型）"
+            title="温控配置切换（2）" desc="将温控替换到/data/vendor/thermal，无需重启手机即可生效，适于骁龙855、865(plus)、870、888机型）"
             options-sh="run thermal_conf2/options.sh">
             <summary sh="run thermal_conf2/summary.sh" />
             <get>run thermal_conf2/current.sh</get>
