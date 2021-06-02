@@ -104,30 +104,32 @@ public class FloatFpsWatch(private val mContext: Context) {
         mWindowManager!!.addView(mView, params)
 
         startTimer()
-        EventBus.subscibe(object : IEventReceiver{
-            override fun eventFilter(eventType: EventType): Boolean {
-                return (eventType == EventType.APP_SWITCH)
-            }
+        EventBus.subscibe(appWatch)
 
-            override fun onReceive(eventType: EventType) {
-                if (sessionId > 0) {
-                    val app = GlobalStatus.lastPackageName
-                    if (app != sessionApp) {
-                        sessionId = -1
-                        Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
-                        recordBtn?.run {
-                            setImageResource(R.drawable.play)
-                            view?.alpha = 1f
-                        }
+        return true
+    }
+
+    private val appWatch = object : IEventReceiver{
+        override fun eventFilter(eventType: EventType): Boolean {
+            return (eventType == EventType.APP_SWITCH)
+        }
+
+        override fun onReceive(eventType: EventType) {
+            if (sessionId > 0) {
+                val app = GlobalStatus.lastPackageName
+                if (app != sessionApp) {
+                    sessionId = -1
+                    Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                    recordBtn?.run {
+                        setImageResource(R.drawable.play)
+                        view?.alpha = 1f
                     }
                 }
             }
+        }
 
-            override val isAsync: Boolean
-                get() = false
-        })
-
-        return true
+        override val isAsync: Boolean
+            get() = false
     }
 
     private fun stopTimer() {
@@ -183,6 +185,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             show = false
         }
         sessionId = -1
+        EventBus.unsubscibe(appWatch)
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
