@@ -384,7 +384,7 @@ adjustment_by_top_app() {
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then
-        echo 0-4 > /dev/cpuset/top-app/cpus
+        echo 0-5 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "balance" ]]; then
         echo 0-6 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "performance" ]]; then
