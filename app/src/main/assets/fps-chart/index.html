@@ -10,8 +10,9 @@
     <meta name="format-detection" content="address=no" />
     <!--<title><%= htmlWebpackPlugin.options.title %></title>-->
     <title>正在进入页面~</title>
-    <script source="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" src="./Chart.min.js"></script>
+    <script source="https://chartjs.bootcss.com/dist/Chart.bundle.js" src="./Chart.bundle.2.7.2.js"></script>
     <script source="https://lib.baomitu.com/vue/2.6.12/vue.min.js" src="./vue.min.js"></script>
+
     <style>
         * {
             transition: all 0.2s linear;
@@ -334,12 +335,24 @@
                 type: "line",
                 data: {},
                 options: {
-                    events: ['click'],
+                    // events: ['click'],
                     tooltips: {
-                        enabled: false
+                        enabled: true
                     },
                     scales: {
                         yAxes: [{
+                            position: 'left',
+                            offset: true,
+                            id: 'yB',
+                            ticks: {
+                                max: 50,
+                                min: 30,
+                                stepSize: 5
+                            }
+                        }, {
+                            position: 'right',
+                            offset: true,
+                            id: 'yA',
                             ticks: {
                                 // max: 5,
                                 min: 0,
@@ -357,7 +370,6 @@
                     },
                     elements: {
                         line: {
-                            stepped: true,
                             tension: 0 // 禁用贝塞尔曲线
                         }
                     },
@@ -397,6 +409,8 @@
                     }),
                     datasets: [{
                         label: '温度变化',
+                        steppedLine: false,
+                        yAxisID: 'yB',
                         data: temperatureData,
                         fill: false,
                         borderColor: '#FF7E00',
@@ -405,7 +419,10 @@
                         pointRadius: 0
                     }, {
                         label: '帧率变化',
+                        steppedLine: true,
+                        yAxisID: 'yA',
                         data: fpsData,
+                        fill: true,
                         backgroundColor: '#E3D5F1',
                         borderColor: '#BC8DE4',
                         borderWidth: 0.1,
