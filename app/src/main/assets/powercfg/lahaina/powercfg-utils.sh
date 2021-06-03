@@ -219,7 +219,7 @@ set_cpu_pl() {
 }
 
 set_gpu_max_freq () {
-  echo $1 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+  echo $1 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 }
 
 set_gpu_min_freq() {
