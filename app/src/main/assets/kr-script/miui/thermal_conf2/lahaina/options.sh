@@ -7,10 +7,17 @@ cool_11|清爽酷凉(cool)
 performance_11|提高阈值(performance)
 danger|丧心病狂(danger)"
 
-# Mi 11 Pro、11 Ultra
-elif [[ $device == "M2102K1AC" ]] || [[ "$device" == 'M2102K1C' ]]; then
+# Mi 11 Ultra
+elif [[ "$device" == 'M2102K1C' ]]; then
 echo "default|系统默认(default)
-extreme_11pro|极致性能 (extreme)
+extreme_11pro|极致性能(extreme)
+danger|丧心病狂(danger)"
+
+# Mi 11 Pro
+elif [[ $device == "M2102K1AC" ]]; then
+echo "default|系统默认(default)
+pro_11pro|深度定制(pro)
+extreme_11pro|极致性能(extreme)
 danger|丧心病狂(danger)"
 
 # K40 Pro

@@ -15,10 +15,9 @@ thermal_files=(
 "${thermal_file_prefix}mgame${thermal_file_suffix}"
 )
 
-# Mi 11 Pro、11 Ultra
+# Mi 11 Pro
 elif [[ $device == "M2102K1AC" ]] || [[ $device == "M2102K1C" ]]; then
-thermal_file_prefix="thermal-"
-thermal_file_prefix2="thermal-k1a-"
+thermal_file_prefix="thermal-k1a-"
 thermal_files=(
 "${thermal_file_prefix}4k${thermal_file_suffix}"
 "${thermal_file_prefix}8k${thermal_file_suffix}"
@@ -30,16 +29,21 @@ thermal_files=(
 "${thermal_file_prefix}mgame${thermal_file_suffix}"
 "${thermal_file_prefix}navigation${thermal_file_suffix}"
 "${thermal_file_prefix}video${thermal_file_suffix}"
-"${thermal_file_prefix2}4k${thermal_file_suffix}"
-"${thermal_file_prefix2}8k${thermal_file_suffix}"
-"${thermal_file_prefix2}class0${thermal_file_suffix}"
-"${thermal_file_prefix2}camera${thermal_file_suffix}"
-"${thermal_file_prefix2}normal${thermal_file_suffix}"
-"${thermal_file_prefix2}nolimits${thermal_file_suffix}"
-"${thermal_file_prefix2}tgame${thermal_file_suffix}"
-"${thermal_file_prefix2}mgame${thermal_file_suffix}"
-"${thermal_file_prefix2}navigation${thermal_file_suffix}"
-"${thermal_file_prefix2}video${thermal_file_suffix}"
+)
+
+# Mi 11 Ultra
+elif [[ $device == "M2102K1C" ]]; then
+thermal_files=(
+"${thermal_file_prefix}4k${thermal_file_suffix}"
+"${thermal_file_prefix}8k${thermal_file_suffix}"
+"${thermal_file_prefix}class0${thermal_file_suffix}"
+"${thermal_file_prefix}camera${thermal_file_suffix}"
+"${thermal_file_prefix}normal${thermal_file_suffix}"
+"${thermal_file_prefix}nolimits${thermal_file_suffix}"
+"${thermal_file_prefix}tgame${thermal_file_suffix}"
+"${thermal_file_prefix}mgame${thermal_file_suffix}"
+"${thermal_file_prefix}navigation${thermal_file_suffix}"
+"${thermal_file_prefix}video${thermal_file_suffix}"
 )
 
 # K40 Pro

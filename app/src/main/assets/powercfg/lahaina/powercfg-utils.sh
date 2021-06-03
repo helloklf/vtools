@@ -73,6 +73,18 @@ if [[ "$gpu_min_pl" -lt 0 ]];then
   gpu_min_pl=0
 fi;
 
+conservative_mode() {
+  local policy=/sys/devices/system/cpu/cpufreq/policy
+  for cluster in 0 4 7; do
+    echo $cluster
+    echo 20 > ${policy}${cluster}/down_threshold
+    echo 60 > ${policy}${cluster}/up_threshold
+    echo 0 > ${policy}${cluster}/ignore_nice_load
+    echo 1000 > ${policy}${cluster}/sampling_rate # 1000us = 1ms
+    echo 4 > ${policy}${cluster}/freq_step
+    echo 'conservative' > ${policy}${cluster}/scaling_governor
+  done
+}
 
 reset_basic_governor() {
   # CPU
@@ -206,6 +218,10 @@ set_cpu_pl() {
   echo $1 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/pl
 }
 
+set_gpu_max_freq () {
+  echo $1 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+}
+
 set_gpu_min_freq() {
   index=$1
 
@@ -305,14 +321,14 @@ adjustment_by_top_app() {
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
         ctl_off cpu4
         ctl_off cpu7
+      conservative_mode
         if [[ "$action" = "powersave" ]]; then
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 4
           set_cpu_freq 1036800 1804800 1478400 1766400 1075200 2265600
-          set_hispeed_freq 1708800 1766400 2073600
-          sched_limit 5000 0 5000 0 5000 0
+          set_gpu_max_freq 540000000
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -321,18 +337,20 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
           set_hispeed_freq 1708800 1056000 1075200
           sched_limit 5000 0 5000 0 5000 0
+          set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
           set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
-          set_hispeed_freq 1708800 1766400 1747200
           sched_limit 5000 0 5000 0 5000 0
+          set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 1
           stune_top_app 1 100
           sched_limit 5000 0 10000 0 5000 0
           # sched_config "40 60" "50 75" "120" "150"
+          set_gpu_max_freq 840000000
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
