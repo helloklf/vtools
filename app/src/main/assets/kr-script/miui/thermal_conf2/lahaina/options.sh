@@ -3,13 +3,14 @@ device=`getprop ro.product.vendor.model`
 # Mi 11
 if [[ $device == "M2011K2C" ]]; then
 echo "default|系统默认(default)
-cool_11|清爽酷凉(cool)
+pro_11|深度定制(pro)
 performance_11|提高阈值(performance)
 danger|丧心病狂(danger)"
 
 # Mi 11 Ultra
 elif [[ "$device" == 'M2102K1C' ]]; then
 echo "default|系统默认(default)
+pro_11ultra|深度定制(pro)
 extreme_11pro|极致性能(extreme)
 danger|丧心病狂(danger)"
 
