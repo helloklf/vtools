@@ -17,6 +17,7 @@ distinct_apps="
 game=com.miHoYo.Yuanshen,com.miHoYo.ys.bilibili,com.miHoYo.ys.mi
 
 mgame=com.bilibili.gcg2.bili
+sgame=com.tencent.tmgp.sgame
 
 heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,com.baidu.tieba_mini,com.baidu.tieba,com.jingdong.app.mall
 
@@ -352,6 +353,42 @@ adjustment_by_top_app() {
           sched_boost 1 0
           stune_top_app 1 10
           set_cpu_freq 1036800 1420800 1440000 2419200 1075200 2841600
+          set_gpu_max_freq 738000000
+        elif [[ "$action" = "fast" ]]; then
+          conservative_mode 30 60
+          sched_boost 1 1
+          stune_top_app 1 100
+          # sched_config "40 60" "50 75" "120" "150"
+          set_gpu_max_freq 840000000
+        fi
+        cpuset '0-1' '0-3' '0-3' '0-7'
+    ;;
+
+    # Wang Zhe Rong Yao
+    "com.tencent.tmgp.sgame")
+        ctl_off cpu4
+        ctl_on cpu7
+        if [[ "$action" = "powersave" ]]; then
+          conservative_mode 45 80
+          sched_boost 0 0
+          stune_top_app 0 0
+          sched_config "60 68" "78 80" "300" "400"
+          set_cpu_freq 1036800 1708800 1440000 1766400 844800 1670400
+          # set_gpu_max_freq 540000000
+          set_gpu_max_freq 491000000
+        elif [[ "$action" = "balance" ]]; then
+          conservative_mode 45 75
+          sched_boost 0 0
+          stune_top_app 0 0
+          sched_config "50 68" "67 80" "300" "400"
+          set_cpu_freq 1036800 1708800 1440000 1996800 844800 2035200
+          set_hispeed_freq 1708800 1440000 1075200
+          set_gpu_max_freq 676000000
+        elif [[ "$action" = "performance" ]]; then
+          conservative_mode 35 70
+          sched_boost 1 0
+          stune_top_app 1 10
+          set_cpu_freq 1036800 1708800 1440000 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           conservative_mode 30 60
