@@ -1,7 +1,6 @@
 package com.omarea.library.shell;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.model.ProcessInfo;

@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.omarea.model.SceneConfigInfo;
 import com.omarea.vtools.R;

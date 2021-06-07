@@ -19,7 +19,6 @@ import android.widget.CompoundButton
 import android.widget.Filterable
 import android.widget.SeekBar
 import android.widget.Toast
-import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.DialogAppChooser

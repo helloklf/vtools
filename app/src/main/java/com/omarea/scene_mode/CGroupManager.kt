@@ -1,7 +1,6 @@
 package com.omarea.scene_mode
 
 import android.content.Context
-import com.omarea.Scene
 import com.omarea.library.shell.CGroupMemoryUtlis
 import java.util.*
 import kotlin.collections.ArrayList

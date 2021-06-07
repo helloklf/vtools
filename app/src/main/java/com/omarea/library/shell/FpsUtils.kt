@@ -1,13 +1,13 @@
 package com.omarea.library.shell
 
 import com.omarea.common.shell.KeepShell
-import com.omarea.common.shell.KeepShellPublic.doCmdSync
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile.fileExists
 
 /**
  * 帧率检测
  */
-class FpsUtils {
+class FpsUtils(private val keepShell: KeepShell = KeepShellPublic.getDefaultInstance()) {
     private var fpsFilePath: String? = null
     private var subStrCommand = "| awk '{print \$2}'"
 
@@ -17,29 +17,9 @@ class FpsUtils {
 
     val currentFps: String?
         get() {
-            // 优先使用系统帧率
-            if (fpsCommand2.isNotEmpty()) {
-                val result = doCmdSync(fpsCommand2).trim()
-                if (result != "error" && !result.contains("Parcel")) {
-                    fpsCommand2 = ""
-                } else {
-                    try {
-                        val index = result.indexOf("(") + 1
-                        val frames = Integer.parseInt(result.substring(index, index + 8), 16)
-                        val time = System.currentTimeMillis()
-                        var fps = 0F
-                        if (lastTime > 0 && lastFrames > 0) {
-                            fps = (frames - lastFrames) * 1000.0f / (time - lastTime)
-                        }
-                        lastFrames = frames
-                        lastTime = time
-                        return String.format("%.1f", fps)
-                    } catch (ex: Exception) {
-                        if (!(lastTime > 0 && lastFrames > 0)) {
-                            fpsCommand2 = ""
-                        }
-                    }
-                }
+            // 优先使用GPU的内核级帧数数据
+            if (!fpsFilePath.isNullOrEmpty()) {
+                return keepShell.doCmdSync("cat $fpsFilePath $subStrCommand")
             }
             // 如果系统帧率不可用使用GPU的内核级帧数数据
             else if (fpsFilePath == null) {
@@ -78,10 +58,42 @@ class FpsUtils {
                     }
                 }
             }
-            // 优先使用GPU的内核级帧数数据
-            else if (!fpsFilePath.isNullOrEmpty()) {
-                return doCmdSync("cat $fpsFilePath $subStrCommand")
+            // 使用系统帧率
+            else if (fpsCommand2.isNotEmpty()) {
+                val result = keepShell.doCmdSync(fpsCommand2).trim()
+                if (result != "error" && !result.contains("Parcel")) {
+                    fpsCommand2 = ""
+                } else {
+                    try {
+                        val index = result.indexOf("(") + 1
+                        val frames = Integer.parseInt(result.substring(index, index + 8), 16)
+                        val time = System.currentTimeMillis()
+                        var fps = 0F
+                        if (lastTime > 0 && lastFrames > 0) {
+                            fps = (frames - lastFrames) * 1000.0f / (time - lastTime)
+                        }
+                        lastFrames = frames
+                        lastTime = time
+                        return String.format("%.1f", fps)
+                    } catch (ex: Exception) {
+                        if (!(lastTime > 0 && lastFrames > 0)) {
+                            fpsCommand2 = ""
+                        }
+                    }
+                }
             }
             return null
+        }
+
+    val fps: Float
+        get() {
+            val fpsStr = currentFps
+            if (fps != null) {
+                try {
+                    return fps.toFloat()
+                } catch (ex: java.lang.Exception) {
+                }
+            }
+            return -0f
         }
 }
