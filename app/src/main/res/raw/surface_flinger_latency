@@ -1,3 +1,0 @@
-window=`dumpsys window | grep 'mCurrentFocus=Window' | awk  -F ' ' '{ print $3}' | awk  -F '}' '{ print $1}'`
-dumpsys SurfaceFlinger --latency $window#0
-dumpsys SurfaceFlinger --latency-clear 2>/dev/null
