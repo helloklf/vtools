@@ -181,19 +181,6 @@ open class ModeSwitcher {
             }
             lastInitProvider = PROVIDER_INSIDE
             configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
-
-            /*
-            FileWrite.writePrivateFile(
-                    RawText.getRawText(Scene.context, R.raw.general_optimize).toByteArray(Charset.defaultCharset()),
-                    "powercfg/general_optimize.sh",
-                    Scene.context).run {
-                if (this) {
-                    val file = FileWrite.getPrivateFilePath(Scene.context, "powercfg/general_optimize.sh")
-                    // keepShellExec("sh $file")
-                    keepShellExec("nohup $file >/dev/null 2>&1 &")
-                }
-            }
-            */
         }
 
         if (configProvider.isNotEmpty()) {
