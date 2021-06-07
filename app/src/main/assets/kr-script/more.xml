@@ -102,18 +102,4 @@
             config="other/other.xml"
             desc="其它杂七杂八的功能" title="杂项" />
     </group>
-
-    <group>
-        <page
-            id="page-outdated"
-            config="outdated/outdated.xml"
-            confirm="true"
-            desc="一些由于效用不佳而被废弃的功能" title="废弃的功能" />
-    </group>
-
-    <group>
-        <page
-            html="https://vtools.oss-cn-beijing.aliyuncs.com/"
-            desc="Scene 官网" title="Scene 官网在线页面" />
-    </group>
 </pages>

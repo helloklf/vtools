@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <resource dir="file:///android_asset/kr-script/common" />
+    <resource dir="file:///android_asset/kr-script/general" />
+
+    <page
+        id="page-meizu"
+        config="flyme/flyme.xml"
+        desc="适用于Flyme系统的选项" title="Flyme专属"
+        visible="run common/flyme_support.sh" />
+
+    <group>
+        <page
+            id="page-outdated"
+            config="outdated/outdated.xml"
+            confirm="true"
+            desc="一些由于效用不佳而被废弃的功能" title="废弃的功能" />
+    </group>
+
+    <group>
+        <page
+            html="https://vtools.oss-cn-beijing.aliyuncs.com/"
+            desc="Scene 官网" title="Scene 官网在线页面" />
+    </group>
+</pages>

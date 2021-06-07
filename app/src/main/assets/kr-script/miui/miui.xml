@@ -90,7 +90,7 @@
                 title="区域大小(%)"
                 desc="系统设置里的可调节范围是20%~100%"
                 min="0" max="200" name="level" value-sh="run edge/get.sh" type="seekbar" />
-            <set>run haptic/set.sh</set>
+            <set>run edge/set.sh</set>
         </action>
     </group>
 

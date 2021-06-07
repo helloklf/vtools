@@ -10,8 +10,7 @@
 
         <page
             id="HighPowerApplicationsActivity"
-            activity="com.android.settings/.Settings$HighPowerApplicationsActivity"
-            logo-path="kr-script/battery/power_icon.png">
+            activity="com.android.settings/.Settings$HighPowerApplicationsActivity">
             <title>电池优化</title>
             <desc>进入系统的电池优化设置界面</desc>
         </page>
@@ -23,14 +22,5 @@
             <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
             <set>run history_clear.sh</set>
         </action>
-    </group>
-
-    <group title="实验性待机模式" visible=". ./kr-script/common/android_p.sh">
-        <switch auto-off="true" auto-finish="true" id="extreme_power" logo-path="kr-script/battery/extreme_power.png">
-            <title>待机模式</title>
-            <desc>杀死并冻结所有第三方应用，并进入锁屏状态</desc>
-            <get>getprop persist.vtools.suspend</get>
-            <set>run extreme_power.sh</set>
-        </switch>
     </group>
 </root>
