@@ -88,9 +88,9 @@ class FpsUtils(private val keepShell: KeepShell = KeepShellPublic.getDefaultInst
     val fps: Float
         get() {
             val fpsStr = currentFps
-            if (fps != null) {
+            if (fpsStr != null) {
                 try {
-                    return fps.toFloat()
+                    return fpsStr.toFloat()
                 } catch (ex: java.lang.Exception) {
                 }
             }

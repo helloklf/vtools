@@ -1,0 +1,178 @@
+* {
+  transition: all 0.2s linear;
+}
+
+.sessions {
+  padding: 5px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  font-size: 14px;
+  color: #444;
+  border-top: 1px solid #f0f0f0;
+}
+
+.sessions>div {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.sessions.empty {
+  text-align: center;
+  padding: 10px;
+  color: #a0a0a0;
+}
+
+.sessions .logo,
+.sessions .logo img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.sessions .delete {
+  width: 30px;
+  height: 30px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.sessions .delete img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.sessions .delete {
+  display: none;
+}
+
+.sessions div[data-selected='true'] .delete {
+  display: inline-block;
+}
+
+.sessions .logo+div {
+  flex: 1;
+  padding-left: 5px;
+}
+
+.sessions div[data-selected='true'] {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.date {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #909090;
+}
+
+.summary {
+  padding: 20px;
+  border-radius: 10px;
+  margin: 10px;
+}
+
+.rows {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 4px;
+  background-color: #fff;
+  padding: 0 15px;
+  border-radius: 5px;
+}
+
+.row {
+  display: flex;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.row:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
+
+.row .col {
+  text-align: center;
+}
+
+.t-row {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-right: 20px;
+  color: #aaa;
+  font-size: 10px;
+}
+
+.fps-row {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.row .st {
+  font-size: 10px;
+  font-weight: 100;
+  color: #888;
+}
+
+.row .unit {
+  font-size: 10px;
+  color: #bbb;
+  font-weight: 100;
+}
+
+.row .number {
+  font-size: 20px;
+  padding: 5px 0;
+  color: #BC8DE4;
+}
+
+.row>div {
+  flex: 1;
+}
+
+#myChart {
+  border-radius: 5px;
+  display: block;
+  width: 100%;
+  padding-top: 15px;
+}
+
+.card {
+  border-radius: 5px;
+  box-shadow: 1px 2px 7px rgba(170, 170, 170, 0.2);
+}
+
+.device-info {
+  padding: 20px 10px 10px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+}
+
+.device-info img {
+  margin-top: 6px;
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+.device-info>div {
+  flex: 1;
+}
+
+.device-info>div>div:first-child {
+  font-size: 8px;
+  color: #a0a0a0;
+  transform: scale(0.9);
+}
+
+.device-info>div>div:last-child {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #444;
+  font-weight: 100;
+}

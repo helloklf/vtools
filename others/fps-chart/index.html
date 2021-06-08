@@ -9,186 +9,10 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="format-detection" content="address=no" />
     <!--<title><%= htmlWebpackPlugin.options.title %></title>-->
-    <title>正在进入页面~</title>
+    <title>帧率统计图表</title>
     <script source="https://chartjs.bootcss.com/dist/Chart.bundle.js" src="./Chart.bundle.2.7.2.js"></script>
     <script source="https://lib.baomitu.com/vue/2.6.12/vue.min.js" src="./vue.min.js"></script>
-
-    <style>
-        * {
-            transition: all 0.2s linear;
-        }
-
-        .sessions {
-            padding: 5px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            font-size: 14px;
-            color: #444;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .sessions>div {
-            padding: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sessions.empty {
-            text-align: center;
-            padding: 10px;
-            color: #a0a0a0;
-        }
-
-        .sessions .logo,
-        .sessions .logo img {
-            width: 30px;
-            height: 30px;
-            object-fit: contain;
-            display: inline-block;
-        }
-
-        .sessions .delete {
-            width: 30px;
-            height: 30px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .sessions .delete img {
-            width: 14px;
-            height: 14px;
-            object-fit: contain;
-            display: inline-block;
-        }
-
-        .sessions .delete {
-            display: none;
-        }
-
-        .sessions div[data-selected='true'] .delete {
-            display: inline-block;
-        }
-
-        .sessions .logo+div {
-            flex: 1;
-            padding-left: 5px;
-        }
-
-        .sessions div[data-selected='true'] {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-
-        .date {
-            margin-top: 3px;
-            font-size: 11px;
-            color: #909090;
-        }
-
-        .summary {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px;
-        }
-
-        .rows {
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 4px;
-            background-color: #fff;
-            padding: 0 15px;
-            border-radius: 5px;
-        }
-
-        .row {
-            display: flex;
-            padding: 10px 0;
-            font-size: 14px;
-        }
-
-        .row:not(:last-child) {
-            border-bottom: 1px solid #fff;
-        }
-
-        .row .col {
-            text-align: center;
-        }
-
-        .t-row {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding-right: 20px;
-            color: #aaa;
-            font-size: 10px;
-        }
-
-        .fps-row {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .row .st {
-            font-size: 10px;
-            font-weight: 100;
-            color: #888;
-        }
-
-        .row .unit {
-            font-size: 10px;
-            color: #bbb;
-            font-weight: 100;
-        }
-
-        .row .number {
-            font-size: 20px;
-            padding: 5px 0;
-            color: #BC8DE4;
-        }
-
-        .row>div {
-            flex: 1;
-        }
-
-        #myChart {
-            border-radius: 5px;
-            display: block;
-            width: 100%;
-            padding-top: 15px;
-        }
-    </style>
-    <style>
-        .card {
-            border-radius: 5px;
-            box-shadow: 1px 2px 7px rgba(170, 170, 170, 0.2);
-        }
-        .device-info {
-            padding: 20px 10px 10px;
-            display: flex;
-            text-align: center;
-            align-items: center;
-        }
-        .device-info img {
-            margin-top: 6px;
-            display: inline-block;
-            width: 32px;
-            height: 32px;
-        }
-        .device-info > div {
-            flex: 1;
-        }
-        .device-info > div > div:first-child {
-            font-size: 8px;
-            color: #a0a0a0;
-            transform: scale(0.9);
-        }
-        .device-info > div > div:last-child {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            color: #444;
-            font-weight: 100;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./styles.css">
 </head>
 
 <body>
@@ -259,180 +83,28 @@
                         <div class="unit">FPS</div>
                     </div>
                 </div>
+                <div class="row fps-row">
+                    <div class="col">
+                        <div class="st">≥ 40FPS</div>
+                        <div class="number">{{detail.fluency || '0'}}%</div>
+                        <div class="unit">Smooth</div>
+                    </div>
+                    <div class="col">
+                        <div class="st">≥ 45°C</div>
+                        <div class="number">{{detail.highTempRatio}}%</div>
+                        <div class="unit">Temperature</div>
+                    </div>
+                    <div class="col">
+                        <div class="st">MAX</div>
+                        <div class="number">{{detail.maxTemp}}°C</div>
+                        <div class="unit">Temperature</div>
+                    </div>
+                </div>
             </div>
             <canvas id="myChart" ref="myChart"></canvas>
         </div>
     </div>
 </body>
-<script>
-    const SceneJS = window.SceneJS;
-
-    function dateFormat(timeLong, fmt) {
-        if (!timeLong) {
-            return ''
-        }
-
-        let date = new Date(timeLong)
-        let ret;
-        const opt = {
-            "Y+": date.getFullYear().toString(),        // 年
-            "m+": (date.getMonth() + 1).toString(),     // 月
-            "d+": date.getDate().toString(),            // 日
-            "H+": date.getHours().toString(),           // 时
-            "M+": date.getMinutes().toString(),         // 分
-            "S+": date.getSeconds().toString()          // 秒
-            // 有其他格式化字符需求可以继续添加，必须转化成字符串
-        };
-        for (let k in opt) {
-            ret = new RegExp("(" + k + ")").exec(fmt);
-            if (ret) {
-                fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-            };
-        };
-        return fmt;
-    }
-
-    var stackedLine;
-    var app = new Vue({
-        el: '#app',
-        data: {
-            sessions: SceneJS ? JSON.parse(SceneJS.getSessions()) : [],
-            detail: {
-                max: 0,
-                min: 0,
-                avg: 0
-            },
-            device: SceneJS ? JSON.parse(SceneJS.getDeviceInfo()) : {}
-        },
-        filters: {
-            dateFormat: (date) => {
-                return dateFormat(date, 'YYYY-mm-dd HH:MM')
-            },
-            androidVersion (sdkInt) {
-                if (sdkInt) {
-                    const versions = {
-                        31: "Android 12",
-                        30: "Android 11",
-                        29: "Android 10",
-                        28: "Android 9",
-                        27: "Android 8.1",
-                        26: "Android 8.0",
-                        25: "Android 7.0",
-                        24: "Android 7.0",
-                        23: "Android 6.0",
-                        22: "Android 5.1",
-                        21: "Android 5.0"
-                    }
-                    return versions[sdkInt] || `SDK(${sdkInt})`
-                } else {
-                    return '--'
-                }
-            }
-        },
-        mounted () {
-            var ctx = this.$refs.myChart.getContext('2d');
-            stackedLine = new Chart(ctx, {
-                type: "line",
-                data: {},
-                options: {
-                    // events: ['click'],
-                    tooltips: {
-                        enabled: true
-                    },
-                    scales: {
-                        yAxes: [{
-                            position: 'left',
-                            offset: true,
-                            id: 'yB',
-                            ticks: {
-                                max: 50,
-                                min: 30,
-                                stepSize: 5
-                            }
-                        }, {
-                            position: 'right',
-                            offset: true,
-                            id: 'yA',
-                            ticks: {
-                                // max: 5,
-                                min: 0,
-                                // stepSize: 5
-                            }
-                        }],
-                        xAxes: [{
-                            ticks: {
-                                stepSize: 30
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: true
-                    },
-                    elements: {
-                        line: {
-                            tension: 0 // 禁用贝塞尔曲线
-                        }
-                    },
-                    animation: {
-                        duration: 0 // 一般动画时间
-                    },
-                    hover: {
-                        animationDuration: 0 // 悬停项目时动画的持续时间
-                    },
-                    responsiveAnimationDuration: 0 // 调整大小后的动画持续时间
-                }
-            });
-        },
-        methods: {
-            deleteSession(session) {
-                SceneJS.deleteSession(session.sessionId);
-                this.sessions.splice(this.sessions.indexOf(session), 1)
-                if (this.sessions.length > 0) {
-                    this.onSessionClick(this.sessions[this.sessions.length - 1])
-                }
-            },
-            onSessionClick(session) {
-                const detail = {
-                    ...(JSON.parse(SceneJS.getSessionData(session.sessionId))),
-                    ...session
-                };
-                this.detail = detail;
-                const fpsData = detail.fps || [];
-                const temperatureData = detail.temperature || [];
-
-                stackedLine.data = {
-                    vue: false,
-                    labels: fpsData.map((it, i) => {
-                        const minutes = parseInt(i / 60)
-                        const seconds = i % 60
-                        return '' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds
-                    }),
-                    datasets: [{
-                        label: '温度变化',
-                        steppedLine: false,
-                        yAxisID: 'yB',
-                        data: temperatureData,
-                        fill: false,
-                        borderColor: '#FF7E00',
-                        backgroundColor: '#FF7E00',
-                        borderWidth: 1,
-                        pointRadius: 0
-                    }, {
-                        label: '帧率变化',
-                        steppedLine: true,
-                        yAxisID: 'yA',
-                        data: fpsData,
-                        fill: true,
-                        backgroundColor: '#E3D5F1',
-                        borderColor: '#BC8DE4',
-                        borderWidth: 0.1,
-                        pointRadius: 0
-                    }]
-                };
-                stackedLine.update();
-            }
-        }
-    });
-</script>
+<script src="./scripts.js"></script>
 
 </html>

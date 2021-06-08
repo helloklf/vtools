@@ -86,7 +86,7 @@ public class FloatFpsWatch(private val mContext: Context) {
 
         params.gravity = Gravity.TOP or Gravity.RIGHT
         // params.x = 0
-        params.y = dp2px(mContext, 40f)
+        params.y = dp2px(mContext, 55f)
 
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN
 
@@ -122,8 +122,10 @@ public class FloatFpsWatch(private val mContext: Context) {
                     sessionId = -1
                     Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
                     recordBtn?.run {
-                        setImageResource(R.drawable.play)
-                        view?.alpha = 1f
+                        post {
+                            setImageResource(R.drawable.play)
+                            view?.alpha = 1f
+                        }
                     }
                 }
             }
