@@ -75,6 +75,9 @@ fi;
 
 
 reset_basic_governor() {
+  echo 1 > /sys/devices/system/cpu/cpu0/online
+  echo 1 > /sys/devices/system/cpu/cpu4/online
+  echo 1 > /sys/devices/system/cpu/cpu7/online
   # CPU
   governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
   governor4=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
@@ -101,7 +104,7 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
-governor_backup () {
+devfreq_backup () {
   local devfreq_backup=/cache/devfreq_backup.prop
   local backup_state=`getprop vtools.dev_freq_backup`
   if [[ ! -f $devfreq_backup ]] || [[ "$backup_state" != "true" ]]; then
