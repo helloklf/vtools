@@ -112,16 +112,19 @@ public class FloatFpsWatch(private val mContext: Context) {
 
     private val appWatch = object : IEventReceiver{
         override fun eventFilter(eventType: EventType): Boolean {
-            return (eventType == EventType.APP_SWITCH)
+            return (eventType == EventType.APP_SWITCH || eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON)
         }
 
         override fun onReceive(eventType: EventType) {
             if (sessionId > 0) {
-                val app = GlobalStatus.lastPackageName
-                if (app != sessionApp) {
+                if ((eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON) || (GlobalStatus.lastPackageName != sessionApp)) {
                     sessionId = -1
                     myHandler.post {
-                        Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                        if (eventType == EventType.SCREEN_OFF) {
+                            Toast.makeText(mContext, "屏幕显示状态变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                        }
                         recordBtn?.run {
                             setImageResource(R.drawable.play)
                             view?.alpha = 1f

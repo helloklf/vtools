@@ -86,17 +86,24 @@
                 app:text="@string/menu_battery_stats" />
 
             <com.omarea.ui.NavItem
+                android:id="@+id/nav_auto_click"
+                style="@style/nav_item_wrap"
+                app:drawable="@drawable/ic_menu_click"
+                app:text="@string/menu_auto_click" />
+
+            <com.omarea.ui.NavItem
+                android:id="@+id/nav_fps_chart"
+                style="@style/nav_item_wrap_right"
+                android:tag="root"
+                app:drawable="@drawable/fw_float_fps"
+                app:text="@string/menu_fps_chart" />
+
+            <com.omarea.ui.NavItem
                 android:id="@+id/nav_system_scene"
                 style="@style/nav_item_wrap"
                 android:tag="root"
                 app:drawable="@drawable/ic_menu_system"
                 app:text="@string/menu_system_scene" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_auto_click"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/ic_menu_click"
-                app:text="@string/menu_auto_click" />
         </GridLayout>
 
         <TextView
@@ -198,13 +205,6 @@
                 android:tag="root"
                 app:drawable="@drawable/ic_processes"
                 app:text="@string/menu_processes" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_fps_chart"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/fw_float_fps"
-                app:text="@string/menu_fps_chart" />
         </GridLayout>
 
         <TextView

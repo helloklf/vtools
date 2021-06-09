@@ -13,13 +13,16 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.basic.AppInfoLoader
 import com.omarea.library.calculator.Flags
 import com.omarea.library.shell.PlatformUtils
 import com.omarea.store.FpsWatchStore
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import com.omarea.vtools.popup.FloatFpsWatch
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -47,8 +50,8 @@ class ActivityFpsChart : ActivityBase() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 
-        // vtools_online.loadUrl("file:///android_asset/fps-chart/index.html")
-        vtools_online.loadUrl("https://vtools.oss-cn-beijing.aliyuncs.com/Scene-Online/fps-chart/index.html")
+        vtools_online.loadUrl("file:///android_asset/fps-chart/index.html")
+        // vtools_online.loadUrl("https://vtools.oss-cn-beijing.aliyuncs.com/Scene-Online/fps-chart/index.html")
         val context = this@ActivityFpsChart
         val progressBarDialog = ProgressBarDialog(context)
 
@@ -136,6 +139,25 @@ class ActivityFpsChart : ActivityBase() {
                 }
 
                 return AppInfoLoader.AppBasicInfo(name, icon)
+            }
+
+            @JavascriptInterface
+            public fun toggleFpsToolbar(show: Boolean) {
+                Scene.post {
+                    val serviceState = AccessibleServiceHelper().serviceRunning(context)
+                    if (show && !serviceState) {
+                        Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
+                    } else if (show) {
+                        FloatFpsWatch(context).showPopupWindow()
+                    } else {
+                        FloatFpsWatch(context).hidePopupWindow()
+                    }
+                }
+            }
+
+            @JavascriptInterface
+            public fun getFpsToolbarState(): String {
+                return FloatFpsWatch.show.toString()
             }
 
             @JavascriptInterface

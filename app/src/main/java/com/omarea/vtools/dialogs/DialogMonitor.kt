@@ -4,7 +4,9 @@ import android.app.Activity
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatFpsWatch
 import com.omarea.vtools.popup.FloatMonitor
@@ -56,7 +58,13 @@ class DialogMonitor(var context: Activity) {
             isChecked = FloatFpsWatch.show == true
             setOnClickListener {
                 if (isChecked) {
-                    FloatFpsWatch(context).showPopupWindow()
+                    val serviceState = AccessibleServiceHelper().serviceRunning(context)
+                    if (serviceState) {
+                        FloatFpsWatch(context).showPopupWindow()
+                    } else {
+                        isChecked = false
+                        Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
+                    }
                 } else {
                     FloatFpsWatch(context).hidePopupWindow()
                 }

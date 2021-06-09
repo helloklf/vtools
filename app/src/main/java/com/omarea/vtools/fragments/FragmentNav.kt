@@ -295,8 +295,13 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
                 R.id.nav_fps_chart -> {
-                    val intent = Intent(context, ActivityFpsChart::class.java)
-                    startActivity(intent)
+                    val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
+                    if (serviceState) {
+                        val intent = Intent(context, ActivityFpsChart::class.java)
+                        startActivity(intent)
+                    } else {
+                        Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
+                    }
                     return
                 }
                 R.id.nav_additional -> {
