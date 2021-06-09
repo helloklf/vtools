@@ -120,9 +120,9 @@ public class FloatFpsWatch(private val mContext: Context) {
                 val app = GlobalStatus.lastPackageName
                 if (app != sessionApp) {
                     sessionId = -1
-                    Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
-                    recordBtn?.run {
-                        post {
+                    myHandler.post {
+                        Toast.makeText(mContext, "前台应用发生变化，帧率录制结束", Toast.LENGTH_SHORT).show()
+                        recordBtn?.run {
                             setImageResource(R.drawable.play)
                             view?.alpha = 1f
                         }
@@ -202,6 +202,7 @@ public class FloatFpsWatch(private val mContext: Context) {
                     sessionId = -1
                     setImageResource(R.drawable.play)
                     view?.alpha = 1f
+                    Toast.makeText(mContext, "帧率录制结束！", Toast.LENGTH_SHORT).show()
                 } else {
                     val app = if (GlobalStatus.lastPackageName.isNullOrEmpty()) "android" else GlobalStatus.lastPackageName
                     sessionId = fpsWatchStore.createSession(app)
