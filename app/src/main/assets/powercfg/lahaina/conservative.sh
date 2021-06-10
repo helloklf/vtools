@@ -92,5 +92,6 @@ elif [[ "$action" = "fast" ]]; then
   stune_top_app 1 0
 fi
 
-
 adjustment_by_top_app
+restore_core_online
+

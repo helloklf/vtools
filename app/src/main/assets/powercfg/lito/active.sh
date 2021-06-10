@@ -47,7 +47,7 @@ governor_backup () {
   if [[ ! -f $governor_backup ]] || [[ "$backup_state" != "true" ]]; then
     echo '' > $governor_backup
     local dir=/sys/class/devfreq
-    for file in `ls $dir`; do
+    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
       if [ -f $dir/$file/governor ]; then
         governor=`cat $dir/$file/governor`
         echo "$file#$governor" >> $governor_backup
@@ -65,7 +65,7 @@ governor_performance () {
   local backup_state=`getprop vtools.dev_freq_backup`
 
   if [[ -f "$governor_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    for file in `ls $dir`; do
+    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
       if [ -f $dir/$file/governor ]; then
         # echo $dir/$file/governor
         echo performance > $dir/$file/governor

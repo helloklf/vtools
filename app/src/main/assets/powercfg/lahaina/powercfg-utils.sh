@@ -97,10 +97,23 @@ conservative_mode() {
   done
 }
 
+core_online=(1 1 1 1 1 1 1 1)
+set_core_online() {
+  for index in 0 1 2 3 4 5 6 7; do
+    core_online[$index]=`cat /sys/devices/system/cpu/cpu$index/online`
+    echo 1 > /sys/devices/system/cpu/cpu$index/online
+  done
+}
+restore_core_online() {
+  for i in "${!core_online[@]}"; do
+     echo ${core_online[i]} > /sys/devices/system/cpu/cpu$i/online
+  done
+}
+
+
 reset_basic_governor() {
-  echo 1 > /sys/devices/system/cpu/cpu0/online
-  echo 1 > /sys/devices/system/cpu/cpu4/online
-  echo 1 > /sys/devices/system/cpu/cpu7/online
+  set_core_online
+
   # CPU
   governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
   governor4=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
@@ -133,7 +146,7 @@ devfreq_backup () {
   if [[ ! -f $devfreq_backup ]] || [[ "$backup_state" != "true" ]]; then
     echo '' > $devfreq_backup
     local dir=/sys/class/devfreq
-    for file in `ls $dir`; do
+    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
       if [ -f $dir/$file/governor ]; then
         governor=`cat $dir/$file/governor`
         echo "$file#$governor" >> $devfreq_backup
@@ -151,7 +164,7 @@ devfreq_performance () {
   local backup_state=`getprop vtools.dev_freq_backup`
 
   if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    for file in `ls $dir`; do
+    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
       if [ -f $dir/$file/governor ]; then
         # echo $dir/$file/governor
         echo performance > $dir/$file/governor

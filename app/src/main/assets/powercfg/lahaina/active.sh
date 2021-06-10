@@ -93,3 +93,4 @@ fi
 
 
 adjustment_by_top_app
+restore_core_online
