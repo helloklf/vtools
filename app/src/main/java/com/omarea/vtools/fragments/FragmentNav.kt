@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.omarea.Scene
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.kr.KrScriptConfig
 import com.omarea.permissions.CheckRootStatus
@@ -265,19 +266,15 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
                 R.id.nav_xposed_app -> {
-                    if (XposedCheck.xposedIsRunning()) {
+                    xposedCheck {
                         val intent = Intent(context, ActivityAppXposedConfig::class.java)
                         startActivity(intent)
-                    } else {
-                        Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
                     }
                     return
                 }
                 R.id.nav_xposed_global -> {
-                    if (XposedCheck.xposedIsRunning()) {
+                    xposedCheck {
                         DialogXposedGlobalConfig(activity!!).show()
-                    } else {
-                        Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
                     }
                     return
                 }
@@ -320,6 +317,36 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
             }
+        }
+    }
+
+    private fun installVAddin() {
+        DialogHelper.warning(context!!, getString(R.string.scene_addin_miss), getString(R.string.scene_addin_miss_desc), {
+            try {
+                val uri = Uri.parse("http://vtools.omarea.com/")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(context, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun xposedCheck(onPass: Runnable) {
+        var vAddinsInstalled: Boolean
+        try {
+            vAddinsInstalled = context!!.packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
+        } catch (ex: Exception) {
+            vAddinsInstalled = false
+        }
+        if (vAddinsInstalled) {
+            if (XposedCheck.xposedIsRunning()) {
+                onPass.run()
+            } else {
+                Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
+            }
+        } else {
+            installVAddin()
         }
     }
 

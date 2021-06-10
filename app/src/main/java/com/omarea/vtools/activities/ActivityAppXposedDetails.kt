@@ -15,8 +15,6 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -27,7 +25,6 @@ import com.omarea.vtools.R
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_xposed_details.*
 import org.json.JSONObject
-import java.io.File
 
 class ActivityAppXposedDetails : ActivityBase() {
     var app = ""
@@ -68,12 +65,22 @@ class ActivityAppXposedDetails : ActivityBase() {
         }
     }
 
+    private fun installVAddin() {
+        DialogHelper.warning(context, getString(R.string.scene_addin_miss), getString(R.string.scene_addin_miss_desc), {
+            try {
+                val uri = Uri.parse("http://vtools.omarea.com/")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(context, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun updateXposedConfigFromAddin() {
         if (aidlConn != null) {
             try {
                 if (getAddinMinimumVersion() > getAddinVersion()) {
-                    // TODO:自动安装
-                    Toast.makeText(applicationContext, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
                     if (aidlConn != null) {
                         unbindService(conn)
                         aidlConn = null
@@ -117,52 +124,6 @@ class ActivityAppXposedDetails : ActivityBase() {
         }
     }
 
-    /**
-     * 安装插件
-     */
-    private fun installVAddin() {
-        val addin = "addin/xposed-addin.apk"
-        // 解压应用内部集成的插件文件
-        val addinPath = FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
-
-        // 如果应用内部集成的插件文件获取失败
-        if (addinPath == null) {
-            Toast.makeText(applicationContext, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
-            return
-        }
-        try {
-            // 判断应用内部集成的插件文件是否和应用版本匹配（不匹配则取消安装）
-            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES)!!.versionCode < getAddinMinimumVersion()) {
-                Toast.makeText(applicationContext, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
-                return
-            }
-        } catch (ex: Exception) {
-            // 异常
-            Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
-            return
-        }
-        Toast.makeText(applicationContext, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
-        //使用ROOT权限安装插件
-        val installResult = KeepShellPublic.doCmdSync("pm install -r '$addinPath'")
-        // 如果使用ROOT权限自动安装成功（再次检查Xposed状态）
-        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() >= getAddinMinimumVersion()) {
-            Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
-            checkXposedState(false)
-        } else {
-            // 让用户手动安装
-            try {
-                val apk = FileWrite.writeFile(applicationContext, addin, true)
-
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } catch (ex: Exception) {
-                Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun bindService() {
         tryUnBindAddin()
         try {
@@ -195,7 +156,7 @@ class ActivityAppXposedDetails : ActivityBase() {
     /**
      * 检查Xposed状态
      */
-    private fun checkXposedState(autoUpdate: Boolean = true) {
+    private fun checkXposedState() {
         var allowXposedConfig = XposedCheck.xposedIsRunning()
         app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         try {
@@ -208,10 +169,7 @@ class ActivityAppXposedDetails : ActivityBase() {
             installVAddin()
         }
         if (vAddinsInstalled && getAddinVersion() < getAddinMinimumVersion()) {
-            // 版本过低（更新插件）
-            if (autoUpdate) {
-                installVAddin()
-            }
+            installVAddin()
         } else if (vAddinsInstalled) {
             // 已安装（获取配置）
             app_details_vaddins_notinstall.visibility = View.GONE
@@ -278,7 +236,6 @@ class ActivityAppXposedDetails : ActivityBase() {
 
         sceneConfigInfo = XposedExtension.AppConfig(app)
         originConfig = XposedExtension.AppConfig(app)
-        // TODO: 输入DPI
         if (sceneConfigInfo.dpi >= 96) {
             app_details_dpi.text = sceneConfigInfo.dpi.toString()
         }

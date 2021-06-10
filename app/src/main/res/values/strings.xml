@@ -373,13 +373,9 @@
 
     <string name="flash_confirm">确认刷入？</string>
 
-    <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件…</string>
-    <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
-    <string name="scene_inner_addin_invalid">Scene中集成的“高级设置”插件版本过低，请联系系开发者报告错误！</string>
-    <string name="scene_addin_installed">“Scene - 高级设定”插件已安装完成！</string>
-    <string name="scene_addin_install_fail">“Scene - 高级设定”插件安装失败！</string>
-    <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
-    <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
+    <string name="scene_addin_miss">高级设定 组件缺失</string>
+    <string name="scene_addin_miss_desc">请从Scene下载安装“Scene-高级设定”，并将其设为允许后台自启动！</string>
+    <string name="scene_addin_sync_fail">从“Scene-高级设定”组件同步Xposed设定失败！</string>
     <string name="scene_install_autoclick">安装点击</string>
     <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
     <string name="scene_install_skip_ad">跳过广告</string>
