@@ -444,3 +444,8 @@ adjustment_by_top_app() {
     ;;
   esac
 }
+
+pgrep -f com.miui.home | while read pid; do
+  echo $pid > /dev/cpuset/top-app/tasks
+  echo $pid > /dev/stune/top-app/tasks
+done

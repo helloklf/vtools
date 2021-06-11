@@ -148,15 +148,23 @@ var app = new Vue({
       const temperatureData = detail.temperature || [];
 
       // 流畅度 (帧率 ≥40 的比例)
-      detail.fluency = '' + ((fpsData.filter(it => it >= 45).length) / fpsData.length * 100).toFixed(1);
+      if (fpsData.length > 0) {
+        detail.fluency = '' + ((fpsData.filter(it => it >= 45).length) / fpsData.length * 100).toFixed(1)
+      } else {
+        detail.fluency = '--'
+      }
       let maxTemp = 0
       temperatureData.forEach(it => {
         if (it > maxTemp) {
           maxTemp = it
         }
       });
-      detail.highTempRatio = '' + ((temperatureData.filter(it => it >= 46).length) / temperatureData.length * 100).toFixed(1);
-      detail.maxTemp = maxTemp || '--';
+      if (maxTemp > 0) {
+        detail.highTempRatio = '' + ((temperatureData.filter(it => it >= 46).length) / temperatureData.length * 100).toFixed(1)
+      } else {
+        detail.highTempRatio = '--'
+      }
+      detail.maxTemp = maxTemp || '--'
 
       stackedLine.data = {
         vue: false,
