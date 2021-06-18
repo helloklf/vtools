@@ -48,8 +48,17 @@ class BatteryUtils {
 
     val batteryInfo: String
         get() {
-            if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
-                val batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent")
+            val bms = "/sys/class/power_supply/bms/uevent"
+            val battery = "/sys/class/power_supply/battery/uevent"
+            val path = (if (RootFile.fileExists(bms)) {
+                bms
+            } else if (RootFile.fileExists(battery)) {
+                battery
+            } else {
+                ""
+            })
+            if (path.isNotEmpty()) {
+                val batteryInfos = KernelProrp.getProp(path)
                 val infos = batteryInfos.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val stringBuilder = StringBuilder()
                 var io = ""
@@ -117,6 +126,10 @@ class BatteryUtils {
                             val keyword = "POWER_SUPPLY_BATTERY_TYPE="
                             stringBuilder.append("电池类型 = ")
                             stringBuilder.append(info.substring(keyword.length, info.length))
+                        } else if (info.startsWith("POWER_SUPPLY_TECHNOLOGY=")) {
+                            val keyword = "POWER_SUPPLY_TECHNOLOGY="
+                            stringBuilder.append("电池技术 = ")
+                            stringBuilder.append(info.substring(keyword.length, info.length))
                         } else if (info.startsWith("POWER_SUPPLY_CYCLE_COUNT=")) {
                             val keyword = "POWER_SUPPLY_CYCLE_COUNT="
                             stringBuilder.append("循环次数 = ")
@@ -132,7 +145,11 @@ class BatteryUtils {
                             stringBuilder.append("%")
                         } else if (info.startsWith("POWER_SUPPLY_MODEL_NAME=")) {
                             val keyword = "POWER_SUPPLY_MODEL_NAME="
-                            stringBuilder.append("监测模块 = ")
+                            stringBuilder.append("模块/型号 = ")
+                            stringBuilder.append(info.substring(keyword.length, info.length))
+                        } else if (info.startsWith("POWER_SUPPLY_CHARGE_TYPE=")) {
+                            val keyword = "POWER_SUPPLY_CHARGE_TYPE="
+                            stringBuilder.append("充电类型 = ")
                             stringBuilder.append(info.substring(keyword.length, info.length))
                         } else if (info.startsWith("POWER_SUPPLY_RESISTANCE_NOW=")) {
                             val keyword = "POWER_SUPPLY_RESISTANCE_NOW="
@@ -144,6 +161,10 @@ class BatteryUtils {
                             stringBuilder.append(str2voltage(info.substring(keyword.length, info.length)))
                         } */ else if (info.startsWith("POWER_SUPPLY_CURRENT_NOW=")) {
                             val keyword = "POWER_SUPPLY_CURRENT_NOW="
+                            io = info.substring(keyword.length, info.length)
+                            continue
+                        } else if (info.startsWith("POWER_SUPPLY_CONSTANT_CHARGE_CURRENT=")) {
+                            val keyword = "POWER_SUPPLY_CONSTANT_CHARGE_CURRENT="
                             io = info.substring(keyword.length, info.length)
                             continue
                         } else {

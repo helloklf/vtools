@@ -76,25 +76,32 @@ fi;
 
 conservative_mode() {
   local policy=/sys/devices/system/cpu/cpufreq/policy
-  local down="$1"
-  local up="$2"
-
-  if [[ "$down" == "" ]]; then
-    local down="20"
-  fi
-  if [[ "$up" == "" ]]; then
-    local up="60"
-  fi
+  # local down="$1"
+  # local up="$2"
+  #
+  # if [[ "$down" == "" ]]; then
+  #   local down="20"
+  # fi
+  # if [[ "$up" == "" ]]; then
+  #   local up="60"
+  # fi
 
   for cluster in 0 4 7; do
     echo $cluster
     echo 'conservative' > ${policy}${cluster}/scaling_governor
-    echo $down > ${policy}${cluster}/conservative/down_threshold
-    echo $up > ${policy}${cluster}/conservative/up_threshold
+    # echo $down > ${policy}${cluster}/conservative/down_threshold
+    # echo $up > ${policy}${cluster}/conservative/up_threshold
     echo 0 > ${policy}${cluster}/conservative/ignore_nice_load
     echo 1000 > ${policy}${cluster}/conservative/sampling_rate # 1000us = 1ms
     echo 4 > ${policy}${cluster}/conservative/freq_step
   done
+
+  echo $1 > ${policy}0/conservative/down_threshold
+  echo $2 > ${policy}0/conservative/up_threshold
+  echo $3 > ${policy}4/conservative/down_threshold
+  echo $4 > ${policy}4/conservative/up_threshold
+  echo $5 > ${policy}7/conservative/down_threshold
+  echo $6 > ${policy}7/conservative/up_threshold
 }
 
 core_online=(1 1 1 1 1 1 1 1)
@@ -348,31 +355,32 @@ adjustment_by_top_app() {
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
         ctl_off cpu4
         ctl_off cpu7
-        devfreq_performance
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 45 80
+          conservative_mode 55 67 68 87 68 87
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 1440000 1670400 844800 1670400
+          set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 45 75
+          conservative_mode 52 65 67 85 67 85
           sched_boost 1 0
           stune_top_app 1 10
           sched_config "55 68" "72 80" "300" "400"
-          set_cpu_freq 1036800 1708800 1440000 1996800 1075200 2035200
+          set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          conservative_mode 38 70
+          devfreq_performance
+          conservative_mode 50 62 55 73 55 73
           sched_boost 1 0
           stune_top_app 1 10
           set_cpu_freq 1036800 1420800 1440000 2419200 1075200 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
-          conservative_mode 35 65
+          devfreq_performance
+          conservative_mode 45 60 49 70 49 70
           sched_boost 1 1
           stune_top_app 1 100
           # sched_config "40 60" "50 75" "120" "150"
@@ -386,15 +394,15 @@ adjustment_by_top_app() {
         ctl_off cpu4
         ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 45 80
+          conservative_mode 55 72 69 82 69 82
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 1440000 1766400 844800 1670400
+          set_cpu_freq 1036800 1708800 960000 1766400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 45 75
+          conservative_mode 55 72 65 79 65 79
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "50 68" "67 80" "300" "400"
@@ -402,17 +410,17 @@ adjustment_by_top_app() {
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          conservative_mode 35 70
+          conservative_mode 50 70 55 72 55 72
           sched_boost 1 0
           stune_top_app 1 10
           set_cpu_freq 1036800 1708800 1440000 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
-          conservative_mode 30 60
+          conservative_mode 42 60 42 65 42 65
           sched_boost 1 1
           stune_top_app 1 100
           # sched_config "40 60" "50 75" "120" "150"
-          set_gpu_max_freq 840000000
+          set_gpu_max_freq 778000000
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
@@ -458,24 +466,26 @@ adjustment_by_top_app() {
 
       sched_boost 0 0
       stune_top_app 0 0
-      set_cpu_pl 0
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then
         echo 0-5 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "balance" ]]; then
         echo 0-6 > /dev/cpuset/top-app/cpus
+        set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
       elif [[ "$action" = "performance" ]]; then
-        echo 0-6 > /dev/cpuset/top-app/cpus
+        set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
+        echo 0-7 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "fast" ]]; then
         echo 0-7 > /dev/cpuset/top-app/cpus
+        set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
       fi
       pgrep -f $top_app | while read pid; do
         # echo $pid > /dev/cpuset/foreground/tasks
         echo $pid > /dev/stune/background/tasks
       done
 
-      sched_config "85 85" "100 100" "240" "400"
+      sched_config "85 85" "100 100" "300" "400"
     ;;
 
     "default")

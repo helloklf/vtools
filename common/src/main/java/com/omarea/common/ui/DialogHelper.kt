@@ -28,9 +28,11 @@ class DialogHelper {
                 return mCancelable
             }
 
-        public fun setCancelable(cancelable: Boolean) {
+        public fun setCancelable(cancelable: Boolean): DialogWrap {
             mCancelable = cancelable
             d.setCancelable(cancelable)
+
+            return this
         }
 
         public fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener): DialogWrap {
@@ -376,7 +378,7 @@ class DialogHelper {
                 }
             }
 
-            return setOutsideTouchDismiss(view, DialogWrap(dialog))
+            return setOutsideTouchDismiss(view, DialogWrap(dialog).setCancelable(cancelable))
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {

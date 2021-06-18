@@ -449,6 +449,7 @@ class ActivityFreezeApps : ActivityBase() {
             appInfo.suspended = false
             (freeze_apps?.adapter as FreezeAppAdapter?)?.notifyDataSetChanged()
         }
+        SceneMode.getCurrentInstance()?.setFreezeAppLeaveTime(appInfo.packageName)
         try {
             val intent = this.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
@@ -474,12 +475,9 @@ class ActivityFreezeApps : ActivityBase() {
 
             if (intent != null) {
                 this.startActivity(intent)
-                SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appInfo.packageName.toString())
             }
         } catch (ex: java.lang.Exception) {
         }
-
-        // TODO: this.finish()
     }
 
     private fun createShortcut(appInfo: AppInfo) {
