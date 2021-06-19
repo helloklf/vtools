@@ -254,6 +254,17 @@ set_cpu_pl() {
 
 set_gpu_max_freq () {
   echo $1 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+  local pl=-1
+
+  for freq in $gpu_freqs; do
+    local pl=$((pl + 1))
+    if [[ $freq -lt $1 ]] || [[ $freq == $1 ]]; then
+      break
+    fi;
+  done
+  if [[ $pl -gt -1 ]]; then
+    echo $pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  fi
 }
 
 set_gpu_min_freq() {
@@ -356,7 +367,7 @@ adjustment_by_top_app() {
         ctl_off cpu4
         ctl_off cpu7
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 67 68 87 68 87
+          conservative_mode 55 67 70 89 71 89
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
