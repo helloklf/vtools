@@ -354,19 +354,25 @@ adjustment_by_top_app() {
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 52 65 67 85 67 85
-          sched_boost 1 0
-          stune_top_app 1 10
+          # conservative_mode 52 65 67 85 67 85
+          # sched_boost 1 0
+          # stune_top_app 1 10
+          conservative_mode 55 67 70 89 71 89
+          sched_boost 0 0
+          stune_top_app 0 0
           sched_config "55 68" "72 80" "300" "400"
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          devfreq_performance
-          conservative_mode 50 62 55 73 55 73
-          sched_boost 1 0
-          stune_top_app 1 10
-          set_cpu_freq 1036800 1420800 1440000 2419200 1075200 2841600
+          # devfreq_performance
+          # conservative_mode 50 62 55 73 55 73
+          # sched_boost 1 0
+          # stune_top_app 1 10
+          conservative_mode 52 65 68 84 71 87
+          sched_boost 0 0
+          stune_top_app 0 0
+          set_cpu_freq 1036800 1420800 960000 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           devfreq_performance

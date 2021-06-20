@@ -139,6 +139,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (appSwitchHandler == null) {
             appSwitchHandler = AppSwitchHandler(this)
         }
+
         getDisplaySize()
 
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
