@@ -263,7 +263,7 @@ class ActivityCpuModes : ActivityBase() {
             if (author == ModeSwitcher.SOURCE_SCENE_CUSTOM) {
                 modifyCpuConfig(mode)
             } else {
-                DialogHelper.alert(this, "操作提示", "如需自定义各个模式的参数，请先将配置源切换为“自定义”\n\n如需应用[省电/均衡/性能/性能]模式，请在软件概览界面点击")
+                DialogHelper.alert(this, "操作提示", "此界面不提供调度切换，如需应用[省电/均衡/性能/性能]模式，请点击软件概览界面底部的按钮")
             }
         }
     }

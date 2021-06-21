@@ -34,7 +34,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene自带配置，或通过Scene导入配置，请点右侧删除按钮"
+                    android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene自带配置，请点右侧删除按钮"
                     android:textSize="13dp" />
 
                 <ImageButton

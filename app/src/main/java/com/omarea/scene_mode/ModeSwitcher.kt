@@ -6,6 +6,7 @@ import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.PropsUtils
+import com.omarea.library.shell.Uperf
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -25,6 +26,7 @@ open class ModeSwitcher {
         const val SOURCE_SCENE_IMPORT = "SOURCE_SCENE_IMPORT"
         const val SOURCE_SCENE_ONLINE = "SOURCE_SCENE_ONLINE"
         const val SOURCE_OUTSIDE = "SOURCE_OUTSIDE"
+        const val SOURCE_OUTSIDE_UPERF = "SOURCE_OUTSIDE_UPERF"
         const val SOURCE_NONE = "SOURCE_NONE"
         // 安装在 数据目录的配置文件
         const val PROVIDER_INSIDE = "PROVIDER_INSIDE"
@@ -37,6 +39,9 @@ open class ModeSwitcher {
 
         fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
+                if (Uperf().installed()) {
+                    return SOURCE_OUTSIDE_UPERF
+                }
                 return SOURCE_OUTSIDE
             }
             val config = Scene.context
@@ -51,6 +56,9 @@ open class ModeSwitcher {
         fun getCurrentSourceName(): String {
             val source = getCurrentSource()
             return (when (source) {
+                "SOURCE_OUTSIDE_UPERF" -> {
+                    "外部来源(Uperf)"
+                }
                 "SOURCE_OUTSIDE" -> {
                     "外部来源"
                 }
