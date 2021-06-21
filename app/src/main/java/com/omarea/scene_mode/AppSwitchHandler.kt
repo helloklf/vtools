@@ -16,14 +16,11 @@ import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.ScreenState
-import com.omarea.library.calculator.GetUpTime
-import com.omarea.model.TaskAction
-import com.omarea.model.TimingTaskInfo
+import com.omarea.scene.AccessibilityScence
+import com.omarea.vtools.R
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
-import com.omarea.vtools.AccessibilityScenceMode
-import com.omarea.vtools.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,7 +31,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: AccessibilityScenceMode, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
+class AppSwitchHandler(private var context: AccessibilityScence, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""
@@ -123,7 +120,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (!screenOn) {
                 notifyHelper.hideNotify()
                 stopTimer()
-                setTimingTask()
 
                 // 息屏后自动切换为省电模式
                 if (dyamicCore && lastMode.isNotEmpty()) {
@@ -168,36 +164,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             screenOn = true
             startTimer() // 屏幕开启后开始定时更新通知
             updateModeNofity() // 屏幕点亮后更新通知
-        }
-    }
-
-    private var timingTaskInfo: TimingTaskInfo? = null
-    private fun setTimingTask() {
-        if (timingTaskInfo != null) {
-            cancelTimingTask();
-        }
-        val delay = spfGlobal.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0)
-        if (delay > 0) {
-            timingTaskInfo = TimingTaskInfo().apply {
-                val calendar = Calendar.getInstance()
-                val currentMinutes = (calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)  // 当前时间
-                triggerTimeMinutes = (currentMinutes + delay) % 1440
-                expireDate = GetUpTime(triggerTimeMinutes).nextGetUpTime
-                taskId = "SCENE_FROZEN_APPS"
-                taskName = "偏见应用清理"
-                enabled = true
-                taskActions = ArrayList<TaskAction>().apply {
-                    add(TaskAction.FROZEN_APPS)
-                }
-                TimingTaskManager(context).setTask(this)
-            }
-        }
-    }
-
-    private fun cancelTimingTask() {
-        if (timingTaskInfo != null) {
-            TimingTaskManager(this.context).cancelTask(timingTaskInfo!!);
-            timingTaskInfo = null;
         }
     }
 

@@ -1,1 +1,0 @@
-sync;svc power shutdown || reboot -p

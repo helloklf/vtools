@@ -99,51 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="70dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
 
-                    <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#7CB342"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="6dp"
-                        android:src="@drawable/ic_processes"
-                        app:tint="@android:color/white" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="进程监视器" />
-                        <TextView
-                            style="@style/textSecondary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="显示运行中的进程，按CPU占用排序" />
-                    </LinearLayout>
-
-                    <Switch
-                        android:id="@+id/monitor_proc"
-                        android:enabled="true"
-                        android:checked="false"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -190,51 +146,6 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="70dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="6dp">
-
-                    <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FF4646"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginEnd="6dp"
-                        android:src="@drawable/fw_float_fps"
-                        app:tint="@android:color/white" />
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="帧率录制器" />
-                        <TextView
-                            style="@style/textSecondary"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="显示用于分析游戏帧率的录制工具" />
-                    </LinearLayout>
-
-                    <Switch
-                        android:id="@+id/monitor_watch"
-                        android:enabled="true"
-                        android:checked="false"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

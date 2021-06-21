@@ -11,9 +11,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data.GlobalStatus
-import com.omarea.store.ChargeSpeedStore
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import com.omarea.store.SpfConfig
 import java.util.*
 
 class DialogElectricityUnit {
@@ -103,7 +102,6 @@ class DialogElectricityUnit {
         }
 
         alertDialog = DialogHelper.customDialog(context, dialog, false).setOnDismissListener {
-            ChargeSpeedStore(context).clearAll()
             timer.cancel()
         }
     }

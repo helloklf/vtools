@@ -15,7 +15,7 @@
             style="@style/textSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/menu_scene_mode" />
+            android:text="主要功能" />
 
         <LinearLayout
             android:id="@+id/nav_scene_service_not_active"
@@ -73,104 +73,16 @@
                 app:text="@string/menu_cpu_modes" />
 
             <com.omarea.ui.NavItem
-                android:id="@+id/nav_freeze"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_freeze"
-                app:text="@string/menu_freeze" />
-
-            <com.omarea.ui.NavItem
                 android:id="@+id/nav_battery_stats"
-                style="@style/nav_item_wrap_right"
+                style="@style/nav_item_wrap"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_battery_stats" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_auto_click"
-                style="@style/nav_item_wrap"
+                style="@style/nav_item_wrap_right"
                 app:drawable="@drawable/ic_menu_click"
                 app:text="@string/menu_auto_click" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_fps_chart"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/fw_float_fps"
-                app:text="@string/menu_fps_chart" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_system_scene"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_system"
-                app:text="@string/menu_system_scene" />
-        </GridLayout>
-
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="Xposed功能" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:columnCount="2">
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_xposed_app"
-                style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_addon"
-                app:text="@string/menu_xposed_app" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_xposed_global"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/ic_menu_addon"
-                app:text="@string/menu_xposed_global" />
-        </GridLayout>
-
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="辅助功能" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:columnCount="2">
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_gesture"
-                style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_addon"
-                app:text="@string/menu_gesture" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_filter"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/app_filter"
-                app:text="@string/menu_filter" />
-        </GridLayout>
-
-
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="系统管理" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:columnCount="2">
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_core_control"
@@ -179,89 +91,7 @@
                 app:drawable="@drawable/ic_menu_cpu"
                 app:text="@string/menu_core_control" />
 
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_swap"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_swap"
-                app:text="@string/menu_swap" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_battery"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/battery"
-                app:text="@string/menu_battery" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_charge"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/battery"
-                app:text="@string/menu_charge" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_processes"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_processes"
-                app:text="@string/menu_processes" />
         </GridLayout>
-
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="进阶功能" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:columnCount="2">
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_img"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_img"
-                app:text="@string/menu_img" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_applictions"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_modules"
-                app:text="@string/menu_applictions" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_additional"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_vboot"
-                app:text="@string/menu_sundry" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_additional_all"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_shell"
-                app:text="@string/menu_additional" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_app_magisk"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_magisk"
-                app:text="@string/menu_app_magisk" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_miui_thermal"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/ic_menu_hot"
-                app:text="@string/menu_miui_thermal" />
-        </GridLayout>
-
 
         <TextView
             style="@style/textSmall"

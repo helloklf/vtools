@@ -220,18 +220,6 @@
                     android:src="@drawable/fw_float_monitor" />
 
                 <ImageButton
-                    android:id="@+id/fw_float_task"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:alpha="0.3"
-                    android:background="@android:color/transparent"
-                    android:padding="2dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/dialog_performance" />
-
-                <ImageButton
                     android:id="@+id/fw_float_monitor_mini"
                     android:layout_width="25dp"
                     android:layout_height="25dp"

@@ -1,1 +1,0 @@
-cat $PAGE_WORK_DIR/377_key/options.txt

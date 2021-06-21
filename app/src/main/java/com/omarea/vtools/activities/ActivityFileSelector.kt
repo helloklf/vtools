@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.vtools.R
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.utils.CommonCmds
-import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_file_selector.*
 import java.io.File
 

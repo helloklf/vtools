@@ -19,13 +19,13 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.AppInfo
+import com.omarea.vtools.R
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOrientation
 import com.omarea.vtools.dialogs.DialogAppPowerConfig
 import kotlinx.android.synthetic.main.activity_app_config2.*

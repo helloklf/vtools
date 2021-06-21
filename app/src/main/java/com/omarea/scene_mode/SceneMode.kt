@@ -13,15 +13,15 @@ import com.omarea.library.shell.GAppsUtilis
 import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
+import com.omarea.scene.AccessibilityScence
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.vtools.AccessibilityScenceMode
 import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 import kotlin.collections.ArrayList
 
-class SceneMode private constructor(private val context: AccessibilityScenceMode, private var store: SceneConfigStore) {
+class SceneMode private constructor(private val context: AccessibilityScence, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
@@ -75,7 +75,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
         }
 
         // 获取当前实例或初始化
-        fun getInstanceOrInit(context: AccessibilityScenceMode, store: SceneConfigStore): SceneMode? {
+        fun getInstanceOrInit(context: AccessibilityScence, store: SceneConfigStore): SceneMode? {
             if (instance == null) {
                 synchronized(SceneMode::class) {
                     instance = SceneMode(context, store)

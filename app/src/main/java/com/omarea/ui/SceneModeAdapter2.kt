@@ -15,8 +15,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.omarea.model.AppInfo
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
+import com.omarea.scene_mode.ModeSwitcher
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap

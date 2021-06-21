@@ -21,8 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.PermissionChecker
 import com.omarea.common.ui.ThemeMode
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import com.omarea.store.SpfConfig
 
 object ThemeSwitch {
     private val themeMap = arrayListOf(

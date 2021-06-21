@@ -22,8 +22,8 @@ import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import com.omarea.store.SpfConfig
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.util.*
 

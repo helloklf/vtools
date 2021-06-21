@@ -51,11 +51,6 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
-        <provider
-            android:name=".SceneFreezeProvider"
-            android:enabled="true"
-            android:exported="true"
-            android:authorities="com.omarea.vtools.SceneFreezeProvider" />
 
         <activity
             android:name=".activities.ActivityPowerModeTile"
@@ -67,28 +62,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.ActivityAppXposedDetails"
-            android:exported="true"
-            android:screenOrientation="behind">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <service
-            android:name="com.omarea.scene_mode.TriggerExecutorService"
-            android:exported="false" />
-        <service
-            android:name="com.omarea.scene_mode.SceneTaskIntentService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.omarea.scene_mode.TimingTaskReceiver" />
-            </intent-filter>
-        </service>
 
         <receiver
             android:name="com.omarea.scene_mode.ReceiverSceneMode"
@@ -96,14 +69,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.omarea.scene_mode.ReceiverSceneMode" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.omarea.vtools.ReceiverCompileState"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.omarea.vtools.ReceiverCompileState" />
             </intent-filter>
         </receiver>
 
@@ -159,13 +124,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <activity
-            android:name=".activities.ActivityHiddenApps"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:excludeFromRecents="true"
-            android:label="[隐藏/卸载]的应用"
-            android:launchMode="singleTop"
-            android:screenOrientation="behind" />
-        <activity
             android:name=".activities.ActivityAddinOnline"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
@@ -198,110 +156,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.ActivityTimingTask"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:label="@string/title_activity_timing_task"
-            android:screenOrientation="behind"
-            android:launchMode="standard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.ActivityTrigger"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:label="@string/title_activity_trigger"
-            android:screenOrientation="behind"
-            android:launchMode="standard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.ActivityQuickStart"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_shortcut"
-            android:screenOrientation="behind"
-            android:theme="@style/AppThemeTransparent">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.ActivityFreezeApps"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:enabled="false"
-            android:noHistory="true"
-            android:multiprocess="true"
-            android:excludeFromRecents="true"
-            android:icon="@drawable/freeze_logo"
-            android:label="@string/title_activity_freeze"
-            android:screenOrientation="behind"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:roundIcon="@drawable/freeze_logo">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity-alias
-            android:name=".activities.ActivityFreezeApps2"
-            android:enabled="true"
-            android:multiprocess="false"
-            android:launchMode="singleTop"
-            android:noHistory="false"
-            android:excludeFromRecents="false"
-            android:targetActivity=".activities.ActivityFreezeApps" />
-
-        <activity
-            android:name=".activities.ActionPage"
-            android:configChanges="keyboardHidden|orientation|uiMode|layoutDirection|screenLayout|colorMode|fontScale|smallestScreenSize|density|keyboard|screenSize|touchscreen"
-            android:screenOrientation="behind">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.ActionPageOnline"
-            android:configChanges="keyboardHidden|orientation|uiMode|layoutDirection|screenLayout|colorMode|fontScale|smallestScreenSize|density|keyboard|screenSize|touchscreen"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.ActivityAddin" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityApplistions" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivitySwap" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityImg" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityBattery" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityCharge" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityProcess" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityMagisk" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuControl" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBatteryStats" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityAppConfig2" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityAppXposedConfig" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivitySystemScene" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityAutoClick" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityMiuiThermal" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityCustomCommand" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityFpsChart" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" android:screenOrientation="sensor" />
 
         <receiver
             android:name=".ReceiverBoot"
@@ -326,7 +185,7 @@
         </receiver>
 
         <service
-            android:name=".AccessibilityScenceMode"
+            android:name="com.omarea.scene.AccessibilityScence"
             android:label="Scene - 场景模式"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -350,10 +209,6 @@
         </service>
         <service
             android:name=".services.BootService"
-            android:enabled="true"
-            android:permission="" />
-        <service
-            android:name=".services.CompileService"
             android:enabled="true"
             android:permission="" />
         <service

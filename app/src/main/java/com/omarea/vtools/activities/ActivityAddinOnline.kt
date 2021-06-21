@@ -1,11 +1,8 @@
 package com.omarea.vtools.activities
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
@@ -20,12 +17,10 @@ import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.WebViewInjector
-import com.omarea.krscript.ui.ParamsFileChooserRender
 import com.omarea.library.calculator.Flags
+import com.omarea.vtools.R
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
 import java.io.FileInputStream
@@ -174,18 +169,6 @@ class ActivityAddinOnline : ActivityBase() {
         vtools_online.settings.setLoadWithOverviewMode(true);
         vtools_online.settings.setUseWideViewPort(true);
 
-        val url = vtools_online.url
-        if (url != null) {
-            if (url.startsWith("https://vtools.oss-cn-beijing.aliyuncs.com/") || url.startsWith("https://vtools.omarea.com/")) {
-                // 添加kr-script for web
-                WebViewInjector(vtools_online,
-                        object : ParamsFileChooserRender.FileChooserInterface {
-                            override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
-                                return chooseFilePath(fileSelectedInterface)
-                            }
-                        }).inject(this, false)
-            }
-        }
         vtools_online.addJavascriptInterface(object {
             @JavascriptInterface
             public fun setStatusBarColor(colorStr: String): Boolean {
@@ -341,43 +324,6 @@ class ActivityAddinOnline : ActivityBase() {
                 }
             }
         }).start()
-    }
-
-    private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
-    private val ACTION_FILE_PATH_CHOOSER = 65400
-    private fun chooseFilePath(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
-            Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
-            return false
-        } else {
-            try {
-                val intent = Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*")
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
-                this.fileSelectedInterface = fileSelectedInterface
-                return true;
-            } catch (ex: java.lang.Exception) {
-                return false
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
-            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
-            if (fileSelectedInterface != null) {
-                if (result != null) {
-                    val absPath = getPath(result)
-                    fileSelectedInterface?.onFileSelected(absPath)
-                } else {
-                    fileSelectedInterface?.onFileSelected(null)
-                }
-            }
-            this.fileSelectedInterface = null
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun getPath(uri: Uri): String? {

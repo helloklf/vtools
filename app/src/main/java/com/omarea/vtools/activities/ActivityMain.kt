@@ -9,26 +9,20 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.MagiskExtend
-import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.vtools.R
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper2
 import com.omarea.utils.ElectricityUnit
 import com.omarea.utils.Update
-import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
-import com.omarea.vtools.fragments.FragmentDonate
 import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
@@ -47,62 +41,6 @@ class ActivityMain : ActivityBase() {
                 }
             }
         } catch (ex: Exception) {
-        }
-    }
-
-    private class ThermalCheckThread(private var context: Context) : Thread() {
-        private fun deleteThermalCopyWarn(onYes: Runnable) {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete_thermal, null)
-            val dialog = DialogHelper.customDialog(context, view)
-            view.findViewById<View>(R.id.btn_no).setOnClickListener {
-                dialog.dismiss()
-            }
-            view.findViewById<View>(R.id.btn_yes).setOnClickListener {
-                dialog.dismiss()
-                onYes.run()
-            }
-        }
-
-        override fun run() {
-            super.run()
-
-            Thread.sleep(500)
-            if (
-                    MagiskExtend.magiskSupported() &&
-                    KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal.current.ini") != ""
-            ) {
-                when {
-                    RootFile.list("/data/thermal/config").size > 0 -> {
-                        deleteThermalCopyWarn {
-                            KeepShellPublic.doCmdSync(
-                                    "chattr -R -i /data/thermal 2> /dev/null\n" +
-                                            "rm -rf /data/thermal 2> /dev/null\n" +
-                                            "sync;svc power reboot || reboot;"
-                            )
-                        }
-                    }
-                    RootFile.list("/data/vendor/thermal/config").size > 0 -> {
-                        if (
-                                RootFile.fileEquals(
-                                        "/data/vendor/thermal/config/thermal-normal.conf",
-                                        MagiskExtend.getMagiskReplaceFilePath("/system/vendor/etc/thermal-normal.conf")
-                                )
-                        ) {
-                            // Scene.toast("文件相同，跳过温控清理", Toast.LENGTH_SHORT)
-                            return
-                        } else {
-                            deleteThermalCopyWarn {
-                                KeepShellPublic.doCmdSync(
-                                        "chattr -R -i /data/vendor/thermal 2> /dev/null\n" +
-                                                "rm -rf /data/vendor/thermal 2> /dev/null\n" +
-                                                "sync;svc power reboot || reboot;"
-                                )
-                            }
-                        }
-                    }
-                    else -> return
-                }
-            }
         }
     }
 
@@ -151,7 +89,6 @@ class ActivityMain : ActivityBase() {
         } else {
             FragmentNotRoot()
         }))
-        tabIconHelper2.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, FragmentDonate())
         tab_content.adapter = tabIconHelper2.adapter
         tab_list.getTabAt(1)?.select() // 默认选中第二页
 
@@ -172,12 +109,11 @@ class ActivityMain : ActivityBase() {
                 DialogHelper.alert(
                         this,
                         getString(R.string.sorry),
-                        "启动应用失败\n" + ex.message,
-                        {
-                            recreate()
-                        })
+                        "启动应用失败\n" + ex.message
+                ) {
+                    recreate()
+                }
             }
-            ThermalCheckThread(this).run()
         }
 
     }

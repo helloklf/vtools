@@ -23,12 +23,12 @@ import com.omarea.library.shell.CpuLoadUtils
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.SwapUtils
 import com.omarea.model.CpuCoreInfo
+import com.omarea.vtools.R
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
-import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.*

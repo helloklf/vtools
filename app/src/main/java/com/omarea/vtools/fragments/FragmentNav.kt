@@ -13,17 +13,11 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.omarea.Scene
-import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
-import com.omarea.kr.KrScriptConfig
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.shell_utils.BackupRestoreUtils
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.activities.*
-import com.omarea.vtools.dialogs.DialogXposedGlobalConfig
-import com.omarea.xposed.XposedCheck
-import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_nav.*
 
 class FragmentNav : Fragment(), View.OnClickListener {
@@ -173,41 +167,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
             }
 
             when (id) {
-                R.id.nav_freeze -> {
-                    val intent = Intent(Intent.ACTION_VIEW)
-                    intent.setClassName("com.omarea.vtools", "com.omarea.vtools.activities.ActivityFreezeApps2")
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_applictions -> {
-                    val intent = Intent(context, ActivityApplistions::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_swap -> {
-                    val intent = Intent(context, ActivitySwap::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_battery -> {
-                    val intent = Intent(context, ActivityBattery::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_charge -> {
-                    val intent = Intent(context, ActivityCharge::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_img -> {
-                    if (BackupRestoreUtils.isSupport()) {
-                        val intent = Intent(context, ActivityImg::class.java)
-                        startActivity(intent)
-                    } else {
-                        Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()
-                    }
-                    return
-                }
                 R.id.nav_battery_stats -> {
                     val intent = Intent(context, ActivityBatteryStats::class.java)
                     startActivity(intent)
@@ -215,11 +174,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 }
                 R.id.nav_core_control -> {
                     val intent = Intent(context, ActivityCpuControl::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_miui_thermal -> {
-                    val intent = Intent(context, ActivityMiuiThermal::class.java)
                     startActivity(intent)
                     return
                 }
@@ -250,103 +204,12 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
-                R.id.nav_system_scene -> {
-                    val intent = Intent(context, ActivitySystemScene::class.java)
-                    startActivity(intent)
-                    return
-                }
                 R.id.nav_auto_click -> {
                     val intent = Intent(context, ActivityAutoClick::class.java)
                     startActivity(intent)
                     return
                 }
-                R.id.nav_app_magisk -> {
-                    val intent = Intent(context, ActivityMagisk::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_xposed_app -> {
-                    xposedCheck {
-                        val intent = Intent(context, ActivityAppXposedConfig::class.java)
-                        startActivity(intent)
-                    }
-                    return
-                }
-                R.id.nav_xposed_global -> {
-                    xposedCheck {
-                        DialogXposedGlobalConfig(activity!!).show()
-                    }
-                    return
-                }
-                R.id.nav_gesture -> {
-                    tryOpenApp("com.omarea.gesture")
-                    return
-                }
-                R.id.nav_filter -> {
-                    tryOpenApp("com.omarea.filter")
-                    return
-                }
-                R.id.nav_processes -> {
-                    val intent = Intent(context, ActivityProcess::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_fps_chart -> {
-                    val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
-                    if (serviceState) {
-                        val intent = Intent(context, ActivityFpsChart::class.java)
-                        startActivity(intent)
-                    } else {
-                        Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
-                    }
-                    return
-                }
-                R.id.nav_additional -> {
-                    val intent = Intent(context, ActivityAddin::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_additional_all -> {
-                    val krScriptConfig = KrScriptConfig().init(context!!)
-                    val activity = activity!!
-                    krScriptConfig.pageListConfig?.run {
-                        OpenPageHelper(activity).openPage(this.apply {
-                            title = getString(R.string.menu_additional)
-                        })
-                    }
-                    return
-                }
             }
-        }
-    }
-
-    private fun installVAddin() {
-        DialogHelper.warning(context!!, getString(R.string.scene_addin_miss), getString(R.string.scene_addin_miss_desc), {
-            try {
-                val uri = Uri.parse("http://vtools.omarea.com/")
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                startActivity(intent)
-            } catch (ex: Exception) {
-                Toast.makeText(context, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun xposedCheck(onPass: Runnable) {
-        var vAddinsInstalled: Boolean
-        try {
-            vAddinsInstalled = context!!.packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
-        } catch (ex: Exception) {
-            vAddinsInstalled = false
-        }
-        if (vAddinsInstalled) {
-            if (XposedCheck.xposedIsRunning()) {
-                onPass.run()
-            } else {
-                Toast.makeText(context, "请先在Xposed管理器中重新勾选“Scene”，并重启手机", Toast.LENGTH_LONG).show()
-            }
-        } else {
-            installVAddin()
         }
     }
 

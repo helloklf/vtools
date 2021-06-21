@@ -1,2 +1,0 @@
-default|系统默认(default)
-danger|丧心病狂(danger)

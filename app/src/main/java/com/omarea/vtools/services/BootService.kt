@@ -11,21 +11,19 @@ import android.os.Build
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
-import com.omarea.library.shell.BatteryUtils
 import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.PropsUtils
+import com.omarea.vtools.R
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
-import com.omarea.vtools.R
 
 /**
  * Created by Hello on 2017/12/27.
@@ -86,28 +84,6 @@ class BootService : IntentService("vtools-boot") {
         if (cpuState != null) {
             updateNotification(context.getString(R.string.boot_cpuset))
             cpuConfigStorage.applyCpuConfig(context, cpuConfigStorage.default())
-        }
-
-        val macChangeMode = globalConfig.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0)
-        val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
-        if (!mac.isNullOrEmpty()) {
-            when (macChangeMode) {
-                SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1 -> {
-                    updateNotification(getString(R.string.boot_modify_mac))
-                    keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac_1))
-                }
-                SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2 -> {
-                    updateNotification(getString(R.string.boot_modify_mac))
-                    keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac_2))
-                }
-            }
-        }
-
-        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-        val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            updateNotification(getString(R.string.boot_charge_booster))
-            BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT), this.applicationContext)
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")

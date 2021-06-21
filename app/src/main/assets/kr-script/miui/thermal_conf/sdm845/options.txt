@@ -1,6 +1,0 @@
-default|系统默认(default)
-powerfrugal|节能降温 (powerfrugal)
-performance|提高阈值(performance)
-extreme|极致性能(extreme)
-pro|深度定制(pro)
-danger|丧心病狂(danger)

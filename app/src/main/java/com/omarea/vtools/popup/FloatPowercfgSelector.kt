@@ -10,16 +10,15 @@ import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
-import com.omarea.Scene
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.library.shell.LocationHelper
+import com.omarea.vtools.R
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
-import com.omarea.vtools.R
 
 /**
  * 弹窗辅助类
@@ -371,25 +370,6 @@ class FloatPowercfgSelector(context: Context) {
                 } else {
                     FloatMonitorGame(context).showPopupWindow()
                     it.alpha = 1f
-                }
-            }
-        }
-
-        // 进程管理器
-        view.findViewById<View>(R.id.fw_float_task).run {
-            alpha = if (FloatTaskManager.show) 1f else 0.5f
-            setOnClickListener {
-                if (FloatTaskManager.show) {
-                    FloatTaskManager(context).hidePopupWindow()
-                    it.alpha = 0.3f
-                } else {
-                    val floatTaskManager = FloatTaskManager(context)
-                    if (floatTaskManager.supported) {
-                        floatTaskManager.showPopupWindow()
-                        it.alpha = 1f
-                    } else {
-                        Scene.toast(context.getString(R.string.monitor_process_unsupported), Toast.LENGTH_SHORT)
-                    }
                 }
             }
         }

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="kr_params_view_bg">#11000000</color>
-    <color name="kr_shortcut_color">#CCCCCC</color>
-    <color name="kr_shell_log_error">#dd0000</color>
-    <color name="kr_shell_log_basic">#445566</color>
-    <color name="kr_shell_log_script">#808080</color>
-    <color name="kr_shell_log_end">#0064B4</color>
-</resources>
