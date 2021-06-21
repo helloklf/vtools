@@ -12,8 +12,8 @@ import android.view.View
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.vtools.R
 import com.omarea.utils.CommonCmds
+import com.omarea.vtools.R
 import kotlin.system.exitProcess
 
 /**

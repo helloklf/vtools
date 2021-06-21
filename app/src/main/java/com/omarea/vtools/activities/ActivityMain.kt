@@ -13,14 +13,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import com.omarea.common.shared.MagiskExtend
-import com.omarea.common.ui.DialogHelper
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.vtools.R
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper2
 import com.omarea.utils.ElectricityUnit
 import com.omarea.utils.Update
+import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.FragmentHome
@@ -83,39 +81,14 @@ class ActivityMain : ActivityBase() {
         setSupportActionBar(toolbar)
 
         val tabIconHelper2 = TabIconHelper2(tab_list, tab_content, this, supportFragmentManager, R.layout.list_item_tab2)
-        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
         tabIconHelper2.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, (if (CheckRootStatus.lastCheckResult) {
             FragmentHome()
         } else {
             FragmentNotRoot()
         }))
+        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
         tab_content.adapter = tabIconHelper2.adapter
-        tab_list.getTabAt(1)?.select() // 默认选中第二页
-
-        if (CheckRootStatus.lastCheckResult) {
-            try {
-                if (MagiskExtend.magiskSupported() &&
-                        !(MagiskExtend.moduleInstalled() || globalSPF.getBoolean("magisk_dot_show", false))
-                ) {
-                    DialogHelper.confirm(this,
-                            getString(R.string.magisk_install_title),
-                            getString(R.string.magisk_install_desc),
-                            {
-                                MagiskExtend.magiskModuleInstall(this)
-                            })
-                    // 不再提示 globalSPF.edit().putBoolean("magisk_dot_show", true).apply()
-                }
-            } catch (ex: Exception) {
-                DialogHelper.alert(
-                        this,
-                        getString(R.string.sorry),
-                        "启动应用失败\n" + ex.message
-                ) {
-                    recreate()
-                }
-            }
-        }
-
+        tab_list.getTabAt(0)?.select() // 默认选中第二页
     }
 
     override fun onResume() {

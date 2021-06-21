@@ -3,8 +3,8 @@ package com.omarea.vtools.dialogs
 import android.app.Activity
 import android.view.View
 import com.omarea.common.ui.DialogHelper
-import com.omarea.vtools.R
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.vtools.R
 
 class DialogAppPowerConfig(var context: Activity, val current: String?, val iResultCallback: IResultCallback) {
     interface IResultCallback {

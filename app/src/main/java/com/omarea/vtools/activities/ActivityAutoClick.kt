@@ -5,10 +5,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.CompoundButton
-import com.omarea.vtools.R
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AutoSkipCloudData
+import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_auto_click.*
 
 

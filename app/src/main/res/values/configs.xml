@@ -167,18 +167,6 @@
         <item>GM1910@ONEPLUS@ONEPLUS@GM1910@GM1910</item>
     </string-array>
 
-    <!--待机模式强制排除名单-->
-    <string-array name="scene_standby_white_list">
-        <item>com.omarea.vtools</item>
-        <item>com.omarea.gesture</item>
-        <item>com.omarea.filter</item>
-        <item>com.topjohnwu.magisk</item>
-        <item>org.meowcat.edxposed.manager</item>
-        <item>com.mi.android.globallauncher </item>
-        <item>com.pittvandewitt.viperfx</item>
-        <item>com.omarea.vaddin</item>
-    </string-array>
-
     <string name="toolkit_install_path">toolkit</string>
 
     <string-array name="ad_skip_list">

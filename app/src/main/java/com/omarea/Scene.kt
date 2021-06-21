@@ -9,12 +9,11 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
-import com.omarea.data.EventBus
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
-import com.omarea.vtools.R
 import com.omarea.utils.CrashHandler
+import com.omarea.vtools.R
 
 class Scene : Application() {
     companion object {

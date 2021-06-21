@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment
 import com.omarea.Scene
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.vtools.R
 import com.omarea.utils.AccessibleServiceHelper
+import com.omarea.vtools.R
 import com.omarea.vtools.activities.*
 import kotlinx.android.synthetic.main.fragment_nav.*
 

@@ -25,10 +25,10 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.*
-import com.omarea.vtools.R
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
+import com.omarea.vtools.R
 import java.util.*
 
 class FloatMonitor(private val mContext: Context) {

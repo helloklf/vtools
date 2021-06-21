@@ -1,6 +1,5 @@
 package com.omarea.vtools.services
 
-import android.app.ActivityManager
 import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,20 +9,15 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
-import com.omarea.common.shell.KernelProrp
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
-import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.PropsUtils
-import com.omarea.vtools.R
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.scene_mode.SceneMode
 import com.omarea.store.CpuConfigStorage
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
+import com.omarea.vtools.R
 
 /**
  * Created by Hello on 2017/12/27.

@@ -6,9 +6,9 @@ import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.PropsUtils
-import com.omarea.vtools.R
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 
 /**
  * Created by Hello on 2018/06/03.

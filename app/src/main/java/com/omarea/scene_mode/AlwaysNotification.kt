@@ -15,9 +15,9 @@ import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
 import com.omarea.model.BatteryStatus
-import com.omarea.vtools.R
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 
 /**
  * 常驻通知

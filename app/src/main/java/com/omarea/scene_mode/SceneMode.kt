@@ -3,13 +3,10 @@ package com.omarea.scene_mode
 import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.Context
-import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.Scene
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.CGroupMemoryUtlis
-import com.omarea.library.shell.GAppsUtilis
 import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
@@ -19,7 +16,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
-import kotlin.collections.ArrayList
 
 class SceneMode private constructor(private val context: AccessibilityScence, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
