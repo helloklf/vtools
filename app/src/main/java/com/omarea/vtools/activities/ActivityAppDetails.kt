@@ -82,7 +82,6 @@ class ActivityAppDetails : ActivityBase() {
             app_details_perf.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
-            app_details_freeze.isEnabled = false
             scene_mode_config.visibility = View.GONE
             scene_mode_allow.visibility = View.GONE
         }
@@ -258,13 +257,6 @@ class ActivityAppDetails : ActivityBase() {
             sceneConfigInfo.gpsOn = (it as Switch).isChecked
         }
 
-        app_details_freeze.setOnClickListener {
-            sceneConfigInfo.freeze = (it as Switch).isChecked
-            if (!sceneConfigInfo.freeze) {
-                SceneMode.unfreezeApp(sceneConfigInfo.packageName)
-            }
-        }
-
         app_monitor.setOnClickListener {
             sceneConfigInfo.showMonitor = (it as Switch).isChecked
         }
@@ -336,7 +328,6 @@ class ActivityAppDetails : ActivityBase() {
         app_details_hidenotice.isChecked = sceneConfigInfo.disNotice
         app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
         app_details_gps.isChecked = sceneConfigInfo.gpsOn
-        app_details_freeze.isChecked = sceneConfigInfo.freeze
         app_monitor.isChecked = sceneConfigInfo.showMonitor
 
         scene_mode_allow.isChecked = !sceneBlackList.contains(app)
@@ -367,7 +358,6 @@ class ActivityAppDetails : ActivityBase() {
                 sceneConfigInfo.disNotice != originConfig.disNotice ||
                 sceneConfigInfo.disButton != originConfig.disButton ||
                 sceneConfigInfo.gpsOn != originConfig.gpsOn ||
-                sceneConfigInfo.freeze != originConfig.freeze ||
                 sceneConfigInfo.fgCGroupMem != originConfig.fgCGroupMem ||
                 sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
                 sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem ||
@@ -384,12 +374,6 @@ class ActivityAppDetails : ActivityBase() {
                     sceneConfigInfo.bgCGroupMem != originConfig.bgCGroupMem ||
                     sceneConfigInfo.dynamicBoostMem != originConfig.dynamicBoostMem) {
                 notifyService(app)
-            }
-
-            if (sceneConfigInfo.freeze != originConfig.freeze) {
-                if (sceneConfigInfo.freeze) {
-                    SceneMode.getCurrentInstance()?.setFreezeAppLeaveTime(sceneConfigInfo.packageName)
-                }
             }
         }
     }

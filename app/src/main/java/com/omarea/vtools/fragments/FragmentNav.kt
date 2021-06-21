@@ -177,23 +177,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
-                R.id.nav_qq -> {
-                    val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
-                    val intent = Intent()
-                    intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
-                    // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    return try {
-                        startActivity(intent)
-                    } catch (e: Exception) {
-                    }
-                }
-                R.id.nav_share -> {
-                    val sendIntent = Intent()
-                    sendIntent.action = Intent.ACTION_SEND
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
-                    sendIntent.type = "text/plain"
-                    startActivity(sendIntent)
-                }
                 R.id.nav_app_scene -> {
                     val intent = Intent(context, ActivityAppConfig2::class.java)
                     startActivity(intent)
@@ -208,6 +191,9 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     val intent = Intent(context, ActivityAutoClick::class.java)
                     startActivity(intent)
                     return
+                }
+                else -> {
+
                 }
             }
         }

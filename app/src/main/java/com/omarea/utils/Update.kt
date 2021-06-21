@@ -39,7 +39,7 @@ class Update {
         Thread(Runnable {
             //http://47.106.224.127/
             try {
-                val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/Scene4.json")
+                val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/Scene4C.json")
                 val connection = url.openConnection()
                 // 设置连接方式：get
                 // connection.setRequestMethod("GET");
@@ -87,7 +87,7 @@ class Update {
                 "下载新版本" + jsonObject.getString("versionName") + " ？",
                 "更新内容：" + "\n\n" + jsonObject.getString("message"),
                 {
-                    var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
+                    var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/Scene4C/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
                     if (jsonObject.has("downloadUrl")) {
                         downloadUrl = jsonObject.getString("downloadUrl")
                     }

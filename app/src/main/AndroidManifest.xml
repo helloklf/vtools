@@ -72,19 +72,6 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="激活此模块，才能使用场景模式中的“高级设定”选项" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="54" />
-        <meta-data
-            android:name="android.max_aspect"
-            android:value="2.8" />
-
         <activity
             android:name=".activities.ActivityStartSplash"
             android:configChanges="keyboardHidden|orientation|uiMode"
@@ -173,16 +160,7 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name="com.omarea.scene_mode.ReceiverShortcut"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="@string/" />
-
-                <category android:name="android.intent.category.HOME" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name="com.omarea.scene_mode.ReceiverShortcut" />
 
         <service
             android:name="com.omarea.scene.AccessibilityScence"

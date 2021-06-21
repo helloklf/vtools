@@ -24,45 +24,9 @@ import kotlin.collections.ArrayList
 class SceneMode private constructor(private val context: AccessibilityScence, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
-    private var freezList = ArrayList<FreezeAppHistory>()
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-    // 偏见应用解冻数量限制
-    private val freezeAppLimit: Int
-        get() {
-            return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
-        }
-
-    // 偏见应用后台超时时间
-    private val freezeAppTimeLimit: Int
-        get() {
-            return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
-        }
-
-    // 是否使用suspend命令冻结应用，不隐藏图标
-    private val suspendMode: Boolean
-        get() {
-            return config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        }
-
     private val floatScreenRotation = FloatScreenRotation(context)
-
-    private class FreezeAppThread(private val context: Context) : Thread() {
-        override fun run() {
-            val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            val launchedFreezeApp = getCurrentInstance()?.getLaunchedFreezeApp()
-            val suspendMode = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            for (item in SceneConfigStore(context).freezeAppList) {
-                if (launchedFreezeApp == null || !launchedFreezeApp.contains(item)) {
-                    if (suspendMode) {
-                        suspendApp(item)
-                    } else {
-                        freezeApp(item)
-                    }
-                }
-            }
-        }
-    }
 
     companion object {
 
@@ -79,126 +43,10 @@ class SceneMode private constructor(private val context: AccessibilityScence, pr
             if (instance == null) {
                 synchronized(SceneMode::class) {
                     instance = SceneMode(context, store)
-                    FreezeAppThread(context.applicationContext).start()
                 }
             }
             return instance!!
         }
-
-        fun suspendApp(app: String) {
-            if (app.equals("com.android.vending")) {
-                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
-            } else {
-                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app} || am kill current ${app}")
-            }
-        }
-
-        fun freezeApp(app: String) {
-            if (app.equals("com.android.vending")) {
-                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
-            } else {
-                KeepShellPublic.doCmdSync("pm disable ${app}")
-            }
-        }
-
-        fun unfreezeApp(app: String) {
-            getCurrentInstance()?.setFreezeAppLeaveTime(app)
-
-            if (app.equals("com.android.vending")) {
-                GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
-            } else {
-                KeepShellPublic.doCmdSync("pm unsuspend ${app}\npm enable ${app}")
-            }
-        }
-    }
-
-    class FreezeAppHistory {
-        var startTime: Long = 0
-        var leaveTime: Long = 0
-        var packageName: String = ""
-    }
-
-
-    fun getLaunchedFreezeApp(): List<String> {
-        return freezList.map { it.packageName }
-    }
-
-    fun setFreezeAppLeaveTime(packageName: String) {
-        val currentHistory = removeFreezeAppHistory(packageName)
-
-        val history = if (currentHistory != null) currentHistory else FreezeAppHistory()
-        history.leaveTime = System.currentTimeMillis()
-        history.packageName = packageName
-
-        freezList.add(history)
-        clearFreezeAppCountLimit()
-    }
-
-    fun setFreezeAppStartTime(packageName: String) {
-        removeFreezeAppHistory(packageName)
-
-        val history = FreezeAppHistory()
-        history.startTime = System.currentTimeMillis()
-        history.leaveTime = -1
-        history.packageName = packageName
-
-        freezList.add(history)
-        clearFreezeAppCountLimit()
-    }
-
-    fun removeFreezeAppHistory(packageName: String): FreezeAppHistory? {
-        for (it in freezList) {
-            if (it.packageName == packageName) {
-                freezList.remove(it)
-                return it
-            }
-        }
-        return null
-    }
-
-    // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
-    fun clearFreezeAppCountLimit() {
-        if (freezeAppLimit > 0 && freezList.size > freezeAppLimit) {
-            val foregroundApps = context.getForegroundApps()
-            while (freezList.size > freezeAppLimit) {
-                val app = freezList.first()
-                if (!foregroundApps.contains(app.packageName)) {
-                    freezeApp(app)
-                }
-            }
-        }
-    }
-
-    // 冻结已经后台超时的偏见应用
-    fun clearFreezeAppTimeLimit() {
-        val freezAppTimeLimit = this.freezeAppTimeLimit
-        if (freezAppTimeLimit > 0) {
-            val currentTime = System.currentTimeMillis()
-            val targetApps = freezList.filter {
-                it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
-            }
-            if (targetApps.isNotEmpty()) {
-                val foregroundApps = context.getForegroundApps()
-                targetApps.forEach {
-                    if(!foregroundApps.contains(it.packageName)) {
-                        freezeApp(it)
-                    }
-                }
-            }
-        }
-    }
-
-    // 冻结指定应用
-    fun freezeApp(app: FreezeAppHistory) {
-        val currentAppConfig = store.getAppConfig(app.packageName)
-        if (currentAppConfig.freeze) {
-            if (suspendMode) {
-                suspendApp(app.packageName)
-            } else {
-                freezeApp(app.packageName)
-            }
-        }
-        freezList.remove(app)
     }
 
     var brightnessMode = -1;
@@ -340,11 +188,6 @@ class SceneMode private constructor(private val context: AccessibilityScence, pr
      * 从应用离开时
      */
     fun onAppLeave(sceneConfigInfo: SceneConfigInfo) {
-        // 离开偏见应用时，记录偏见应用最后活动时间
-        if (sceneConfigInfo.freeze) {
-            setFreezeAppLeaveTime(sceneConfigInfo.packageName)
-        }
-
         if (sceneConfigInfo.aloneLight) {
             // 独立亮度 记录最后的亮度值
             try {
@@ -440,10 +283,6 @@ class SceneMode private constructor(private val context: AccessibilityScence, pr
                         }
                     } else {
                         restoreHeaddUp()
-                    }
-
-                    if (currentSceneConfig!!.freeze) {
-                        setFreezeAppStartTime(packageName)
                     }
 
                     // 实验性新特性（cgroup/memory自动配置）
@@ -549,43 +388,5 @@ class SceneMode private constructor(private val context: AccessibilityScence, pr
     fun onScreenOff() {
         // 息屏时暂停屏幕旋转修改
         floatScreenRotation.remove()
-    }
-
-
-    fun onScreenOffDelay() {
-        if (config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0) < 1) {
-            clearFreezeApp()
-        }
-    }
-
-    /**
-     * 冻结所有解冻的偏见应用
-     */
-    fun clearFreezeApp() {
-        val suspendMode = this.suspendMode
-
-        currentSceneConfig?.packageName?.run {
-            val config = store.getAppConfig(this)
-            if (config.freeze) {
-                if (suspendMode) {
-                    suspendApp(this)
-                } else {
-                    Companion.freezeApp(this)
-                }
-            }
-        }
-
-        while (freezList.size > 0) {
-            val firstItem = freezList.first()
-            val config = store.getAppConfig(firstItem.packageName)
-            if (config.freeze) {
-                if (suspendMode) {
-                    suspendApp(firstItem.packageName)
-                } else {
-                    freezeApp(firstItem.packageName)
-                }
-            }
-            freezList.remove(firstItem)
-        }
     }
 }

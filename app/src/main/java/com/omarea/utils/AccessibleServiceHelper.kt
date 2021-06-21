@@ -12,7 +12,7 @@ import com.omarea.scene.AccessibilityScence
 class AccessibleServiceHelper {
     // 场景模式服务是否正在运行
     fun serviceRunning(context: Context): Boolean {
-        return AccessibleServiceState().serviceRunning(context, "AccessibilityScenceMode")
+        return AccessibleServiceState().serviceRunning(context, AccessibilityScence::class.java.simpleName)
     }
 
     // 停止场景模式服务

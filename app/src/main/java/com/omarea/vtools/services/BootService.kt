@@ -59,7 +59,7 @@ class BootService : IntentService("vtools-boot") {
         } else {
             Thread.sleep(2000)
         }
-        val r = PropsUtils.getProp("vtools.boot")
+        val r = PropsUtils.getProp("vtools.c.boot")
         if (!r.isEmpty()) {
             isFirstBoot = false
             bootCancel = true
@@ -96,119 +96,8 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
-        // 如果没有单独安装Magisk模块来处理虚拟内存，则在Scene的自启动中控制
-        if (!keepShell.doCmdSync("getprop vtools.swap.controller").equals("magisk")) {
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-                enableSwap(keepShell, context)
-            }
-
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-                val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-                val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
-
-                updateNotification(getString(R.string.boot_resize_zram))
-                resizeZram(sizeVal, algorithm!!, keepShell, true)
-            }
-
-            if (swapConfig.contains(SpfConfig.SWAP_SPF_SWAPPINESS)) {
-                keepShell.doCmdSync("echo 65 > /proc/sys/vm/swappiness\n")
-                keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
-            }
-
-            if (swapConfig.contains(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES)) {
-                keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_SPF_EXTRA_FREE_KBYTES, 29615)} > /proc/sys/vm/extra_free_kbytes\n")
-            }
-
-            if (swapConfig.contains(SpfConfig.SWAP_SPF_WATERMARK_SCALE)) {
-                keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_SPF_WATERMARK_SCALE, 100)} > /proc/sys/vm/watermark_scale_factor\n")
-            }
-
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
-                updateNotification(getString(R.string.boot_lmk))
-
-                val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                val info = ActivityManager.MemoryInfo()
-                activityManager.getMemoryInfo(info)
-                LMKUtils().autoSetLMK(info.totalMem, keepShell)
-            }
-        }
-
-        updateNotification(getString(R.string.boot_freeze))
-        val launchedFreezeApp = SceneMode.getCurrentInstance()?.getLaunchedFreezeApp()
-        val suspendMode = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        for (item in SceneConfigStore(context).freezeAppList) {
-            if (launchedFreezeApp == null || !launchedFreezeApp.contains(item)) {
-                if (suspendMode) {
-                    SceneMode.suspendApp(item)
-                } else {
-                    SceneMode.freezeApp(item)
-                }
-            }
-        }
-
         keepShell.tryExit()
         hideNotification()
-    }
-
-    /**
-     * 获取当前的ZRAM压缩算法
-     */
-    var compAlgorithm: String
-        get() {
-            val compAlgorithmItems = KernelProrp.getProp("/sys/block/zram0/comp_algorithm").split(" ")
-            val result = compAlgorithmItems.find {
-                it.startsWith("[") && it.endsWith("]")
-            }
-            if (result != null) {
-                return result.replace("[", "").replace("]", "").trim()
-            }
-            return ""
-        }
-        set(value) {
-            KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
-        }
-
-    fun enableSwap(keepShell: KeepShell, context: Context) {
-        updateNotification(getString(R.string.boot_swapon))
-        val swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
-        val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
-        val useLoop = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)) "1" else "0"
-        keepShell.doCmdSync("sh $swapControlScript enable_swap $useLoop $swapPriority\n")
-    }
-
-    /**
-     * swapFirst：是否已开启可优先使用的swap，如果未开启，则在调整zram前，先将swappiness调为0，避免在回收时还在写入zram，导致回收时间变长！
-     */
-    fun resizeZram(sizeVal: Int, algorithm: String = "", keepShell: KeepShell, swapFirst: Boolean = false) {
-        val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
-        if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
-            val sb = StringBuilder()
-            sb.append("swappiness_bak=`cat /proc/sys/vm/swappiness`\n")
-            if (!swapFirst) {
-                sb.append("echo 0 > /proc/sys/vm/swappiness\n")
-            }
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-            sb.append("sync\n")
-            sb.append("echo 3 > /proc/sys/vm/drop_caches\n")
-            sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1\n")
-            sb.append("echo 1 > /sys/block/zram0/reset\n")
-
-            if (algorithm.isNotEmpty()) {
-                sb.append("echo \"$algorithm\" > /sys/block/zram0/comp_algorithm\n")
-            }
-
-            if (sizeVal > 2047) {
-                sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
-            } else {
-                sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
-            }
-
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-            sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
-            sb.append("swapon /dev/block/zram0 -p 0 >/dev/null 2>&1\n")
-            sb.append("echo \$swappiness_bak > /proc/sys/vm/swappiness")
-            keepShell.doCmdSync(sb.toString())
-        }
     }
 
     private var channelCreated = false

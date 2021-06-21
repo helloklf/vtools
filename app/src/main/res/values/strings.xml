@@ -33,8 +33,8 @@
     <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
     <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
-    <string name="app_name">Scene4 Beta</string>
-    <string name="app_name_short">Scene4</string>
+    <string name="app_name">Scene4 Core Edition</string>
+    <string name="app_name_short">Scene4C</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="accessibility_service_description">Scene增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
@@ -88,7 +88,6 @@
     <string name="menu_app_scene">应用场景</string>
     <string name="menu_auto_click">自动点击</string>
     <string name="menu_cpu_modes">性能配置</string>
-    <string name="menu_freeze">应用偏见</string>
     <string name="menu_battery_stats">耗电统计</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_img">备份还原</string>
@@ -205,7 +204,6 @@
     <string name="boot_resize_zram">设置ZRAM容量…</string>
     <string name="boot_swapon">启动SWAP…</string>
     <string name="boot_lmk">调整LMK参数…</string>
-    <string name="boot_freeze">冻结偏见应用…</string>
 
     <string name="flash_confirm">确认刷入？</string>
 

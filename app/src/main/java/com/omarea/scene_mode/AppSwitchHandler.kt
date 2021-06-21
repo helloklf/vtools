@@ -80,9 +80,6 @@ class AppSwitchHandler(private var context: AccessibilityScence, override val is
 
                             ticks += interval
                             ticks %= 60
-                            if (ticks == 0) {
-                                sceneMode.clearFreezeAppTimeLimit()
-                            }
                         }
                     }, 0, interval * 1000L)
                 }
@@ -138,7 +135,6 @@ class AppSwitchHandler(private var context: AccessibilityScence, override val is
     private fun onScreenOffCloseNetwork() {
         if (!screenOn) {
             if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
-                sceneMode.onScreenOffDelay()
                 System.gc()
             }
         }

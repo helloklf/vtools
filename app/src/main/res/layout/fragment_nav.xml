@@ -11,12 +11,6 @@
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="主要功能" />
-
         <LinearLayout
             android:id="@+id/nav_scene_service_not_active"
             style="@style/ListCardItem"
@@ -79,44 +73,20 @@
                 app:text="@string/menu_battery_stats" />
 
             <com.omarea.ui.NavItem
+                android:id="@+id/nav_core_control"
+                style="@style/nav_item_wrap_right"
+                android:tag="root"
+                app:drawable="@drawable/ic_menu_cpu"
+                app:text="@string/menu_core_control" />
+
+            <com.omarea.ui.NavItem
+                android:visibility="gone"
                 android:id="@+id/nav_auto_click"
                 style="@style/nav_item_wrap_right"
                 app:drawable="@drawable/ic_menu_click"
                 app:text="@string/menu_auto_click" />
 
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_core_control"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_cpu"
-                app:text="@string/menu_core_control" />
-
         </GridLayout>
 
-        <TextView
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="交流反馈" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:columnCount="2">
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_qq"
-                style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_qq"
-                app:text="@string/menu_qq" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_share"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/ic_menu_share"
-                app:text="@string/menu_share" />
-        </GridLayout>
     </LinearLayout>
 </com.omarea.common.ui.OverScrollView>

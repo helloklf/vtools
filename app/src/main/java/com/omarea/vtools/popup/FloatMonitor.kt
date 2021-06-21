@@ -194,7 +194,6 @@ class FloatMonitor(private val mContext: Context) {
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler(Looper.getMainLooper())
-    private var batteryUnit = BatteryUtils()
     private val info = ActivityManager.MemoryInfo()
 
     private var sum = -1

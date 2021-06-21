@@ -299,7 +299,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/ListCardItem">
+                    style="@style/ListCardItemLast">
                     <TextView
                         style="@style/scene_config_title"
                         android:layout_width="match_parent"
@@ -318,29 +318,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    style="@style/ListCardItemLast">
-                    <TextView
-                        style="@style/scene_config_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="应用偏见" />
-
-                    <Switch
-                        android:id="@+id/app_details_freeze"
-                        style="@style/scene_config_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="自动冻结" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="锁屏之后，将此应用冻结(禁用)，适用于后台非常耗电但又偶尔需要打开的应用" />
 
                 </LinearLayout>
             </LinearLayout>
