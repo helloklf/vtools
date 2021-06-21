@@ -30,7 +30,9 @@ import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
+import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.config_author
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -178,6 +180,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             powermode_toggles.visibility = View.GONE
         }
 
+        config_author.text = ModeSwitcher.getCurrentSourceName()
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()

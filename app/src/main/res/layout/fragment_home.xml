@@ -504,54 +504,83 @@
         android:id="@+id/powermode_toggles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:visibility="visible">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_powersave"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/powercfg_powersave"
-            android:text="@string/powersave_short"
-            android:textColor="#66ffffff"
-            android:textStyle="bold" />
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:visibility="visible">
 
-        <Button
-            android:id="@+id/btn_defaultmode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/powercfg_balance"
-            android:text="@string/balance_short"
-            android:textColor="#66ffffff"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/btn_powersave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/powercfg_powersave"
+                android:text="@string/powersave_short"
+                android:textColor="#66ffffff"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_gamemode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/powercfg_performance"
-            android:text="@string/performance_short"
-            android:textColor="#66ffffff"
-            android:textStyle="bold" />
+            <Button
+                android:id="@+id/btn_defaultmode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/powercfg_balance"
+                android:text="@string/balance_short"
+                android:textColor="#66ffffff"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_fastmode"
-            android:layout_width="0dp"
+            <Button
+                android:id="@+id/btn_gamemode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/powercfg_performance"
+                android:text="@string/performance_short"
+                android:textColor="#66ffffff"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_fastmode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/powercfg_fast"
+                android:text="@string/fast_short"
+                android:textColor="#66ffffff"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/powercfg_fast"
-            android:text="@string/fast_short"
-            android:textColor="#66ffffff"
-            android:textStyle="bold" />
+            android:layout_marginBottom="8dp"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="当前配置源：" />
+
+            <TextView
+                android:id="@+id/config_author"
+                style="@style/textSmallTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="?android:colorAccent" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

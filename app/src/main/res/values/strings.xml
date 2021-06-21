@@ -85,9 +85,9 @@
     <string name="settings_black_notification_desc">系统处于夜间模式时，将Scene的常驻通知显示为黑色背景(正常情况无需开启此选项)</string>
 
     <string name="menu_home">概况</string>
+    <string name="menu_cpu_modes">性能配置</string>
     <string name="menu_app_scene">应用场景</string>
     <string name="menu_auto_click">自动点击</string>
-    <string name="menu_cpu_modes">性能配置</string>
     <string name="menu_battery_stats">耗电统计</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_img">备份还原</string>
@@ -233,7 +233,7 @@
     <string name="scene_reset_compile">com.omarea.vtools.ResetCompile</string>
 
     <string name="scene_contract_title">风险声明</string>
-    <string name="scene_contract">Scene是一款面向玩机爱好者的应用，使用它需要拥有优秀的视力、阅读理解能力和良好的心态。\n\n使用过程中可能出现无法预料的错误，导致数据丢失，甚至无法正常开机。\n\n请务必不要在你[用于工作]或者存有[重要数据]的手机上使用，以免造成损失！\n\n使用过程中，务必仔细阅读提示信息谨慎操作，不要轻易拨动不理解的功能选项！\n\n此外，本应用作者不保证会提供使用帮助和故障恢复建议！</string>
+    <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的，所有修改都可以在关闭或卸载Scene后重启手机来还原。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
 
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>

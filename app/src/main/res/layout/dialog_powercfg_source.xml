@@ -108,6 +108,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_weight="1"
             android:layout_height="65dp"
             android:background="@drawable/krscript_item_ripple"
@@ -150,6 +151,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_weight="1"
             android:layout_height="65dp"
             android:background="@drawable/krscript_item_ripple"
@@ -192,6 +194,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_weight="1"
             android:layout_height="65dp"
             android:background="@drawable/krscript_item_ripple"
