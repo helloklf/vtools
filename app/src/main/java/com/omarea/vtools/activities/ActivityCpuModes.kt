@@ -252,7 +252,7 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun outsideOverrided(): Boolean {
         if (configInstaller.outsideConfigInstalled()) {
-            DialogHelper.helpInfo(context, "你需要先删除外部配置，因为Scene3会优先使用它！")
+            DialogHelper.helpInfo(context, "你需要先删除外部配置，因为Scene会优先使用它！")
             return true
         }
         return false
@@ -263,7 +263,7 @@ class ActivityCpuModes : ActivityBase() {
             if (author == ModeSwitcher.SOURCE_SCENE_CUSTOM) {
                 modifyCpuConfig(mode)
             } else {
-                Snackbar.make(it, "如需自定义各个模式的参数，请先将配置源切换为“自定义”", Snackbar.LENGTH_SHORT).show()
+                DialogHelper.alert(this, "操作提示", "如需自定义各个模式的参数，请先将配置源切换为“自定义”\n\n如需应用[省电/均衡/性能/性能]模式，请在软件概览界面点击")
             }
         }
     }
