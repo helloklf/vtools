@@ -5,19 +5,62 @@
     android:fitsSystemWindows="false"
     android:keepScreenOn="false">
 
+    <LinearLayout
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="false"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_list"
+            android:minWidth="140dp"
+            android:layout_width="wrap_content"
+            android:background="@null"
+            style="@style/SceneTabLayout" />
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="1dp" />
+
+        <ImageButton
+            android:id="@+id/action_graph"
+            android:src="@drawable/graph"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:tint="?android:textColorPrimary"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <ImageButton
+            android:id="@+id/action_power"
+            android:src="@drawable/ic_power"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:tint="?android:textColorPrimary"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+        <ImageButton
+            android:id="@+id/action_settings"
+            android:src="@drawable/settings"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:tint="?android:textColorPrimary"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+    </LinearLayout>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/tab_content"
-        android:layout_above="@id/tab_list"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="?actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_list"
-        style="@style/SceneTabLayout" />
-
-    <include
-        layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

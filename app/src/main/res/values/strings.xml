@@ -196,14 +196,8 @@
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
     <string name="notice_channel_task">Scene计划任务</string>
-    <string name="notice_task_completed">Scene计划任务完成</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
-    <string name="boot_cpuset">设置CPU控制参数…</string>
-    <string name="boot_modify_mac">修改MAC地址…</string>
     <string name="boot_use_powercfg">应用调度配置…</string>
-    <string name="boot_resize_zram">设置ZRAM容量…</string>
-    <string name="boot_swapon">启动SWAP…</string>
-    <string name="boot_lmk">调整LMK参数…</string>
 
     <string name="flash_confirm">确认刷入？</string>
 
@@ -233,7 +227,7 @@
     <string name="scene_reset_compile">com.omarea.vtools.ResetCompile</string>
 
     <string name="scene_contract_title">风险声明</string>
-    <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的，所有修改都可以在关闭或卸载Scene后重启手机来还原。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
+    <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的。如需还原所有修改，只需关闭或卸载软件并重启手机。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
 
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>

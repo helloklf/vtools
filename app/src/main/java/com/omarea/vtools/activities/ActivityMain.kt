@@ -9,8 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.permissions.CheckRootStatus
@@ -89,6 +87,16 @@ class ActivityMain : ActivityBase() {
         tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
         tab_content.adapter = tabIconHelper2.adapter
         tab_list.getTabAt(0)?.select() // 默认选中第二页
+
+        action_graph.setOnClickListener {
+            actionGraph()
+        }
+        action_power.setOnClickListener {
+            DialogPower(this).showPowerMenu()
+        }
+        action_settings.setOnClickListener {
+            startActivity(Intent(this.applicationContext, ActivityOtherSettings::class.java))
+        }
     }
 
     override fun onResume() {
@@ -122,40 +130,27 @@ class ActivityMain : ActivityBase() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-
-    //右上角菜单
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityOtherSettings::class.java))
-            R.id.action_power -> DialogPower(this).showPowerMenu()
-            R.id.action_graph -> {
-                if (!CheckRootStatus.lastCheckResult) {
-                    Toast.makeText(this, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
-                    return false
-                }
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (Settings.canDrawOverlays(this)) {
-                        DialogMonitor(this).show()
-                    } else {
-                        //若没有权限，提示获取
-                        //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                        //startActivity(intent);
-                        val intent = Intent()
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
-                        intent.data = Uri.fromParts("package", this.packageName, null)
-                        Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    DialogMonitor(this).show()
-                }
-            }
+    private fun actionGraph() {
+        if (!CheckRootStatus.lastCheckResult) {
+            Toast.makeText(this, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
+            return
         }
-        return super.onOptionsItemSelected(item)
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (Settings.canDrawOverlays(this)) {
+                DialogMonitor(this).show()
+            } else {
+                //若没有权限，提示获取
+                //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                //startActivity(intent);
+                val intent = Intent()
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                intent.data = Uri.fromParts("package", this.packageName, null)
+                Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
+            }
+        } else {
+            DialogMonitor(this).show()
+        }
     }
 
     public override fun onPause() {

@@ -33,10 +33,12 @@ open class ActivityBase : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         // 显示返回按钮
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener {
-            this.onBackPressed()
+        supportActionBar?.run {
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+            toolbar.setNavigationOnClickListener {
+                onBackPressed()
+            }
         }
     }
 

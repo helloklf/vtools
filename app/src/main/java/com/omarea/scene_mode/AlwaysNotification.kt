@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.SystemClock
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import com.omarea.Scene
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
@@ -183,12 +182,7 @@ internal class AlwaysNotification(
     }
 
     private fun getRemoteViews(): RemoteViews {
-        val layout = (if (Scene.isNightMode && globalSPF.getBoolean(SpfConfig.GLOBAL_NIGHT_BLACK_NOTIFICATION, false)) {
-            R.layout.layout_notification_dark
-        } else {
-            R.layout.layout_notification
-        })
-        return RemoteViews(context.packageName, layout)
+        return RemoteViews(context.packageName, R.layout.layout_notification)
     }
 
     //隐藏通知

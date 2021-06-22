@@ -6,7 +6,6 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.library.shell.PlatformUtils
-import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import java.io.File
 import java.nio.charset.Charset
@@ -16,15 +15,6 @@ class CpuConfigInstaller {
 
     private fun getPowerCfgDir(): String {
         return rootDir + "/" + PlatformUtils().getCPUName()
-    }
-
-    // 移除自定义的各个模式
-    fun removeCustomModes(context: Context) {
-        val storage = CpuConfigStorage(context)
-        storage.remove(ModeSwitcher.POWERSAVE)
-        storage.remove(ModeSwitcher.BALANCE)
-        storage.remove(ModeSwitcher.PERFORMANCE)
-        storage.remove(ModeSwitcher.FAST)
     }
 
     fun removeOutsideConfig() {
@@ -73,7 +63,6 @@ class CpuConfigInstaller {
                         }
                         )
                 ).apply()
-                removeCustomModes(context)
                 return true
             }
         } catch (ex: Exception) {
@@ -110,7 +99,6 @@ class CpuConfigInstaller {
             }
             ModeSwitcher().setCurrentPowercfg("")
             context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_PROFILE_SOURCE, author).apply()
-            removeCustomModes(context)
             return true
         } catch (ex: Exception) {
             return false

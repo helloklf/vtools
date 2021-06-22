@@ -201,14 +201,13 @@ class ActivityStartSplash : Activity() {
     private var myHandler = Handler(Looper.getMainLooper())
 
     private fun checkRoot() {
-        val disableSeLinux = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
         CheckRootStatus(this, Runnable {
             if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false)) {
                 CheckFileWirte(this).run()
             } else {
                 initContractAction()
             }
-        }, disableSeLinux, InstallBusybox(this)).forceGetRoot()
+        }, false, InstallBusybox(this)).forceGetRoot()
     }
 
     /**

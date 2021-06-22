@@ -30,9 +30,7 @@ import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
-import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_home.config_author
 import kotlinx.coroutines.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -174,8 +172,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (CpuConfigInstaller().dynamicSupport(Scene.context) || ModeSwitcher().modeConfigCompleted())) {
+        if (ModeSwitcher().modeConfigCompleted()) {
             powermode_toggles.visibility = View.VISIBLE
+        } else if (CpuConfigInstaller().dynamicSupport(Scene.context)) {
+            powermode_toggles.visibility = View.VISIBLE
+            CpuConfigInstaller().installOfficialConfig(context!!)
         } else {
             powermode_toggles.visibility = View.GONE
         }

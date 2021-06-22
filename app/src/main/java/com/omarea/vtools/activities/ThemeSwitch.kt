@@ -3,7 +3,6 @@ package com.omarea.vtools.activities
 import android.Manifest
 import android.app.Activity
 import android.app.UiModeManager
-import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -16,7 +15,6 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.PermissionChecker
@@ -25,18 +23,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 object ThemeSwitch {
-    private val themeMap = arrayListOf(
-            // 彩色 + 白
-            R.style.AppThemeBlue,
-            R.style.AppThemeCyan,
-            R.style.AppThemeGreen,
-            R.style.AppThemeOrange,
-            R.style.AppThemeRed,
-            R.style.AppThemePink,
-            R.style.AppThemePretty,
-            R.style.AppThemeViolet
-    )
-
     private var globalSPF: SharedPreferences? = null
 
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
@@ -55,96 +41,33 @@ object ThemeSwitch {
             return switchTheme(activity)
         }
 
-        if (theme < themeMap.size) {
-            val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-            themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+        val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
 
-            val themeId = when (theme) {
-                -1 -> {
-                    // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    if (themeMode.isDarkMode) {
-                        themeMode.isLightStatusBar = false
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        R.style.AppThemeNoActionBarNight
-                    } else {
-                        themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        R.style.AppThemeWhite
-                    }
-                }
-                -2 -> {
-                    themeMode.isDarkMode = true
+        val themeId = (
+                // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                if (themeMode.isDarkMode) {
                     themeMode.isLightStatusBar = false
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     R.style.AppThemeNoActionBarNight
-                }
-                -3 -> {
-                    themeMode.isDarkMode = false
+                } else {
                     themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     R.style.AppThemeWhite
-                }
-                else -> {
-                    themeMode.isLightStatusBar = false
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    themeMap[theme]
-                }
-            }
-            if (activity is AppCompatActivity) {
-                activity.getDelegate().setLocalNightMode(AppCompatDelegate.getDefaultNightMode())
-            }
-            activity.setTheme(themeId)
+                })
+        if (activity is AppCompatActivity) {
+            activity.getDelegate().setLocalNightMode(AppCompatDelegate.getDefaultNightMode())
+        }
+        activity.setTheme(themeId)
 
-            if (themeMode.isLightStatusBar) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
-        } else if (theme == 10) {
-            val wallpaper = WallpaperManager.getInstance(activity)
-            val wallpaperInfo = wallpaper.wallpaperInfo
-            activity.setTheme(R.style.AppThemeWallpaper)
-
-            // 动态壁纸
-            if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
-                activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
-
-                themeMode.isDarkMode = true
-            } else {
-                val wallpaperDrawable = wallpaper.drawable
-
-                // 深色的静态壁纸
-                if (isDarkColor(wallpaperDrawable)) {
-                    themeMode.isDarkMode = true
-                } else {
-                    // 浅色的静态壁纸
-                    themeMode.isDarkMode = false
-                    themeMode.isLightStatusBar = true
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    }
-
-                    if (!(activity is ActivityMain)) {
-                        activity.window.navigationBarColor = Color.TRANSPARENT
-                    }
-                }
-
-                activity.window.setBackgroundDrawable(wallpaperDrawable)
-                // 使用壁纸高斯模糊作为窗口背景
-                // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
-            }
-
-            if (themeMode.isDarkMode) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        if (themeMode.isLightStatusBar) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         }
+
         return themeMode
     }
 

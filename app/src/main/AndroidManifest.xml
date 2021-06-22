@@ -111,14 +111,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <activity
-            android:name=".activities.ActivityAddinOnline"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="false"
-            android:label="@string/title_activity_online"
-            android:launchMode="standard"
-            android:screenOrientation="behind" />
-        <activity
             android:name=".activities.ActivityAppDetails"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
@@ -130,24 +122,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.ActivityFileSelector"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_file_selector"
-            android:screenOrientation="behind"
-            android:launchMode="standard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".activities.ActivityCpuControl" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBatteryStats" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityAppConfig2" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityAutoClick" android:configChanges="orientation|screenSize" />
 
         <receiver
             android:name=".ReceiverBoot"
@@ -160,7 +137,6 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.omarea.scene_mode.ReceiverShortcut" />
 
         <service
             android:name="com.omarea.scene.AccessibilityScence"

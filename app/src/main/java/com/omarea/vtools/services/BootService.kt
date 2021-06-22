@@ -14,9 +14,7 @@ import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.library.shell.PropsUtils
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
-import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 
 /**
@@ -24,7 +22,6 @@ import com.omarea.vtools.R
  */
 
 class BootService : IntentService("vtools-boot") {
-    private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
     private var isFirstBoot = true
     private var bootCancel = false
@@ -45,7 +42,6 @@ class BootService : IntentService("vtools-boot") {
         mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
 
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
@@ -68,17 +64,7 @@ class BootService : IntentService("vtools-boot") {
     private fun autoBoot() {
         val keepShell = KeepShell()
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
-            keepShell.doCmdSync(CommonCmds.DisableSELinux)
-        }
-
         val context = this.applicationContext
-        val cpuConfigStorage = CpuConfigStorage(context!!)
-        val cpuState = cpuConfigStorage.load()
-        if (cpuState != null) {
-            updateNotification(context.getString(R.string.boot_cpuset))
-            cpuConfigStorage.applyCpuConfig(context, cpuConfigStorage.default())
-        }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
         if (!globalPowercfg.isNullOrEmpty()) {

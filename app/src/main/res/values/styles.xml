@@ -80,56 +80,6 @@
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
-    <style name="AppThemeBlue" parent="AppThemeColor">
-        <item name="colorAccent">@color/blue</item>
-        <item name="colorPrimary">@color/blueLight</item>
-        <item name="colorPrimaryDark">@color/blueDark</item>
-    </style>
-
-    <style name="AppThemeCyan" parent="AppThemeColor">
-        <item name="colorAccent">@color/cyan</item>
-        <item name="colorPrimary">@color/cyanLight</item>
-        <item name="colorPrimaryDark">@color/cyanDark</item>
-    </style>
-
-    <style name="AppThemeGreen" parent="AppThemeColor">
-        <item name="colorAccent">@color/green</item>
-        <item name="colorPrimary">@color/greenLight</item>
-        <item name="colorPrimaryDark">@color/greenDark</item>
-    </style>
-
-    <style name="AppThemeOrange" parent="AppThemeColor">
-        <item name="colorAccent">@color/orange</item>
-        <item name="colorPrimary">@color/orangeLight</item>
-        <item name="colorPrimaryDark">@color/orangeDark</item>
-    </style>
-
-    <style name="AppThemeRed" parent="AppThemeColor">
-        <item name="android:windowBackground">@color/newYearBgColor</item>
-        <item name="colorPrimary">@color/newYearLight</item>
-        <item name="colorPrimaryDark">@color/newYearDark</item>
-        <item name="colorAccent">@color/newYearAccent</item>
-    </style>
-
-    <style name="AppThemePink" parent="AppThemeColor">
-        <item name="colorAccent">@color/pink</item>
-        <item name="colorPrimary">@color/pinkLight</item>
-        <item name="colorPrimaryDark">@color/pinkDark</item>
-    </style>
-
-    <style name="AppThemePretty" parent="AppThemeColor">
-        <item name="colorAccent">@color/pretty</item>
-        <item name="colorPrimary">@color/prettyLight</item>
-        <item name="colorPrimaryDark">@color/prettyDark</item>
-    </style>
-
-    <style name="AppThemeViolet" parent="AppThemeColor">
-        <item name="colorAccent">@color/violet</item>
-        <item name="colorPrimary">@color/violetLight</item>
-        <item name="colorPrimaryDark">@color/violetDark</item>
-    </style>
-
-
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="titleTextColor">?android:textColorPrimary</item>
         <item name="subtitleTextColor">?android:textColorSecondary</item>
@@ -140,8 +90,8 @@
     </style>
 
     <style name="AppThemeWhite" parent="AppThemeLight">
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@color/window_background_light</item>
+        <item name="android:statusBarColor">@color/window_background_light</item>
         <item name="colorAccent">@color/lightPink</item>
         <item name="colorPrimary">@color/lightPinkLight</item>
         <item name="colorPrimaryDark">@color/lightPinkDark</item>

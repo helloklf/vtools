@@ -277,25 +277,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/quick_switch"
-                style="@style/ListCardItem"
-                android:orientation="vertical">
-
-                <Switch
-                    android:id="@+id/home_quick_switch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:text="快捷切换" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="在应用(Scene)首页显示四个模式的切换按钮" />
-            </LinearLayout>
-
-            <LinearLayout
                 style="@style/ListCardItem">
 
                 <LinearLayout

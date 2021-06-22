@@ -9,7 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.omarea.Scene
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
@@ -19,7 +18,6 @@ import com.omarea.library.basic.ScreenState
 import com.omarea.scene.AccessibilityScence
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -313,11 +311,6 @@ class AppSwitchHandler(private var context: AccessibilityScence, override val is
         screenState = ScreenState(context)
 
         updateModeNofity() // 服务启动后 更新通知
-
-        // 禁用SeLinux
-        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
-            KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
-        }
 
         GlobalScope.launch (Dispatchers.IO) {
             initConfig()

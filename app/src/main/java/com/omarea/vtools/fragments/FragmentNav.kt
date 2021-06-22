@@ -17,7 +17,9 @@ import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.*
+import com.omarea.vtools.activities.ActivityAppConfig2
+import com.omarea.vtools.activities.ActivityBatteryStats
+import com.omarea.vtools.activities.ActivityCpuModes
 import kotlinx.android.synthetic.main.fragment_nav.*
 
 class FragmentNav : Fragment(), View.OnClickListener {
@@ -172,11 +174,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
-                R.id.nav_core_control -> {
-                    val intent = Intent(context, ActivityCpuControl::class.java)
-                    startActivity(intent)
-                    return
-                }
                 R.id.nav_app_scene -> {
                     val intent = Intent(context, ActivityAppConfig2::class.java)
                     startActivity(intent)
@@ -184,11 +181,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 }
                 R.id.nav_cpu_modes -> {
                     val intent = Intent(context, ActivityCpuModes::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_auto_click -> {
-                    val intent = Intent(context, ActivityAutoClick::class.java)
                     startActivity(intent)
                     return
                 }

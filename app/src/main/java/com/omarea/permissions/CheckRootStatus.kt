@@ -111,8 +111,6 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
             val cmds = StringBuilder()
             // 必需的权限
             val requiredPermission = arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CHANGE_CONFIGURATION,
                     Manifest.permission.WRITE_SECURE_SETTINGS,
                     Manifest.permission.SYSTEM_ALERT_WINDOW,
