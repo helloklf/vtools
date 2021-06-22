@@ -3,8 +3,8 @@ package com.omarea.utils
 import android.content.Context
 import android.os.Environment
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.library.shell.AppErrorLogcatUtils
 import com.omarea.scene_mode.AlwaysNotification
-import com.omarea.shell_utils.AppErrorLogcatUtils
 import com.omarea.store.SpfConfig
 import java.io.File
 import java.io.FileOutputStream
