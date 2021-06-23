@@ -137,7 +137,6 @@ class FragmentCpuModes : Fragment() {
                     } else {
                         Scene.toast("你正在使用其它作者提供的调度配置~", Toast.LENGTH_LONG)
                     }
-                    Scene.toast("你需要删除外部配置，才能选择其它配置源", Toast.LENGTH_LONG)
                 } else if (configInstaller.dynamicSupport(context!!)) {
                     chooseConfigSource()
                 } else {
@@ -182,8 +181,7 @@ class FragmentCpuModes : Fragment() {
         val cpuConfigInstaller = CpuConfigInstaller()
         if (cpuConfigInstaller.dynamicSupport(context!!)) {
             conservative.setOnClickListener {
-                // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
-                if (outsideOverrided()) {
+                if (configInstaller.outsideConfigInstalled()) {
                     configInstaller.removeOutsideConfig()
                 }
                 installConfig(false)
@@ -191,8 +189,7 @@ class FragmentCpuModes : Fragment() {
                 dialog.dismiss()
             }
             active.setOnClickListener {
-                // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
-                if (outsideOverrided()) {
+                if (configInstaller.outsideConfigInstalled()) {
                     configInstaller.removeOutsideConfig()
                 }
                 installConfig(true)
@@ -254,15 +251,6 @@ class FragmentCpuModes : Fragment() {
                 runnable.run()
             }
         }
-    }
-
-
-    private fun outsideOverrided(): Boolean {
-        if (configInstaller.outsideConfigInstalled()) {
-            DialogHelper.alert(activity!!, "提示", "你需要先删除外部配置，因为Scene会优先使用它！")
-            return true
-        }
-        return false
     }
 
     private fun bindMode(button: View, mode: String) {
