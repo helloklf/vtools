@@ -47,7 +47,7 @@ class FragmentCpuModes : Fragment() {
             inflater.inflate(R.layout.activity_cpu_modes, container, false)
 
     private fun startService() {
-        Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
+        Scene.toast("请在系统设置里激活[Scene 辅助服务]选项", Toast.LENGTH_SHORT)
         try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)

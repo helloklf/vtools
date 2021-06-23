@@ -86,49 +86,48 @@ class ActivityAppConfig2 : ActivityBase() {
             initDefaultConfig()
         }
 
+        scene_app_list.setOnItemClickListener { parent, view, position, _ ->
+            val item = (parent.adapter.getItem(position) as AppInfo)
+            val app = item.packageName
+            DialogAppPowerConfig(this,
+                    spfPowercfg.getString(app, ""),
+                    object : DialogAppPowerConfig.IResultCallback {
+                        override fun toMode() {
+                            try {
+                                val intent = Intent(context, ActivityAppDetails::class.java)
+                                intent.putExtra("app", item.packageName)
+                                startActivityForResult(intent, REQUEST_APP_CONFIG)
+                                lastClickRow = view
+                            } catch (ex: Exception) {
+                            }
+                        }
 
-        scene_app_list.setOnItemClickListener { parent, view2, position, _ ->
+                        override fun onChange(mode: String?) {
+                            spfPowercfg.edit().run {
+                                if (mode.isNullOrEmpty()) {
+                                    remove(app)
+                                } else {
+                                    putString(app, mode)
+                                }
+                            }.apply()
+
+                            setAppRowDesc(item)
+                            (parent.adapter as SceneModeAdapter).updateRow(position, view)
+                            notifyService(app, "" + mode)
+                        }
+                    }).show()
+        }
+
+        scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as AppInfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
                 intent.putExtra("app", item.packageName)
                 startActivityForResult(intent, REQUEST_APP_CONFIG)
-                lastClickRow = view2
+                lastClickRow = view
             } catch (ex: Exception) {
             }
-        }
-
-        // 动态响应检测
-        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-
-        if (dynamicControl) {
-            scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
-                val item = (parent.adapter.getItem(position) as AppInfo)
-                val app = item.packageName.toString()
-                DialogAppPowerConfig(this,
-                        spfPowercfg.getString(app, ""),
-                        object : DialogAppPowerConfig.IResultCallback {
-                            override fun onChange(mode: String?) {
-                                spfPowercfg.edit().run {
-                                    if (mode.isNullOrEmpty()) {
-                                        remove(app)
-                                    } else {
-                                        putString(app, mode)
-                                    }
-                                }.apply()
-
-                                setAppRowDesc(item)
-                                (parent.adapter as SceneModeAdapter).updateRow(position, view)
-                                notifyService(app, "" + mode)
-                            }
-                        }).show()
-                true
-            }
-        } else {
-            scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
-                DialogHelper.helpInfo(this, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [动态响应] 功能")
-                true
-            }
+            true
         }
 
         config_search_box.setOnEditorActionListener { v, actionId, event ->

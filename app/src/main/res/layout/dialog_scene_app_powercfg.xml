@@ -286,6 +286,13 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/action_more"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginHorizontal="8dp"
+            android:layout_width="wrap_content"
+            style="@style/SceneButton"
+            android:text="更多选项" />
     </LinearLayout>
 
 </com.omarea.common.ui.OverScrollView>

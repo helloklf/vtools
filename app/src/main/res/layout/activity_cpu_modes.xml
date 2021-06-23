@@ -21,7 +21,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="66dp"
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView
@@ -49,7 +48,8 @@
                 android:paddingStart="16dp"
                 android:paddingTop="0dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="16dp">
+                android:paddingBottom="16dp"
+                android:layout_marginBottom="50dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -345,7 +345,7 @@
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="激活[场景模式]后，可根据前台应用，自动切换模式" />
+                            android:text="激活[辅助服务]后，可根据前台应用，自动切换模式" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -364,7 +364,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:text="没有单独设置模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请返回上一级页面进入“应用场景”。" />
+                            app:text="未单独设置调度模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请点击当前界面下方的 [应用策略]" />
 
                         <TextView
                             style="@style/textTitle"
