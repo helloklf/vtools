@@ -301,7 +301,7 @@ class AppSwitchHandler(private var context: AccessibilityScence, override val is
                 spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
                 dyamicCore = false
             }
-            spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
+            // spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
         } else {
             dyamicCore = false
         }

@@ -15,7 +15,6 @@ import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
@@ -136,11 +135,11 @@ class FragmentCpuModes : Fragment() {
         val sourceClick = object : View.OnClickListener {
             override fun onClick(it: View) {
                 if (configInstaller.outsideConfigInstalled()) {
-                    Snackbar.make(it, "你需要删除外部配置，才能选择其它配置源", Snackbar.LENGTH_LONG).show()
+                    Scene.toast("你需要删除外部配置，才能选择其它配置源", Toast.LENGTH_LONG)
                 } else if (configInstaller.dynamicSupport(context!!)) {
                     chooseConfigSource()
                 } else {
-                    Snackbar.make(it, "Scene Core Edition自带的调度策略尚未适配当前SOC~", Snackbar.LENGTH_LONG).show()
+                    Scene.toast("Scene Core Edition自带的调度策略尚未适配当前SOC~", Toast.LENGTH_LONG)
                 }
             }
         }
@@ -171,7 +170,7 @@ class FragmentCpuModes : Fragment() {
     }
 
     // 选择配置来源
-    private fun chooseConfigSource () {
+    private fun chooseConfigSource() {
         val view = layoutInflater.inflate(R.layout.dialog_powercfg_source, null)
         val dialog = DialogHelper.customDialog(activity!!, view)
 
@@ -268,13 +267,13 @@ class FragmentCpuModes : Fragment() {
         button.setOnClickListener {
             if (mode == ModeSwitcher.FAST && ModeSwitcher.getCurrentSource() == ModeSwitcher.SOURCE_OUTSIDE_UPERF) {
                 DialogHelper.warning(
-                    activity!!,
-                    "提示说明",
-                    "Uperf调度仅提供了[卡顿/均衡/费电]三种模式，分别于Scene的[省电/均衡/性能]对应。\n而在Scene里选择[极速]模式时，实际生效为[费电]，即与选择 [性能]模式相同",
-                    {
-                        modeSwitcher.executePowercfgMode(mode, context!!.packageName)
-                        updateState(cpu_config_p3, ModeSwitcher.FAST)
-                    }
+                        activity!!,
+                        "提示说明",
+                        "Uperf调度仅提供了[卡顿/均衡/费电]三种模式，分别于Scene的[省电/均衡/性能]对应。\n而在Scene里选择[极速]模式时，实际生效为[费电]，即与选择 [性能]模式相同",
+                        {
+                            modeSwitcher.executePowercfgMode(mode, context!!.packageName)
+                            updateState(cpu_config_p3, ModeSwitcher.FAST)
+                        }
                 )
             } else {
                 modeSwitcher.executePowercfgMode(mode, context!!.packageName)

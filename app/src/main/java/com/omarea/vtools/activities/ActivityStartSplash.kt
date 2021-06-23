@@ -161,31 +161,15 @@ class ActivityStartSplash : Activity() {
     private fun checkFileWrite(next: Runnable) {
         Thread {
             CheckRootStatus.grantPermission(this)
-            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ActivityCompat.requestPermissions(
-                            this@ActivityStartSplash,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                } else {
-                    ActivityCompat.requestPermissions(
-                            this@ActivityStartSplash,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                }
+            if (!(checkPermission(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))) {
+                ActivityCompat.requestPermissions(
+                        this@ActivityStartSplash,
+                        arrayOf(
+                                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                                Manifest.permission.WAKE_LOCK
+                        ),
+                        0x11
+                )
             }
             myHandler.post {
                 val writeSettings = WriteSettings()
@@ -201,7 +185,7 @@ class ActivityStartSplash : Activity() {
     private var myHandler = Handler(Looper.getMainLooper())
 
     private fun checkRoot() {
-        CheckRootStatus(this, Runnable {
+        CheckRootStatus(this, {
             if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false)) {
                 CheckFileWirte(this).run()
             } else {

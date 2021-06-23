@@ -16,6 +16,7 @@ import com.omarea.library.shell.PropsUtils
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.lang.Exception
 
 /**
  * Created by Hello on 2017/12/27.
@@ -39,7 +40,7 @@ class BootService : IntentService("vtools-boot") {
             FULL_WAKE_LOCK          开启  变亮  变亮
         */
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:BootService");
-        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+        mWakeLock.acquire(2 * 60 * 1000) // 默认限制2分钟
 
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -104,8 +105,10 @@ class BootService : IntentService("vtools-boot") {
     }
 
     override fun onDestroy() {
-        hideNotification()
-        mWakeLock.release()
+        try {
+            hideNotification()
+            mWakeLock.release()
+        } catch (ex: Exception) {}
 
         super.onDestroy()
     }
