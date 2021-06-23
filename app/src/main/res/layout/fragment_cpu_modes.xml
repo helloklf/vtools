@@ -513,10 +513,10 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:scaleType="centerInside"
-                        android:src="@drawable/memory_linux"
-                        android:background="@drawable/arrow"
+                        android:src="@drawable/arrow"
+                        android:background="@null"
                         android:alpha="0.8"
-                        android:backgroundTint="#808080" />
+                        app:tint="#808080" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/nav_app_scene"
@@ -564,10 +564,10 @@
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
                         android:scaleType="centerInside"
-                        android:src="@drawable/memory_linux"
-                        android:background="@drawable/arrow"
+                        android:src="@drawable/arrow"
+                        android:background="@null"
                         android:alpha="0.8"
-                        android:backgroundTint="#808080" />
+                        app:tint="#808080" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

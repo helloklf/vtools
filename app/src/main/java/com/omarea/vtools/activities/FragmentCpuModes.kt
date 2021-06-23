@@ -24,8 +24,7 @@ import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.activity_cpu_modes.*
-
+import kotlinx.android.synthetic.main.fragment_cpu_modes.*
 
 class FragmentCpuModes : Fragment() {
     private var author: String = ""
@@ -44,7 +43,7 @@ class FragmentCpuModes : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.activity_cpu_modes, container, false)
+            inflater.inflate(R.layout.fragment_cpu_modes, container, false)
 
     private fun startService() {
         Scene.toast("请在系统设置里激活[Scene 辅助服务]选项", Toast.LENGTH_SHORT)
