@@ -95,18 +95,6 @@ class FragmentCpuModes : Fragment() {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, checked).apply()
         }
 
-        cpu_mode_delete_outside.setOnClickListener {
-            DialogHelper.confirm(activity!!,
-                    "确定删除?",
-                    "确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的\n（删除后建议重启手机一次）",
-                    {
-                        configInstaller.removeOutsideConfig()
-                        cpu_mode_outside.visibility = View.GONE
-                        reStartService()
-                        updateState()
-                    })
-        }
-
         first_mode.run {
             when (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE)) {
                 ModeSwitcher.POWERSAVE -> setSelection(0)
@@ -135,6 +123,20 @@ class FragmentCpuModes : Fragment() {
         val sourceClick = object : View.OnClickListener {
             override fun onClick(it: View) {
                 if (configInstaller.outsideConfigInstalled()) {
+                    if (configInstaller.dynamicSupport(context!!)) {
+                        DialogHelper.warning(
+                            activity!!,
+                            "操作确认",
+                            "你正在使用其它作者提供的调度配置(位于/data/powercfg.sh)，切换到Scene自带的调度配置需将其删除。现在要删除它吗？\n\n* 删除后建议重启手机一次",
+                            {
+                                configInstaller.removeOutsideConfig()
+                                reStartService()
+                                updateState()
+                                chooseConfigSource()
+                            })
+                    } else {
+                        Scene.toast("你正在使用其它作者提供的调度配置~", Toast.LENGTH_LONG)
+                    }
                     Scene.toast("你需要删除外部配置，才能选择其它配置源", Toast.LENGTH_LONG)
                 } else if (configInstaller.dynamicSupport(context!!)) {
                     chooseConfigSource()
@@ -289,12 +291,6 @@ class FragmentCpuModes : Fragment() {
         val outsideInstalled = configInstaller.outsideConfigInstalled()
         configFileInstalled = outsideInstalled || configInstaller.insideConfigInstalled()
         author = ModeSwitcher.getCurrentSource()
-
-        if (outsideInstalled && configInstaller.dynamicSupport(context!!)) {
-            cpu_mode_outside.visibility = View.VISIBLE
-        } else {
-            cpu_mode_outside.visibility = View.GONE
-        }
 
         config_author.text = ModeSwitcher.getCurrentSourceName()
 
