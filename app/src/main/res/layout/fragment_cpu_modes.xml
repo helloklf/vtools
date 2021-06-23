@@ -18,26 +18,28 @@
                 android:id="@+id/cpu_mode_outside"
                 style="@style/ListCardItem"
                 android:visibility="gone"
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView
+                    android:layout_gravity="center_vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene自带配置，请点右侧删除按钮"
-                    android:textSize="13dp" />
+                    android:textSize="14dp" />
 
                 <ImageButton
                     android:id="@+id/cpu_mode_delete_outside"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginLeft="6dp"
-                    android:padding="0dp"
+                    android:padding="3dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/delete" />
             </LinearLayout>
@@ -50,7 +52,6 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="16dp"
                 android:layout_marginBottom="50dp">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -267,7 +268,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout

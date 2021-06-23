@@ -19,6 +19,7 @@ import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
+import com.omarea.vtools.fragments.FragmentCpuModes
 import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNotRoot
 import kotlinx.android.synthetic.main.activity_main.*
