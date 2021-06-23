@@ -4,16 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/layout_app_bar"
-        layout="@layout/layout_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_app_bar">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -277,25 +270,84 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/ListCardItem">
+                android:layout_marginTop="50dp"
+                android:id="@+id/nav_scene_service_not_active"
+                style="@style/ListCardItem"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <Switch
-                        android:id="@+id/dynamic_control"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text="动态响应" />
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/nav_icon_warn"
+                        app:tint="?android:colorAccent" />
 
                     <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
+                        style="@style/textDefault"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="激活[场景模式]后，可根据前台应用，自动切换模式" />
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:text="未激活辅助服务，点此去激活" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="按应用调节性能、自动开关GPS、记录耗电速度，均需要激活此服务" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="0dp"
+                style="@style/ListCardItem">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/auto"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:padding="11dp"
+                        android:background="@drawable/action_menu_icon_bg"
+                        android:backgroundTint="@color/cyan"
+                        android:alpha="0.6"
+                        app:tint="#ffffff" />
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <Switch
+                            android:id="@+id/dynamic_control"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="动态响应" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="激活[场景模式]后，可根据前台应用，自动切换模式" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -406,6 +458,119 @@
                             android:text="延迟切换" />
 
                     </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="0dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="8dp">
+                <LinearLayout
+                    android:id="@+id/nav_battery_stats"
+                    android:layout_weight="1"
+                    android:layout_height="65dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    style="@style/ListCardItemSmall"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/battery"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:padding="9dp"
+                        android:background="@drawable/action_menu_icon_bg"
+                        android:backgroundTint="@color/cyan"
+                        android:alpha="0.6"
+                        app:tint="#ffffff" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="耗电统计" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="查看应用使用过程中记录的功耗(电流)数据" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/memory_linux"
+                        android:background="@drawable/arrow"
+                        android:alpha="0.8"
+                        android:backgroundTint="#808080" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/nav_app_scene"
+                    android:layout_weight="1"
+                    android:layout_height="65dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    style="@style/ListCardItemSmall"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_menu_profile"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:padding="10dp"
+                        android:background="@drawable/action_menu_icon_bg"
+                        android:backgroundTint="@color/cyan"
+                        android:alpha="0.6"
+                        app:tint="#ffffff" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="应用策略" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="为每个应用单独设置调度策略" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/memory_linux"
+                        android:background="@drawable/arrow"
+                        android:alpha="0.8"
+                        android:backgroundTint="#808080" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

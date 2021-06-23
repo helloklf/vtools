@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.view.LayoutInflater
@@ -16,22 +15,21 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.CpuFrequencyUtils
 import com.omarea.library.shell.CpuLoadUtils
 import com.omarea.library.shell.GpuUtils
 import com.omarea.library.shell.SwapUtils
 import com.omarea.model.CpuCoreInfo
-import com.omarea.scene_mode.CpuConfigInstaller
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -72,19 +70,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         batteryManager = context!!.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-        btn_powersave.setOnClickListener {
-            installConfig(ModeSwitcher.POWERSAVE)
-        }
-        btn_defaultmode.setOnClickListener {
-            installConfig(ModeSwitcher.BALANCE)
-        }
-        btn_gamemode.setOnClickListener {
-            installConfig(ModeSwitcher.PERFORMANCE)
-        }
-        btn_fastmode.setOnClickListener {
-            installConfig(ModeSwitcher.FAST)
-        }
 
         if (!GlobalStatus.homeMessage.isNullOrEmpty()) {
             home_message.visibility = View.VISIBLE
@@ -172,17 +157,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        if (ModeSwitcher().modeConfigCompleted()) {
-            powermode_toggles.visibility = View.VISIBLE
-        } else if (CpuConfigInstaller().dynamicSupport(Scene.context)) {
-            powermode_toggles.visibility = View.VISIBLE
-            CpuConfigInstaller().installOfficialConfig(context!!)
-        } else {
-            powermode_toggles.visibility = View.GONE
-        }
-
-        config_author.text = ModeSwitcher.getCurrentSourceName()
-        setModeState()
         maxFreqs.clear()
         minFreqs.clear()
         stopTimer()
@@ -355,27 +329,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
     }
 
-    private fun setModeState() {
-        btn_powersave.setTextColor(0x66ffffff)
-        btn_defaultmode.setTextColor(0x66ffffff)
-        btn_gamemode.setTextColor(0x66ffffff)
-        btn_fastmode.setTextColor(0x66ffffff)
-        when (ModeSwitcher().getCurrentPowerMode()) {
-            ModeSwitcher.BALANCE -> {
-                btn_defaultmode.setTextColor(Color.WHITE)
-            }
-            ModeSwitcher.PERFORMANCE -> {
-                btn_gamemode.setTextColor(Color.WHITE)
-            }
-            ModeSwitcher.POWERSAVE -> {
-                btn_powersave.setTextColor(Color.WHITE)
-            }
-            ModeSwitcher.FAST -> {
-                btn_fastmode.setTextColor(Color.WHITE)
-            }
-        }
-    }
-
     private fun stopTimer() {
         if (this.timer != null) {
             timer!!.cancel()
@@ -386,69 +339,5 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     override fun onPause() {
         stopTimer()
         super.onPause()
-    }
-
-    private fun toggleMode(modeSwitcher: ModeSwitcher, mode: String): Deferred<Unit> {
-        return GlobalScope.async {
-            context?.run {
-                if (modeSwitcher.modeConfigCompleted()) {
-                    modeSwitcher.executePowercfgMode(mode, packageName)
-                } else {
-                    CpuConfigInstaller().installOfficialConfig(context!!)
-                    modeSwitcher.executePowercfgMode(mode, packageName)
-                }
-            }
-        }
-    }
-
-    private fun installConfig(toMode: String) {
-        val modeSwitcher = ModeSwitcher()
-        val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        if (!dynamic && modeSwitcher.getCurrentPowerMode() == toMode) {
-            modeSwitcher.setCurrent("", "")
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-            myHandler.post {
-                DialogHelper.confirmBlur(this.activity!!,
-                        "提示",
-                        "需要重启手机才能恢复默认调度，是否立即重启？",
-                        {
-                            KeepShellPublic.doCmdSync("sync\nsleep 1\nsvc power reboot || reboot")
-                        },
-                        null)
-                setModeState()
-            }
-            return
-        }
-
-        val progressBarDialog = ProgressBarDialog(this.activity!!, "home-mode-switch")
-        progressBarDialog.showDialog(getString(R.string.please_wait))
-
-        GlobalScope.launch(Dispatchers.Main) {
-            toggleMode(modeSwitcher, toMode).await()
-
-            setModeState()
-            maxFreqs.clear()
-            minFreqs.clear()
-            updateInfo()
-            if (dynamic) {
-                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-                DialogHelper.alert(activity!!,
-                        "提示",
-                        "“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“功能”菜单-“性能界面”界面关闭“动态响应”！")
-            } else {
-                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, toMode).apply()
-                if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
-                    DialogHelper.confirm(activity!!,
-                            "提示",
-                            "如果你已允许Scene自启动，手机重启后，Scene还会自动激活刚刚选择的模式。\n\n如果需要恢复系统默认调度，请再次点击，然后重启手机！",
-                            DialogHelper.DialogButton(getString(R.string.btn_confirm)),
-                            DialogHelper.DialogButton(getString(R.string.btn_dontshow), {
-                                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
-                            })).setCancelable(false)
-                }
-            }
-
-            progressBarDialog.hideDialog()
-        }
     }
 }

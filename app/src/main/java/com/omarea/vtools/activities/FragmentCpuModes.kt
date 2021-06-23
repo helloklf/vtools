@@ -6,41 +6,58 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Switch
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.Scene
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.ThemeMode
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_cpu_modes.*
-import java.io.File
-import java.nio.charset.Charset
 
 
-class ActivityCpuModes : ActivityBase() {
+class FragmentCpuModes : Fragment() {
     private var author: String = ""
     private var configFileInstalled: Boolean = false
     private lateinit var modeSwitcher: ModeSwitcher
     private lateinit var globalSPF: SharedPreferences
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cpu_modes)
+    private lateinit var themeMode: ThemeMode
 
-        setBackArrow()
-        onViewCreated()
+    companion object {
+        fun createPage(themeMode: ThemeMode): Fragment {
+            val fragment = FragmentCpuModes()
+            fragment.themeMode = themeMode;
+            return fragment
+        }
     }
 
-    private fun onViewCreated() {
-        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.activity_cpu_modes, container, false)
+
+    private fun startService() {
+        Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
+        try {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
+        } catch (e: Exception) {
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         modeSwitcher = ModeSwitcher()
 
         bindMode(cpu_config_p0, ModeSwitcher.POWERSAVE)
@@ -48,17 +65,14 @@ class ActivityCpuModes : ActivityBase() {
         bindMode(cpu_config_p2, ModeSwitcher.PERFORMANCE)
         bindMode(cpu_config_p3, ModeSwitcher.FAST)
 
-        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value && !(modeSwitcher.modeConfigCompleted())) {
                 it.isChecked = false
-                DialogHelper.helpInfo(context,
-                        "设置向导",
-                        "在使用此功能前，你需要先完成一些配置~") {
-                    chooseConfigSource()
-                }
+                DialogHelper.alert(context!!, "提示", "在安装有效的调度配置之前，你不能开启此功能~")
+            } else if (value && !AccessibleServiceHelper().serviceRunning(context!!)) {
+                it.isChecked = false
+                startService()
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
@@ -82,7 +96,8 @@ class ActivityCpuModes : ActivityBase() {
         }
 
         cpu_mode_delete_outside.setOnClickListener {
-            DialogHelper.confirm(this, "确定删除?",
+            DialogHelper.confirm(activity!!,
+                    "确定删除?",
                     "确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的\n（删除后建议重启手机一次）",
                     {
                         configInstaller.removeOutsideConfig()
@@ -121,25 +136,49 @@ class ActivityCpuModes : ActivityBase() {
             override fun onClick(it: View) {
                 if (configInstaller.outsideConfigInstalled()) {
                     Snackbar.make(it, "你需要删除外部配置，才能选择其它配置源", Snackbar.LENGTH_LONG).show()
-                } else {
+                } else if (configInstaller.dynamicSupport(context!!)) {
                     chooseConfigSource()
+                } else {
+                    Snackbar.make(it, "Scene Core Edition自带的调度策略尚未适配当前SOC~", Snackbar.LENGTH_LONG).show()
                 }
             }
         }
         config_author_icon.setOnClickListener(sourceClick)
         config_author.setOnClickListener(sourceClick)
+
+        nav_battery_stats.setOnClickListener {
+            val intent = Intent(context, ActivityBatteryStats::class.java)
+            startActivity(intent)
+        }
+        nav_app_scene.setOnClickListener {
+            if (AccessibleServiceHelper().serviceRunning(context!!)) {
+                startService()
+            } else if (dynamic_control.isChecked) {
+                val intent = Intent(context, ActivityAppConfig2::class.java)
+                startActivity(intent)
+            } else {
+                DialogHelper.warning(activity!!, "请注意", "你未开启[动态响应]，Scene将根据前台应用变化调节设备性能！", {
+                    val intent = Intent(context, ActivityAppConfig2::class.java)
+                    startActivity(intent)
+                })
+            }
+        }
+        // 激活辅助服务按钮
+        nav_scene_service_not_active.setOnClickListener {
+            startService()
+        }
     }
 
     // 选择配置来源
     private fun chooseConfigSource () {
         val view = layoutInflater.inflate(R.layout.dialog_powercfg_source, null)
-        val dialog = DialogHelper.customDialog(this, view)
+        val dialog = DialogHelper.customDialog(activity!!, view)
 
         val conservative = view.findViewById<View>(R.id.source_official_conservative)
         val active = view.findViewById<View>(R.id.source_official_active)
 
         val cpuConfigInstaller = CpuConfigInstaller()
-        if (cpuConfigInstaller.dynamicSupport(this)) {
+        if (cpuConfigInstaller.dynamicSupport(context!!)) {
             conservative.setOnClickListener {
                 // TODO:改为清空此前的所有自定义配置，而不仅仅是外部配置
                 if (outsideOverrided()) {
@@ -218,7 +257,7 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun outsideOverrided(): Boolean {
         if (configInstaller.outsideConfigInstalled()) {
-            DialogHelper.helpInfo(context, "你需要先删除外部配置，因为Scene会优先使用它！")
+            DialogHelper.alert(activity!!, "提示", "你需要先删除外部配置，因为Scene会优先使用它！")
             return true
         }
         return false
@@ -226,7 +265,12 @@ class ActivityCpuModes : ActivityBase() {
 
     private fun bindMode(button: View, mode: String) {
         button.setOnClickListener {
-            DialogHelper.alert(this, "操作提示", "此界面不提供调度切换，如需应用[省电/均衡/性能/性能]模式，请点击软件概览界面底部的按钮")
+            modeSwitcher.executePowercfgMode(mode, context!!.packageName)
+
+            updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
+            updateState(cpu_config_p1, ModeSwitcher.BALANCE)
+            updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
+            updateState(cpu_config_p3, ModeSwitcher.FAST)
         }
     }
 
@@ -235,7 +279,7 @@ class ActivityCpuModes : ActivityBase() {
         configFileInstalled = outsideInstalled || configInstaller.insideConfigInstalled()
         author = ModeSwitcher.getCurrentSource()
 
-        if (outsideInstalled) {
+        if (outsideInstalled && configInstaller.dynamicSupport(context!!)) {
             cpu_mode_outside.visibility = View.VISIBLE
         } else {
             cpu_mode_outside.visibility = View.GONE
@@ -247,21 +291,26 @@ class ActivityCpuModes : ActivityBase() {
         updateState(cpu_config_p1, ModeSwitcher.BALANCE)
         updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
         updateState(cpu_config_p3, ModeSwitcher.FAST)
+        val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
+        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        dynamic_control.isChecked = dynamicControl && serviceState
+        nav_scene_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
 
-        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT) && !modeSwitcher.modeConfigCompleted()) {
+        if (dynamicControl && !modeSwitcher.modeConfigCompleted()) {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
             dynamic_control.isChecked = false
             reStartService()
         }
+        dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
     }
 
     private fun updateState(button: View, mode: String) {
-        button.alpha = if (configFileInstalled) 1f else 0.4f
+        val isCurrent = modeSwitcher.getCurrentPowerMode() == mode
+        button.alpha = if (configFileInstalled && isCurrent) 1f else 0.4f
     }
 
     override fun onResume() {
         super.onResume()
-        title = getString(R.string.menu_cpu_modes)
 
         val currentAuthor = author
 
@@ -275,22 +324,6 @@ class ActivityCpuModes : ActivityBase() {
 
     private val configInstaller = CpuConfigInstaller()
 
-    private fun readFileLines(file: File): String? {
-        if (file.canRead()) {
-            return file.readText(Charset.defaultCharset()).trimStart().replace("\r", "")
-        } else {
-            val innerPath = FileWrite.getPrivateFilePath(context, "powercfg.tmp")
-            KeepShellPublic.doCmdSync("cp \"${file.absolutePath}\" \"$innerPath\"\nchmod 777 \"$innerPath\"")
-            val tmpFile = File(innerPath)
-            if (tmpFile.exists() && tmpFile.canRead()) {
-                val lines = tmpFile.readText(Charset.defaultCharset()).trimStart().replace("\r", "")
-                KeepShellPublic.doCmdSync("rm \"$innerPath\"")
-                return lines
-            }
-        }
-        return null
-    }
-
     private fun openUrl(link: String) {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
@@ -300,43 +333,14 @@ class ActivityCpuModes : ActivityBase() {
         }
     }
 
-    private fun getOnlineConfig() {
-        DialogHelper.alert(this,
-                "提示",
-                "目前，Scene已不再提供【在线获取配置脚本】功能，如有需要，推荐使用“yc9559”提供的优化模块，通过Magisk刷入后重启手机，即可在Scene里体验调度切换功能~") {
-            openUrl("https://github.com/yc9559/uperf")
-        }
-
-        /*
-        var i = 0
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.config_online_options))
-                .setCancelable(true)
-                .setSingleChoiceItems(
-                        arrayOf(
-                                getString(R.string.online_config_v1),
-                                getString(R.string.online_config_v2)
-                        ), 0) { _, which ->
-                    i = which
-                }
-                .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                    if (i == 0) {
-                        getOnlineConfigV1()
-                    } else if (i == 1) {
-                        getOnlineConfigV2()
-                    }
-                })
-         */
-    }
-
     //安装调频文件
     private fun installConfig(active: Boolean) {
-        if (!configInstaller.dynamicSupport(context)) {
+        if (!configInstaller.dynamicSupport(context!!)) {
             Scene.toast(R.string.not_support_config, Toast.LENGTH_LONG)
             return
         }
 
-        configInstaller.installOfficialConfig(context, "", active)
+        configInstaller.installOfficialConfig(context!!, "", active)
         configInstalled()
     }
 
@@ -348,7 +352,7 @@ class ActivityCpuModes : ActivityBase() {
             reStartService()
         } else {
             DialogHelper.confirm(
-                    this,
+                    activity!!,
                     "",
                     "配置脚本已安装，是否开启 [动态响应] ？",
                     {
@@ -363,8 +367,8 @@ class ActivityCpuModes : ActivityBase() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(context)) {
-            context.sendBroadcast(Intent(context.getString(R.string.scene_change_action)))
+        if (AccessibleServiceHelper().serviceRunning(context!!)) {
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         }
     }
 }

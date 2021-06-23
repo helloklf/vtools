@@ -20,7 +20,6 @@ import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogMonitor
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.FragmentHome
-import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -84,7 +83,7 @@ class ActivityMain : ActivityBase() {
         } else {
             FragmentNotRoot()
         }))
-        tabIconHelper2.newTabSpec(getString(R.string.app_schedule), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
+        tabIconHelper2.newTabSpec(getString(R.string.app_schedule), getDrawable(R.drawable.app_more)!!, FragmentCpuModes.createPage(themeMode))
         tab_content.adapter = tabIconHelper2.adapter
         tab_list.getTabAt(0)?.select() // 默认选中第二页
 

@@ -115,7 +115,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBatteryStats" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityAppConfig2" android:configChanges="orientation|screenSize" />
 
