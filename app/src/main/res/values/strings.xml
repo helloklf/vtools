@@ -1,73 +1,28 @@
 <resources>
-    <string name="require_restart_app">需要重启应用才能生效</string>
 
-    <integer name="opacity">0</integer>
-
-    <string name="format_hh_mm">%02d:%02d</string>
-    <string name="btn_cancel">取消</string>
-    <string name="btn_not_now">回头再说</string>
-    <string name="btn_delete">删除</string>
-    <string name="btn_dontshow">不再显示</string>
     <string name="btn_confirm">确定</string>
-    <string name="btn_no">否</string>
-    <string name="btn_yes">是</string>
-    <string name="btn_continue">继续</string>
-    <string name="btn_modify_confirm">确认修改</string>
-    <string name="btn_help">帮助</string>
-    <string name="btn_iknow">知道了</string>
     <string name="btn_exit">退出</string>
-    <string name="btn_hide">隐藏</string>
-    <string name="btn_resume">恢复</string>
     <string name="btn_skip">跳过</string>
     <string name="btn_retry">重试</string>
-    <string name="btn_apply">应用</string>
-    <string name="btn_reboot">重启</string>
-    <string name="btn_resume_selected">恢复选中</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
     <string name="error_root">抱歉，没有获取到ROOT权限</string>
     <string name="error_root_desc">没有ROOT权限，将失去许多特色功能。\n如果你错过了授权提示，或未看到弹窗，请找到你的ROOT管理器，手动设置允许Scene使用ROOT权限~</string>
-    <string name="question_install_busybox">安装Busybox吗？</string>
-    <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
     <string name="app_name">Scene4 Core Edition</string>
     <string name="app_name_short">Scene4C</string>
-    <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
 
-    <string name="menu_home">概况</string>
-    <string name="menu_cpu_modes">性能配置</string>
     <string name="menu_app_scene">应用场景</string>
-    <string name="menu_auto_click">自动点击</string>
     <string name="menu_battery_stats">耗电统计</string>
-
-    <string name="system">系统</string>
-
-    <string name="accessibility_running">辅助服务已激活</string>
-    <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
-    <string name="shortcut_disabled">暂不可用</string>
-    <string name="shortcut_p1">省电模式</string>
-    <string name="shortcut_p1_long">性能配置-省电</string>
-    <string name="shortcut_p2">均衡模式</string>
-    <string name="shortcut_p2_long">性能配置-均衡</string>
-    <string name="shortcut_p3">性能模式</string>
-    <string name="shortcut_p3_long">性能配置-性能</string>
-    <string name="shortcut_p4">极速模式</string>
-    <string name="shortcut_p4_long">性能配置-极速</string>
-    <string name="device_unsupport">该功能暂不支持您的设备！</string>
-
-    <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>
-    <string name="executed">操作已完成！</string>
-    <string name="battery_low">电量过低，请及时充电！</string>
-    <string name="sorry">抱歉</string>
     <string name="powersave">省电模式</string>
     <string name="balance">均衡模式</string>
     <string name="performance">性能模式</string>
@@ -76,22 +31,9 @@
     <string name="balance_short">均衡</string>
     <string name="performance_short">性能</string>
     <string name="fast_short">极速</string>
-    <string name="app_selected_none">一个应用也没有选中！</string>
-    <string name="help">帮助</string>
-    <string name="warn">警告</string>
-    <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
-    <string name="not_support_config_desc">应用没有自带适用于你手机的性能配置脚本。你可以选择“在线获取脚本”看看是否有适于你手机的配置可供下载，或选择“了解更多”查看自定义配置教程！</string>
-    <string name="first_start_select_config">首次使用，先选择配置偏好</string>
-    <string name="config_online_options">选择在线脚本库</string>
-    <string name="online_config_v1">yc9559定制v1</string>
-    <string name="online_config_v2">yc9559定制v2</string>
 
     <string name="config_installed">配置安装成功！</string>
-    <string name="auto_start">自启动</string>
-    <string name="boot_after_auto_modify">开机后自动修改</string>
-    <string name="core_control_helpinfo">部分手机具有CPU参数动态调整机制，会导致自定义的参数很快失效，此外，温控也会限制你调高CPU频率。</string>
-    <string name="shell_executor">脚本执行</string>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
         <item>均衡模式</item>
@@ -119,7 +61,6 @@
         <item>全部</item>
     </string-array>
 
-    <string name="cgroup_mem_title">cgroup</string>
     <string-array name="cgroup_mem_options">
         <item>系统默认</item>
         <item>普通应用</item>
@@ -137,18 +78,12 @@
         <item>scene_limit2</item>
     </string-array>
 
-    <string name="title_activity_file_selector">请选择文件</string>
-    <string name="title_activity_folder_selector">请长按选择目录</string>
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
     <string name="boot_use_powercfg">应用调度配置…</string>
 
-    <string name="flash_confirm">确认刷入？</string>
-
-    <string name="perf_opt">动态响应</string>
-    <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
@@ -156,19 +91,13 @@
     <string name="scene_service_config_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
-    <string name="scene_create_shortcut_action">com.omarea.vtools.CreateShortcut</string>
 
     <string name="scene_contract_title">风险声明</string>
     <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的。如需还原所有修改，只需关闭或卸载软件并重启手机。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
 
-    <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
-
-    <string name="cache_recycle">回收缓存</string>
-    <string name="dynamic_auto_disabled">未检测到配置文件，已自动禁用动态响应！</string>
     <string name="app_schedule">调度</string>
     <string name="app_home">概览</string>
-    <string name="title_activity_online">Scene-Online</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
 
     <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>

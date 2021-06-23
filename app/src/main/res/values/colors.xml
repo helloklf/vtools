@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_list_divider">@android:color/transparent</color>
 
     <color name="window_background_light">#EBEBEB</color>
     <color name="window_background_dark">#000000</color>
     <color name="cardBgDark">#181818</color>
-    <color name="cardBgDarkTransparent">#90000000</color>
     <color name="cardBgLight">#ffffff</color>
 
     <color name="color_powersave">#0091D5</color>
@@ -18,46 +16,18 @@
     <color name="color_performance_bg">#C06ECB00</color>
     <color name="color_fast_bg">#C0FF7E00</color>
 
-    <color name="color_load_none">#00d5d9</color>
     <color name="color_load_low">#02d98d</color>
     <color name="color_load_mid">#87cb00</color>
     <color name="color_load_hight">#fc8a1b</color>
     <color name="color_load_veryhight">#f9592f</color>
 
-    <color name="colorAccent">#BC8DE4</color>
-    <color name="colorPrimary">#E3D5F1</color>
-    <color name="colorPrimaryDark">#B177E3</color>
+    <color name="colorAccent">#1474e4</color>
+    <color name="colorPrimary">#87d3ff</color>
+    <color name="colorPrimaryDark">#1474e4</color>
 
-    <color name="newYearAccent">#dc4b2f</color>
-    <color name="newYearLight">#FFD2CA</color>
-    <color name="newYearDark">#BF2A0D</color>
-    <color name="newYearBgColor">#F5EFE7</color>
     <!--<color name="newYearBgColor">#fffaf2</color>-->
 
     <color name="cyan">#00b9c2</color>
-    <color name="cyanLight">#D3ECED</color>
-    <color name="cyanDark">#019198</color>
-    <color name="green">#87cb00</color>
-    <color name="greenLight">#E3F6BE</color>
-    <color name="greenDark">#6EA500</color>
-    <color name="orange">#fc8a1b</color>
-    <color name="orangeLight">#FFEBD8</color>
-    <color name="orangeDark">#EC7705</color>
-    <color name="blue">#138ed6</color>
-    <color name="blueLight">#DFF3FF</color>
-    <color name="blueDark">#1475e1</color>
-    <color name="pink">#fc6bc5</color>
-    <color name="pinkLight">#FFE6F6</color>
-    <color name="pinkDark">#D33597</color>
-    <color name="pretty">#e2259a</color>
-    <color name="prettyLight">#FFE9F7</color>
-    <color name="prettyDark">#A8116F</color>
-    <color name="violet">#7800c2</color>
-    <color name="violetLight">#DDCBE8</color>
-    <color name="violetDark">#57028C</color>
-    <color name="lightPink">#BC8DE4</color>
-    <color name="lightPinkLight">#F4E8FF</color>
-    <color name="lightPinkDark">#B177E3</color>
 
     <color name="black_overlay">#66000000</color>
     <!--<color name="colorAccent">#FF4081</color>-->

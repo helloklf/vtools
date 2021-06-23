@@ -151,7 +151,7 @@ class FragmentCpuModes : Fragment() {
             startActivity(intent)
         }
         nav_app_scene.setOnClickListener {
-            if (AccessibleServiceHelper().serviceRunning(context!!)) {
+            if (!AccessibleServiceHelper().serviceRunning(context!!)) {
                 startService()
             } else if (dynamic_control.isChecked) {
                 val intent = Intent(context, ActivityAppConfig2::class.java)

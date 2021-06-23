@@ -65,21 +65,6 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
-    <style name="AppThemeTransparent" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-    </style>
-    <style name="AppThemeColor" parent="AppThemeLight">
-        <item name="android:navigationBarColor">?android:colorAccent</item>
-        <item name="android:statusBarColor">?android:colorAccent</item>
-        <item name="colorPrimary">?android:colorAccent</item>
-        <item name="colorPrimaryDark">?android:colorAccent</item>
-        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
-    </style>
-
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="titleTextColor">?android:textColorPrimary</item>
         <item name="subtitleTextColor">?android:textColorSecondary</item>
@@ -92,22 +77,11 @@
     <style name="AppThemeWhite" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/window_background_light</item>
         <item name="android:statusBarColor">@color/window_background_light</item>
-        <item name="colorAccent">@color/lightPink</item>
-        <item name="colorPrimary">@color/lightPinkLight</item>
-        <item name="colorPrimaryDark">@color/lightPinkDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Light</item>
         <item name="cardBg">@color/cardBgLight</item>
-    </style>
-
-    <style name="AppThemeDefault" parent="AppThemeWhite">
-    </style>
-
-    <style name="AppThemeWallpaper" parent="AppThemeWhite">
-        <item name="android:navigationBarColor">#d0ffffff</item>
-        <item name="android:statusBarColor">#d0ffffff</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="cardBg">#c0ffffff</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeNoActionBarNight" parent="AppThemeNight">
@@ -119,18 +93,9 @@
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="colorControlNormal">?android:textColorPrimary</item>
-    </style>
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!--activity 对话框样式  -->
-    <style name="FloatActivity" parent="Theme.AppCompat.Light">
-        <!-- float_box为我们定义的窗口背景-->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:opacity">@integer/opacity</item>
-    </style>
 
     <style name="activityAnim">
         <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
@@ -146,11 +111,6 @@
     <style name="windowAnim">
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay.Dark" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -176,28 +136,7 @@
         <item name="android:layout_marginRight">8dp</item>
     </style>
 
-    <style name="ListItem">
-        <item name="android:background">?attr/listChoiceBackgroundIndicator</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-    </style>
-
     <style name="ListCardItemLast" parent="ListCardItem">
-        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
-    </style>
-
-    <style name="ListCardItemClickable" parent="ListCardItem">
-        <item name="android:background">@drawable/krscript_item_ripple</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-    </style>
-
-    <style name="ListCardItemClickableLast" parent="ListCardItemClickable">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
 
@@ -212,46 +151,10 @@
         <item name="android:paddingRight">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
     </style>
-    <style name="InCardListItemOriginLast" parent="InCardListItemOrigin">
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
+
     <style name="InCardListItem" parent="@style/InCardListItemOrigin">
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
-    </style>
-    <style name="InCardListItemLast" parent="InCardListItem">
-        <item name="android:layout_marginBottom">8dp</item>
-    </style>
-
-    <style name="nav_item_wrap">
-        <item name="android:background">@drawable/krscript_item_ripple</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_columnWeight">1</item>
-        <item name="android:layout_column">0</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
-        <item name="android:drawablePadding">10dp</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:drawableTint">#666666</item>
-    </style>
-    <style name="nav_item_wrap_right" parent="nav_item_wrap">
-        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_column">1</item>
-    </style>
-
-    <style name="nav_item_wrap_column_1" parent="nav_item_wrap" />
-    <style name="nav_item_wrap_column_2" parent="nav_item_wrap">
-        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_column">1</item>
-    </style>
-    <style name="nav_item_wrap_column_3" parent="nav_item_wrap">
-        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_column">2</item>
     </style>
 
     <style name="scene_config_item" parent="SceneSwitch">

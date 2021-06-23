@@ -130,53 +130,6 @@
         <item>make.more.r2d2.cellular_z</item>
     </string-array>
 
-    <string-array name="device_templates">
-        <item>Xiaomi MIX3</item>
-        <item>Xiaomi CC9 Pro</item>
-        <item>Xiaomi Mi 10 Pro</item>
-        <item>Xiaomi 11 Pro</item>
-        <item>Xiaomi 11 Ultra</item>
-        <item>Redmi K20Pro</item>
-        <item>vivo X20</item>
-        <item>vivo IQOO</item>
-        <item>OPPO Reno 10X</item>
-        <item>OPPO Reno3 Pro 5G</item>
-        <item>Samsung S9+</item>
-        <item>8848钛金手机</item>
-        <item>HUAWEI MateRS</item>
-        <item>HUAWEI Mate20Pro</item>
-        <item>HUAWEI P30Pro</item>
-        <item>ONEPLUS 7 Pro</item>
-    </string-array>
-    <string-array name="device_templates_data">
-        <item>MIX 3@Xiaomi@Xiaomi@perseus@perseus</item>
-        <item>MI CC9 Pro@Xiaomi@Xiaomi@tucana@tucana</item>
-        <item>Mi 10 Pro@Xiaomi@Xiaomi@cmi@cmi</item>
-        <item>M2102K1AC@Xiaomi@Xiaomi@mars@mars</item>
-        <item>M2102K1C@Xiaomi@Xiaomi@Star@Star</item>
-        <item>Redmi K20 Pro@Xiaomi@Xiaomi@raphael@raphael</item>
-        <item>vivo X20@vivo@vivo@X20@X20</item>
-        <item>v1824a@vivo@vivo@v1824a@v1824a</item>
-        <item>PCCM00@OPPO@OPPO@OPPO PCCM00@PCCM00</item>
-        <item>PCRM00@OPPO@OPPO@OPPO PCRM00@PCRM00</item>
-        <item>SM-G9650@samsung@samsung@star2qltechn@star2qltechn</item>
-        <item>EBEN M2@ERENEBEN@ERENEBEN@EBEN M2@EBEN M2</item>
-        <item>NEO-AL00@HUAWEI@HUAWEI@NEO-AL00@NEO-AL00</item>
-        <item>LYA-AL00@HUAWEI@HUAWEI@LYA-AL00@LYA-AL00</item>
-        <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
-        <item>GM1910@ONEPLUS@ONEPLUS@GM1910@GM1910</item>
-    </string-array>
-
     <string name="toolkit_install_path">toolkit</string>
 
-    <string-array name="ad_skip_list">
-        <!--IT之家-->
-        <item>com.ruanmei.ithome:id/tv_skip</item>
-        <!--MIUI广告-->
-        <item>com.miui.systemAdSolution:id/view_skip</item>
-        <!--百度客户端-->
-        <item>com.baidu.searchbox:id/splash_ad_btn_ski</item>
-        <!--百度贴吧-->
-        <item>com.baidu.tieba:id/splash_ad_btn_skip</item>
-    </string-array>
 </resources>

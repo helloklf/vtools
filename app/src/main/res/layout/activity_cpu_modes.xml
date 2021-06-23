@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="66dp"
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView
@@ -270,7 +271,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="50dp"
                 android:id="@+id/nav_scene_service_not_active"
                 style="@style/ListCardItem"
                 android:layout_marginHorizontal="16dp"
@@ -326,8 +326,7 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:padding="11dp"
                         android:background="@drawable/action_menu_icon_bg"
-                        android:backgroundTint="@color/cyan"
-                        android:alpha="0.6"
+                        android:backgroundTint="@color/colorPrimary"
                         app:tint="#ffffff" />
                     <LinearLayout
                         android:layout_weight="1"
@@ -485,8 +484,7 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:padding="9dp"
                         android:background="@drawable/action_menu_icon_bg"
-                        android:backgroundTint="@color/cyan"
-                        android:alpha="0.6"
+                        android:backgroundTint="@color/colorPrimary"
                         app:tint="#ffffff" />
 
                     <LinearLayout
@@ -537,8 +535,7 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:padding="10dp"
                         android:background="@drawable/action_menu_icon_bg"
-                        android:backgroundTint="@color/cyan"
-                        android:alpha="0.6"
+                        android:backgroundTint="@color/colorPrimary"
                         app:tint="#ffffff" />
 
                     <LinearLayout
