@@ -3,8 +3,6 @@ package com.omarea.library.shell;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
-import com.omarea.model.CpuStatus;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -249,40 +247,4 @@ public class GpuUtils {
         return new String[]{};
     }
     // #endregion Adreno GPU Power Level
-
-    public static ArrayList<String> buildSetAdrenoGPUParams(CpuStatus cpuState) {
-        ArrayList<String> commands = new ArrayList<>();
-        // governor
-        if (!cpuState.adrenoGovernor.equals("")) {
-            commands.add("chmod 0664 " + getGpuParamsDir() + "/governor;");
-            commands.add("echo " + cpuState.adrenoGovernor + " > " + getGpuParamsDir() + "/governor;");
-        }
-        // min feq
-        if (!cpuState.adrenoMinFreq.equals("")) {
-            commands.add("chmod 0664 " + getGpuParamsDir() + "/min_freq;");
-            commands.add("echo " + cpuState.adrenoMinFreq + " > " + getGpuParamsDir() + "/min_freq;");
-        }
-        // max freq
-        if (!cpuState.adrenoMaxFreq.equals("")) {
-            commands.add("chmod 0664 " + getGpuParamsDir() + "/max_freq;");
-            commands.add("echo " + cpuState.adrenoMaxFreq + " > " + getGpuParamsDir() + "/max_freq;");
-        }
-
-        // min power level
-        if (!cpuState.adrenoMinPL.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
-            commands.add("echo " + cpuState.adrenoMinPL + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
-        }
-        // max power level
-        if (!cpuState.adrenoMaxPL.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
-            commands.add("echo " + cpuState.adrenoMaxPL + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
-        }
-        // default power level
-        if (!cpuState.adrenoDefaultPL.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
-            commands.add("echo " + cpuState.adrenoDefaultPL + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
-        }
-        return commands;
-    }
 }

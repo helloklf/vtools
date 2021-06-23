@@ -44,11 +44,7 @@ class BootService : IntentService("vtools-boot") {
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
-            Thread.sleep(25 * 1000)
-        } else {
-            Thread.sleep(2000)
-        }
+        Thread.sleep(2000)
         val r = PropsUtils.getProp("vtools.c.boot")
         if (!r.isEmpty()) {
             isFirstBoot = false

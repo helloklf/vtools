@@ -30,28 +30,11 @@
     <string name="question_install_busybox">安装Busybox吗？</string>
     <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
-    <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
-    <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
-
     <string name="app_name">Scene4 Core Edition</string>
     <string name="app_name_short">Scene4C</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
-
-    <string name="autobooster_tab_details">黑名单设置</string>
-    <string name="autobooster_tab_system_scene">系统场景</string>
-    <string name="auto_clear_ignore_chager">充电状态忽略</string>
-    <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
-
-    <string name="settings_debug_layer">调试窗口</string>
-    <string name="settings_debug_layer_desc">显示Scene判定前台应用过程的日志（需重启辅助服务）</string>
-    <string name="settings_help_icon">提示图标</string>
-    <string name="settings_help_icon_desc">在功能项旁边显示功能说明提示（问号）图标</string>
-    <string name="settings_auto_exit">异常时自动退出</string>
-    <string name="settings_auto_exit_desc">运行过程出现异常时自动结束进程，避免卡死白屏</string>
-    <string name="settings_logcat_title">错误日志</string>
-    <string name="settings_logcat_desc">当Scene发生错误闪退时，点击下面的按钮通过logcat抓取日志，发送给开发者以便解决问题</string>
 
     <string name="menu_home">概况</string>
     <string name="menu_cpu_modes">性能配置</string>
@@ -159,7 +142,6 @@
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
-    <string name="notice_channel_task">Scene计划任务</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
     <string name="boot_use_powercfg">应用调度配置…</string>
 
@@ -182,19 +164,9 @@
 
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 
-    <string name="shortcut_create_fail">快捷方式创建失败</string>
-    <string name="shortcut_create_success">已发送创建快捷方式申请</string>
-    <string name="shortcut_create">添加快捷方式</string>
-    <string name="shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
-    <string name="ushortcut_nsupported">该功能不支持添加快捷方式</string>
-    <string name="btn_copy_output">复制输出</string>
-    <string name="copy_success">复制成功</string>
-    <string name="copy_fail">复制失败</string>
-    <string name="promote_link">https://tinyurl.com/y3j7vszf</string>
-
     <string name="cache_recycle">回收缓存</string>
     <string name="dynamic_auto_disabled">未检测到配置文件，已自动禁用动态响应！</string>
-    <string name="app_nav">功能</string>
+    <string name="app_schedule">调度</string>
     <string name="app_home">概览</string>
     <string name="title_activity_online">Scene-Online</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>

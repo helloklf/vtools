@@ -104,13 +104,6 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".activities.ActivityOtherSettings"
-            android:configChanges="keyboardHidden|orientation|uiMode"
-            android:excludeFromRecents="true"
-            android:label="Scene 杂项设置"
-            android:launchMode="singleTop"
-            android:screenOrientation="behind" />
-        <activity
             android:name=".activities.ActivityAppDetails"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"

@@ -1,6 +1,5 @@
 package com.omarea.vtools.activities
 
-import android.Manifest
 import android.app.Activity
 import android.app.UiModeManager
 import android.content.Context
@@ -31,14 +30,6 @@ object ThemeSwitch {
         val themeMode = ThemeMode()
         if (globalSPF == null) {
             globalSPF = activity.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        }
-
-        val theme = globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, -1)
-
-        // 设置壁纸作为背景需要读取外置存储权限（如果没权限，就恢复默认主题）
-        if (theme == 10 && !(checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-            globalSPF!!.edit().remove(SpfConfig.GLOBAL_SPF_THEME).apply()
-            return switchTheme(activity)
         }
 
         val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager

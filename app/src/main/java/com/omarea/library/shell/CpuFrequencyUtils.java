@@ -2,14 +2,10 @@ package com.omarea.library.shell;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
-import com.omarea.model.CpuClusterStatus;
-import com.omarea.model.CpuStatus;
 import com.omarea.vtools.SceneJNI;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Objects;
 
 public class CpuFrequencyUtils {
@@ -392,121 +388,5 @@ public class CpuFrequencyUtils {
 
     public boolean exynosHMP() {
         return new File("/sys/kernel/hmp/down_threshold").exists() && new File("/sys/kernel/hmp/up_threshold").exists() && new File("/sys/kernel/hmp/boost").exists();
-    }
-
-    public ArrayList<String> buildShell(CpuStatus cpuStatus) {
-        ArrayList<String> commands = new ArrayList<>();
-        if (cpuStatus != null) {
-            // thermal
-            commands.addAll(new ThermalControlUtils().buildSetThermalParams(cpuStatus, commands));
-
-            // core online
-            if (cpuStatus.coreOnline != null && cpuStatus.coreOnline.size() > 0) {
-                if (exynosCpuhotplugSupport() && getExynosHotplug()) {
-                    commands.add("echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled;");
-                }
-                for (int i = 0; i < cpuStatus.coreOnline.size(); i++) {
-                    commands.add("chmod 0755 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + i));
-                    commands.add("echo " + (cpuStatus.coreOnline.get(i) ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + i));
-                }
-            }
-
-            // CPU
-            if (cpuStatus.cpuClusterStatuses != null && cpuStatus.cpuClusterStatuses.size() > 0) {
-                ArrayList<CpuClusterStatus> params = cpuStatus.cpuClusterStatuses;
-                if (params.size() <= getClusterInfo().size()) {
-                    if (isMTK()) {
-                        for (int cluster = 0; cluster < params.size(); cluster++) {
-                            CpuClusterStatus config = params.get(cluster);
-                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_min_cpu_freq", cluster, config.min_freq));
-                            commands.add(String.format(Locale.getDefault(), "echo %d %s > /proc/ppm/policy/hard_userlimit_max_cpu_freq", cluster, config.max_freq));
-                        }
-                    } else {
-                        for (int cluster = 0; cluster < params.size(); cluster++) {
-                            CpuClusterStatus config = params.get(cluster);
-
-                            String[] cores = getClusterInfo().get(cluster);
-                            if (cores.length < 1) {
-                                continue;
-                            }
-                            String core = cores[0];
-                            // for (String core : cores) {
-                            if (config.governor != null && !config.governor.isEmpty()) {
-                                commands.add("chmod 0755 " + scaling_governor.replace("cpu0", "cpu" + core));
-                                commands.add("echo " + config.governor + " > " + scaling_governor.replace("cpu0", "cpu" + core));
-                            }
-                            commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
-                            StringBuilder stringBuilder = new StringBuilder();
-                            if (config.max_freq != null && !config.max_freq.isEmpty()) {
-                                commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                                commands.add("echo " + config.max_freq + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                                stringBuilder.append(core);
-                                stringBuilder.append(":");
-                                stringBuilder.append(config.max_freq);
-                                stringBuilder.append(" ");
-                            }
-                            commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
-                            if (config.min_freq != null && !config.min_freq.isEmpty()) {
-                                commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
-                                commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
-                            }
-                            // }
-                        }
-                    }
-                }
-            }
-            // Boost
-            /*
-            if (!(cpuStatus.boost == null || cpuStatus.boost.isEmpty())) {
-                commands.add("chmod 0664 " + sched_boost);
-                commands.add("echo " + cpuStatus.boost + " > " + sched_boost);
-            }
-            if (!(cpuStatus.boostFreq == null || cpuStatus.boostFreq.isEmpty())) {
-                commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
-                commands.add("echo " + cpuStatus.boostFreq + " > /sys/module/cpu_boost/parameters/input_boost_freq");
-            }
-            if (!(cpuStatus.boostTime == null || cpuStatus.boostTime.isEmpty())) {
-                commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
-                commands.add("echo " + cpuStatus.boostTime + " > /sys/module/cpu_boost/parameters/input_boost_ms");
-            }
-            */
-
-            // GPU
-            commands.addAll(GpuUtils.buildSetAdrenoGPUParams(cpuStatus));
-
-            // exynos
-            if (exynosHMP()) {
-                commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
-                commands.add("echo " + (cpuStatus.exynosHotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
-
-                commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
-                commands.add("echo " + cpuStatus.exynosHmpDown + " > /sys/kernel/hmp/down_threshold;");
-
-                commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
-                commands.add("echo " + cpuStatus.exynosHmpUP + " > /sys/kernel/hmp/up_threshold;");
-
-                commands.add("chmod 0664 /sys/kernel/hmp/boost");
-                commands.add("echo " + (cpuStatus.exynosHmpBooster ? 1 : 0) + " > /sys/kernel/hmp/boost");
-            }
-
-            // cpuset
-            if (!(cpuStatus.cpusetBackground == null || cpuStatus.cpusetBackground.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetBackground + " > /dev/cpuset/background/cpus");
-            }
-            if (!(cpuStatus.cpusetSysBackground == null || cpuStatus.cpusetSysBackground.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetSysBackground + " > /dev/cpuset/system-background/cpus");
-            }
-            if (!(cpuStatus.cpusetForeground == null || cpuStatus.cpusetForeground.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetForeground + " > /dev/cpuset/foreground/cpus");
-            }
-            if (!(cpuStatus.cpusetRestricted == null || cpuStatus.cpusetRestricted.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetRestricted + " > /dev/cpuset/restricted/cpus");
-            }
-            if (!(cpuStatus.cpusetTopApp == null || cpuStatus.cpusetTopApp.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetTopApp + " > /dev/cpuset/top-app/cpus");
-            }
-        }
-
-        return commands;
     }
 }

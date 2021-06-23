@@ -137,11 +137,6 @@ class FloatPowercfgSelector(context: Context) {
         val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
         val btn_ignore = view.findViewById<TextView>(R.id.btn_ignore)
 
-        if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
-            view.findViewById<LinearLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
-            titleView.setTextColor(Color.BLACK)
-        }
-
         val updateUI = Runnable {
             btn_powersave.setTextColor(0x66ffffff)
             btn_defaultmode.setTextColor(0x66ffffff)

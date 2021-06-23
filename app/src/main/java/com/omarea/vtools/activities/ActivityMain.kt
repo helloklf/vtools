@@ -84,7 +84,7 @@ class ActivityMain : ActivityBase() {
         } else {
             FragmentNotRoot()
         }))
-        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
+        tabIconHelper2.newTabSpec(getString(R.string.app_schedule), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
         tab_content.adapter = tabIconHelper2.adapter
         tab_list.getTabAt(0)?.select() // 默认选中第二页
 
@@ -93,9 +93,6 @@ class ActivityMain : ActivityBase() {
         }
         action_power.setOnClickListener {
             DialogPower(this).showPowerMenu()
-        }
-        action_settings.setOnClickListener {
-            startActivity(Intent(this.applicationContext, ActivityOtherSettings::class.java))
         }
     }
 
