@@ -213,10 +213,18 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        keepShellExec(
-                            "export top_app=$packageName\n" +
-                            "sh $configProvider '$mode' > /dev/null 2>&1"
-                        )
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        if (strictMode) {
+                            keepShellExec(
+                                    "export top_app=$packageName\n" +
+                                            "sh $configProvider '$mode' > /dev/null 2>&1"
+                            )
+                        } else {
+                            keepShellExec(
+                                    "export top_app=\n" +
+                                        "sh $configProvider '$mode' > /dev/null 2>&1"
+                            )
+                        }
                         setCurrentPowercfg(mode)
                     } else {
                         Log.e("Scene", "" + mode + "Profile lost!")
@@ -228,10 +236,18 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        keepShellExec(
-                                "export top_app=$packageName\n" +
-                                        "sh $configProvider '$mode' > /dev/null 2>&1"
-                        )
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        if (strictMode) {
+                            keepShellExec(
+                                    "export top_app=$packageName\n" +
+                                            "sh $configProvider '$mode' > /dev/null 2>&1"
+                            )
+                        } else {
+                            keepShellExec(
+                                    "export top_app=\n" +
+                                            "sh $configProvider '$mode' > /dev/null 2>&1"
+                            )
+                        }
                         setCurrentPowercfg(mode)
                     } else {
                         Log.e("Scene", "" + mode + "Profile lost!")

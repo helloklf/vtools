@@ -3,6 +3,7 @@ package com.omarea
 import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +17,7 @@ import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerIEventMonitor
+import com.omarea.store.SpfConfig
 import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
 
@@ -25,10 +27,26 @@ class Scene : Application() {
         public lateinit var context: Application
         public lateinit var thisPackageName: String
         private var nightMode = false
+        private var config: SharedPreferences? = null
         public val isNightMode: Boolean
             get() {
                 return nightMode
             }
+
+        public fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+            if (config == null) {
+                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            }
+            return config!!.getBoolean(key, defaultValue)
+        }
+
+        public fun getString(key: String, defaultValue: String): String? {
+            if (config == null) {
+                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            }
+            return config!!.getString(key, defaultValue)
+        }
+
         public fun toast(message: String, time: Int) {
             handler.post {
                 Toast.makeText(context, message, time).show()

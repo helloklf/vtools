@@ -261,6 +261,25 @@ set_gpu_min_freq() {
   # echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
 }
 
+ctl_on() {
+  echo 1 > /sys/devices/system/cpu/$1/core_ctl/enable
+  if [[ "$2" != "" ]]; then
+    echo $2 > /sys/devices/system/cpu/$1/core_ctl/min_cpus
+  else
+    echo 0 > /sys/devices/system/cpu/$1/core_ctl/min_cpus
+  fi
+}
+
+ctl_off() {
+  echo 0 > /sys/devices/system/cpu/$1/core_ctl/enable
+}
+
+set_ctl() {
+  echo $2 > /sys/devices/system/cpu/$1/core_ctl/busy_up_thres
+  echo $3 > /sys/devices/system/cpu/$1/core_ctl/busy_down_thres
+  echo $4 > /sys/devices/system/cpu/$1/core_ctl/offline_delay_ms
+}
+
 set_hispeed_freq() {
   echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
   echo $2 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
@@ -323,6 +342,8 @@ adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
+        ctl_off cpu4
+        ctl_off cpu7
         if [[ "$action" = "powersave" ]]; then
           sched_boost 0 0
           stune_top_app 0 0
@@ -388,6 +409,12 @@ adjustment_by_top_app() {
 
     # DouYin, BiliBili
     "com.ss.android.ugc.awem" | "tv.danmaku.bili")
+      ctl_on cpu4
+      ctl_on cpu7
+
+      set_ctl cpu4 85 45 0
+      set_ctl cpu7 80 40 0
+
       sched_boost 0 0
       stune_top_app 0 0
       set_cpu_pl 0
