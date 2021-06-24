@@ -11,7 +11,6 @@ public class SpfConfig {
     public static String POWERSAVE = "powersave";
 
     public static String GLOBAL_SPF = "global"; //spf
-    public static String GLOBAL_SPF_SCENE_LOG = "scene_logview";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_POWERCFG_SLEEP_MODE = "powercfg_sleep_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";

@@ -10,14 +10,14 @@ import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.library.shell.LocationHelper
 import com.omarea.library.shell.SwapUtils
 import com.omarea.model.SceneConfigInfo
-import com.omarea.scene.AccessibilityScence
+import com.omarea.scene.AccessibilityScene
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatMonitorGame
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 
-class SceneMode private constructor(private val context: AccessibilityScence, private var store: SceneConfigStore) {
+class SceneMode private constructor(private val context: AccessibilityScene, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -35,7 +35,7 @@ class SceneMode private constructor(private val context: AccessibilityScence, pr
         }
 
         // 获取当前实例或初始化
-        fun getInstanceOrInit(context: AccessibilityScence, store: SceneConfigStore): SceneMode? {
+        fun getInstanceOrInit(context: AccessibilityScene, store: SceneConfigStore): SceneMode? {
             if (instance == null) {
                 synchronized(SceneMode::class) {
                     instance = SceneMode(context, store)

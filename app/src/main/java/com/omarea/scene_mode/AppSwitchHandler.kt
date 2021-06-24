@@ -15,7 +15,7 @@ import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.ScreenState
-import com.omarea.scene.AccessibilityScence
+import com.omarea.scene.AccessibilityScene
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -29,7 +29,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: AccessibilityScence, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
+class AppSwitchHandler(private var context: AccessibilityScene, override val isAsync: Boolean = false) : ModeSwitcher(), IEventReceiver {
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""

@@ -110,7 +110,6 @@ class FloatPowercfgSelector(context: Context) {
     private fun setUpView(context: Context, packageName: String): View {
         val store = SceneConfigStore(context)
         val appConfig = store.getAppConfig(packageName)
-        var needKeyCapture = store.needKeyCapture()
 
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
         val titleView = view.findViewById<TextView>(R.id.fw_title)
@@ -255,22 +254,6 @@ class FloatPowercfgSelector(context: Context) {
             }
         }
 
-        // 点击禁用按键
-        val fw_app_dis_button = view.findViewById<CheckBox>(R.id.fw_app_dis_button).apply {
-            isChecked = appConfig.disButton
-            setOnClickListener {
-                val isChecked = (it as CheckBox).isChecked
-                appConfig.disButton = isChecked
-                store.setAppConfig(appConfig)
-                if (isChecked && !needKeyCapture) {
-                    context.sendBroadcast(Intent(context.getString(R.string.scene_service_config_change_action)))
-                    needKeyCapture = true
-                }
-
-                notifyAppConfigChanged(context, packageName)
-            }
-        }
-
         // GPS开关
         val fw_app_gps = view.findViewById<CheckBox>(R.id.fw_app_gps).apply {
             isChecked = appConfig.gpsOn
@@ -295,7 +278,6 @@ class FloatPowercfgSelector(context: Context) {
 
         if (!serviceRunning || packageName.equals(context.packageName)) {
             fw_app_light.isEnabled = false
-            fw_app_dis_button.isEnabled = false
             fw_app_dis_notice.isEnabled = false
             fw_app_gps.isEnabled = false
         }

@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.LruCache
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -19,33 +20,28 @@ import com.omarea.Scene
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
-import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
-import com.omarea.vtools.popup.FloatLogView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-/**
- * Created by helloklf on 2016/8/27.
- */
-public class AccessibilityScence : AccessibilityService() {
-    private var flagRequestKeyEvent = true
+public class AccessibilityScene : AccessibilityService() {
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscap = false
 
     private var displayWidth = 1080
     private var displayHeight = 2340
 
+    // 标准模式下会多次分析和检测窗口内容提高准确性同时保证及时性，一次窗口变化可能会检测3~5次
+    // 而低功耗模式则以减少检测频率为主，尽可能降低性能消耗，通常只检测1~2次
+    private var lowPowerMode = true
+
     companion object {
         private var lastAnalyseThread: Long = 0
     }
-
-    private var floatLogView: FloatLogView? = null
 
     internal var appSwitchHandler: AppSwitchHandler? = null
 
@@ -80,8 +76,6 @@ public class AccessibilityScence : AccessibilityService() {
     }
 
     private fun updateConfig() {
-        flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
-
         val info = serviceInfo // AccessibilityServiceInfo()
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
 
@@ -92,9 +86,6 @@ public class AccessibilityScence : AccessibilityService() {
         info.packageNames = null
 
         info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
-        if (flagRequestKeyEvent) {
-            info.flags = Flags(info.flags).addFlag(AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS)
-        }
 
         serviceInfo = info
     }
@@ -124,10 +115,6 @@ public class AccessibilityScence : AccessibilityService() {
         }
 
         getDisplaySize()
-
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
-            floatLogView = FloatLogView(this)
-        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -157,16 +144,10 @@ public class AccessibilityScence : AccessibilityService() {
 
         val packageName = event.packageName
         if (packageName != null) {
-            when {
-                packageName == "com.omarea.gesture" || packageName == "com.omarea.filter" -> {
-                    return
-                }
-                /*
-                packageName == "com.android.systemui" -> {
-                    return
-                }
-                */
-                packageName == "com.android.permissioncontroller" -> { // 原生权限控制器
+            when (packageName) {
+                "com.omarea.gesture",
+                "com.omarea.filter",
+                "com.android.permissioncontroller" -> {
                     return
                 }
             }
@@ -180,9 +161,37 @@ public class AccessibilityScence : AccessibilityService() {
         if (lastOriginEventTime != t && t > lastOriginEventTime) {
             lastOriginEventTime = t
             lastWindowChanged = System.currentTimeMillis()
-            modernModeEvent(event)
+            if (lowPowerMode) {
+                val eventId = UUID.randomUUID()
+                lastTriggerEvent = eventId
+                when(event.eventType) {
+                    AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+                        Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
+                    }
+                    AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
+                        Log.e(">>>>", "TYPE_WINDOWS_CHANGED " + event.eventType)
+                    }
+                    AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
+                        Log.e(">>>>", "TYPE_WINDOW_STATE_CHANGED " + event.eventType)
+                    }
+                    else -> {
+                        Log.e(">>>>", "???? " + event.eventType)
+                    }
+                }
+
+                handler.postDelayed({
+                    if (lastTriggerEvent == eventId) {
+                        Log.e(">>>>", "----")
+                        modernModeEvent(null)
+                    }
+                }, 100)
+            } else {
+                modernModeEvent(event)
+            }
         }
     }
+
+    private var lastTriggerEvent: UUID? = null
 
     private var lastWindowChanged = 0L
     private var lastOriginEventTime = 0L
@@ -226,7 +235,7 @@ public class AccessibilityScence : AccessibilityService() {
     }
 
     public fun notifyScreenOn() {
-        this.modernModeEvent(null);
+        this.modernModeEvent(null)
     }
 
 
@@ -237,15 +246,6 @@ public class AccessibilityScence : AccessibilityService() {
         if (effectiveWindows.isNotEmpty()) {
             try {
                 var lastWindow: AccessibilityWindowInfo? = null
-                val logs = if (floatLogView == null) null else StringBuilder()
-                logs?.run {
-                    append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-                    if (event != null) {
-                        append("事件: ${event.source?.packageName}\n")
-                    } else {
-                        append("事件: 主动轮询${Date().time / 1000}\n")
-                    }
-                }
                 // TODO:
                 //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
                 //      但在类原生系统上表现并不好，例如：有缺口的屏幕或有导航键的系统，报告的窗口大小则可能不包括缺口高度区域和导航键区域高度
@@ -266,15 +266,6 @@ public class AccessibilityScence : AccessibilityService() {
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
 
-                        logs?.run {
-                            val wp = try {
-                                window.root?.packageName
-                            } catch (ex: java.lang.Exception) {
-                                null
-                            }
-                            append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                        }
-
                         val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
                         if (size >= lastWindowSize) {
                             lastWindow = window
@@ -282,18 +273,6 @@ public class AccessibilityScence : AccessibilityService() {
                         }
                     } else {
                         val windowFocused = (window.isActive || window.isFocused)
-
-                        logs?.run {
-                            val outBounds = Rect()
-                            window.getBoundsInScreen(outBounds)
-
-                            val wp = try {
-                                window.root?.packageName
-                            } catch (ex: java.lang.Exception) {
-                                null
-                            }
-                            append("\n层级: ${window.layer} ${wp} Focused：${windowFocused}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                        }
 
                         if (lastWindowFocus && !windowFocused) {
                             continue
@@ -309,65 +288,23 @@ public class AccessibilityScence : AccessibilityService() {
                         }
                     }
                 }
-                logs?.append("\n")
+
                 if (lastWindow != null) {
                     val eventWindowId = event?.windowId
                     val lastWindowId = lastWindow.id
 
-                    if (logs == null) {
-                        if (eventWindowId == lastWindowId && event.packageName != null) {
-                            val pa = event.packageName
-                            GlobalStatus.lastPackageName = pa.toString()
-                            EventBus.publish(EventType.APP_SWITCH)
-                        } else {
-                            lastAnalyseThread = System.currentTimeMillis()
-                            // try {
-                            // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
-                            // thread.start()
-                            windowAnalyse(lastWindow, lastAnalyseThread)
-                            if (event != null) {
-                                startActivityPolling()
-                            }
-                            // thread.wait(300);
-                            // } catch (Exception ignored){}
-                        }
+                    if (eventWindowId == lastWindowId && event.packageName != null) {
+                        val pa = event.packageName
+                        GlobalStatus.lastPackageName = pa.toString()
+                        EventBus.publish(EventType.APP_SWITCH)
                     } else {
-                        val wp = if (eventWindowId == lastWindowId) {
-                            event.packageName
-                        } else {
-                            try {
-                                lastWindow.root.packageName
-                            } catch (ex: java.lang.Exception) {
-                                null
-                            }
+                        lastAnalyseThread = System.currentTimeMillis()
+                        windowAnalyse(lastWindow, lastAnalyseThread)
+                        if (event != null) {
+                            startActivityPolling()
                         }
-                        // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
-                        if (wp?.equals("com.miui.home") == true) {
-                            /*
-                            val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
-                            Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
-                            Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
-                            */
-                            val node = lastWindow.root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
-                            if (node != null) {
-                                return
-                            }
-                        }
-                        if (wp != null) {
-                            logs.append("\n此前: ${GlobalStatus.lastPackageName}")
-                            GlobalStatus.lastPackageName = wp.toString()
-                            EventBus.publish(EventType.APP_SWITCH)
-                            if (event != null) {
-                                startActivityPolling()
-                            }
-                        }
-
-                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
-                        floatLogView?.update(logs.toString())
                     }
                 } else {
-                    logs?.append("\n现在: ${GlobalStatus.lastPackageName}")
-                    floatLogView?.update(logs.toString())
                     return
                 }
             } catch (ex: Exception) {
@@ -424,39 +361,6 @@ public class AccessibilityScence : AccessibilityService() {
         }
     }
 
-    class WindowAnalyzeThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
-        override fun run() {
-            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
-            val root = (try {
-                windowInfo.root
-            } catch (ex: Exception) {
-                null
-            })
-            val wp = (try {
-                root?.packageName
-            } catch (ex: Exception) {
-                null
-            })
-            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
-            if (wp?.equals("com.miui.home") == true) {
-                /*
-                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
-                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
-                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
-                */
-                val node = root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
-                if (node != null) {
-                    return
-                }
-            }
-
-            if (lastAnalyseThread == tid && wp != null) {
-                GlobalStatus.lastPackageName = wp.toString()
-                EventBus.publish(EventType.APP_SWITCH)
-            }
-        }
-    }
-
     private var pollingTimer: Timer? = null // 轮询定时器
     private var lastEventTime: Long = 0 // 最后一次触发事件的时间
     private val pollingTimeout: Long = 10000 // 轮询超时时间
@@ -492,7 +396,7 @@ public class AccessibilityScence : AccessibilityService() {
         }
     }
 
-    private fun deestory() {
+    private fun destory() {
         Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
         if (appSwitchHandler != null) {
             appSwitchHandler?.onInterrupt()
@@ -504,51 +408,7 @@ public class AccessibilityScence : AccessibilityService() {
     }
 
     private var handler = Handler(Looper.getMainLooper())
-    private var downTime: Long = -1
-    private var longClickTime: Long = 500
     private var serviceIsConnected = false
-    override fun onKeyEvent(event: KeyEvent): Boolean {
-        // Log.d("onKeyEvent", "keyCode " + event.keyCode);
-        if (!serviceIsConnected) {
-            return false
-        }
-        if (appSwitchHandler == null)
-            return false
-
-        val keyCode = event.keyCode
-        // 只阻止四大金刚键
-        if (!(keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_SEARCH)) {
-            return super.onKeyEvent(event)
-        }
-        when (event.action) {
-            KeyEvent.ACTION_DOWN -> {
-                downTime = event.eventTime
-                val currentDownTime = downTime
-                val stopEvent = appSwitchHandler!!.onKeyDown()
-                if (stopEvent) {
-                    handler.postDelayed({
-                        if (downTime == currentDownTime) {
-                            if (keyCode == KeyEvent.KEYCODE_HOME) {
-                                performGlobalAction(GLOBAL_ACTION_HOME)
-                            } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                                performGlobalAction(GLOBAL_ACTION_BACK)
-                            } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
-                                performGlobalAction(GLOBAL_ACTION_RECENTS)
-                            }
-                        }
-                    }, longClickTime)
-                }
-                return stopEvent
-            }
-            KeyEvent.ACTION_UP -> {
-                downTime = -1
-                return appSwitchHandler!!.onKeyDown()
-            }
-            else -> {
-                return super.onKeyEvent(event)
-            }
-        }
-    }
 
     override fun onUnbind(intent: Intent?): Boolean {
         if (sceneConfigChanged != null) {
@@ -556,7 +416,7 @@ public class AccessibilityScence : AccessibilityService() {
             sceneConfigChanged = null
         }
         serviceIsConnected = false
-        deestory()
+        destory()
         stopSelf()
         return super.onUnbind(intent)
     }
@@ -565,6 +425,6 @@ public class AccessibilityScence : AccessibilityService() {
     }
 
     override fun onDestroy() {
-        this.deestory()
+        this.destory()
     }
 }

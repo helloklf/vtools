@@ -126,7 +126,7 @@
         </receiver>
 
         <service
-            android:name="com.omarea.scene.AccessibilityScence"
+            android:name="com.omarea.scene.AccessibilityScene"
             android:label="Scene 辅助服务"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
