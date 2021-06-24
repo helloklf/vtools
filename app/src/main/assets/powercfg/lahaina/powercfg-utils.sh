@@ -93,7 +93,7 @@ conservative_mode() {
     # echo $up > ${policy}${cluster}/conservative/up_threshold
     echo 0 > ${policy}${cluster}/conservative/ignore_nice_load
     echo 1000 > ${policy}${cluster}/conservative/sampling_rate # 1000us = 1ms
-    echo 4 > ${policy}${cluster}/conservative/freq_step
+    echo 2 > ${policy}${cluster}/conservative/freq_step
   done
 
   echo $1 > ${policy}0/conservative/down_threshold
@@ -283,6 +283,25 @@ set_gpu_min_freq() {
   # echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
 }
 
+ctl_on() {
+  echo 1 > /sys/devices/system/cpu/$1/core_ctl/enable
+  if [[ "$2" != "" ]]; then
+    echo $2 > /sys/devices/system/cpu/$1/core_ctl/min_cpus
+  else
+    echo 0 > /sys/devices/system/cpu/$1/core_ctl/min_cpus
+  fi
+}
+
+ctl_off() {
+  echo 0 > /sys/devices/system/cpu/$1/core_ctl/enable
+}
+
+set_ctl() {
+  echo $2 > /sys/devices/system/cpu/$1/core_ctl/busy_up_thres
+  echo $3 > /sys/devices/system/cpu/$1/core_ctl/busy_down_thres
+  echo $4 > /sys/devices/system/cpu/$1/core_ctl/offline_delay_ms
+}
+
 set_hispeed_freq() {
   echo $1 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_freq
   echo $2 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
@@ -345,6 +364,9 @@ adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
+        ctl_off cpu4
+        ctl_off cpu7
+        manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 55 67 70 89 71 89
           sched_boost 0 0
@@ -354,9 +376,6 @@ adjustment_by_top_app() {
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          # conservative_mode 52 65 67 85 67 85
-          # sched_boost 1 0
-          # stune_top_app 1 10
           conservative_mode 55 67 70 89 71 89
           sched_boost 0 0
           stune_top_app 0 0
@@ -365,15 +384,19 @@ adjustment_by_top_app() {
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          devfreq_performance
-          conservative_mode 52 65 68 84 71 87
+          # devfreq_performance
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 55 67 70 89 71 89
+          fi
           sched_boost 1 0
           stune_top_app 0 0
-          set_cpu_freq 806400 1804800 960000 2419200 844800 2841600
+          set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           devfreq_performance
-          conservative_mode 45 60 54 70 59 72
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 45 60 54 70 59 72
+          fi
           sched_boost 1 1
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
@@ -384,38 +407,40 @@ adjustment_by_top_app() {
 
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")
+        ctl_off cpu4
+        ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 72 70 83 69 82
+          conservative_mode 55 72 69 82 69 82
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
           set_cpu_freq 1036800 1708800 960000 1766400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
-          cpuset '0-1' '0-3' '0-3' '0-6'
+          cpuset '0-1' '0-1' '0-3' '0-6'
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 55 72 67 81 65 79
+          conservative_mode 55 72 65 79 65 79
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "50 68" "67 80" "300" "400"
-          set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
+          set_cpu_freq 1036800 1708800 1440000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
-          set_gpu_max_freq 608000000
-          cpuset '0-1' '0-3' '0-3' '0-7'
+          set_gpu_max_freq 676000000
+          cpuset '0-1' '0-1' '0-3' '0-7'
         elif [[ "$action" = "performance" ]]; then
-          # conservative_mode 50 70 55 72 55 72
+          conservative_mode 50 70 55 72 55 72
           sched_boost 1 0
           stune_top_app 1 10
           set_cpu_freq 1036800 1708800 1440000 2419200 844800 2841600
-          set_gpu_max_freq 676000000
-          cpuset '0-1' '0-3' '0-3' '0-7'
+          set_gpu_max_freq 738000000
+          cpuset '0-1' '0-1' '0-3' '0-7'
         elif [[ "$action" = "fast" ]]; then
-          # conservative_mode 42 60 42 65 42 65
+          conservative_mode 42 60 42 65 42 65
           sched_boost 1 1
           stune_top_app 1 100
           # sched_config "40 60" "50 75" "120" "150"
-          set_gpu_max_freq 738000000
-          cpuset '0-1' '0-3' '0-3' '0-7'
+          set_gpu_max_freq 778000000
+          cpuset '0-1' '0-1' '0-3' '0-7'
         fi
     ;;
 
@@ -452,6 +477,12 @@ adjustment_by_top_app() {
 
     # DouYin, BiliBili
     "com.ss.android.ugc.awem" | "tv.danmaku.bili")
+      ctl_on cpu4
+      ctl_on cpu7
+
+      set_ctl cpu4 85 45 0
+      set_ctl cpu7 80 40 0
+
       sched_boost 0 0
       stune_top_app 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
