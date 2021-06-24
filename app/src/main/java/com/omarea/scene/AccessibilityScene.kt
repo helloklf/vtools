@@ -164,24 +164,9 @@ public class AccessibilityScene : AccessibilityService() {
             if (lowPowerMode) {
                 val eventId = UUID.randomUUID()
                 lastTriggerEvent = eventId
-                when(event.eventType) {
-                    AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
-                        Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
-                    }
-                    AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
-                        Log.e(">>>>", "TYPE_WINDOWS_CHANGED " + event.eventType)
-                    }
-                    AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
-                        Log.e(">>>>", "TYPE_WINDOW_STATE_CHANGED " + event.eventType)
-                    }
-                    else -> {
-                        Log.e(">>>>", "???? " + event.eventType)
-                    }
-                }
 
                 handler.postDelayed({
                     if (lastTriggerEvent == eventId) {
-                        Log.e(">>>>", "----")
                         modernModeEvent(null)
                     }
                 }, 100)
