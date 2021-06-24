@@ -365,24 +365,21 @@ adjustment_by_top_app() {
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          # devfreq_performance
-          # conservative_mode 50 62 55 73 55 73
-          # sched_boost 1 0
-          # stune_top_app 1 10
+          devfreq_performance
           conservative_mode 52 65 68 84 71 87
-          sched_boost 0 0
+          sched_boost 1 0
           stune_top_app 0 0
-          set_cpu_freq 1036800 1420800 960000 2419200 844800 2841600
+          set_cpu_freq 806400 1804800 960000 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           devfreq_performance
-          conservative_mode 45 60 49 70 49 70
+          conservative_mode 45 60 54 70 59 72
           sched_boost 1 1
-          stune_top_app 1 100
+          stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
         fi
-        cpuset '0-1' '0-3' '0-3' '0-7'
+        cpuset '0-1' '0-1' '0-3' '0-7'
     ;;
 
     # Wang Zhe Rong Yao
@@ -404,13 +401,13 @@ adjustment_by_top_app() {
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
-          conservative_mode 50 70 55 72 55 72
+          # conservative_mode 50 70 55 72 55 72
           sched_boost 1 0
           stune_top_app 1 10
           set_cpu_freq 1036800 1708800 1440000 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
-          conservative_mode 42 60 42 65 42 65
+          # conservative_mode 42 60 42 65 42 65
           sched_boost 1 1
           stune_top_app 1 100
           # sched_config "40 60" "50 75" "120" "150"
