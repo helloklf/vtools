@@ -35,23 +35,25 @@ class DialogItemChooser(
         }
 
         // 全选功能
-        val selectAll = view.findViewById<CompoundButton>(R.id.select_all)
-        if (multiple) {
-            val adapter = (absListView.adapter as AdapterItemChooser?)
-            selectAll.visibility = View.VISIBLE
-            selectAll.isChecked = items.filter { it.selected }.size == items.size
-            selectAll.setOnClickListener {
-                adapter?.setSelectAllState((it as CompoundButton).isChecked)
+        val selectAll = view.findViewById<CompoundButton?>(R.id.select_all)
+        if (selectAll != null) {
+            if (multiple) {
+                val adapter = (absListView.adapter as AdapterItemChooser?)
+                selectAll.visibility = View.VISIBLE
+                selectAll.isChecked = items.filter { it.selected }.size == items.size
+                selectAll.setOnClickListener {
+                    adapter?.setSelectAllState((it as CompoundButton).isChecked)
+                }
+                adapter?.run {
+                    setSelectStateListener(object : AdapterItemChooser.SelectStateListener {
+                        override fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>) {
+                            selectAll.isChecked = selected.size == items.size
+                        }
+                    })
+                }
+            } else {
+                selectAll.visibility = View.GONE
             }
-            adapter?.run {
-                setSelectStateListener(object : AdapterItemChooser.SelectStateListener {
-                    override fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>) {
-                        selectAll.isChecked = selected.size == items.size
-                    }
-                })
-            }
-        } else {
-            selectAll.visibility = View.GONE
         }
 
         // 长列表才有搜索

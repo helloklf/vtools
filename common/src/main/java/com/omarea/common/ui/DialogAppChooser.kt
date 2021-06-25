@@ -30,23 +30,25 @@ class DialogAppChooser(
         }
 
         // 全选功能
-        val selectAll = view.findViewById<CompoundButton>(R.id.select_all)
-        if (multiple) {
-            val adapter = (absListView.adapter as AdapterAppChooser?)
-            selectAll.visibility = View.VISIBLE
-            selectAll.isChecked = packages.filter { it.selected }.size == packages.size
-            selectAll.setOnClickListener {
-                adapter?.setSelectAllState((it as CompoundButton).isChecked)
+        val selectAll = view.findViewById<CompoundButton?>(R.id.select_all)
+        if (selectAll != null) {
+            if (multiple) {
+                val adapter = (absListView.adapter as AdapterAppChooser?)
+                selectAll.visibility = View.VISIBLE
+                selectAll.isChecked = packages.filter { it.selected }.size == packages.size
+                selectAll.setOnClickListener {
+                    adapter?.setSelectAllState((it as CompoundButton).isChecked)
+                }
+                adapter?.run {
+                    setSelectStateListener(object : AdapterAppChooser.SelectStateListener {
+                        override fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>) {
+                            selectAll.isChecked = selected.size == packages.size
+                        }
+                    })
+                }
+            } else {
+                selectAll.visibility = View.GONE
             }
-            adapter?.run {
-                setSelectStateListener(object : AdapterAppChooser.SelectStateListener {
-                    override fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>) {
-                        selectAll.isChecked = selected.size == packages.size
-                    }
-                })
-            }
-        } else {
-            selectAll.visibility = View.GONE
         }
 
         val clearBtn = view.findViewById<View>(R.id.search_box_clear)

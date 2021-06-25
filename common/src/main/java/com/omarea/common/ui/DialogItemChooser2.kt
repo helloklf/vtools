@@ -37,8 +37,7 @@ class DialogItemChooser2(
         }
 
         // 全选功能（因为这种类型的选择列表，需要关注选择顺序，将全选功能禁用）
-        val selectAll = view.findViewById<CompoundButton>(R.id.select_all)
-        selectAll.visibility = View.GONE
+        view.findViewById<CompoundButton?>(R.id.select_all)?.visibility = View.GONE
 
         // 长列表才有搜索
         if (items.size > 5) {
