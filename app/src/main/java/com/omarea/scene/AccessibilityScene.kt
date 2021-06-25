@@ -328,6 +328,10 @@ public class AccessibilityScene : AccessibilityService() {
             })
             // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
             if (wp?.equals("com.miui.home") == true) {
+                // 全面屏手势操作期间，处于非Focused状态
+                if (!windowInfo.isFocused) {
+                    return@launch
+                }
                 /*
                 val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
                 Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)

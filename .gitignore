@@ -13,5 +13,6 @@ app/release_mini
 app/release/app-release.apk
 app/build.gradle
 .cxx
+/krscript
 app/debug/app-debug.apk
 app/debug/output-metadata.json
