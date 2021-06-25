@@ -47,9 +47,9 @@ setprop vtools.powercfg_hint "$hint_mode"
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
-gpu_max_freq='585000000'
+gpu_max_freq='840000000'
 # GPU最小频率
-gpu_min_freq='257000000'
+gpu_min_freq='315000000'
 # GPU最小 power level
 gpu_min_pl=5
 # GPU最大 power level
@@ -178,6 +178,10 @@ devfreq_performance () {
       fi
     done
   fi
+  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
+  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/max_freq
+  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
+  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/max_freq
 }
 
 devfreq_restore () {
@@ -192,6 +196,8 @@ devfreq_restore () {
       fi
     done < $devfreq_backup
   fi
+  echo 2288 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
+  echo 762 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
 }
 
 set_value() {

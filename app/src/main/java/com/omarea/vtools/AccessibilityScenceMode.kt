@@ -373,7 +373,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     }
                 }
                 logs?.append("\n")
-                if (lastWindow != null && lastWindow.isFocused) {
+                if (lastWindow != null) {
                     val eventWindowId = event?.windowId
                     val lastWindowId = lastWindow.id
 
