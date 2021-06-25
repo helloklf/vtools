@@ -5,4 +5,5 @@
     <string name="btn_confirm">确定</string>
     <string name="app_chooser_search_hint">输入应用名/包名进行搜索</string>
     <string name="item_chooser_search_hint">搜索可选择项</string>
+    <string name="select_all">全选</string>
 </resources>

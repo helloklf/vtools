@@ -24,6 +24,7 @@
         android:id="@+id/kr_param_value_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:maxLines="1"
         android:visibility="gone" />
 
     <TextView

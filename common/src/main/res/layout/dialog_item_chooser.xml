@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/dialogRoot"
+    android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
@@ -39,7 +40,6 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_below="@id/search_bar"
         android:layout_marginBottom="8dp"
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -64,18 +64,31 @@
             android:layout_height="wrap_content" />
     </FrameLayout>
 
+    <RelativeLayout
+        android:id="@+id/select_all_block"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:visibility="gone"
+            android:id="@+id/select_all"
+            android:layout_margin="6dp"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/item_list"
         android:scrollbars="none"
-        android:layout_below="@id/header"
-        android:layout_above="@+id/bottom_buttons"
+        android:layout_weight="1"
         android:divider="@null"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp" />
 
     <LinearLayout
         android:id="@+id/bottom_buttons"
-        android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -93,4 +106,4 @@
             android:text="确定">
         </Button>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

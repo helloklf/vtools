@@ -15,6 +15,8 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:hint="@string/kr_please_choose_app"
+        android:ellipsize="marquee"
+        android:singleLine="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:textColor="?android:textColorPrimary"
         android:textSize="15dp" />
@@ -23,6 +25,7 @@
         android:id="@+id/kr_param_app_package"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:maxLines="1"
         android:visibility="gone" />
 
     <RelativeLayout

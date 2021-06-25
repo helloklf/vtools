@@ -119,6 +119,10 @@ class ListItemText(private val context: Context,
 
                 rowsView.append(spannableString)
             }
+            // NOTE: 修补 android.widget.Editor.touchPositionIsInSelection(Editor.java:1363) 导致的奔溃
+            rowsView.setOnLongClickListener {
+                true
+            }
         } else {
             rowsView?.visibility = View.GONE
         }

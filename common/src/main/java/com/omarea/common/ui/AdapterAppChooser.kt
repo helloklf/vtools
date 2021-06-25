@@ -10,7 +10,15 @@ import com.omarea.common.R
 import kotlinx.coroutines.*
 import java.util.*
 
-class AdapterAppChooser(private val context: Context, private var apps: ArrayList<AppInfo>, private val multiple: Boolean) : BaseAdapter(), Filterable {
+class AdapterAppChooser(
+        private val context: Context,
+        private var apps: ArrayList<AppInfo>,
+        private val multiple: Boolean
+) : BaseAdapter(), Filterable {
+    interface SelectStateListener {
+        fun onSelectChange(selected: List<AppInfo>)
+    }
+
     open class AppInfo {
         var appName: String = ""
         var packageName: String = ""
@@ -20,6 +28,7 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
         var selected: Boolean = false
     }
 
+    private var selectStateListener: SelectStateListener? = null
     private var filter: Filter? = null
     internal var filterApps: ArrayList<AppInfo> = apps
     private val mLock = Any()
@@ -196,6 +205,7 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
                 item.selected = true
                 notifyDataSetChanged()
             }
+            selectStateListener?.onSelectChange(getSelectedItems())
         }
 
         viewHolder.run {
@@ -212,6 +222,17 @@ class AdapterAppChooser(private val context: Context, private var apps: ArrayLis
                 }
             }
         }
+    }
+
+    fun setSelectAllState(allSelected: Boolean) {
+        apps.forEach {
+            it.selected = allSelected
+        }
+        notifyDataSetChanged()
+    }
+
+    fun setSelectStateListener(selectStateListener: SelectStateListener?) {
+        this.selectStateListener = selectStateListener
     }
 
     fun getSelectedItems(): List<AppInfo> {

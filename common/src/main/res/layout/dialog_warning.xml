@@ -20,22 +20,12 @@
 
             <TextView
                 android:id="@+id/confirm_title"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="16dp"
-                style="@style/textTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/dialogTitle"
                 android:text="提示信息" />
             <TextView
                 android:id="@+id/confirm_message"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="16dp"
-                android:text="提示内容"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                style="@style/dialogDesc"
+                android:text="提示内容" />
 
             <FrameLayout
                 android:id="@+id/confirm_custom_view"
