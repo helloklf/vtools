@@ -47,9 +47,9 @@ setprop vtools.powercfg_hint "$hint_mode"
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
-gpu_max_freq='585000000'
+gpu_max_freq='840000000'
 # GPU最小频率
-gpu_min_freq='257000000'
+gpu_min_freq='315000000'
 # GPU最小 power level
 gpu_min_pl=5
 # GPU最大 power level
@@ -178,6 +178,10 @@ devfreq_performance () {
       fi
     done
   fi
+  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
+  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/max_freq
+  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
+  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/max_freq
 }
 
 devfreq_restore () {
@@ -192,6 +196,8 @@ devfreq_restore () {
       fi
     done < $devfreq_backup
   fi
+  echo 2288 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
+  echo 762 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
 }
 
 set_value() {
@@ -410,34 +416,33 @@ adjustment_by_top_app() {
         ctl_off cpu4
         ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 72 69 82 69 82
+          conservative_mode 55 72 72 85 69 82
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 960000 1766400 844800 1670400
+          set_cpu_freq 1036800 1708800 960000 1996800 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
           cpuset '0-1' '0-1' '0-3' '0-6'
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 55 72 65 79 65 79
+          conservative_mode 55 72 72 85 69 82
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "50 68" "67 80" "300" "400"
-          set_cpu_freq 1036800 1708800 1440000 1996800 844800 2035200
-          set_hispeed_freq 1708800 1440000 1075200
+          sched_config "60 68" "72 78" "300" "400"
+          set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_gpu_max_freq 676000000
           cpuset '0-1' '0-1' '0-3' '0-7'
         elif [[ "$action" = "performance" ]]; then
-          conservative_mode 50 70 55 72 55 72
+          conservative_mode 52 70 70 85 67 82
           sched_boost 1 0
-          stune_top_app 1 10
-          set_cpu_freq 1036800 1708800 1440000 2419200 844800 2841600
+          stune_top_app 0 0
+          set_cpu_freq 1036800 1708800 960000 2419200 844800 2841600
           set_gpu_max_freq 738000000
           cpuset '0-1' '0-1' '0-3' '0-7'
         elif [[ "$action" = "fast" ]]; then
-          conservative_mode 42 60 42 65 42 65
+          conservative_mode 42 60 54 70 60 72
           sched_boost 1 1
-          stune_top_app 1 100
+          stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
           cpuset '0-1' '0-1' '0-3' '0-7'
