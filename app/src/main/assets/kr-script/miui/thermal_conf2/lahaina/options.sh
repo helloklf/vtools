@@ -5,7 +5,7 @@ if [[ $device == "M2011K2C" ]]; then
 echo "default|系统默认(default)
 cool_11|清爽酷凉(cool)
 pro_11|深度定制(pro)
-performance_11|提高阈值(performance)
+extreme_11|极致性能(extreme)
 danger|丧心病狂(danger)"
 
 # Mi 11 Pro、Ultra
