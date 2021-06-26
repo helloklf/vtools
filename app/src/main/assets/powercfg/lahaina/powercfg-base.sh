@@ -95,3 +95,14 @@ pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
   echo $pid > /dev/cpuset/top-app/tasks
   echo $pid > /dev/stune/top-app/tasks
 done
+
+cpuctl () {
+ echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
+ echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
+ echo $4 > /dev/cpuctl/top-app/cpu.uclamp.min
+ echo $5 > /dev/cpuctl/top-app/cpu.uclamp.max
+}
+
+cpuctl top-app 0 0 0 max
+cpuctl foreground 0 0 0 '0.1'
+cpuctl background 0 0 0 0
