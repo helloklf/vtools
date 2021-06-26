@@ -266,12 +266,16 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                             if (item.multiple) {
                                 pickerExecute(item, (selected.map { "" + it.value }).joinToString(item.separator), onCompleted)
                             } else {
-                                pickerExecute(item, "" + (
-                                        if (selected.size > 0) {
-                                            "" + selected[0].value
-                                        } else {
-                                            ""
-                                        }), onCompleted)
+                                if (selected.size > 0) {
+                                    pickerExecute(item, "" + (
+                                            if (selected.size > 0) {
+                                                "" + selected[0].value
+                                            } else {
+                                                ""
+                                            }), onCompleted)
+                                } else {
+                                    Toast.makeText(context, getString(R.string.picker_select_none), Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                     }).show(activity!!.supportFragmentManager, "picker-item-chooser")

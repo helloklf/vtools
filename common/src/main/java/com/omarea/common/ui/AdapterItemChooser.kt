@@ -136,14 +136,18 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         viewHolder.checkBox = convertView.findViewById(R.id.ItemChecBox)
 
         convertView.setOnClickListener {
-            if (multiple || item.selected) {
+            if (multiple) {
                 item.selected = !item.selected
                 viewHolder.checkBox?.isChecked = item.selected
             } else {
-                val current = items.find { it.selected }
-                current?.selected = false
-                item.selected = true
-                notifyDataSetChanged()
+                if (item.selected) {
+                    return@setOnClickListener
+                } else {
+                    val current = items.find { it.selected }
+                    current?.selected = false
+                    item.selected = true
+                    notifyDataSetChanged()
+                }
             }
         }
 
