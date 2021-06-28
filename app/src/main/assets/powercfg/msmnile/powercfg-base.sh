@@ -105,7 +105,7 @@ echo 3 > /proc/sys/vm/page-cluster
 echo 2000 > /proc/sys/vm/dirty_expire_centisecs
 echo 5000 > /proc/sys/vm/dirty_writeback_centisecs
 
-killall -9 vendor.qti.hardware.perf@1.0-service
+# killall -9 vendor.qti.hardware.perf@1.0-service
 
 pgrep -f surfaceflinger | while read pid; do
   echo $pid > /dev/cpuset/top-app/tasks
