@@ -168,6 +168,10 @@ class FragmentCpuModes : Fragment() {
         nav_scene_service_not_active.setOnClickListener {
             startService()
         }
+
+        if (!modeSwitcher.modeConfigCompleted() && configInstaller.dynamicSupport(context!!)) {
+            installConfig(false)
+        }
     }
 
     // 选择配置来源
