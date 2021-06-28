@@ -317,6 +317,12 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
                 var lastWindowSize = 0
                 var lastWindowFocus = false
+
+                // 无焦点窗口（一般处于过渡动画或窗口切换过程中）
+                if (effectiveWindows.find { it.isActive || it.isFocused } == null) {
+                    return
+                }
+
                 for (window in effectiveWindows) {
                     /*
                     val wp = window.root?.packageName
@@ -330,12 +336,14 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         window.getBoundsInScreen(outBounds)
 
                         logs?.run {
+                            val windowFocused = (window.isActive || window.isFocused)
+
                             val wp = try {
                                 window.root?.packageName
                             } catch (ex: java.lang.Exception) {
                                 null
                             }
-                            append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                            append("\n层级: ${window.layer} ${wp} Focused：${windowFocused}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
                         }
 
                         val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
@@ -526,7 +534,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var pollingTimer: Timer? = null // 轮询定时器
     private var lastEventTime: Long = 0 // 最后一次触发事件的时间
-    private val pollingTimeout: Long = 10000 // 轮询超时时间
+    private val pollingTimeout: Long = 7000 // 轮询超时时间
     private val pollingInterval: Long = 3000 // 轮询间隔
     private fun startActivityPolling(delay: Long? = null) {
         stopActivityPolling()

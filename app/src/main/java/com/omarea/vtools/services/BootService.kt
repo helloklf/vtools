@@ -50,7 +50,7 @@ class BootService : IntentService("vtools-boot") {
             FULL_WAKE_LOCK          开启  变亮  变亮
         */
         mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:BootService");
-        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+        mWakeLock.acquire(10 * 60 * 1000) // 默认限制10分钟
 
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
