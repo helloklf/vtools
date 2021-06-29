@@ -36,7 +36,7 @@ android {
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            zipAlignEnabled false
+            zipAlignEnabled true
             debuggable false
             jniDebuggable = false
             // signingConfig signingConfigs.omarea_Signing
