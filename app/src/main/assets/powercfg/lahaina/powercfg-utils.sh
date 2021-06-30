@@ -178,10 +178,8 @@ devfreq_performance () {
       fi
     done
   fi
-  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
-  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/max_freq
-  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
-  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/max_freq
+
+  bw_max_always
 }
 
 devfreq_restore () {
@@ -196,8 +194,38 @@ devfreq_restore () {
       fi
     done < $devfreq_backup
   fi
-  echo 2288 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
-  echo 762 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
+
+  bw_min
+}
+
+bw_min() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+}
+
+bw_max() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+}
+
+bw_max_always() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
 }
 
 set_value() {
@@ -374,7 +402,10 @@ adjustment_by_top_app() {
         ctl_off cpu7
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 67 70 89 71 89
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 55 67 70 89 71 89
+            bw_max
+          fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
@@ -382,7 +413,10 @@ adjustment_by_top_app() {
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 55 67 70 89 71 89
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 55 67 70 89 71 89
+            bw_max
+          fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "55 68" "72 80" "300" "400"
@@ -393,6 +427,7 @@ adjustment_by_top_app() {
           # devfreq_performance
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
+            bw_max
           fi
           sched_boost 1 0
           stune_top_app 0 0
