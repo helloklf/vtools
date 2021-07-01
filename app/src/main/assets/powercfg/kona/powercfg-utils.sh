@@ -406,19 +406,19 @@ adjustment_by_top_app() {
           set_cpu_freq 300000 1708800 710400 1574400 844800 1747200
         elif [[ "$action" = "balance" ]]; then
           # sched_config "48 65" "63 75" "300" "400"
-          sched_config "50 55" "65 67" "300" "400"
+          sched_config "50 55" "65 65" "300" "400"
           sched_boost 1 0
-          stune_top_app 0 0
+          stune_top_app 0 1
           cpuset '0-1' '0-1' '0-6' '0-7'
           set_cpu_freq 300000 1708800 710400 1862400 844800 2073600
         elif [[ "$action" = "performance" ]]; then
-          sched_config "45 55" "55 67" "300" "400"
+          sched_config "45 55" "55 65" "300" "400"
           sched_boost 1 0
           stune_top_app 1 20
           cpuset '0-1' '0-1' '0-6' '0-7'
           set_cpu_freq 300000 1708800 710400 2419200 825600 2841600
         elif [[ "$action" = "fast" ]]; then
-          sched_config "40 55" "50 67" "300" "400"
+          sched_config "40 55" "50 63" "300" "400"
           cpuset '0-1' '0-1' '0-6' '0-7'
           sched_boost 1 1
           stune_top_app 1 20
