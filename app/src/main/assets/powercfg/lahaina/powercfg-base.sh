@@ -104,5 +104,5 @@ cpuctl () {
 }
 
 cpuctl top-app 0 0 0 max
-cpuctl foreground 0 0 0 '0.1'
+cpuctl foreground 0 0 0 '0.5'
 cpuctl background 0 0 0 0
