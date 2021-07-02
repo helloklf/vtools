@@ -18,7 +18,10 @@ class AppListHelper(context: Context, private val getTags: Boolean = true) {
     var packageManager: PackageManager
 
     private fun exclude(packageName: String): Boolean {
-        if (packageName.endsWith(".Pure")) {
+        if (
+                packageName.contains(".overlay") ||
+                packageName.contains("com.android.theme.color") ||
+                packageName.contains("com.android.theme.icon")) {
             return true
         }
         return false

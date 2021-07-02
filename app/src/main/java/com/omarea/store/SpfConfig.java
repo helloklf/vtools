@@ -95,4 +95,5 @@ public class SpfConfig {
     public static String SWAP_SPF_ALGORITHM = "comp_algorithm"; // zram 压缩算法
 
     public static String SCENE_BLACK_LIST = "scene_black_list_spf";
+    public static String AUTO_SKIP_BLACKLIST = "AUTO_SKIP_BLACKLIST";
 }
