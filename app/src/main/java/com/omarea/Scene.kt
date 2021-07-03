@@ -10,6 +10,8 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
+import com.omarea.data.EventBus
+import com.omarea.data.customer.ScreenOffCleanup
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
@@ -124,5 +126,8 @@ class Scene : Application() {
 
         // 电池状态检测
         BatteryState(context).registerReceiver()
+
+        // 息屏后关闭所有监视器悬浮窗
+        EventBus.subscibe(ScreenOffCleanup(context))
     }
 }

@@ -107,11 +107,13 @@ class FloatMonitor(private val mContext: Context) {
             private var lastClickTime = 0L
 
             private fun onClick() {
-                if (System.currentTimeMillis() - lastClickTime < 300) {
-                    hidePopupWindow()
-                } else {
-                    lastClickTime = System.currentTimeMillis()
-                }
+                try {
+                    if (System.currentTimeMillis() - lastClickTime < 300) {
+                        hidePopupWindow()
+                    } else {
+                        lastClickTime = System.currentTimeMillis()
+                    }
+                } catch (ex: Exception) {}
             }
 
             @SuppressLint("ClickableViewAccessibility")
@@ -403,11 +405,13 @@ class FloatMonitor(private val mContext: Context) {
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
         view!!.setOnClickListener {
-            otherInfo?.visibility = if (showOtherInfo) View.GONE else View.VISIBLE
-            // it.findViewById<View>(R.id.fw_ram_info).visibility = if (showOtherInfo) View.GONE else View.VISIBLE
-            it.findViewById<LinearLayout>(R.id.fw_chart_list).orientation = if (showOtherInfo) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
-            (mView as LinearLayout).orientation = if (showOtherInfo) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
-            showOtherInfo = !showOtherInfo
+            try {
+                otherInfo?.visibility = if (showOtherInfo) View.GONE else View.VISIBLE
+                // it.findViewById<View>(R.id.fw_ram_info).visibility = if (showOtherInfo) View.GONE else View.VISIBLE
+                it.findViewById<LinearLayout>(R.id.fw_chart_list).orientation = if (showOtherInfo) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+                (mView as LinearLayout).orientation = if (showOtherInfo) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+                showOtherInfo = !showOtherInfo
+            } catch (ex: Exception) {}
         }
 
         return view!!
