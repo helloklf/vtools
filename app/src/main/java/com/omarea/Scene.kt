@@ -12,6 +12,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
 import com.omarea.data.EventBus
 import com.omarea.data.customer.ChargeCurve
+import com.omarea.data.customer.ScreenOffCleanup
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
@@ -139,5 +140,7 @@ class Scene : Application() {
 
         // 充电曲线
         EventBus.subscibe(ChargeCurve(this))
+
+        EventBus.subscibe(ScreenOffCleanup(context))
     }
 }
