@@ -404,6 +404,7 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           cpuset '0-1' '0-1' '0-3' '0-7'
           set_cpu_freq 300000 1708800 710400 1574400 844800 1747200
+          set_hispeed_freq 1420800 1382400 1305600
         elif [[ "$action" = "balance" ]]; then
           # sched_config "48 65" "63 75" "300" "400"
           sched_config "50 55" "65 65" "300" "400"
@@ -411,6 +412,7 @@ adjustment_by_top_app() {
           stune_top_app 0 1
           cpuset '0-1' '0-1' '0-6' '0-7'
           set_cpu_freq 300000 1708800 710400 1862400 844800 2073600
+          set_hispeed_freq 1708800 1670400 1305600
         elif [[ "$action" = "performance" ]]; then
           sched_config "45 55" "55 65" "300" "400"
           sched_boost 1 0
@@ -467,7 +469,6 @@ adjustment_by_top_app() {
 
       sched_boost 0 0
       stune_top_app 0 0
-      set_cpu_pl 0
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then

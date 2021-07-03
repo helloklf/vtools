@@ -358,6 +358,13 @@ stune_top_app() {
   echo $2 > /dev/stune/top-app/schedtune.boost
 }
 
+cpuctl () {
+ echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
+ echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
+ echo $4 > /dev/cpuctl/top-app/cpu.uclamp.min
+ echo $5 > /dev/cpuctl/top-app/cpu.uclamp.max
+}
+
 cpuset() {
   echo $1 > /dev/cpuset/background/cpus
   echo $2 > /dev/cpuset/system-background/cpus
@@ -503,10 +510,20 @@ adjustment_by_top_app() {
 
     # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao
     "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless")
-      if [[ "$action" != "powersave" ]]; then
+      if [[ "$action" = "powersave" ]]; then
+        cpuctl top-app 0 1 0 max
+      elif [[ "$action" = "balance" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
-        echo 4-6 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 1 max max
+      elif [[ "$action" = "performance" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 1
+        cpuctl top-app 0 1 max max
+      elif [[ "$action" = "fast" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 20
+        cpuctl top-app 1 1 max max
       fi
     ;;
 
@@ -529,15 +546,19 @@ adjustment_by_top_app() {
 
       if [[ "$action" = "powersave" ]]; then
         echo 0-5 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 0 0 0.8
       elif [[ "$action" = "balance" ]]; then
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
+        cpuctl top-app 0 0 0 max
       elif [[ "$action" = "performance" ]]; then
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 1 0 max
       elif [[ "$action" = "fast" ]]; then
         echo 0-7 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
+        cpuctl top-app 0 1 0.1 max
       fi
       pgrep -f $top_app | while read pid; do
         # echo $pid > /dev/cpuset/foreground/tasks
