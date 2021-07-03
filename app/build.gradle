@@ -21,8 +21,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 202107021
-        versionName "4.4.11 Beta"
+        versionCode 202107031
+        versionName "4.4.12 Beta"
         externalNativeBuild {
             cmake {
                 cppFlags ""
