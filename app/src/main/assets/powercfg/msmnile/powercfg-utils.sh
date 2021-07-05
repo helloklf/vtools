@@ -407,10 +407,15 @@ adjustment_by_top_app() {
 
     # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES
     "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
-      if [[ "$action" != "powersave" ]]; then
+      if [[ "$action" == "balance" ]] && [[ "$top_app" == "com.miui.home" ]]; then
+        sched_boost 1 0
+        stune_top_app 1 1
+        sched_config "45 62" "55 75" "85" "100"
+      elif [[ "$action" != "powersave" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
-        echo 4-6 > /dev/cpuset/top-app/cpus
+        sched_config "45 62" "55 75" "85" "100"
+        # echo 4-6 > /dev/cpuset/top-app/cpus
       fi
     ;;
 
