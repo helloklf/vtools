@@ -206,7 +206,7 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false) && Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
                         if (strictMode) {
                             keepShellExec(
                                     "export top_app=$packageName\n" +
@@ -229,7 +229,7 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false) && Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
                         if (strictMode) {
                             keepShellExec(
                                     "export top_app=$packageName\n" +
