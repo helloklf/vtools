@@ -17,6 +17,7 @@ distinct_apps="
 game=com.miHoYo.Yuanshen,com.miHoYo.ys.bilibili,com.miHoYo.ys.mi
 
 mgame=com.bilibili.gcg2.bili
+sgame=com.tencent.tmgp.sgame
 
 heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,com.baidu.tieba_mini,com.baidu.tieba,com.jingdong.app.mall
 
@@ -314,6 +315,21 @@ set_gpu_pl(){
   echo $2 > /sys/class/kgsl/kgsl-3d0/${1}_pwrlevel
 }
 
+set_gpu_max_freq () {
+  echo $1 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+  local pl=-1
+
+  for freq in $gpu_freqs; do
+    local pl=$((pl + 1))
+    if [[ $freq -lt $1 ]] || [[ $freq == $1 ]]; then
+      break
+    fi;
+  done
+  if [[ $pl -gt -1 ]]; then
+    echo $pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  fi
+}
+
 # GPU MinPowerLevel To Up
 gpu_pl_up() {
   local offset="$1"
@@ -376,6 +392,42 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
+
+    # Wang Zhe Rong Yao
+    "com.tencent.tmgp.sgame")
+        ctl_off cpu4
+        ctl_on cpu7
+        if [[ "$action" = "powersave" ]]; then
+          # sched_config "55 68" "69 78" "300" "400"
+          sched_config "52 55" "69 67" "300" "400"
+          sched_boost 1 0
+          stune_top_app 0 0
+          cpuset '0-1' '0-1' '0-3' '0-7'
+          set_cpu_freq 300000 1708800 710400 1574400 844800 1747200
+          set_hispeed_freq 1420800 1382400 1305600
+        elif [[ "$action" = "balance" ]]; then
+          # sched_config "48 65" "63 75" "300" "400"
+          sched_config "50 55" "65 65" "300" "400"
+          sched_boost 1 0
+          stune_top_app 0 1
+          cpuset '0-1' '0-1' '0-6' '0-7'
+          set_cpu_freq 300000 1708800 710400 1862400 844800 2073600
+          set_hispeed_freq 1708800 1670400 1305600
+        elif [[ "$action" = "performance" ]]; then
+          sched_config "45 55" "55 65" "300" "400"
+          sched_boost 1 0
+          stune_top_app 1 20
+          cpuset '0-1' '0-1' '0-6' '0-7'
+          set_cpu_freq 300000 1708800 710400 2419200 825600 2841600
+        elif [[ "$action" = "fast" ]]; then
+          sched_config "40 55" "50 63" "300" "400"
+          cpuset '0-1' '0-1' '0-6' '0-7'
+          sched_boost 1 1
+          stune_top_app 1 20
+          set_cpu_freq 1248000 1708800 1478400 2600000 1516800 3200000
+        fi
+    ;;
+
     # ShuangShengShiJie
     "com.bilibili.gcg2.bili")
         if [[ "$action" = "powersave" ]]; then
@@ -393,8 +445,8 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless")
+    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
       if [[ "$action" != "powersave" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
@@ -417,7 +469,6 @@ adjustment_by_top_app() {
 
       sched_boost 0 0
       stune_top_app 0 0
-      set_cpu_pl 0
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then

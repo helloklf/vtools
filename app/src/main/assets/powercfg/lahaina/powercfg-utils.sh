@@ -51,7 +51,7 @@ gpu_max_freq='840000000'
 # GPU最小频率
 gpu_min_freq='315000000'
 # GPU最小 power level
-gpu_min_pl=5
+gpu_min_pl=8
 # GPU最大 power level
 gpu_max_pl=0
 
@@ -178,10 +178,8 @@ devfreq_performance () {
       fi
     done
   fi
-  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
-  echo 12191 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/max_freq
-  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
-  echo 15258 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/max_freq
+
+  bw_max_always
 }
 
 devfreq_restore () {
@@ -196,8 +194,38 @@ devfreq_restore () {
       fi
     done < $devfreq_backup
   fi
-  echo 2288 > /sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw/min_freq
-  echo 762 > /sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw/min_freq
+
+  bw_min
+}
+
+bw_min() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+}
+
+bw_max() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+}
+
+bw_max_always() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
 }
 
 set_value() {
@@ -330,6 +358,13 @@ stune_top_app() {
   echo $2 > /dev/stune/top-app/schedtune.boost
 }
 
+cpuctl () {
+ echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
+ echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
+ echo $4 > /dev/cpuctl/top-app/cpu.uclamp.min
+ echo $5 > /dev/cpuctl/top-app/cpu.uclamp.max
+}
+
 cpuset() {
   echo $1 > /dev/cpuset/background/cpus
   echo $2 > /dev/cpuset/system-background/cpus
@@ -374,7 +409,10 @@ adjustment_by_top_app() {
         ctl_off cpu7
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 67 70 89 71 89
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 55 67 70 89 71 89
+            bw_max
+          fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
@@ -382,7 +420,10 @@ adjustment_by_top_app() {
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 55 67 70 89 71 89
+          if [[ "$manufacturer" == "Xiaomi" ]]; then
+            conservative_mode 55 67 70 89 71 89
+            bw_max
+          fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "55 68" "72 80" "300" "400"
@@ -393,6 +434,7 @@ adjustment_by_top_app() {
           # devfreq_performance
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
+            bw_max
           fi
           sched_boost 1 0
           stune_top_app 0 0
@@ -466,12 +508,33 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless")
-      if [[ "$action" != "powersave" ]]; then
+    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
+      if [[ "$action" = "powersave" ]]; then
+        sched_boost 1 0
+        sched_config "78 85" "89 96" "150" "400"
+        sched_limit 0 0 0 0 0 0
+        if [[ "$top_app" == "com.speedsoftware.rootexplorer" ]] || [[ "$top_app" == "com.estrongs.android.pop" ]];then
+          cpuctl top-app 0 1 0.1 max
+        else
+          cpuctl top-app 0 1 0 max
+        fi
+      elif [[ "$action" = "balance" ]]; then
+        cpuctl top-app 0 1 max max
+        if [[ "$top_app" == "com.miui.home" ]]; then
+          sched_boost 1 0
+        else
+          sched_boost 1 1
+        fi
+        stune_top_app 1 1
+      elif [[ "$action" = "performance" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
-        echo 4-6 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 1 max max
+      elif [[ "$action" = "fast" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 20
+        cpuctl top-app 1 1 max max
       fi
     ;;
 
@@ -494,15 +557,19 @@ adjustment_by_top_app() {
 
       if [[ "$action" = "powersave" ]]; then
         echo 0-5 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 0 0 0.8
       elif [[ "$action" = "balance" ]]; then
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
+        cpuctl top-app 0 0 0 max
       elif [[ "$action" = "performance" ]]; then
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
+        cpuctl top-app 0 1 0 max
       elif [[ "$action" = "fast" ]]; then
         echo 0-7 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
+        cpuctl top-app 0 1 0.1 max
       fi
       pgrep -f $top_app | while read pid; do
         # echo $pid > /dev/cpuset/foreground/tasks
