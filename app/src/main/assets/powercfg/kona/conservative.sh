@@ -11,9 +11,9 @@ source "$cfg_dir/powercfg-utils.sh"
 
 init () {
   if [[ -f "$cfg_dir/powercfg-base.sh" ]]; then
-    sh "$cfg_dir/powercfg-base.sh"
+    source "$cfg_dir/powercfg-base.sh"
   elif [[ -f '/data/powercfg-base.sh' ]]; then
-    sh /data/powercfg-base.sh
+    source /data/powercfg-base.sh
   fi
 }
 

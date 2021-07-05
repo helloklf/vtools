@@ -119,3 +119,5 @@ pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
   echo $pid > /dev/cpuset/top-app/tasks
   echo $pid > /dev/stune/top-app/tasks
 done
+
+set_task_affinity `pgrep com.miui.home` 11111111

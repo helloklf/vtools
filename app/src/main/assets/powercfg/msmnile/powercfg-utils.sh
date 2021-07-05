@@ -340,6 +340,16 @@ gpu_pl_down() {
   fi
 }
 
+# set_task_affinity $pid $use_cores[cpu7~cpu0]
+set_task_affinity() {
+  pid=$1
+  mask=`echo "obase=16;$((num=2#$2))" | bc`
+  for tid in $(ls "/proc/$pid/task/"); do
+    taskset -p "$mask" "$tid" 1>/dev/null
+  done
+  taskset -p "$mask" "$pid" 1>/dev/null
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -444,8 +454,3 @@ adjustment_by_top_app() {
     ;;
   esac
 }
-
-pgrep -f com.miui.home | while read pid; do
-  echo $pid > /dev/cpuset/top-app/tasks
-  echo $pid > /dev/stune/top-app/tasks
-done

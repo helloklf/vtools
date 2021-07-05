@@ -330,7 +330,7 @@
                     <com.omarea.ui.HelpIcon
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:text="Qualcomm在老旧SOC上使用的一些发热控制先关的模块，在骁龙835之后基本已被废弃。一般来说保持默认即可，如果你希望设备达到最佳性能，那么建议不要勾选任何一项！" />
+                        app:text="Qualcomm在老旧SOC上使用的一些发热控制相关的模块，在骁龙835之后基本已被废弃。一般来说保持默认即可，如果你希望设备达到最佳性能，那么建议不要勾选任何一项！" />
 
                     <TextView
                         style="@style/textTitle"

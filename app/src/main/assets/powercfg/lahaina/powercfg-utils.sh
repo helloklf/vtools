@@ -51,7 +51,7 @@ gpu_max_freq='840000000'
 # GPU最小频率
 gpu_min_freq='315000000'
 # GPU最小 power level
-gpu_min_pl=5
+gpu_min_pl=8
 # GPU最大 power level
 gpu_max_pl=0
 
@@ -401,6 +401,16 @@ gpu_pl_down() {
   fi
 }
 
+# set_task_affinity $pid $use_cores[cpu7~cpu0]
+set_task_affinity() {
+  pid=$1
+  mask=`echo "obase=16;$((num=2#$2))" | bc`
+  for tid in $(ls "/proc/$pid/task/"); do
+    taskset -p "$mask" "$tid" 1>/dev/null
+  done
+  taskset -p "$mask" "$pid" 1>/dev/null
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -511,15 +521,22 @@ adjustment_by_top_app() {
     # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES
     "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
       if [[ "$action" = "powersave" ]]; then
+        sched_boost 1 0
+        sched_config "78 85" "89 96" "150" "400"
+        sched_limit 0 0 0 0 0 0
         if [[ "$top_app" == "com.speedsoftware.rootexplorer" ]] || [[ "$top_app" == "com.estrongs.android.pop" ]];then
           cpuctl top-app 0 1 0.1 max
         else
           cpuctl top-app 0 1 0 max
         fi
       elif [[ "$action" = "balance" ]]; then
-        sched_boost 1 1
-        stune_top_app 1 1
         cpuctl top-app 0 1 max max
+        if [[ "$top_app" == "com.miui.home" ]]; then
+          sched_boost 1 0
+        else
+          sched_boost 1 1
+        fi
+        stune_top_app 1 1
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 1
         stune_top_app 1 1
@@ -577,8 +594,3 @@ adjustment_by_top_app() {
     ;;
   esac
 }
-
-pgrep -f com.miui.home | while read pid; do
-  echo $pid > /dev/cpuset/top-app/tasks
-  echo $pid > /dev/stune/top-app/tasks
-done

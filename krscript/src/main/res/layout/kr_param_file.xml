@@ -26,6 +26,7 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:textSize="15dp"
+        android:lines="1"
         android:visibility="gone" />
 
     <RelativeLayout

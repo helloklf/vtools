@@ -106,3 +106,8 @@ cpuctl () {
 cpuctl top-app 0 0 0 max
 cpuctl foreground 0 0 0 '0.8'
 cpuctl background 0 0 0 0
+
+echo 0 > /dev/stune/nnapi-hal/schedtune.boost
+echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
+
+set_task_affinity `pgrep com.miui.home` 11111111

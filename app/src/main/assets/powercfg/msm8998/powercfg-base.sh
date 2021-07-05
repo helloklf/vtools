@@ -129,3 +129,15 @@ echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus
 echo 0 > /proc/sys/kernel/sched_boost
+
+# set_task_affinity $pid $use_cores[cpu7~cpu0]
+set_task_affinity() {
+  pid=$1
+  mask=`echo "obase=16;$((num=2#$2))" | bc`
+  for tid in $(ls "/proc/$pid/task/"); do
+    taskset -p "$mask" "$tid" 1>/dev/null
+  done
+  taskset -p "$mask" "$pid" 1>/dev/null
+}
+
+set_task_affinity `pgrep com.miui.home` 11111111
