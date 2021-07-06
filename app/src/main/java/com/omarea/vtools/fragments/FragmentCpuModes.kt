@@ -345,11 +345,7 @@ class FragmentCpuModes : Fragment() {
 
     private fun configInstalled() {
         updateState()
-
-        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
-            Scene.toast(getString(R.string.config_installed), Toast.LENGTH_LONG)
-            reStartService()
-        }
+        reStartService()
     }
 
     /**

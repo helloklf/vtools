@@ -33,7 +33,6 @@
     <string name="fast_short">极速</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
 
-    <string name="config_installed">配置安装成功！</string>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
         <item>均衡模式</item>
