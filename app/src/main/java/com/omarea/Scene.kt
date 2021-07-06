@@ -141,6 +141,7 @@ class Scene : Application() {
         // 充电曲线
         EventBus.subscibe(ChargeCurve(this))
 
+        // 息屏自动关闭悬浮窗
         EventBus.subscibe(ScreenOffCleanup(context))
     }
 }

@@ -11,17 +11,43 @@ import com.omarea.vtools.popup.FloatTaskManager
 
 class ScreenOffCleanup(private val context: Context) : IEventReceiver {
     override fun eventFilter(eventType: EventType): Boolean {
-        return eventType == EventType.SCREEN_OFF
+        return eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON
     }
 
+    private val status = booleanArrayOf(false, false, false, false)
     override fun onReceive(eventType: EventType) {
-        Scene.post(Runnable{
-            FloatMonitorGame(context).hidePopupWindow()
-            FloatTaskManager(context).hidePopupWindow()
-            FloatFpsWatch(context).hidePopupWindow()
-            FloatMonitor(context).hidePopupWindow()
-        })
+        Scene.post {
+            if (eventType == EventType.SCREEN_OFF) {
+                status[0] = FloatMonitorGame.show == true
+                status[1] = FloatTaskManager.show == true
+                status[2] = FloatFpsWatch.show == true
+                status[3] = FloatMonitor.show == true
+
+                FloatMonitorGame(context).hidePopupWindow()
+                FloatTaskManager(context).hidePopupWindow()
+                FloatFpsWatch(context).hidePopupWindow()
+                FloatMonitor(context).hidePopupWindow()
+            } else if (eventType == EventType.SCREEN_ON) {
+                if (status[0]) {
+                    FloatMonitorGame(context).showPopupWindow()
+                    status[0] = false
+                }
+                if (status[1]) {
+                    FloatTaskManager(context).showPopupWindow()
+                    status[1] = false
+                }
+                if (status[2]) {
+                    FloatFpsWatch(context).showPopupWindow()
+                    status[2] = false
+                }
+                if (status[3]) {
+                    FloatMonitor(context).showPopupWindow()
+                    status[3] = false
+                }
+            }
+        }
     }
+
     override val isAsync: Boolean
         get() = false
 }
