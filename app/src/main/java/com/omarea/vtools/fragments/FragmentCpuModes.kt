@@ -349,16 +349,6 @@ class FragmentCpuModes : Fragment() {
         if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             Scene.toast(getString(R.string.config_installed), Toast.LENGTH_LONG)
             reStartService()
-        } else {
-            DialogHelper.confirm(
-                    activity!!,
-                    "",
-                    "配置脚本已安装，是否开启 [动态响应] ？",
-                    {
-                        dynamic_control.isChecked = true
-                        globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
-                        reStartService()
-                    })
         }
     }
 
