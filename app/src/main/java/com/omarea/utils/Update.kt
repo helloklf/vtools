@@ -125,6 +125,7 @@ class Update {
                     }, intentFilter)
                     */
                 })
+                .setCancelable(false)
     }
 
     fun getRealFilePath(context: Context, uri: Uri?): String? {
