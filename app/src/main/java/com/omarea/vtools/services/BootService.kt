@@ -10,7 +10,6 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
@@ -19,6 +18,7 @@ import com.omarea.data.EventType
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.library.shell.LMKUtils
 import com.omarea.library.shell.PropsUtils
+import com.omarea.library.shell.SwapUtils
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.store.CpuConfigStorage
@@ -192,18 +192,17 @@ class BootService : IntentService("vtools-boot") {
             KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
         }
 
-    fun enableSwap(keepShell: KeepShell, context: Context) {
+    private fun enableSwap(keepShell: KeepShell, context: Context) {
         updateNotification(getString(R.string.boot_swapon))
-        val swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
         val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
-        val useLoop = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)) "1" else "0"
-        keepShell.doCmdSync("sh $swapControlScript enable_swap $useLoop $swapPriority\n")
+        val useLoop = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
+        SwapUtils(context).swapOn(swapPriority, useLoop, keepShell)
     }
 
     /**
      * swapFirst：是否已开启可优先使用的swap，如果未开启，则在调整zram前，先将swappiness调为0，避免在回收时还在写入zram，导致回收时间变长！
      */
-    fun resizeZram(sizeVal: Int, algorithm: String = "", keepShell: KeepShell, swapFirst: Boolean = false) {
+    private fun resizeZram(sizeVal: Int, algorithm: String = "", keepShell: KeepShell, swapFirst: Boolean = false) {
         val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
         if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
             val sb = StringBuilder()

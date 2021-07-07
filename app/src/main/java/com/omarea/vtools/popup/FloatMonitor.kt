@@ -196,10 +196,8 @@ class FloatMonitor(private val mContext: Context) {
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler(Looper.getMainLooper())
-    private var batteryUnit = BatteryUtils()
     private val info = ActivityManager.MemoryInfo()
 
-    private var sum = -1
     private var totalMem = 0
     private var availMem = 0
     private var coreCount = -1;
@@ -212,6 +210,13 @@ class FloatMonitor(private val mContext: Context) {
 
     private val boldStyleSpan = StyleSpan(Typeface.BOLD)
     private val whiteSpan = ForegroundColorSpan(Color.WHITE)
+
+    private fun whiteBoldSpan(text: String): SpannableString {
+        return SpannableString(text).apply {
+            setSpan(whiteSpan, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(boldStyleSpan, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+    }
 
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -265,33 +270,22 @@ class FloatMonitor(private val mContext: Context) {
             availMem = (info.availMem / 1024 / 1024f).toInt()
             val ramInfoText = "#RAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
-            otherInfoBuilder.append(SpannableString(ramInfoText).apply {
-                setSpan(whiteSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                setSpan(boldStyleSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            })
+            otherInfoBuilder.append(whiteBoldSpan(ramInfoText))
             otherInfoBuilder.append("\n")
 
             if (gpuMemoryUsage != null) {
-                gpuMemoryUsage = "#GMEM " + gpuMemoryUsage
-                otherInfoBuilder.append(SpannableString(gpuMemoryUsage).apply {
-                    setSpan(whiteSpan, 0, gpuMemoryUsage.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    setSpan(boldStyleSpan, 0, gpuMemoryUsage.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                })
+                otherInfoBuilder.append(whiteBoldSpan("#GMEM " + gpuMemoryUsage))
                 otherInfoBuilder.append("\n")
             }
 
-            var clusterIndex = 0
-            for (cluster in clusters) {
+            for ((clusterIndex, cluster) in clusters.withIndex()) {
                 if (clusterIndex != 0) {
                     otherInfoBuilder.append("\n")
                 }
-                if (cluster.size > 0) {
+                if (cluster.isNotEmpty()) {
                     try {
                         val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
-                        otherInfoBuilder.append(SpannableString(title).apply {
-                            setSpan(whiteSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            setSpan(boldStyleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        })
+                        otherInfoBuilder.append(whiteBoldSpan(title))
 
                         val otherInfos = StringBuilder("")
                         for (core in cluster) {
@@ -310,17 +304,13 @@ class FloatMonitor(private val mContext: Context) {
                     } catch (ex: Exception) {
                     }
                 }
-                clusterIndex++
             }
 
             fpsUtils.currentFps?.run {
                 otherInfoBuilder.append("\n")
 
                 val fpsInfo = "#FPS  $this"
-                otherInfoBuilder.append(SpannableString(fpsInfo).apply {
-                    setSpan(whiteSpan, 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    setSpan(boldStyleSpan, 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                })
+                otherInfoBuilder.append(SpannableString(fpsInfo))
             }
 
             batteryCurrentNowMa?.run {
@@ -328,10 +318,7 @@ class FloatMonitor(private val mContext: Context) {
                     otherInfoBuilder.append("\n")
 
                     val batteryInfo = "#BAT  " + (if (this > 0) ("+" + this) else this) + "mA"
-                    otherInfoBuilder.append(SpannableString(batteryInfo).apply {
-                        setSpan(whiteSpan, 0, batteryInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        setSpan(boldStyleSpan, 0, batteryInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    })
+                    otherInfoBuilder.append(SpannableString(batteryInfo))
                 }
             }
         }

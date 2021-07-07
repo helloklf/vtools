@@ -44,7 +44,6 @@ if [[ "$action" = "powersave" ]]; then
   cpuset '0-2' '0-3' '0-3' '0-7'
   stune_top_app 0 0
   cpuctl top-app 0 1 0 max
-  echo 75000000 > /sys/class/devfreq/1d84000.ufshc/max_freq
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -61,7 +60,6 @@ elif [[ "$action" = "balance" ]]; then
   cpuset '0-2' '0-3' '0-6' '0-7'
   stune_top_app 0 0
   cpuctl top-app 0 1 0.1 max
-  echo 300000000 > /sys/class/devfreq/1d84000.ufshc/max_freq
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -76,7 +74,6 @@ elif [[ "$action" = "performance" ]]; then
   cpuset '0-1' '0-3' '0-6' '0-7'
   stune_top_app 1 0
   cpuctl top-app 0 1 0.5 max
-  echo 300000000 > /sys/class/devfreq/1d84000.ufshc/max_freq
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -91,7 +88,6 @@ elif [[ "$action" = "fast" ]]; then
   cpuset '0' '0-3' '0-6' '0-7'
   stune_top_app 1 50
   cpuctl top-app 0 1 max max
-  echo 300000000 > /sys/class/devfreq/1d84000.ufshc/max_freq
 
 
 fi

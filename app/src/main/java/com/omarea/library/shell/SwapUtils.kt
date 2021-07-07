@@ -75,7 +75,7 @@ class SwapUtils(private val context: Context) {
     }
 
     // 启动swap
-    fun swapOn(priority: Int, useLoop: Boolean = false): String {
+    fun swapOn(priority: Int, useLoop: Boolean = false, keepShell: KeepShell): String {
         val sb = StringBuilder()
 
         sb.append("sh ")
@@ -91,8 +91,15 @@ class SwapUtils(private val context: Context) {
             sb.append(priority)
         }
 
+        return keepShell.doCmdSync(sb.toString())
+    }
+
+    // 启动swap
+    fun swapOn(priority: Int, useLoop: Boolean = false): String {
         val keepShell = KeepShell()
-        val result = keepShell.doCmdSync(sb.toString())
+
+        val result = swapOn(priority, useLoop, keepShell)
+
         keepShell.tryExit()
         return result
     }
@@ -103,7 +110,7 @@ class SwapUtils(private val context: Context) {
 
         sb.append("sh ")
         sb.append(swapControlScript)
-        sb.append(" diable_swap ")
+        sb.append(" disable_swap ")
         if (sceneSwaps.contains("loop")) {
             sb.append("1")
         } else {
@@ -121,7 +128,7 @@ class SwapUtils(private val context: Context) {
 
         sb.append("sh ")
         sb.append(swapControlScript)
-        sb.append(" diable_swap ")
+        sb.append(" disable_swap ")
         if (sceneSwaps.contains("loop")) {
             sb.append("1")
         } else {
