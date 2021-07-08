@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.CompoundButton
@@ -16,6 +17,10 @@ class DialogAppChooser(
         private var packages: ArrayList<AdapterAppChooser.AppInfo>,
         private val multiple: Boolean = false,
         private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_app_chooser, darkMode) {
+
+    private var allowAllSelect = true
+    private var excludeApps: Array<String> = arrayOf()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,6 +51,9 @@ class DialogAppChooser(
                         }
                     })
                 }
+                if (!allowAllSelect) {
+                    selectAll.visibility = View.GONE
+                }
             } else {
                 selectAll.visibility = View.GONE
             }
@@ -72,11 +80,28 @@ class DialogAppChooser(
     }
 
     private fun setup(gridView: AbsListView) {
-        gridView.adapter = AdapterAppChooser(gridView.context, packages, multiple)
+        val filterResult = ArrayList<AdapterAppChooser.AppInfo>(packages.filter { !excludeApps.contains(it.packageName) })
+        gridView.adapter = AdapterAppChooser(gridView.context, filterResult, multiple)
     }
 
     interface Callback {
         fun onConfirm(apps: List<AdapterAppChooser.AppInfo>)
+    }
+
+    public fun setExcludeApps(apps: Array<String>): DialogAppChooser {
+        this.excludeApps = apps
+        if (this.view != null) {
+            Log.e("@DialogAppChooser", "Unable to set the exclusion list, The list has been loaded")
+        }
+
+        return this
+    }
+
+    public fun setAllowAllSelect(allow: Boolean): DialogAppChooser {
+        this.allowAllSelect = allow
+        view?.findViewById<CompoundButton?>(R.id.select_all)?.visibility = if (allow) View.VISIBLE else View.GONE
+
+        return this
     }
 
     private fun onConfirm(gridView: AbsListView) {

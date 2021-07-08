@@ -524,7 +524,14 @@ class ActivityFreezeApps : ActivityBase() {
                         override fun onConfirm(apps: List<AdapterAppChooser.AppInfo>) {
                             addFreezeApps(ArrayList(apps.map { it.packageName }))
                         }
-                    }).show(supportFragmentManager, "freeze-app-add")
+                    })
+                    .setExcludeApps(arrayOf(
+                            context.packageName,
+                            "com.topjohnwu.magisk",
+                            "eu.chainfire.supersu",
+                            "com.android.settings"))
+                    .setAllowAllSelect(false)
+                    .show(supportFragmentManager, "freeze-app-add")
                 } catch (ex: java.lang.Exception) {
                 }
             }
