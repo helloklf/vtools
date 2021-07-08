@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -41,6 +42,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private var flagRequestKeyEvent = true
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscap = false
+    private var inputMethods = ArrayList<String>()
 
     private var displayWidth = 1080
     private var displayHeight = 2340
@@ -151,8 +153,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
         // 获取输入法
         GlobalScope.launch(Dispatchers.IO) {
+            inputMethods = InputMethodApp(applicationContext).getInputMethods()
             skipAdIgnoredApps.addAll(LauncherApps(applicationContext).launcherApps)
-            skipAdIgnoredApps.addAll(InputMethodApp(applicationContext).getInputMethods())
+            skipAdIgnoredApps.addAll(inputMethods)
         }
     }
 
@@ -388,8 +391,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     if (logs == null) {
                         if (eventWindowId == lastWindowId && event.packageName != null) {
                             val pa = event.packageName
-                            GlobalStatus.lastPackageName = pa.toString()
-                            EventBus.publish(EventType.APP_SWITCH)
+                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                                GlobalStatus.lastPackageName = pa.toString()
+                                EventBus.publish(EventType.APP_SWITCH)
+                            }
                         } else {
                             lastAnalyseThread = System.currentTimeMillis()
                             // try {
@@ -426,8 +431,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         }
                         if (wp != null) {
                             logs.append("\n此前: ${GlobalStatus.lastPackageName}")
-                            GlobalStatus.lastPackageName = wp.toString()
-                            EventBus.publish(EventType.APP_SWITCH)
+                            val pa = wp.toString()
+                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                                GlobalStatus.lastPackageName = pa
+                                EventBus.publish(EventType.APP_SWITCH)
+                            }
                             if (event != null) {
                                 startActivityPolling()
                             }
@@ -493,8 +501,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
             }
 
             if (lastAnalyseThread == tid && wp != null) {
-                GlobalStatus.lastPackageName = wp.toString()
-                EventBus.publish(EventType.APP_SWITCH)
+                val pa = wp.toString()
+                if (!(isLandscap  && inputMethods.contains(pa))) {
+                    GlobalStatus.lastPackageName = pa
+                    EventBus.publish(EventType.APP_SWITCH)
+                }
             }
         }
     }
