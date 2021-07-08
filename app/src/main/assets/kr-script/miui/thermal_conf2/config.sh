@@ -1,9 +1,8 @@
 platform=`getprop ro.board.platform`
 mode="$state"
 
-if [[ ! -n "$MAGISK_PATH" ]]; then
-    echo 'Scene 附加模块未启用，请先前往Magisk助手初始化模块' 1>&2
-    exit 4
+if [[ "$MAGISK_PATH" == "" ]]; then
+  MAGISK_PATH="/data/adb/modules/scene_systemless"
 fi
 
 # 方案2 - 替换到 /data
