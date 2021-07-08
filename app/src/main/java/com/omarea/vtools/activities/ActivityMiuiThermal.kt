@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
@@ -98,7 +99,7 @@ class ActivityMiuiThermal : ActivityBase() {
 
     @SuppressLint("RestrictedApi")
     private fun saveConfig() {
-        val currentContent = thermal_config.text.toString().trim()
+        val currentContent = thermal_config.text.toString().trim().replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
         val bytes = currentContent.toByteArray(Charset.forName("UTF-8"))
         val data = if (encrypted) MiuiThermalAESUtil.encrypt(bytes) else bytes
         val file_path = filesDir.path + File.separator + "thermal-temp.conf"
@@ -135,7 +136,7 @@ class ActivityMiuiThermal : ActivityBase() {
 
 
     private fun applyThermal(saveConfig: Boolean) {
-        val currentContent = thermal_config.text.toString().trim()
+        val currentContent = thermal_config.text.toString().trim().replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
         val bytes = currentContent.toByteArray(Charset.forName("UTF-8"))
         val data = if (encrypted) MiuiThermalAESUtil.encrypt(bytes) else bytes
         val file_path = filesDir.path + File.separator + "thermal-temp.conf"
