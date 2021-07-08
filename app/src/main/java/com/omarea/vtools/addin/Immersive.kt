@@ -12,20 +12,18 @@ import com.omarea.vtools.activities.ActivityBase
 class Immersive(private var context: ActivityBase) : AddinBase(context) {
     fun fullScreen() {
         DialogItemChooser(context.themeMode.isDarkMode, ArrayList<SelectItem>().apply {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-                add(SelectItem().apply {
-                    title = "全部隐藏"
-                    value = "wm overscan reset;settings put global policy_control immersive.full=apps,-android,-com.android.systemui"
-                })
-                add(SelectItem().apply {
-                    title = "隐藏导航栏"
-                    value = "wm overscan reset;settings put global policy_control immersive.navigation=*"
-                })
-                add(SelectItem().apply {
-                    title = "隐藏状态栏"
-                    value = "wm overscan reset;settings put global policy_control immersive.status=apps,-android,-com.android.systemui"
-                })
-            }
+            add(SelectItem().apply {
+                title = "全部隐藏"
+                value = "wm overscan reset;settings put global policy_control immersive.full=apps,-android,-com.android.systemui"
+            })
+            add(SelectItem().apply {
+                title = "隐藏导航栏"
+                value = "wm overscan reset;settings put global policy_control immersive.navigation=*"
+            })
+            add(SelectItem().apply {
+                title = "隐藏状态栏"
+                value = "wm overscan reset;settings put global policy_control immersive.status=apps,-android,-com.android.systemui"
+            })
             add(SelectItem().apply {
                 title = "恢复默认"
                 value = "wm overscan reset;settings put global policy_control null"

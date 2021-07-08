@@ -3,6 +3,7 @@ package com.omarea.vtools.popup
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
@@ -208,14 +209,21 @@ class FloatMonitor(private val mContext: Context) {
     private val fpsUtils = FpsUtils()
     private var batteryManager: BatteryManager? = null
 
-    private val boldStyleSpan = StyleSpan(Typeface.BOLD)
-    private val whiteSpan = ForegroundColorSpan(Color.WHITE)
-
     private fun whiteBoldSpan(text: String): SpannableString {
         return SpannableString(text).apply {
-            setSpan(whiteSpan, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(boldStyleSpan, 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(Color.WHITE), 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+    }
+
+    private var configSpf: SharedPreferences? = null
+    private val config: SharedPreferences
+        get () {
+            if (configSpf == null) {
+                val soc = PlatformUtils().getCPUName()
+                configSpf = mContext.getSharedPreferences(soc, Context.MODE_PRIVATE)
+            }
+            return configSpf!!
     }
 
     private fun updateInfo() {
@@ -262,7 +270,7 @@ class FloatMonitor(private val mContext: Context) {
         }
 
         // GPU内存使用
-        var gpuMemoryUsage = GpuUtils.getMemoryUsage()
+        val gpuMemoryUsage = GpuUtils.getMemoryUsage()
 
         val otherInfoBuilder = SpannableStringBuilder()
         if (showOtherInfo) {
@@ -270,62 +278,62 @@ class FloatMonitor(private val mContext: Context) {
             availMem = (info.availMem / 1024 / 1024f).toInt()
             val ramInfoText = "#RAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
-            otherInfoBuilder.append(whiteBoldSpan(ramInfoText))
-            otherInfoBuilder.append("\n")
+            otherInfoBuilder.run {
+                append(whiteBoldSpan(ramInfoText))
+                append("\n")
 
-            if (gpuMemoryUsage != null) {
-                otherInfoBuilder.append(whiteBoldSpan("#GMEM " + gpuMemoryUsage))
-                otherInfoBuilder.append("\n")
-            }
-
-            for ((clusterIndex, cluster) in clusters.withIndex()) {
-                if (clusterIndex != 0) {
-                    otherInfoBuilder.append("\n")
+                if (gpuMemoryUsage != null) {
+                    append(whiteBoldSpan("#GMEM " + gpuMemoryUsage))
+                    append("\n")
                 }
-                if (cluster.isNotEmpty()) {
-                    try {
-                        val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
-                        otherInfoBuilder.append(whiteBoldSpan(title))
 
-                        val otherInfos = StringBuilder("")
-                        for (core in cluster) {
-                            otherInfos.append("\nCPU").append(core).append("  ")
-                            val load = loads.get(core.toInt())
-                            if (load != null) {
-                                if (load < 10) {
-                                    otherInfos.append(" ")
+                for ((clusterIndex, cluster) in clusters.withIndex()) {
+                    if (clusterIndex != 0) {
+                        append("\n")
+                    }
+                    if (cluster.isNotEmpty()) {
+                        try {
+                            val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
+                            append(whiteBoldSpan(title))
+
+                            val otherInfos = StringBuilder("")
+                            for (core in cluster) {
+                                otherInfos.append("\nCPU").append(core).append("  ")
+                                val load = loads.get(core.toInt())
+                                if (load != null) {
+                                    if (load < 10) {
+                                        otherInfos.append(" ")
+                                    }
+                                    otherInfos.append(load.toInt()).append("%")
+                                } else {
+                                    otherInfos.append("×")
                                 }
-                                otherInfos.append(load.toInt()).append("%")
-                            } else {
-                                otherInfos.append("×")
                             }
+                            append(otherInfos.toString())
+                        } catch (ex: Exception) {
                         }
-                        otherInfoBuilder.append(otherInfos.toString())
-                    } catch (ex: Exception) {
                     }
                 }
-            }
 
-            fpsUtils.currentFps?.run {
-                otherInfoBuilder.append("\n")
+                fpsUtils.currentFps?.run {
+                    append("\n")
+                    append(whiteBoldSpan("#FPS  $this"))
+                }
 
-                val fpsInfo = "#FPS  $this"
-                otherInfoBuilder.append(SpannableString(fpsInfo))
-            }
+                batteryCurrentNowMa?.run {
+                    if (this > -20000 && this < 20000) {
+                        append("\n")
 
-            batteryCurrentNowMa?.run {
-                if (this > -20000 && this < 20000) {
-                    otherInfoBuilder.append("\n")
-
-                    val batteryInfo = "#BAT  " + (if (this > 0) ("+" + this) else this) + "mA"
-                    otherInfoBuilder.append(SpannableString(batteryInfo))
+                        val batteryInfo = "#BAT  " + (if (this > 0) ("+" + this) else this) + "mA"
+                        append(whiteBoldSpan(batteryInfo))
+                    }
                 }
             }
         }
 
         myHandler.post {
             if (showOtherInfo) {
-                otherInfo!!.setText(null)
+                otherInfo?.setText(null)
 
                 otherInfo?.text = otherInfoBuilder
             }
@@ -342,11 +350,11 @@ class FloatMonitor(private val mContext: Context) {
             temperatureChart!!.setData(100f, 100f - GlobalStatus.batteryCapacity, GlobalStatus.batteryTemperature)
             temperatureText!!.setText(GlobalStatus.batteryTemperature.toString() + "°C")
             batteryLevelText!!.setText(GlobalStatus.batteryCapacity.toString() + "%")
-            if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
-                chargerView!!.visibility = View.VISIBLE
+            chargerView!!.visibility = (if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
+                View.VISIBLE
             } else {
-                chargerView!!.visibility = View.GONE
-            }
+                View.GONE
+            })
         }
     }
 

@@ -42,33 +42,35 @@ class ActivityAddin : ActivityBase() {
         val activity = this
         val context = this
         val listItem = ArrayList<HashMap<String, Any>>().apply {
-            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { Immersive(activity).fullScreen() }, false))
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), { Immersive(activity).fullScreen() }, false))
+            }
 
-            add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context).show() }, false))
+            add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), { DialogAddinWIFI(context).show() }, false))
 
-            add(createItem(getString(R.string.addin_dpi), getString(R.string.addin_dpi_desc), Runnable { DialogAddinModifyDPI(context).modifyDPI(activity.windowManager.defaultDisplay, context) }, false))
+            add(createItem(getString(R.string.addin_dpi), getString(R.string.addin_dpi_desc), { DialogAddinModifyDPI(context).modifyDPI(activity.windowManager.defaultDisplay, context) }, false))
 
             add(createItem(getString(R.string.addin_deviceinfo), getString(
                     R.string.addin_deviceinfo_desc),
-                    Runnable {
+                    {
                         DialogAddinModifyDevice(context).modifyDeviceInfo()
                     },
                     false))
             add(createItem(getString(R.string.addin_mac),
                     getString(R.string.addin_mac_desc),
-                    Runnable {
+                    {
                         DialogCustomMAC(context).modifyMAC(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1)
                     },
                     false))
             add(createItem(getString(R.string.addin_mac_2),
                     getString(R.string.addin_mac_desc_2),
-                    Runnable {
+                    {
                         DialogCustomMAC(context).modifyMAC(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2)
                     },
                     false))
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context).run() }, false))
+                add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), { DexCompileAddin(context).run() }, false))
             }
             /*
             add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context).modifyConfig() }, false))
