@@ -126,7 +126,6 @@ public class FloatMonitorMini(private val mContext: Context) {
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler(Looper.getMainLooper())
-    private var batteryUnit = BatteryUtils()
     private val info = ActivityManager.MemoryInfo()
     private var coreCount = -1
     private var clusters = ArrayList<Array<String>>()
