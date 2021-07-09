@@ -24,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.*
 import com.omarea.store.SpfConfig
@@ -42,9 +43,9 @@ class FloatMonitor(private val mContext: Context) {
      * 显示弹出框
      * @param context
      */
-    fun showPopupWindow() {
+    fun showPopupWindow(): Boolean {
         if (show!!) {
-            return
+            return true
         }
         if (batteryManager == null) {
             batteryManager = mContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
@@ -52,14 +53,14 @@ class FloatMonitor(private val mContext: Context) {
 
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
             Toast.makeText(mContext, mContext.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
-            return
+            return false
         }
 
         show = true
         // 获取WindowManager
         mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        mView = setUpView(mContext)
+        val view = setUpView(mContext)
 
         val params = LayoutParams()
         val monitorStorage = mContext.getSharedPreferences("float_monitor_storage", Context.MODE_PRIVATE)
@@ -95,71 +96,78 @@ class FloatMonitor(private val mContext: Context) {
             params.x = 0
         } else {
         }
-        mWindowManager!!.addView(mView, params)
 
-        // 添加触摸事件
-        mView!!.setOnTouchListener(object : View.OnTouchListener {
-            private var isTouchDown = false
-            private var touchStartX = 0f
-            private var touchStartY = 0f
-            private var touchStartRawX = 0f
-            private var touchStartRawY = 0f
-            private var touchStartTime = 0L
-            private var lastClickTime = 0L
+        try {
+            mWindowManager!!.addView(view, params)
 
-            private fun onClick() {
-                try {
-                    if (System.currentTimeMillis() - lastClickTime < 300) {
-                        hidePopupWindow()
-                    } else {
-                        lastClickTime = System.currentTimeMillis()
-                    }
-                } catch (ex: Exception) {}
-            }
+            // 添加触摸事件
+            view.setOnTouchListener(object : View.OnTouchListener {
+                private var isTouchDown = false
+                private var touchStartX = 0f
+                private var touchStartY = 0f
+                private var touchStartRawX = 0f
+                private var touchStartRawY = 0f
+                private var touchStartTime = 0L
+                private var lastClickTime = 0L
 
-            @SuppressLint("ClickableViewAccessibility")
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                if (event != null) {
-                    when (event.action) {
-                        MotionEvent.ACTION_DOWN -> {
-                            touchStartX = event.getX()
-                            touchStartY = event.getY()
-                            touchStartRawX = event.rawX
-                            touchStartRawY = event.rawY
-                            isTouchDown = true
-                            touchStartTime = System.currentTimeMillis()
+                private fun onClick() {
+                    try {
+                        if (System.currentTimeMillis() - lastClickTime < 300) {
+                            hidePopupWindow()
+                        } else {
+                            lastClickTime = System.currentTimeMillis()
                         }
-                        MotionEvent.ACTION_MOVE -> {
-                            if (isTouchDown) {
-                                params.x = (event.rawX - touchStartX).toInt()
-                                params.y = (event.rawY - touchStartY).toInt()
-                                mWindowManager!!.updateViewLayout(v, params)
+                    } catch (ex: Exception) {}
+                }
+
+                @SuppressLint("ClickableViewAccessibility")
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    if (event != null) {
+                        when (event.action) {
+                            MotionEvent.ACTION_DOWN -> {
+                                touchStartX = event.getX()
+                                touchStartY = event.getY()
+                                touchStartRawX = event.rawX
+                                touchStartRawY = event.rawY
+                                isTouchDown = true
+                                touchStartTime = System.currentTimeMillis()
                             }
-                        }
-                        MotionEvent.ACTION_UP -> {
-                            if (System.currentTimeMillis() - touchStartTime < 180) {
-                                if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
-                                    onClick()
-                                } else {
-                                    monitorStorage.edit().putInt("x", params.x).putInt("y", params.y).apply()
+                            MotionEvent.ACTION_MOVE -> {
+                                if (isTouchDown) {
+                                    params.x = (event.rawX - touchStartX).toInt()
+                                    params.y = (event.rawY - touchStartY).toInt()
+                                    mWindowManager!!.updateViewLayout(v, params)
                                 }
                             }
-                            isTouchDown = false
-                            if (Math.abs(event.rawX - touchStartRawX) > 15 || Math.abs(event.rawY - touchStartRawY) > 15) {
-                                return true
+                            MotionEvent.ACTION_UP -> {
+                                if (System.currentTimeMillis() - touchStartTime < 180) {
+                                    if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
+                                        onClick()
+                                    } else {
+                                        monitorStorage.edit().putInt("x", params.x).putInt("y", params.y).apply()
+                                    }
+                                }
+                                isTouchDown = false
+                                if (Math.abs(event.rawX - touchStartRawX) > 15 || Math.abs(event.rawY - touchStartRawY) > 15) {
+                                    return true
+                                }
+                            }
+                            MotionEvent.ACTION_OUTSIDE,
+                            MotionEvent.ACTION_CANCEL -> {
+                                isTouchDown = false
                             }
                         }
-                        MotionEvent.ACTION_OUTSIDE,
-                        MotionEvent.ACTION_CANCEL -> {
-                            isTouchDown = false
-                        }
                     }
+                    return false
                 }
-                return false
-            }
-        })
+            })
 
-        startTimer()
+            startTimer()
+            return true
+        } catch (ex: Exception) {
+            Scene.toast("FloatMonitor Error\n" + ex.message)
+            return false
+        }
     }
 
     private fun stopTimer() {
@@ -224,7 +232,7 @@ class FloatMonitor(private val mContext: Context) {
                 configSpf = mContext.getSharedPreferences(soc, Context.MODE_PRIVATE)
             }
             return configSpf!!
-        }
+    }
 
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -374,8 +382,10 @@ class FloatMonitor(private val mContext: Context) {
      */
     fun hidePopupWindow() {
         stopTimer()
-        if (show!! && null != mView) {
-            mWindowManager!!.removeView(mView)
+        if (FloatMonitorMini.show!! && null != mView) {
+            try {
+                mWindowManager?.removeViewImmediate(mView)
+            } catch (ex: Exception) {}
             mView = null
             show = false
         }

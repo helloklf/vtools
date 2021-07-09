@@ -13,7 +13,7 @@ import com.omarea.model.SceneConfigInfo
 import com.omarea.scene.AccessibilityScene
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.vtools.popup.FloatMonitorGame
+import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatScreenRotation
 import java.util.*
 
@@ -245,14 +245,14 @@ class SceneMode private constructor(private val context: AccessibilityScene, pri
                     }
 
                     if (currentSceneConfig!!.showMonitor) {
-                        if (FloatMonitorGame.show != true) {
+                        if (FloatMonitorMini.show != true) {
                             Scene.post {
-                                hideMonitorOnLeave = FloatMonitorGame(context).showPopupWindow()
+                                hideMonitorOnLeave = FloatMonitorMini(context).showPopupWindow()
                             }
                         }
                     } else if (hideMonitorOnLeave) {
                         Scene.post {
-                            FloatMonitorGame(context).hidePopupWindow()
+                            FloatMonitorMini(context).hidePopupWindow()
                         }
                         hideMonitorOnLeave = false
                     }
