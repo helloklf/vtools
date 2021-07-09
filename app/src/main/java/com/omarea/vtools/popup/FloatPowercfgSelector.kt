@@ -363,13 +363,13 @@ class FloatPowercfgSelector(context: Context) {
 
         // mini监视悬浮窗开关
         view.findViewById<View>(R.id.fw_float_monitor_mini).run {
-            alpha = if (FloatMonitorGame.show == true) 1f else 0.5f
+            alpha = if (FloatMonitorMini.show == true) 1f else 0.5f
             setOnClickListener {
-                if (FloatMonitorGame.show == true) {
-                    FloatMonitorGame(context).hidePopupWindow()
+                if (FloatMonitorMini.show == true) {
+                    FloatMonitorMini(context).hidePopupWindow()
                     it.alpha = 0.3f
                 } else {
-                    FloatMonitorGame(context).showPopupWindow()
+                    FloatMonitorMini(context).showPopupWindow()
                     it.alpha = 1f
                 }
             }

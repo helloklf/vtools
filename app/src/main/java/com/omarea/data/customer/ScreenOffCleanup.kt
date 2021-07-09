@@ -6,7 +6,7 @@ import com.omarea.data.EventType
 import com.omarea.data.IEventReceiver
 import com.omarea.vtools.popup.FloatFpsWatch
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.popup.FloatMonitorGame
+import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatTaskManager
 
 class ScreenOffCleanup(private val context: Context) : IEventReceiver {
@@ -18,18 +18,18 @@ class ScreenOffCleanup(private val context: Context) : IEventReceiver {
     override fun onReceive(eventType: EventType) {
         Scene.post {
             if (eventType == EventType.SCREEN_OFF) {
-                status[0] = FloatMonitorGame.show == true
+                status[0] = FloatMonitorMini.show == true
                 status[1] = FloatTaskManager.show == true
                 status[2] = FloatFpsWatch.show == true
                 status[3] = FloatMonitor.show == true
 
-                FloatMonitorGame(context).hidePopupWindow()
+                FloatMonitorMini(context).hidePopupWindow()
                 FloatTaskManager(context).hidePopupWindow()
                 FloatFpsWatch(context).hidePopupWindow()
                 FloatMonitor(context).hidePopupWindow()
             } else if (eventType == EventType.SCREEN_ON) {
                 if (status[0]) {
-                    FloatMonitorGame(context).showPopupWindow()
+                    FloatMonitorMini(context).showPopupWindow()
                     status[0] = false
                 }
                 if (status[1]) {

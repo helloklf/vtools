@@ -19,12 +19,13 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.*
 import com.omarea.vtools.R
 import java.util.*
 
-public class FloatMonitorGame(private val mContext: Context) {
+public class FloatMonitorMini(private val mContext: Context) {
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
     private var CpuFrequencyUtil = CpuFrequencyUtils()
@@ -52,7 +53,7 @@ public class FloatMonitorGame(private val mContext: Context) {
         show = true
         mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        mView = setUpView(mContext)
+        val view = setUpView(mContext)
 
         val params = LayoutParams()
         val monitorStorage = mContext.getSharedPreferences("float_monitor2_storage", Context.MODE_PRIVATE)
@@ -93,11 +94,16 @@ public class FloatMonitorGame(private val mContext: Context) {
             params.y = -navHeight
             params.x = 0
         }
-        mWindowManager!!.addView(mView, params)
+        try {
+            mWindowManager!!.addView(view, params)
+            mView = view
 
-        startTimer()
-
-        return true
+            startTimer()
+            return true
+        } catch (ex: Exception) {
+            Scene.toast("FloatMonitorMini Error\n" + ex.message)
+            return false
+        }
     }
 
     private fun stopTimer() {
@@ -197,7 +203,9 @@ public class FloatMonitorGame(private val mContext: Context) {
     fun hidePopupWindow() {
         stopTimer()
         if (show!! && null != mView) {
-            mWindowManager!!.removeView(mView)
+            try {
+                mWindowManager?.removeViewImmediate(mView)
+            } catch (ex: Exception) {}
             mView = null
             show = false
         }

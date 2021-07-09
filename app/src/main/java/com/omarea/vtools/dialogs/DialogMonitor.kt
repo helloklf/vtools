@@ -10,7 +10,7 @@ import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatFpsWatch
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.popup.FloatMonitorGame
+import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatTaskManager
 
 class DialogMonitor(var context: Activity) {
@@ -45,12 +45,12 @@ class DialogMonitor(var context: Activity) {
             }
         }
         view.findViewById<CompoundButton>(R.id.monitor_game).run {
-            isChecked = FloatMonitorGame.show == true
+            isChecked = FloatMonitorMini.show == true
             setOnClickListener {
                 if (isChecked) {
-                    FloatMonitorGame(context).showPopupWindow()
+                    FloatMonitorMini(context).showPopupWindow()
                 } else {
-                    FloatMonitorGame(context).hidePopupWindow()
+                    FloatMonitorMini(context).hidePopupWindow()
                 }
             }
         }
