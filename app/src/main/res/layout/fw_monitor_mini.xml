@@ -92,20 +92,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textAlignment="viewEnd"
-            android:text="--"
-            android:minWidth="20dp"
-            android:textColor="#ffffff"
-            android:fontFamily="monospace"
-            android:textSize="8dp"
-            android:textStyle="bold" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:textAlignment="center"
-            android:text="°C"
-            android:textColor="#dddddd"
+            android:text="--"
+            android:minWidth="30dp"
+            android:textColor="#ffffff"
             android:fontFamily="monospace"
             android:textSize="8dp"
             android:textStyle="bold" />

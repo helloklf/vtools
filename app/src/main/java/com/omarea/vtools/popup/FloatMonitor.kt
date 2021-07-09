@@ -99,6 +99,7 @@ class FloatMonitor(private val mContext: Context) {
 
         try {
             mWindowManager!!.addView(view, params)
+            mView = view
 
             // 添加触摸事件
             view.setOnTouchListener(object : View.OnTouchListener {
@@ -163,6 +164,7 @@ class FloatMonitor(private val mContext: Context) {
             })
 
             startTimer()
+
             return true
         } catch (ex: Exception) {
             Scene.toast("FloatMonitor Error\n" + ex.message)
