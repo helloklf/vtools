@@ -384,7 +384,7 @@ class FloatMonitor(private val mContext: Context) {
      */
     fun hidePopupWindow() {
         stopTimer()
-        if (FloatMonitorMini.show!! && null != mView) {
+        if (show!! && null != mView) {
             try {
                 mWindowManager?.removeViewImmediate(mView)
             } catch (ex: Exception) {}
