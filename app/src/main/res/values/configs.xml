@@ -128,6 +128,10 @@
         <item>com.hskj.palmmetro</item>
         <!--Cellular-z-->
         <item>make.more.r2d2.cellular_z</item>
+        <!--扑扑-->
+        <item>com.pupumall.customer</item>
+        <!--每日优鲜-->
+        <item>cn.missfresh.application</item>
     </string-array>
 
     <string-array name="device_templates">
