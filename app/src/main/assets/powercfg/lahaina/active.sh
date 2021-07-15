@@ -94,3 +94,4 @@ fi
 
 adjustment_by_top_app
 restore_core_online
+renice -n -20 `pgrep com.miui.home` 2> /dev/null
