@@ -111,3 +111,4 @@ echo 0 > /dev/stune/nnapi-hal/schedtune.boost
 echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
 
 set_task_affinity `pgrep com.miui.home` 11111111
+set_task_affinity `pgrep com.miui.home` 11110000

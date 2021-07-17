@@ -468,14 +468,15 @@ adjustment_by_top_app() {
         ctl_off cpu4
         ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 55 72 72 8 69 82
+          conservative_mode 67 79 90 99 69 82
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 844800 1766400 844800 1670400
+          set_cpu_freq 806400 1708800 844800 1766400 844800 844800
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
           cpuset '0-1' '0-1' '0-3' '0-6'
+          cpuctl top-app 0 1 0 0.8
         elif [[ "$action" = "balance" ]]; then
           conservative_mode 55 72 72 85 69 82
           sched_boost 0 0
