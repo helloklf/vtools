@@ -87,14 +87,14 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="2dp"
             android:id="@+id/fw_battery_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:text="--"
-            android:minWidth="32dp"
+            android:minWidth="34dp"
             android:textColor="#ffffff"
             android:fontFamily="monospace"
             android:textSize="8dp"
