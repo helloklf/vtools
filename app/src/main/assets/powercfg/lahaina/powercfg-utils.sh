@@ -561,6 +561,34 @@ adjustment_by_top_app() {
       echo 0-6 > /dev/cpuset/foreground/cpus
     ;;
 
+    # BaiDuDiTu, TenXunDiTu, GaoDeDiTu
+    "com.baidu.BaiduMap" | "com.tencent.map" | "com.autonavi.minimap")
+      if [[ "$action" != "fast" ]]; then
+        core_online[7]=0
+        cpuset '0' '0-3' '0-3' '0-6'
+        gpu_pl_up 0
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_limit 0 0 0 2000 0 1000
+        if [[ "$action" = "powersave" ]]; then
+          conservative_mode 60 72 80 98 90 99
+          cpuctl top-app 0 0 0 0.2
+          set_cpu_freq 300000 1708800 710400 1440000 844800 844800
+          set_gpu_max_freq 200000000
+        elif [[ "$action" = "balance" ]]; then
+          conservative_mode 59 70 78 97 90 99
+          cpuctl top-app 0 1 0 0.8
+          set_cpu_freq 300000 1708800 710400 1440000 844800 844800
+          set_gpu_max_freq 300000000
+        elif [[ "$action" = "performance" ]]; then
+          sched_config "85 85" "96 96" "150" "400"
+          cpuctl top-app 0 1 0 max
+          set_cpu_freq 300000 1708800 710400 1555200 844800 1785600
+          set_gpu_max_freq 491000000
+        fi
+      fi
+    ;;
+
     # DouYin, BiliBili
     "com.ss.android.ugc.awem" | "tv.danmaku.bili")
       ctl_on cpu4
