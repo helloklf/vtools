@@ -53,7 +53,6 @@ public class FloatMonitorMini(private val mContext: Context) {
             }
         }
 
-        show = true
         mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val view = setUpView(mContext)
@@ -100,6 +99,7 @@ public class FloatMonitorMini(private val mContext: Context) {
         try {
             mWindowManager!!.addView(view, params)
             mView = view
+            show = true
 
             startTimer()
             return true
@@ -233,8 +233,8 @@ public class FloatMonitorMini(private val mContext: Context) {
                 mWindowManager?.removeViewImmediate(mView)
             } catch (ex: Exception) {}
             mView = null
-            show = false
         }
+        show = false
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")

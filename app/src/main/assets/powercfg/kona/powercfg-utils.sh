@@ -77,25 +77,40 @@ fi;
 
 conservative_mode() {
   local policy=/sys/devices/system/cpu/cpufreq/policy
-  local down="$1"
-  local up="$2"
-
-  if [[ "$down" == "" ]]; then
-    local down="20"
-  fi
-  if [[ "$up" == "" ]]; then
-    local up="60"
-  fi
+  # local down="$1"
+  # local up="$2"
+  #
+  # if [[ "$down" == "" ]]; then
+  #   local down="20"
+  # fi
+  # if [[ "$up" == "" ]]; then
+  #   local up="60"
+  # fi
 
   for cluster in 0 4 7; do
     echo $cluster
     echo 'conservative' > ${policy}${cluster}/scaling_governor
-    echo $down > ${policy}${cluster}/conservative/down_threshold
-    echo $up > ${policy}${cluster}/conservative/up_threshold
+    # echo $down > ${policy}${cluster}/conservative/down_threshold
+    # echo $up > ${policy}${cluster}/conservative/up_threshold
     echo 0 > ${policy}${cluster}/conservative/ignore_nice_load
     echo 1000 > ${policy}${cluster}/conservative/sampling_rate # 1000us = 1ms
-    echo 4 > ${policy}${cluster}/conservative/freq_step
+    echo 2 > ${policy}${cluster}/conservative/freq_step
   done
+
+  echo $1 > ${policy}0/conservative/down_threshold
+  echo $2 > ${policy}0/conservative/up_threshold
+  echo $1 > ${policy}0/conservative/down_threshold
+  echo $2 > ${policy}0/conservative/up_threshold
+
+  echo $3 > ${policy}4/conservative/down_threshold
+  echo $4 > ${policy}4/conservative/up_threshold
+  echo $3 > ${policy}4/conservative/down_threshold
+  echo $4 > ${policy}4/conservative/up_threshold
+
+  echo $5 > ${policy}7/conservative/down_threshold
+  echo $6 > ${policy}7/conservative/up_threshold
+  echo $5 > ${policy}7/conservative/down_threshold
+  echo $6 > ${policy}7/conservative/up_threshold
 }
 
 core_online=(1 1 1 1 1 1 1 1)
