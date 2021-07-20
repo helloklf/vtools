@@ -31,10 +31,10 @@ reset_basic_governor
 
 
 if [[ "$action" = "powersave" ]]; then
-  ctl_on cpu4
-  ctl_on cpu7
-  set_ctl cpu4 60 35 20
-  set_ctl cpu7 60 30 20
+  # ctl_on cpu4
+  # ctl_on cpu7
+  # set_ctl cpu4 60 35 20
+  # set_ctl cpu7 60 30 20
   set_cpu_freq 300000 1708800 710400 1555200 844800 1785600
   gpu_pl_up 0
   sched_boost 0 0
@@ -47,10 +47,10 @@ if [[ "$action" = "powersave" ]]; then
 
 
 elif [[ "$action" = "balance" ]]; then
-  ctl_on cpu4
-  ctl_on cpu7
-  set_ctl cpu4 60 30 100
-  set_ctl cpu7 60 30 100
+  # ctl_on cpu4
+  # ctl_on cpu7
+  # set_ctl cpu4 60 30 100
+  # set_ctl cpu7 60 30 100
   set_cpu_freq 300000 1804800 710400 1996800 844800 2380800
   gpu_pl_up 0
   sched_boost 1 0
@@ -63,8 +63,8 @@ elif [[ "$action" = "balance" ]]; then
 
 
 elif [[ "$action" = "performance" ]]; then
-  ctl_off cpu4
-  ctl_off cpu7
+  # ctl_off cpu4
+  # ctl_off cpu7
   set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
   gpu_pl_up 1
   sched_boost 1 0
@@ -77,8 +77,8 @@ elif [[ "$action" = "performance" ]]; then
 
 
 elif [[ "$action" = "fast" ]]; then
-  ctl_off cpu4
-  ctl_off cpu7
+  # ctl_off cpu4
+  # ctl_off cpu7
   set_cpu_freq 1401600 1804800 1766400 2600000 1670400 3200000
   set_hispeed_freq 1612800 1670400 1785600
   gpu_pl_up 2

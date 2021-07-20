@@ -30,7 +30,7 @@ case "$target" in
     echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/nr_prev_assist_thresh
 
     # Disable Core control on silver
-    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    # echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
 
     # Setting b.L scheduler parameters
     echo 95 95 > /proc/sys/kernel/sched_upmigrate
@@ -104,7 +104,8 @@ cpuctl () {
 }
 
 cpuctl top-app 0 0 0 max
-cpuctl foreground 0 0 0 '0.8'
+# cpuctl foreground 0 0 0 '0.8'
+cpuctl foreground 0 0 0 0
 cpuctl background 0 0 0 0
 
 echo 0 > /dev/stune/nnapi-hal/schedtune.boost
