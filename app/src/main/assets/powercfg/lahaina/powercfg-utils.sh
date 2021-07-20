@@ -23,7 +23,7 @@ heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,co
 
 music=com.netease.cloudmusic,com.kugou.android,com.kugou.android.lite
 
-video=com.ss.android.ugc.awem,tv.danmaku.bili
+video=com.ss.android.ugc.aweme,tv.danmaku.bili
 "
 
   hint_group=$(echo -e "$distinct_apps" | grep "$top_app" | cut -f1 -d "=")
@@ -369,8 +369,8 @@ stune_top_app() {
 cpuctl () {
  echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
  echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
- echo $4 > /dev/cpuctl/top-app/cpu.uclamp.min
- echo $5 > /dev/cpuctl/top-app/cpu.uclamp.max
+ echo $4 > /dev/cpuctl/$1/cpu.uclamp.min
+ echo $5 > /dev/cpuctl/$1/cpu.uclamp.max
 }
 
 cpuset() {
@@ -590,29 +590,32 @@ adjustment_by_top_app() {
     ;;
 
     # DouYin, BiliBili
-    "com.ss.android.ugc.awem" | "tv.danmaku.bili")
+    "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
       # ctl_on cpu4
       # ctl_on cpu7
 
       # set_ctl cpu4 85 45 0
       # set_ctl cpu7 80 40 0
 
-      sched_boost 0 0
       stune_top_app 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then
+        sched_boost 0 0
         echo 0-5 > /dev/cpuset/top-app/cpus
-        cpuctl top-app 0 0 0 0.8
+        cpuctl top-app 0 0 0 0.1
       elif [[ "$action" = "balance" ]]; then
+        sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
-        cpuctl top-app 0 0 0 max
+        cpuctl top-app 0 0 0 0.5
       elif [[ "$action" = "performance" ]]; then
+        sched_boost 1 0
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 1 0 max
       elif [[ "$action" = "fast" ]]; then
+        sched_boost 1 0
         echo 0-7 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
         cpuctl top-app 0 1 0.1 max
