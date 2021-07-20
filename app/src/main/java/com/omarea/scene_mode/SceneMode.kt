@@ -75,7 +75,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
                         context)
                 val mode = if (suspendMode) "suspend" else "disable"
                 val apps = if (writeSuccess) FileWrite.getPrivateFilePath(context, "freeze_apps.sh") else  null
-                val executor = FileWrite.writePrivateShellFile("addin/freeze_apps_executor.sh", "freeze_apps_executor.sh", context)
+                val executor = FileWrite.writePrivateShellFile("addin/freeze_executor.sh", "freeze_executor.sh", context)
 
                 if (executor != null && apps != null) {
                     KeepShellPublic.doCmdSync("nohup $executor $mode $apps >/dev/null 2>&1 &")
