@@ -25,6 +25,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
         }
 
     public fun setGroup(packageName: String, group: String) {
+        // memcgShell 为null为未初始化或初始化失败状态，需要先执行初始化
         if (memcgShell == null) {
             val initShell = RawText.getRawText(context, R.raw.memcg_set_init).toByteArray(Charset.defaultCharset())
             val execShell = RawText.getRawText(context, R.raw.memcg_set).toByteArray(Charset.defaultCharset())
@@ -40,6 +41,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
                 memcgShell = "sh $fullExecPath '%s' '%s' > /dev/null 2>&1 &"
             }
         }
+
         if (memcgShell != null) {
             val groupPath = (if (group.isNotEmpty()) {
                 ("/$group")
@@ -47,7 +49,7 @@ public class CGroupMemoryUtlis(private val context: Context) {
                 ""
             })
             val cmd = String.format(memcgShell!!, packageName, groupPath)
-            KeepShellAsync.getInstance("CGroup").doCmd(cmd)
+            KeepShellPublic.doCmdSync(cmd)
         } else {
             Log.e("Scene", "CGroup Init Fail!")
             return
