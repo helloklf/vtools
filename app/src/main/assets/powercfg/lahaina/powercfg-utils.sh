@@ -415,8 +415,8 @@ adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
-        ctl_off cpu4
-        ctl_off cpu7
+        # ctl_off cpu4
+        # ctl_off cpu7
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -465,8 +465,8 @@ adjustment_by_top_app() {
 
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")
-        ctl_off cpu4
-        ctl_on cpu7
+        # ctl_off cpu4
+        # ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 55 72 72 8 69 82
           sched_boost 0 0
@@ -555,11 +555,11 @@ adjustment_by_top_app() {
 
     # DouYin, BiliBili
     "com.ss.android.ugc.awem" | "tv.danmaku.bili")
-      ctl_on cpu4
-      ctl_on cpu7
+      # ctl_on cpu4
+      # ctl_on cpu7
 
-      set_ctl cpu4 85 45 0
-      set_ctl cpu7 80 40 0
+      # set_ctl cpu4 85 45 0
+      # set_ctl cpu7 80 40 0
 
       sched_boost 0 0
       stune_top_app 0 0

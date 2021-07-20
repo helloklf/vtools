@@ -30,7 +30,7 @@ case "$target" in
     echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/nr_prev_assist_thresh
 
     # Disable Core control on silver
-    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    # echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
 
     # Setting b.L scheduler parameters
     echo 95 95 > /proc/sys/kernel/sched_upmigrate

@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.Scene
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.library.shell.GAppsUtilis
@@ -18,6 +19,8 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.AccessibilityScenceMode
 import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatScreenRotation
+import java.lang.StringBuilder
+import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -49,16 +52,33 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
     private class FreezeAppThread(private val context: Context) : Thread() {
         override fun run() {
+            sleep(5000) // 启动后延迟5秒执行
             val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
             val launchedFreezeApp = getCurrentInstance()?.getLaunchedFreezeApp()
             val suspendMode = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            val targetApps = ArrayList<String>()
             for (item in SceneConfigStore(context).freezeAppList) {
                 if (launchedFreezeApp == null || !launchedFreezeApp.contains(item)) {
-                    if (suspendMode) {
-                        suspendApp(item)
-                    } else {
-                        freezeApp(item)
-                    }
+                    targetApps.add(item)
+                }
+            }
+            if (targetApps.size > 0) {
+                val cmds = StringBuilder("freeze_apps=\"")
+                targetApps.forEach {
+                    cmds.append("${it}\n")
+                }
+                cmds.append("\"\n")
+
+                val writeSuccess = FileWrite.writePrivateFile(
+                        cmds.toString().toByteArray(Charset.defaultCharset()),
+                        "freeze_apps.sh",
+                        context)
+                val mode = if (suspendMode) "suspend" else "disable"
+                val apps = if (writeSuccess) FileWrite.getPrivateFilePath(context, "freeze_apps.sh") else  null
+                val executor = FileWrite.writePrivateShellFile("addin/freeze_apps_executor.sh", "freeze_apps_executor.sh", context)
+
+                if (executor != null && apps != null) {
+                    KeepShellPublic.doCmdSync("nohup $executor $mode $apps >/dev/null 2>&1 &")
                 }
             }
         }
