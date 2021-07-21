@@ -83,18 +83,18 @@ case "$target" in
   ;;
 esac
 
-pgrep -f surfaceflinger | while read pid; do
-  echo $pid > /dev/cpuset/top-app/tasks
-  echo $pid > /dev/stune/top-app/tasks
-done
-pgrep -f system_server | while read pid; do
-  echo $pid > /dev/cpuset/top-app/tasks
-  echo $pid > /dev/stune/top-app/tasks
-done
-pgrep -f vendor.qti.hardware.display.composer-service | while read pid; do
-  echo $pid > /dev/cpuset/top-app/tasks
-  echo $pid > /dev/stune/top-app/tasks
-done
+set_cpuset(){
+  pgrep -f $1 | while read pid; do
+    echo $pid > /dev/cpuset/$2/tasks
+    echo $pid > /dev/stune/$2/tasks
+  done
+}
+
+set_cpuset surfaceflinger top-app
+set_cpuset system_server top-app
+set_cpuset vendor.qti.hardware.display.composer-service top-app
+set_cpuset mediaserver background
+set_cpuset media.hwcodec background
 
 cpuctl () {
  echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override

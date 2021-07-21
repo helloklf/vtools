@@ -156,51 +156,42 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
-devfreq_backup () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-  if [[ ! -f $devfreq_backup ]] || [[ "$backup_state" != "true" ]]; then
-    echo '' > $devfreq_backup
-    local dir=/sys/class/devfreq
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        governor=`cat $dir/$file/governor`
-        echo "$file#$governor" >> $devfreq_backup
-      fi
-    done
-    setprop vtools.dev_freq_backup true
-  fi
-}
-
 devfreq_performance () {
-  devfreq_backup
-
-  local dir=/sys/class/devfreq
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        # echo $dir/$file/governor
-        echo performance > $dir/$file/governor
-      fi
-    done
-  fi
+  bw_max_always
 }
 
 devfreq_restore () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
+  bw_min
+}
 
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    local dir=/sys/class/devfreq
-    while read line; do
-      if [[ "$line" != "" ]]; then
-        echo ${line#*#} > $dir/${line%#*}/governor
-      fi
-    done < $devfreq_backup
-  fi
+bw_min() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+}
+
+bw_max() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+}
+
+bw_max_always() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
 }
 
 set_value() {
