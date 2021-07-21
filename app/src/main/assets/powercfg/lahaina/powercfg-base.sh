@@ -104,7 +104,8 @@ cpuctl () {
 }
 
 cpuctl top-app 0 0 0 max
-cpuctl foreground 0 0 0 '0.8'
+# cpuctl foreground 0 0 0 '0.8'
+cpuctl foreground 0 0 0 0
 cpuctl background 0 0 0 0
 
 echo 0 > /dev/stune/nnapi-hal/schedtune.boost

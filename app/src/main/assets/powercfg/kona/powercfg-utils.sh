@@ -23,7 +23,7 @@ heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,co
 
 music=com.netease.cloudmusic,com.kugou.android,com.kugou.android.lite
 
-video=com.ss.android.ugc.awem,tv.danmaku.bili
+video=com.ss.android.ugc.aweme,tv.danmaku.bili
 "
 
   hint_group=$(echo -e "$distinct_apps" | grep "$top_app" | cut -f1 -d "=")
@@ -481,7 +481,7 @@ adjustment_by_top_app() {
     ;;
 
     # DouYin, BiliBili
-    "com.ss.android.ugc.awem" | "tv.danmaku.bili")
+    "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
       ctl_on cpu4
       ctl_on cpu7
 
