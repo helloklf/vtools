@@ -92,10 +92,6 @@ class TaskActionsExecutor(
                         updateNotification("切换极速模式")
                         ModeSwitcher().executePowercfgMode(ModeSwitcher.FAST, context.packageName)
                     }
-                    TaskAction.FROZEN_APPS -> {
-                        updateNotification("冻结偏见应用")
-                        SceneMode.getCurrentInstance()?.clearFreezeApp()
-                    }
                     else -> {
                     }
                 }

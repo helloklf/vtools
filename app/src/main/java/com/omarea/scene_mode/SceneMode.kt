@@ -50,11 +50,14 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
     private val floatScreenRotation = FloatScreenRotation(context)
 
-    private class FreezeAppThread(private val context: Context) : Thread() {
+    public class FreezeAppThread(
+        private val context: Context,
+        private val ignoreState: Boolean = false,
+        private val delaySecond: Int = 0
+    ) : Thread() {
         override fun run() {
-            sleep(5000) // 启动后延迟5秒执行
             val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            val launchedFreezeApp = getCurrentInstance()?.getLaunchedFreezeApp()
+            val launchedFreezeApp = if (ignoreState) null else getCurrentInstance()?.getLaunchedFreezeApp()
             val suspendMode = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
             val targetApps = ArrayList<String>()
             for (item in SceneConfigStore(context).freezeAppList) {
@@ -78,7 +81,8 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
                 val executor = FileWrite.writePrivateShellFile("addin/freeze_executor.sh", "freeze_executor.sh", context)
 
                 if (executor != null && apps != null) {
-                    KeepShellPublic.doCmdSync("nohup $executor $mode $apps >/dev/null 2>&1 &")
+                    val delay = if (delaySecond > 0) ("" + delaySecond) else ""
+                    KeepShellPublic.doCmdSync("nohup $executor $mode $apps $delay >/dev/null 2>&1 &")
                 }
             }
         }
@@ -573,39 +577,5 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
 
     fun onScreenOffDelay() {
-        if (config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0) < 1) {
-            clearFreezeApp()
-        }
-    }
-
-    /**
-     * 冻结所有解冻的偏见应用
-     */
-    fun clearFreezeApp() {
-        val suspendMode = this.suspendMode
-
-        currentSceneConfig?.packageName?.run {
-            val config = store.getAppConfig(this)
-            if (config.freeze) {
-                if (suspendMode) {
-                    suspendApp(this)
-                } else {
-                    Companion.freezeApp(this)
-                }
-            }
-        }
-
-        while (freezList.size > 0) {
-            val firstItem = freezList.first()
-            val config = store.getAppConfig(firstItem.packageName)
-            if (config.freeze) {
-                if (suspendMode) {
-                    suspendApp(firstItem.packageName)
-                } else {
-                    freezeApp(firstItem.packageName)
-                }
-            }
-            freezList.remove(firstItem)
-        }
     }
 }

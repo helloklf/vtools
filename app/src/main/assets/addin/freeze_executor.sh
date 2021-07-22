@@ -5,12 +5,26 @@ fi
 mode="$1"
 delay="$3"
 
+if [[ ! -f "$2" ]]; then
+  return
+fi
+
 # freeze_apps=""
 source $2
 
+
 if [[ "$delay" != "" ]]; then
+  uuid=`cat /proc/sys/kernel/random/uuid`
+  setprop vtools.freeze_delaya "$uuid"
+
   sleep $delay
+
+  last_id=`getprop vtools.freeze_delaya`
+  if [[ "$last_id" != "$uuid" ]]; then
+    return
+  fi
 fi
+
 
 for app in $freeze_apps; do
   if [[ "$app" == "com.android.vending" ]]; then

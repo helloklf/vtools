@@ -10,6 +10,5 @@ public enum TaskAction {
     MODE_POWERSAVE,     // 省电模式
     MODE_BALANCE,      // 均衡模式
     MODE_PERFORMANCE,  // 性能模式
-    MODE_FAST,         // 极速模式
-    FROZEN_APPS,       // 冻结偏见应用
+    MODE_FAST          // 极速模式
 }
