@@ -206,6 +206,16 @@ devfreq_restore () {
   bw_min
 }
 
+bw_down() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local down1="$1"
+  local down2="$2"
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down1)}" > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down2)}" > $path/max_freq
+}
+
 bw_min() {
   local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
   cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
@@ -429,7 +439,8 @@ adjustment_by_top_app() {
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
-            bw_max
+            bw_min
+            bw_down 3 3
           fi
           sched_boost 0 0
           stune_top_app 0 0
@@ -440,7 +451,8 @@ adjustment_by_top_app() {
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
-            bw_max
+            bw_min
+            bw_down 2 2
           fi
           sched_boost 0 0
           stune_top_app 0 0
