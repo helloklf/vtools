@@ -157,6 +157,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                 lastModePackage = null
                 context.notifyScreenOn()
                 // toggleConfig(lastMode, context.packageName)
+                sceneMode.cancelFreezeAppThread()
             }
         }, 1000)
         sceneMode.onScreenOn()

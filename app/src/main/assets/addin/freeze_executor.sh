@@ -15,11 +15,11 @@ source $2
 
 if [[ "$delay" != "" ]]; then
   uuid=`cat /proc/sys/kernel/random/uuid`
-  setprop vtools.freeze_delaya "$uuid"
+  setprop vtools.freeze_delay "$uuid"
 
   sleep $delay
 
-  last_id=`getprop vtools.freeze_delaya`
+  last_id=`getprop vtools.freeze_delay`
   if [[ "$last_id" != "$uuid" ]]; then
     return
   fi

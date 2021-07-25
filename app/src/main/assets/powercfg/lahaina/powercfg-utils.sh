@@ -155,12 +155,14 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
-devfreq_performance () {
-  bw_max_always
-}
+bw_down() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local down1="$1"
+  local down2="$2"
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down1)}" > $path/max_freq
 
-devfreq_restore () {
-  bw_min
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down2)}" > $path/max_freq
 }
 
 bw_min() {
@@ -376,6 +378,38 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+yuan_shen_opt_run() {
+  sleep 20
+  # top -H -p $(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef Yuanshen)
+  extreme="$1"
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice' /proc/$pid/task/$tid/comm" != "" ]]; then
+        taskset -p "70" "$tid" 2>&1 > /dev/null
+      fi
+    done
+
+    if [[ "$extreme" == "1" ]]; then
+      # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
+      # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
+      main_tid=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1 | cut -f1 -d ' ')
+      if [[ "$main_tid" != "" ]]; then
+        taskset -p "80" "$main_tid" 2>&1 > /dev/null
+      fi
+    fi
+  fi
+}
+
+yuan_shen_opt() {
+  sleep 10
+  yuan_shen_opt_run $1
+  sleep 30
+  yuan_shen_opt_run $1
+  sleep 120
+  yuan_shen_opt_run $1
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -386,7 +420,8 @@ adjustment_by_top_app() {
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
-            bw_max
+            bw_min
+            bw_down 3 3
           fi
           sched_boost 0 0
           stune_top_app 0 0
@@ -394,10 +429,12 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
+          yuan_shen_opt 0 &
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
-            bw_max
+            bw_min
+            bw_down 2 2
           fi
           sched_boost 0 0
           stune_top_app 0 0
@@ -405,8 +442,9 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
+          yuan_shen_opt 0 &
         elif [[ "$action" = "performance" ]]; then
-          # devfreq_performance
+          # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
             bw_max
@@ -415,8 +453,9 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
+          yuan_shen_opt 1 &
         elif [[ "$action" = "fast" ]]; then
-          devfreq_performance
+          bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 45 60 54 70 59 72
           fi
@@ -424,6 +463,7 @@ adjustment_by_top_app() {
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
+          yuan_shen_opt 1 &
         fi
         cpuset '0-1' '0-1' '0-3' '0-7'
     ;;

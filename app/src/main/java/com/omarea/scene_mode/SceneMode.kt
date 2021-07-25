@@ -50,6 +50,10 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
     private val floatScreenRotation = FloatScreenRotation(context)
 
+    public fun cancelFreezeAppThread() {
+        KeepShellPublic.doCmdSync("setprop vtools.freeze_delay ''")
+    }
+
     public class FreezeAppThread(
         private val context: Context,
         private val ignoreState: Boolean = false,

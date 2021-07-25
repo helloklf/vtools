@@ -370,6 +370,38 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+yuan_shen_opt_run() {
+  sleep 20
+  # top -H -p $(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef Yuanshen)
+  extreme="$1"
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice' /proc/$pid/task/$tid/comm" != "" ]]; then
+        taskset -p "70" "$tid" 2>&1 > /dev/null
+      fi
+    done
+
+    if [[ "$extreme" == "1" ]]; then
+      # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
+      # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
+      main_tid=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1 | cut -f1 -d ' ')
+      if [[ "$main_tid" != "" ]]; then
+        taskset -p "80" "$main_tid" 2>&1 > /dev/null
+      fi
+    fi
+  fi
+}
+
+yuan_shen_opt() {
+  sleep 10
+  yuan_shen_opt_run $1
+  sleep 30
+  yuan_shen_opt_run $1
+  sleep 120
+  yuan_shen_opt_run $1
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -384,6 +416,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 1478400 1766400 1075200 2265600
           set_hispeed_freq 1708800 1766400 2073600
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -392,6 +425,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
           set_hispeed_freq 1708800 1056000 1075200
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -399,10 +433,12 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
           set_hispeed_freq 1708800 1766400 1747200
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 1 &
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 1
           stune_top_app 1 100
           sched_limit 5000 0 10000 0 5000 0
+          yuan_shen_opt 1 &
           # sched_config "40 60" "50 75" "120" "150"
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'
