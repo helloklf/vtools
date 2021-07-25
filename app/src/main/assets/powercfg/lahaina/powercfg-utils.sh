@@ -379,7 +379,6 @@ set_task_affinity() {
 }
 
 yuan_shen_opt_run() {
-  sleep 20
   # top -H -p $(pgrep -ef Yuanshen)
   pid=$(pgrep -ef Yuanshen)
   extreme="$1"
@@ -393,8 +392,9 @@ yuan_shen_opt_run() {
     if [[ "$extreme" == "1" ]]; then
       # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
       # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
-      main_tid=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1 | cut -f1 -d ' ')
-      if [[ "$main_tid" != "" ]]; then
+      main_thread=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1)
+      if [[ "$main_thread" != "" ]]; then
+        main_tid=$(echo $main_thread | cut -f1 -d ' ')
         taskset -p "80" "$main_tid" 2>&1 > /dev/null
       fi
     fi
