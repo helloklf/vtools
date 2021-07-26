@@ -31,9 +31,11 @@ open class ModeSwitcher {
         const val PROVIDER_OUTSIDE = "PROVIDER_OUTSIDE"
         const val PROVIDER_NONE = "PROVIDER_NONE"
 
+        private var inited = false
         // 最后使用的配置提供者
         var lastInitProvider = PROVIDER_NONE
-        private var inited = false
+        // 配置提供文件
+        private var configProvider: String = ""
 
         fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
@@ -165,8 +167,6 @@ open class ModeSwitcher {
     private fun keepShellExec(cmd: String) {
         KeepShellPublic.doCmdSync(cmd)
     }
-
-    private var configProvider: String = ""
 
     // init
     // TODO:看什么时候清空缓存
