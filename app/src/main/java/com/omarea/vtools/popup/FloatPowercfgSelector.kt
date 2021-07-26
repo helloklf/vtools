@@ -28,7 +28,7 @@ import com.omarea.vtools.R
 class FloatPowercfgSelector(context: Context) {
     private val mContext: Context = context.applicationContext
     private var mView: View? = null
-    private var modeList = ModeSwitcher()
+    private var modeSwitch = ModeSwitcher()
 
     /**
      * 显示弹出框
@@ -119,8 +119,8 @@ class FloatPowercfgSelector(context: Context) {
         val serviceRunning = AccessibleServiceHelper().serviceRunning(context)
         var dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE)
-        var selectedMode = (if (dynamic) powerCfgSPF.getString(packageName, defaultMode) else modeList.getCurrentPowerMode())!!
-        val modeConfigCompleted = ModeSwitcher().modeConfigCompleted()
+        var selectedMode = (if (dynamic) powerCfgSPF.getString(packageName, defaultMode) else modeSwitch.getCurrentPowerMode())!!
+        val modeConfigCompleted = modeSwitch.modeConfigCompleted()
 
         try {
             val pm = context.packageManager
@@ -153,7 +153,7 @@ class FloatPowercfgSelector(context: Context) {
 
         val switchMode = Runnable {
             updateUI.run()
-            modeList.executePowercfgMode(selectedMode, packageName)
+            modeSwitch.executePowercfgMode(selectedMode, packageName)
             if (dynamic) {
                 if (!packageName.equals(context.packageName)) {
                     if (selectedMode == defaultMode) {
@@ -185,7 +185,7 @@ class FloatPowercfgSelector(context: Context) {
                         switchMode.run()
                     }
                 } else {
-                    selectedMode = modeList.getCurrentPowerMode()
+                    selectedMode = modeSwitch.getCurrentPowerMode()
                     updateUI.run()
                 }
             }

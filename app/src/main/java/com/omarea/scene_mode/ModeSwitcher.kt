@@ -17,7 +17,6 @@ import com.omarea.vtools.R
  */
 
 open class ModeSwitcher {
-    private var inited = false
 
     companion object {
         const val SOURCE_UNKNOWN = "UNKNOWN"
@@ -34,6 +33,7 @@ open class ModeSwitcher {
 
         // 最后使用的配置提供者
         var lastInitProvider = PROVIDER_NONE
+        private var inited = false
 
         fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
