@@ -372,7 +372,7 @@ yuan_shen_opt_run() {
   extreme="$1"
   if [[ "$pid" != "" ]]; then
     for tid in $(ls "/proc/$pid/task/"); do
-      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice' /proc/$pid/task/$tid/comm" != "" ]]; then
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then
         taskset -p "70" "$tid" 2>&1 > /dev/null
       fi
     done
