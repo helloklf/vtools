@@ -153,6 +153,7 @@ reset_basic_governor() {
   # echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
   echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+  echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/def_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
