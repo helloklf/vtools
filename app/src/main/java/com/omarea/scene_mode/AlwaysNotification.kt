@@ -96,6 +96,11 @@ internal class AlwaysNotification(
                 GlobalStatus.batteryStatus = batteryStatus;
             }
         }
+        // 更新电池温度
+        val temperature = batteryUtils.getBatteryTemperature().temperature
+        if (temperature > 10 && temperature < 100) {
+            GlobalStatus.batteryTemperature = temperature
+        }
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {

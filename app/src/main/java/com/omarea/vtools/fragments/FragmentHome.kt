@@ -278,6 +278,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         // 电量
         val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        // 更新电池温度
+        val temperature = batteryUtils.getBatteryTemperature().temperature
+        if (temperature > 10 && temperature < 100) {
+            GlobalStatus.batteryTemperature = temperature
+        }
 
         updateRamInfo()
         myHandler.post {
