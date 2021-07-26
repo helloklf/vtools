@@ -156,51 +156,42 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
-devfreq_backup () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-  if [[ ! -f $devfreq_backup ]] || [[ "$backup_state" != "true" ]]; then
-    echo '' > $devfreq_backup
-    local dir=/sys/class/devfreq
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        governor=`cat $dir/$file/governor`
-        echo "$file#$governor" >> $devfreq_backup
-      fi
-    done
-    setprop vtools.dev_freq_backup true
-  fi
-}
-
 devfreq_performance () {
-  devfreq_backup
-
-  local dir=/sys/class/devfreq
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        # echo $dir/$file/governor
-        echo performance > $dir/$file/governor
-      fi
-    done
-  fi
+  bw_max_always
 }
 
 devfreq_restore () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
+  bw_min
+}
 
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    local dir=/sys/class/devfreq
-    while read line; do
-      if [[ "$line" != "" ]]; then
-        echo ${line#*#} > $dir/${line%#*}/governor
-      fi
-    done < $devfreq_backup
-  fi
+bw_min() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+}
+
+bw_max() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+}
+
+bw_max_always() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
 }
 
 set_value() {
@@ -379,6 +370,40 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+yuan_shen_opt_run() {
+  # top -H -p $(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
+  extreme="$1"
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then
+        taskset -p "70" "$tid" 2>&1 > /dev/null
+      fi
+    done
+
+    if [[ "$extreme" == "1" ]]; then
+      # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
+      # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
+      main_thread=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1)
+      if [[ "$main_thread" != "" ]]; then
+        main_tid=$(echo $main_thread | cut -f1 -d ' ')
+        taskset -p "80" "$main_tid" 2>&1 > /dev/null
+      fi
+    fi
+  fi
+}
+
+yuan_shen_opt() {
+  sleep 10
+  yuan_shen_opt_run $1
+  sleep 30
+  yuan_shen_opt_run $1
+  sleep 120
+  yuan_shen_opt_run $1
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -393,6 +418,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 1478400 1766400 1075200 2265600
           set_hispeed_freq 1708800 1766400 2073600
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -401,6 +427,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
           set_hispeed_freq 1708800 1056000 1075200
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -408,10 +435,12 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
           set_hispeed_freq 1708800 1766400 1747200
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 1 &
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 1
           stune_top_app 1 100
           sched_limit 5000 0 10000 0 5000 0
+          yuan_shen_opt 1 &
           # sched_config "40 60" "50 75" "120" "150"
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'

@@ -10,7 +10,7 @@ init () {
     sh /data/powercfg-base.sh
   fi
 }
-if [[ "$action" = "init" ]]; then
+if [[ "$action" == "init" ]]; then
   init
   exit 0
 fi

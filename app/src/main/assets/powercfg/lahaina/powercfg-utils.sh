@@ -155,57 +155,6 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
-devfreq_backup () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-  if [[ ! -f $devfreq_backup ]] || [[ "$backup_state" != "true" ]]; then
-    echo '' > $devfreq_backup
-    local dir=/sys/class/devfreq
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        governor=`cat $dir/$file/governor`
-        echo "$file#$governor" >> $devfreq_backup
-      fi
-    done
-    setprop vtools.dev_freq_backup true
-  fi
-}
-
-devfreq_performance () {
-  devfreq_backup
-
-  local dir=/sys/class/devfreq
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    for file in `ls $dir | grep -v 'kgsl-3d0'`; do
-      if [ -f $dir/$file/governor ]; then
-        # echo $dir/$file/governor
-        echo performance > $dir/$file/governor
-      fi
-    done
-  fi
-
-  bw_max_always
-}
-
-devfreq_restore () {
-  local devfreq_backup=/cache/devfreq_backup.prop
-  local backup_state=`getprop vtools.dev_freq_backup`
-
-  if [[ -f "$devfreq_backup" ]] && [[ "$backup_state" == "true" ]]; then
-    local dir=/sys/class/devfreq
-    while read line; do
-      if [[ "$line" != "" ]]; then
-        echo ${line#*#} > $dir/${line%#*}/governor
-      fi
-    done < $devfreq_backup
-  fi
-
-  bw_min
-}
-
 bw_down() {
   local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
   local down1="$1"
@@ -422,11 +371,47 @@ gpu_pl_down() {
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1
-  mask=`echo "obase=16;$((num=2#$2))" | bc`
-  for tid in $(ls "/proc/$pid/task/"); do
-    taskset -p "$mask" "$tid" 1>/dev/null
-  done
-  taskset -p "$mask" "$pid" 1>/dev/null
+  if [[ "$pid" != "" ]]; then
+    mask=`echo "obase=16;$((num=2#$2))" | bc`
+    for tid in $(ls "/proc/$pid/task/"); do
+      taskset -p "$mask" "$tid" 1>/dev/null
+    done
+    taskset -p "$mask" "$pid" 1>/dev/null
+  fi
+}
+
+yuan_shen_opt_run() {
+  # top -H -p $(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
+  extreme="$1"
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then
+        taskset -p "70" "$tid" 2>&1 > /dev/null
+      fi
+    done
+
+    if [[ "$extreme" == "1" ]]; then
+      # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
+      # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
+      main_thread=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1)
+      if [[ "$main_thread" != "" ]]; then
+        main_tid=$(echo $main_thread | cut -f1 -d ' ')
+        taskset -p "80" "$main_tid" 2>&1 > /dev/null
+      fi
+    fi
+  fi
+}
+
+yuan_shen_opt() {
+  sleep 10
+  yuan_shen_opt_run $1
+  sleep 30
+  yuan_shen_opt_run $1
+  sleep 120
+  yuan_shen_opt_run $1
 }
 
 adjustment_by_top_app() {
@@ -448,6 +433,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
+          yuan_shen_opt 0 &
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
@@ -460,8 +446,9 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
+          yuan_shen_opt 0 &
         elif [[ "$action" = "performance" ]]; then
-          # devfreq_performance
+          # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
             bw_max
@@ -470,8 +457,9 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
+          yuan_shen_opt 1 &
         elif [[ "$action" = "fast" ]]; then
-          devfreq_performance
+          bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 45 60 54 70 59 72
           fi
@@ -479,6 +467,7 @@ adjustment_by_top_app() {
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
+          yuan_shen_opt 1 &
         fi
         cpuset '0-1' '0-1' '0-3' '0-7'
     ;;

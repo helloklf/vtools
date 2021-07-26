@@ -10,25 +10,21 @@ fi
 source "$cfg_dir/powercfg-utils.sh"
 
 init () {
+  echo '[Scene PerfConfig Init] ...'
   if [[ -f "$cfg_dir/powercfg-base.sh" ]]; then
     source "$cfg_dir/powercfg-base.sh"
   elif [[ -f '/data/powercfg-base.sh' ]]; then
     source /data/powercfg-base.sh
   fi
+  echo '[Scene PerfConfig Init] √'
 }
 
-if [[ "$action" = "init" ]]; then
+if [[ "$action" == "init" ]]; then
   init
   exit 0
 fi
 
-if [[ "$action" == "fast" ]]; then
-  devfreq_performance
-else
-  devfreq_restore
-fi
 reset_basic_governor
-
 
 if [[ "$action" = "powersave" ]]; then
   # ctl_on cpu4
@@ -44,6 +40,8 @@ if [[ "$action" = "powersave" ]]; then
   cpuset '0-2' '0-3' '0-3' '0-7'
   stune_top_app 0 0
   cpuctl top-app 0 0 0 max
+  bw_min
+  bw_down 3 3
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -61,6 +59,8 @@ elif [[ "$action" = "balance" ]]; then
   stune_top_app 0 0
   # cpuctl top-app 0 1 0.1 max
   cpuctl top-app 0 1 0 max
+  bw_min
+  bw_down 2 2
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -75,6 +75,8 @@ elif [[ "$action" = "performance" ]]; then
   cpuset '0-1' '0-3' '0-6' '0-7'
   stune_top_app 0 0
   cpuctl top-app 0 1 0.25 max
+  bw_min
+  bw_max
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -89,6 +91,7 @@ elif [[ "$action" = "fast" ]]; then
   cpuset '0' '0-3' '0-6' '0-7'
   stune_top_app 1 0
   cpuctl top-app 0 1 max max
+  bw_max_always
 
 
 fi

@@ -366,6 +366,40 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+yuan_shen_opt_run() {
+  # top -H -p $(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
+  extreme="$1"
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then
+        taskset -p "70" "$tid" 2>&1 > /dev/null
+      fi
+    done
+
+    if [[ "$extreme" == "1" ]]; then
+      # 查找一个名为UnityMain的线程(只取CPU负载最高的那一个)
+      # top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1
+      main_thread=$(top -H -p $pid -n 1 -m 10 -q -b | grep UnityMain -m 1)
+      if [[ "$main_thread" != "" ]]; then
+        main_tid=$(echo $main_thread | cut -f1 -d ' ')
+        taskset -p "80" "$main_tid" 2>&1 > /dev/null
+      fi
+    fi
+  fi
+}
+
+yuan_shen_opt() {
+  sleep 10
+  yuan_shen_opt_run $1
+  sleep 30
+  yuan_shen_opt_run $1
+  sleep 120
+  yuan_shen_opt_run $1
+}
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -380,6 +414,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1785600 1497600 1804800 1056000 2227200
           set_hispeed_freq 1708800 1708800 2016000
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -388,6 +423,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1785600 1056000 2016000 1056000 2419200
           set_hispeed_freq 1708800 1056000 1056000
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 0 &
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
@@ -395,11 +431,13 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1478400 1056000 2419200 1056000 2841600
           set_hispeed_freq 1708800 1708800 1708800
           sched_limit 5000 0 5000 0 5000 0
+          yuan_shen_opt 1 &
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 1
           stune_top_app 1 100
           sched_limit 5000 0 10000 0 5000 0
           # sched_config "40 60" "50 75" "120" "150"
+          yuan_shen_opt 1 &
         fi
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
