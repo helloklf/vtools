@@ -114,9 +114,9 @@ class BootService : IntentService("vtools-boot") {
         if (!globalPowercfg.isNullOrEmpty()) {
             updateNotification(getString(R.string.boot_use_powercfg))
 
-            val modeList = ModeSwitcher()
-            if (modeList.modeConfigCompleted()) {
-                modeList.executePowercfgMode(globalPowercfg, context.packageName)
+            val modeSwitcher = ModeSwitcher()
+            if (modeSwitcher.modeConfigCompleted()) {
+                modeSwitcher.executePowercfgMode(globalPowercfg, context.packageName)
             }
         }
 

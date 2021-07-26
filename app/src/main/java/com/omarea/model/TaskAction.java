@@ -7,8 +7,4 @@ public enum TaskAction {
     ZEN_MODE_ON,        // 勿扰模式开
     ZEN_MODE_OFF,       // 勿扰模式关
     POWER_OFF,          // 关机手机
-    MODE_POWERSAVE,     // 省电模式
-    MODE_BALANCE,      // 均衡模式
-    MODE_PERFORMANCE,  // 性能模式
-    MODE_FAST          // 极速模式
 }

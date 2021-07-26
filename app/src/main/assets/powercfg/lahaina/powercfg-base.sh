@@ -90,11 +90,16 @@ set_cpuset(){
   done
 }
 
-set_cpuset surfaceflinger top-app
-set_cpuset system_server top-app
-set_cpuset vendor.qti.hardware.display.composer-service top-app
-set_cpuset mediaserver background
-set_cpuset media.hwcodec background
+process_opt() {
+  set_cpuset surfaceflinger top-app
+  set_cpuset system_server top-app
+  set_cpuset vendor.qti.hardware.display.composer-service top-app
+  set_cpuset mediaserver background
+  set_cpuset media.hwcodec background
+
+  set_task_affinity `pgrep com.miui.home` 11111111
+  set_task_affinity `pgrep com.miui.home` 11110000
+}
 
 cpuctl () {
  echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
@@ -111,5 +116,4 @@ cpuctl background 0 0 0 0
 echo 0 > /dev/stune/nnapi-hal/schedtune.boost
 echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
 
-set_task_affinity `pgrep com.miui.home` 11111111
-set_task_affinity `pgrep com.miui.home` 11110000
+process_opt &

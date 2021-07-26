@@ -240,58 +240,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/ListCardItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/task_mode_switch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingStart="7dp"
-                            android:text="性能调节"
-                            android:textColor="?android:textColorPrimary" />
-
-                        <RadioGroup
-                            android:layout_width="220dp"
-                            android:layout_height="wrap_content">
-
-                            <RadioButton
-                                android:id="@+id/task_mode_powersave"
-                                android:layout_width="110dp"
-                                android:layout_height="wrap_content"
-                                android:text="省电模式" />
-
-                            <RadioButton
-                                android:id="@+id/task_mode_balance"
-                                android:layout_width="110dp"
-                                android:layout_height="wrap_content"
-                                android:text="均衡模式" />
-
-                            <RadioButton
-                                android:id="@+id/task_mode_performance"
-                                android:layout_width="110dp"
-                                android:layout_height="wrap_content"
-                                android:text="性能模式" />
-
-                            <RadioButton
-                                android:id="@+id/task_mode_fast"
-                                android:layout_width="110dp"
-                                android:layout_height="wrap_content"
-                                android:text="极速模式" />
-                        </RadioGroup>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
                     style="@style/ListCardItemLast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

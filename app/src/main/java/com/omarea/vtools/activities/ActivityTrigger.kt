@@ -17,7 +17,6 @@ import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.model.CustomTaskAction
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.TriggerManager
 import com.omarea.store.TriggerStorage
 import com.omarea.vtools.R
@@ -159,19 +158,12 @@ class ActivityTrigger : ActivityBase() {
                 task_standby_off.isChecked = contains(TaskAction.STANDBY_MODE_OFF)
                 task_zen_mode_on.isChecked = contains(TaskAction.ZEN_MODE_ON)
                 task_zen_mode_off.isChecked = contains(TaskAction.ZEN_MODE_OFF)
-
-                task_mode_powersave.isChecked = contains(TaskAction.MODE_POWERSAVE)
-                task_mode_balance.isChecked = contains(TaskAction.MODE_BALANCE)
-                task_mode_performance.isChecked = contains(TaskAction.MODE_PERFORMANCE)
-                task_mode_fast.isChecked = contains(TaskAction.MODE_FAST)
             }
 
             customTaskActions?.run {
                 val str = this.map { it.Name }.toTypedArray().joinToString("\n\n").trim()
                 task_custom_actions.text = str
             }
-
-            task_mode_switch.visibility = if (ModeSwitcher().modeConfigCompleted()) View.VISIBLE else View.GONE
         }
     }
 
@@ -229,11 +221,6 @@ class ActivityTrigger : ActivityBase() {
             task_standby_off.isChecked && add(TaskAction.STANDBY_MODE_OFF)
             task_zen_mode_on.isChecked && add(TaskAction.ZEN_MODE_ON)
             task_zen_mode_off.isChecked && add(TaskAction.ZEN_MODE_OFF)
-
-            task_mode_powersave.isChecked && add(TaskAction.MODE_POWERSAVE)
-            task_mode_balance.isChecked && add(TaskAction.MODE_BALANCE)
-            task_mode_performance.isChecked && add(TaskAction.MODE_PERFORMANCE)
-            task_mode_fast.isChecked && add(TaskAction.MODE_FAST)
         }
 
         triggerInfo.events = ArrayList<EventType>().apply {

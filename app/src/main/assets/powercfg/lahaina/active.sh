@@ -17,7 +17,7 @@ init () {
   fi
 }
 
-if [[ "$action" = "init" ]]; then
+if [[ "$action" == "init" ]]; then
   init
   exit 0
 fi

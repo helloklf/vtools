@@ -38,6 +38,8 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class FragmentHome : androidx.fragment.app.Fragment() {
+    private val modeSwitcher = ModeSwitcher()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -172,7 +174,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (CpuConfigInstaller().dynamicSupport(Scene.context) || ModeSwitcher().modeConfigCompleted())) {
+        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (CpuConfigInstaller().dynamicSupport(Scene.context) || modeSwitcher.modeConfigCompleted())) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -352,22 +354,22 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     }
 
     private fun setModeState() {
-        btn_powersave.setTextColor(0x66ffffff)
-        btn_defaultmode.setTextColor(0x66ffffff)
-        btn_gamemode.setTextColor(0x66ffffff)
-        btn_fastmode.setTextColor(0x66ffffff)
-        when (ModeSwitcher().getCurrentPowerMode()) {
+        btn_powersave.alpha = 0.4f
+        btn_defaultmode.alpha = 0.4f
+        btn_gamemode.alpha = 0.4f
+        btn_fastmode.alpha = 0.4f
+        when (modeSwitcher.getCurrentPowerMode()) {
             ModeSwitcher.BALANCE -> {
-                btn_defaultmode.setTextColor(Color.WHITE)
+                btn_defaultmode.alpha = 1f
             }
             ModeSwitcher.PERFORMANCE -> {
-                btn_gamemode.setTextColor(Color.WHITE)
+                btn_gamemode.alpha = 1f
             }
             ModeSwitcher.POWERSAVE -> {
-                btn_powersave.setTextColor(Color.WHITE)
+                btn_powersave.alpha = 1f
             }
             ModeSwitcher.FAST -> {
-                btn_fastmode.setTextColor(Color.WHITE)
+                btn_fastmode.alpha = 1f
             }
         }
     }
@@ -398,7 +400,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     }
 
     private fun installConfig(toMode: String) {
-        val modeSwitcher = ModeSwitcher()
         val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (!dynamic && modeSwitcher.getCurrentPowerMode() == toMode) {
             modeSwitcher.setCurrent("", "")

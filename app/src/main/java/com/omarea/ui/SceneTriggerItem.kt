@@ -111,18 +111,6 @@ class SceneTriggerItem : LinearLayout {
                     TaskAction.ZEN_MODE_ON -> {
                         buffer.append("勿扰模式 √")
                     }
-                    TaskAction.MODE_POWERSAVE -> {
-                        buffer.append("省电模式 ○")
-                    }
-                    TaskAction.MODE_BALANCE -> {
-                        buffer.append("均衡模式 ○")
-                    }
-                    TaskAction.MODE_PERFORMANCE -> {
-                        buffer.append("性能模式 ○")
-                    }
-                    TaskAction.MODE_FAST -> {
-                        buffer.append("极速模式 ○")
-                    }
                 }
                 buffer.append("     ")
             }

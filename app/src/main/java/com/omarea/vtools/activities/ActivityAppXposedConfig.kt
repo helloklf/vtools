@@ -15,7 +15,6 @@ import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.AppInfo
 import com.omarea.model.SceneConfigInfo
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.store.XposedExtension
 import com.omarea.ui.XposedAppsAdapter
@@ -45,10 +44,7 @@ class ActivityAppXposedConfig : ActivityBase() {
         this.onViewCreated()
     }
 
-    private lateinit var modeSwitcher: ModeSwitcher
-
     private fun onViewCreated() {
-        modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(this)
         applistHelper = AppListHelper(this)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

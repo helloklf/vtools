@@ -10,7 +10,7 @@ init () {
     sh /data/powercfg-base.sh
   fi
 }
-if [[ "$action" = "init" ]]; then
+if [[ "$action" == "init" ]]; then
   init
   exit 0
 fi
@@ -265,3 +265,123 @@ elif [ "$action" = "fast" ]; then
   echo 0-5 > /dev/cpuset/foreground/cpus
 
 fi
+
+
+yuan_shen_opt_run() {
+  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+    return
+  fi
+
+  # top -H -p $(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+         "UnityMain")
+           # set cpu6-7
+           taskset -p "C0" "$tid" 2>&1 > /dev/null
+         ;;
+         "UnityGfxDevice"*)
+           # set cpu6-7
+           taskset -p "C0" "$tid" 2>&1 > /dev/null
+         ;;
+         "UnityMultiRende"*)
+           # set cpu6
+           taskset -p "40" "$tid" 2>&1 > /dev/null
+         ;;
+         "NativeThread"*|"UnityChoreograp"*)
+           # set cpu0~6
+           taskset -p "7F" "$tid" 2>&1 > /dev/null
+         ;;
+         *)
+           # set cpu0-6
+           taskset -p "3F" "$tid" 2>&1 > /dev/null
+         ;;
+        esac
+      fi
+    done
+  fi
+}
+
+watch_app() {
+  local interval="$1"
+  local on_tick="$2"
+  local on_change="$3"
+  local app=$(getprop vtools.powercfg_app)
+
+  if [[ "$on_tick" == "" ]]; then
+    return
+  fi
+
+  local prop='vtools.perf.watch'
+
+  local current_watch=$(getprop $prop)
+  if [[ "$current_watch" != "" ]]; then
+    kill -9 $current_watch 2>/dev/null
+    setprop vtools.perf.watch ""
+  fi
+
+  if [[ "$app" == "" ]]; then
+    return
+  fi
+
+  setprop vtools.perf.watch "$$"
+  while true
+  do
+    sleep $interval
+    current=$(getprop vtools.powercfg_app)
+    if [[ "$current" == "$app" ]]; then
+      $on_tick $current
+    else
+      setprop vtools.perf.watch ""
+      if [[ "$on_change" ]]; then
+        $on_change $current
+      fi
+      return
+    fi
+  done
+}
+
+watch_app_tick() {
+  local app="$1"
+  echo '>> watch_app_tick' $app
+}
+
+watch_app_change() {
+  local app="$1"
+  echo '>> watch_app_change' $app
+}
+
+yuan_shen_opt() {
+  # watch_app 10 watch_app_tick watch_app_change
+  sleep 30
+  yuan_shen_opt_run
+
+  watch_app 120 yuan_shen_opt_run
+}
+
+adjustment_by_top_app()
+{
+  sleep 2
+  case $(getprop vtools.powercfg_app) in
+    # YuanShen
+    "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
+      if [[ "$action" = "powersave" ]]; then
+        yuan_shen_opt &
+      elif [[ "$action" = "balance" ]]; then
+        yuan_shen_opt &
+      elif [[ "$action" = "performance" ]]; then
+        yuan_shen_opt &
+      elif [[ "$action" = "fast" ]]; then
+        yuan_shen_opt &
+      fi
+      cpuset '0' '0' '0-1' '0-7'
+    ;;
+  esac
+}
+adjustment_by_top_app &

@@ -371,17 +371,21 @@ gpu_pl_down() {
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1
-  mask=`echo "obase=16;$((num=2#$2))" | bc`
-  for tid in $(ls "/proc/$pid/task/"); do
-    taskset -p "$mask" "$tid" 1>/dev/null
-  done
-  taskset -p "$mask" "$pid" 1>/dev/null
+  if [[ "$pid" != "" ]]; then
+    mask=`echo "obase=16;$((num=2#$2))" | bc`
+    for tid in $(ls "/proc/$pid/task/"); do
+      taskset -p "$mask" "$tid" 1>/dev/null
+    done
+    taskset -p "$mask" "$pid" 1>/dev/null
+  fi
 }
 
 yuan_shen_opt_run() {
   # top -H -p $(pgrep -ef Yuanshen)
-  pid=$(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
   extreme="$1"
+
   if [[ "$pid" != "" ]]; then
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then

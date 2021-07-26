@@ -368,8 +368,10 @@ set_task_affinity() {
 
 yuan_shen_opt_run() {
   # top -H -p $(pgrep -ef Yuanshen)
-  pid=$(pgrep -ef Yuanshen)
+  # pid=$(pgrep -ef Yuanshen)
+  pid=$(pgrep -ef miHoYo)
   extreme="$1"
+
   if [[ "$pid" != "" ]]; then
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]] && [[ "grep -E 'UnityMain|UnityGfxDevice|UnityMultiRende' /proc/$pid/task/$tid/comm" != "" ]]; then

@@ -518,7 +518,7 @@
             android:layout_weight="1"
             android:background="@drawable/powercfg_powersave"
             android:text="@string/powersave_short"
-            android:textColor="#66ffffff"
+            android:textColor="#ffffffff"
             android:textStyle="bold" />
 
         <Button
@@ -529,7 +529,7 @@
             android:layout_weight="1"
             android:background="@drawable/powercfg_balance"
             android:text="@string/balance_short"
-            android:textColor="#66ffffff"
+            android:textColor="#ffffffff"
             android:textStyle="bold" />
 
         <Button
@@ -540,7 +540,7 @@
             android:layout_weight="1"
             android:background="@drawable/powercfg_performance"
             android:text="@string/performance_short"
-            android:textColor="#66ffffff"
+            android:textColor="#ffffffff"
             android:textStyle="bold" />
 
         <Button
@@ -551,7 +551,7 @@
             android:layout_weight="1"
             android:background="@drawable/powercfg_fast"
             android:text="@string/fast_short"
-            android:textColor="#66ffffff"
+            android:textColor="#ffffffff"
             android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

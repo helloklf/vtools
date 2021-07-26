@@ -99,11 +99,15 @@ set_cpuset(){
   done
 }
 
-set_cpuset surfaceflinger top-app
-set_cpuset system_server top-app
-set_cpuset vendor.qti.hardware.display.composer-service top-app
-set_cpuset mediaserver background
-set_cpuset media.hwcodec background
+process_opt(){
+  set_cpuset surfaceflinger top-app
+  set_cpuset system_server top-app
+  set_cpuset vendor.qti.hardware.display.composer-service top-app
+  set_cpuset mediaserver background
+  set_cpuset media.hwcodec background
 
-set_task_affinity `pgrep com.miui.home` 11111111
-set_task_affinity `pgrep com.miui.home` 11110000
+  set_task_affinity `pgrep com.miui.home` 11111111
+  set_task_affinity `pgrep com.miui.home` 11110000
+}
+
+process_opt &

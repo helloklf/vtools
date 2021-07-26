@@ -10,20 +10,21 @@ fi
 source "$cfg_dir/powercfg-utils.sh"
 
 init () {
+  echo '[Scene PerfConfig Init] ...'
   if [[ -f "$cfg_dir/powercfg-base.sh" ]]; then
     source "$cfg_dir/powercfg-base.sh"
   elif [[ -f '/data/powercfg-base.sh' ]]; then
     source /data/powercfg-base.sh
   fi
+  echo '[Scene PerfConfig Init] √'
 }
 
-if [[ "$action" = "init" ]]; then
+if [[ "$action" == "init" ]]; then
   init
   exit 0
 fi
 
 reset_basic_governor
-
 
 if [[ "$action" = "powersave" ]]; then
   # ctl_on cpu4

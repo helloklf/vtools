@@ -28,22 +28,24 @@ class ScreenOffCleanup(private val context: Context) : IEventReceiver {
                 FloatFpsWatch(context).hidePopupWindow()
                 FloatMonitor(context).hidePopupWindow()
             } else if (eventType == EventType.SCREEN_ON) {
-                if (status[0]) {
-                    FloatMonitorMini(context).showPopupWindow()
-                    status[0] = false
-                }
-                if (status[1]) {
-                    FloatTaskManager(context).showPopupWindow()
-                    status[1] = false
-                }
-                if (status[2]) {
-                    FloatFpsWatch(context).showPopupWindow()
-                    status[2] = false
-                }
-                if (status[3]) {
-                    FloatMonitor(context).showPopupWindow()
-                    status[3] = false
-                }
+                Scene.postDelayed({
+                    if (status[0]) {
+                        FloatMonitorMini(context).showPopupWindow()
+                        status[0] = false
+                    }
+                    if (status[1]) {
+                        FloatTaskManager(context).showPopupWindow()
+                        status[1] = false
+                    }
+                    if (status[2]) {
+                        FloatFpsWatch(context).showPopupWindow()
+                        status[2] = false
+                    }
+                    if (status[3]) {
+                        FloatMonitor(context).showPopupWindow()
+                        status[3] = false
+                    }
+                }, 2000)
             }
         }
     }

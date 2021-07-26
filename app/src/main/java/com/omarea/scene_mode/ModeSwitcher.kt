@@ -15,7 +15,6 @@ import com.omarea.vtools.R
  */
 
 open class ModeSwitcher {
-    private var inited = false
 
     companion object {
         const val SOURCE_UNKNOWN = "UNKNOWN"
@@ -32,8 +31,11 @@ open class ModeSwitcher {
         const val PROVIDER_OUTSIDE = "PROVIDER_OUTSIDE"
         const val PROVIDER_NONE = "PROVIDER_NONE"
 
+        private var inited = false
         // 最后使用的配置提供者
         var lastInitProvider = PROVIDER_NONE
+        // 配置提供文件
+        private var configProvider: String = ""
 
         fun getCurrentSource(): String {
             if (CpuConfigInstaller().outsideConfigInstalled()) {
@@ -164,8 +166,6 @@ open class ModeSwitcher {
         KeepShellPublic.doCmdSync(cmd)
     }
 
-    private var configProvider: String = ""
-
     // init
     // TODO:看什么时候清空缓存
     internal fun initPowerCfg(): ModeSwitcher {
@@ -175,7 +175,7 @@ open class ModeSwitcher {
             installer.configCodeVerify()
             lastInitProvider = PROVIDER_OUTSIDE
         } else {
-            if (!(innerConfigUpdated)) {
+            if (!innerConfigUpdated) {
                 installer.applyConfigNewVersion(Scene.context)
                 innerConfigUpdated = true
             }
@@ -184,7 +184,7 @@ open class ModeSwitcher {
         }
 
         if (configProvider.isNotEmpty()) {
-            keepShellExec("sh $configProvider $INIT")
+            keepShellExec("sh $configProvider $INIT > /dev/null 2>&1")
             setCurrentPowercfg("")
 
             inited = true
@@ -213,8 +213,9 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false) && Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-                        if (strictMode) {
+                        val dynamic = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        if (dynamic && strictMode) {
                             keepShellExec(
                                     "export top_app=$packageName\n" +
                                             "sh $configProvider '$mode' > /dev/null 2>&1"
@@ -236,15 +237,17 @@ open class ModeSwitcher {
                     }
 
                     if (configProvider.isNotEmpty()) {
-                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false) && Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-                        if (strictMode) {
+                        val dynamic = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+                        val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
+                        val time2 = System.currentTimeMillis()
+                        if (dynamic && strictMode) {
                             keepShellExec(
                                     "export top_app=$packageName\n" +
                                             "sh $configProvider '$mode' > /dev/null 2>&1"
                             )
                         } else {
                             keepShellExec(
-                                    "export top_app=\n" +
+                                    "export top_app=''\n" +
                                             "sh $configProvider '$mode' > /dev/null 2>&1"
                             )
                         }
