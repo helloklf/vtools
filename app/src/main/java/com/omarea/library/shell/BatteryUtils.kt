@@ -322,7 +322,7 @@ class BatteryUtils {
     }
 
     private var useMainConstant: Boolean? = false // null
-    fun getqcLimit(): String {
+    fun getQcLimit(): String {
         if (useMainConstant == null) {
             useMainConstant = RootFile.fileExists("/sys/class/power_supply/main/constant_charge_current_max")
         }
@@ -423,7 +423,7 @@ class BatteryUtils {
     /**
      * 获取电池温度
      */
-    @Deprecated("", ReplaceWith("GlobalStatus"), DeprecationLevel.ERROR)
+    // @Deprecated("", ReplaceWith("GlobalStatus"), DeprecationLevel.ERROR)
     public fun getBatteryTemperature(): BatteryStatus {
         val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")

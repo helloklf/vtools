@@ -14,6 +14,7 @@ import com.omarea.Scene
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
+import com.omarea.library.shell.BatteryUtils
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
@@ -40,6 +41,7 @@ internal class AlwaysNotification(
     private var batteryHistoryStore: BatteryHistoryStore? = null
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+    private val batteryUtils = BatteryUtils()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -88,7 +90,7 @@ internal class AlwaysNotification(
                 )
 
         // 电量
-        GlobalStatus.batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        GlobalStatus.batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // 状态
@@ -96,6 +98,12 @@ internal class AlwaysNotification(
             if (batteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN) {
                 GlobalStatus.batteryStatus = batteryStatus;
             }
+        }
+
+        // 更新电池温度
+        val temperature = batteryUtils.getBatteryTemperature().temperature
+        if (temperature > 10 && temperature < 100) {
+            GlobalStatus.batteryTemperature = temperature
         }
     }
 

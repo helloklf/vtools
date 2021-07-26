@@ -56,8 +56,6 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
                 }
             }
 
-            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
-
             if (action == Intent.ACTION_BATTERY_LOW) {
                 EventBus.publish(EventType.BATTERY_LOW)
             } else if (action == Intent.ACTION_BATTERY_CHANGED) {

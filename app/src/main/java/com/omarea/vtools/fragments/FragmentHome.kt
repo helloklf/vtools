@@ -18,10 +18,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.data.GlobalStatus
-import com.omarea.library.shell.CpuFrequencyUtils
-import com.omarea.library.shell.CpuLoadUtils
-import com.omarea.library.shell.GpuUtils
-import com.omarea.library.shell.SwapUtils
+import com.omarea.library.shell.*
 import com.omarea.model.CpuCoreInfo
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -52,6 +49,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler(Looper.getMainLooper())
     private var cpuLoadUtils = CpuLoadUtils()
+    private val batteryUtils = BatteryUtils()
 
     private suspend fun forceKSWAPD(mode: Int): String {
         return withContext(Dispatchers.Default) {
@@ -302,6 +300,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         // 电量
         val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        // 更新电池温度
+        val temperature = batteryUtils.getBatteryTemperature().temperature
+        if (temperature > 10 && temperature < 100) {
+            GlobalStatus.batteryTemperature = temperature
+        }
 
         updateRamInfo()
         myHandler.post {

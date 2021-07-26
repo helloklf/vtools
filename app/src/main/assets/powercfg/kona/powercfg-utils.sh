@@ -399,9 +399,11 @@ yuan_shen_opt_run() {
 yuan_shen_opt() {
   sleep 10
   yuan_shen_opt_run $1
+  sleep 60
+  yuan_shen_opt_run $1
   sleep 30
   yuan_shen_opt_run $1
-  sleep 120
+  sleep 60
   yuan_shen_opt_run $1
 }
 

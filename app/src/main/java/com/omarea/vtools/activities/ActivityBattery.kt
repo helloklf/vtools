@@ -18,6 +18,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
+import com.omarea.data.GlobalStatus
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.store.SpfConfig
@@ -62,8 +63,8 @@ class ActivityBattery : ActivityBase() {
 
         ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this)
         spf = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        qcSettingSuupport = batteryUnits.qcSettingSupport()
-        pdSettingSupport = batteryUnits.pdSupported()
+        qcSettingSuupport = batteryUtils.qcSettingSupport()
+        pdSettingSupport = batteryUtils.pdSupported()
 
         settings_qc.setOnClickListener {
             val checked = (it as CompoundButton).isChecked
@@ -99,7 +100,7 @@ class ActivityBattery : ActivityBase() {
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                batteryUnits.setChargeInputLimit(level, this)
+                batteryUtils.setChargeInputLimit(level, this)
             }
             notifyConfigChanged()
         }, spf, settings_qc_limit_desc))
@@ -111,7 +112,7 @@ class ActivityBattery : ActivityBase() {
             settings_qc_limit_current.visibility = View.GONE
         }
 
-        if (!batteryUnits.bpSettingSupport()) {
+        if (!batteryUtils.bpSettingSupport()) {
             settings_bp.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).apply()
 
@@ -124,20 +125,20 @@ class ActivityBattery : ActivityBase() {
             settings_pd_support.visibility = View.VISIBLE
             settings_pd.setOnClickListener {
                 val isChecked = (it as CompoundButton).isChecked
-                batteryUnits.setAllowed(isChecked)
+                batteryUtils.setAllowed(isChecked)
             }
-            settings_pd.isChecked = batteryUnits.pdAllowed()
-            settings_pd_state.text = if (batteryUnits.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
+            settings_pd.isChecked = batteryUtils.pdAllowed()
+            settings_pd_state.text = if (batteryUtils.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
         } else {
             settings_pd_support.visibility = View.GONE
         }
 
-        if (batteryUnits.stepChargeSupport()) {
+        if (batteryUtils.stepChargeSupport()) {
             settings_step_charge.visibility = View.VISIBLE
             settings_step_charge_enabled.setOnClickListener {
-                batteryUnits.setStepCharge((it as Checkable).isChecked)
+                batteryUtils.setStepCharge((it as Checkable).isChecked)
             }
-            settings_step_charge_enabled.isChecked = batteryUnits.getStepCharge()
+            settings_step_charge_enabled.isChecked = batteryUtils.getStepCharge()
         } else {
             settings_step_charge.visibility = View.GONE
         }
@@ -232,7 +233,7 @@ class ActivityBattery : ActivityBase() {
     private var kernelCapacity = -1f
     private var powerChonnected = false
     private var voltage: Double = 0.toDouble()
-    private var batteryUnits = BatteryUtils()
+    private var batteryUtils = BatteryUtils()
     private lateinit var spf: SharedPreferences
 
     @SuppressLint("ApplySharedPref", "SetTextI18n")
@@ -289,15 +290,20 @@ class ActivityBattery : ActivityBase() {
                 var pdAllowed = false
                 var pdActive = false
                 if (pdSettingSupport) {
-                    pdAllowed = batteryUnits.pdAllowed()
-                    pdActive = batteryUnits.pdActive()
+                    pdAllowed = batteryUtils.pdAllowed()
+                    pdActive = batteryUtils.pdActive()
                 }
                 if (qcSettingSuupport) {
-                    limit = batteryUnits.getqcLimit()
+                    limit = batteryUtils.getQcLimit()
                 }
-                batteryInfo = batteryUnits.batteryInfo
-                usbInfo = batteryUnits.usbInfo
-                kernelCapacity = batteryUnits.getKernelCapacity(level)
+                batteryInfo = batteryUtils.batteryInfo
+                usbInfo = batteryUtils.usbInfo
+                kernelCapacity = batteryUtils.getKernelCapacity(level)
+                // 更新电池温度
+                val temperature = batteryUtils.getBatteryTemperature().temperature
+                if (temperature > 10 && temperature < 100) {
+                    GlobalStatus.batteryTemperature = temperature
+                }
 
                 myHandler.post {
                     try {
@@ -344,10 +350,10 @@ class ActivityBattery : ActivityBase() {
         DialogNumberInput(this).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
             override var min = -1
             override var max = 100
-            override var default = batteryUnits.getCpacity()
+            override var default = batteryUtils.getCpacity()
 
             override fun onApply(value: Int) {
-                batteryUnits.setCapacity(value)
+                batteryUtils.setCapacity(value)
                 updateBatteryForgery()
             }
         })
@@ -357,18 +363,18 @@ class ActivityBattery : ActivityBase() {
         DialogNumberInput(this).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
             override var min = 1000
             override var max = 20000
-            override var default = batteryUnits.getChargeFull()
+            override var default = batteryUtils.getChargeFull()
 
             override fun onApply(value: Int) {
-                batteryUnits.setChargeFull(value)
+                batteryUtils.setChargeFull(value)
                 updateBatteryForgery()
             }
         })
     }
 
     private fun updateBatteryForgery() {
-        val cpacity = batteryUnits.getCpacity()
-        val chargeFull = batteryUnits.getChargeFull()
+        val cpacity = batteryUtils.getCpacity()
+        val chargeFull = batteryUtils.getChargeFull()
         if (cpacity > 0) {
             battery_forgery_ratio.text = cpacity.toString() + "%"
             battery_forgery_ratio.setOnClickListener {
