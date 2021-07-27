@@ -39,6 +39,7 @@ internal class AlwaysNotification(
     private var batteryHistoryStore: BatteryHistoryStore? = null
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+    private val batteryUtils = BatteryUtils()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
