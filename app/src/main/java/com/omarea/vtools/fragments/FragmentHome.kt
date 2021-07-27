@@ -278,11 +278,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         // 电量
         val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-        // 更新电池温度
-        val temperature = batteryUtils.getBatteryTemperature().temperature
-        if (temperature > 10 && temperature < 100) {
-            GlobalStatus.batteryTemperature = temperature
-        }
+        // 电池温度
+        val temperature = GlobalStatus.updateBatteryTemperature()
 
         updateRamInfo()
         myHandler.post {
@@ -294,7 +291,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     home_battery_now.text = "--"
                 }
                 home_battery_capacity.text = "$batteryCapacity%"
-                home_battery_temperature.text = "${GlobalStatus.batteryTemperature}°C"
+                home_battery_temperature.text = "${temperature}°C"
 
                 home_gpu_freq.text = gpuFreq
                 home_gpu_load.text = "负载：$gpuLoad%"

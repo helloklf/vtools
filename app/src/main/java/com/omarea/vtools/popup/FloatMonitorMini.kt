@@ -195,7 +195,7 @@ public class FloatMonitorMini(private val mContext: Context) {
             }
         }
         if (batState == null) {
-            batState = GlobalStatus.batteryTemperature.toString() + "°C"
+            batState = GlobalStatus.updateBatteryTemperature().toString() + "°C"
         }
 
         myHandler.post {

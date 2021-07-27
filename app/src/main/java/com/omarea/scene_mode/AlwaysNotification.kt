@@ -39,7 +39,6 @@ internal class AlwaysNotification(
     private var batteryHistoryStore: BatteryHistoryStore? = null
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-    private val batteryUtils = BatteryUtils()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -98,10 +97,7 @@ internal class AlwaysNotification(
             }
         }
         // 更新电池温度
-        val temperature = batteryUtils.getBatteryTemperature().temperature
-        if (temperature > 10 && temperature < 100) {
-            GlobalStatus.batteryTemperature = temperature
-        }
+        GlobalStatus.updateBatteryTemperature()
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
@@ -111,7 +107,7 @@ internal class AlwaysNotification(
             status.packageName = packageName
             status.mode = mode
             status.time = System.currentTimeMillis()
-            status.temperature = GlobalStatus.batteryTemperature
+            status.temperature = GlobalStatus.temperatureCurrent
             status.status = GlobalStatus.batteryStatus
             status.io = GlobalStatus.batteryCurrentNow.toInt()
 
@@ -134,7 +130,7 @@ internal class AlwaysNotification(
             updateBatteryStatus();
 
             batteryIO = "${GlobalStatus.batteryCurrentNow}mA"
-            batteryTemp = "${GlobalStatus.batteryTemperature}°C"
+            batteryTemp = "${GlobalStatus.temperatureCurrent}°C"
 
             if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
                 batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(GlobalStatus.batteryCapacity))
