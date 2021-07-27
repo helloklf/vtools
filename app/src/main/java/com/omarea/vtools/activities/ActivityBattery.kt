@@ -279,6 +279,7 @@ class ActivityBattery : ActivityBase() {
 
         val battrystatus = findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
+        temp = GlobalStatus.updateBatteryTemperature().toDouble()
 
         timer = Timer()
 
@@ -299,11 +300,6 @@ class ActivityBattery : ActivityBase() {
                 batteryInfo = batteryUtils.batteryInfo
                 usbInfo = batteryUtils.usbInfo
                 kernelCapacity = batteryUtils.getKernelCapacity(level)
-                // 更新电池温度
-                val temperature = batteryUtils.getBatteryTemperature().temperature
-                if (temperature > 10 && temperature < 100) {
-                    GlobalStatus.batteryTemperature = temperature
-                }
 
                 myHandler.post {
                     try {

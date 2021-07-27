@@ -341,6 +341,8 @@ class FloatMonitor(private val mContext: Context) {
             }
         }
 
+        val temperature = GlobalStatus.updateBatteryTemperature()
+
         myHandler.post {
             if (showOtherInfo) {
                 otherInfo?.setText(null)
@@ -356,9 +358,8 @@ class FloatMonitor(private val mContext: Context) {
                 gpuChart!!.setData(100f, (100f - gpuLoad))
             }
 
-            GlobalStatus.batteryCapacity
-            temperatureChart!!.setData(100f, 100f - GlobalStatus.batteryCapacity, GlobalStatus.batteryTemperature)
-            temperatureText!!.setText(GlobalStatus.batteryTemperature.toString() + "°C")
+            temperatureChart!!.setData(100f, 100f - GlobalStatus.batteryCapacity, temperature)
+            temperatureText!!.setText(temperature.toString() + "°C")
             batteryLevelText!!.setText(GlobalStatus.batteryCapacity.toString() + "%")
             chargerView!!.visibility = (if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
                 View.VISIBLE

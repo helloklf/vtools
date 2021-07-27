@@ -16,6 +16,7 @@ import com.omarea.data.customer.ScreenOffCleanup
 import com.omarea.data.publisher.BatteryState
 import com.omarea.data.publisher.ScreenState
 import com.omarea.permissions.Busybox
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerIEventMonitor
 import com.omarea.store.SpfConfig
@@ -39,6 +40,13 @@ class Scene : Application() {
                 config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
             }
             return config!!.getBoolean(key, defaultValue)
+        }
+
+        public fun setBoolean(key: String, value: Boolean) {
+            if (config == null) {
+                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            }
+            config!!.edit().putBoolean(key, value).apply()
         }
 
         public fun getString(key: String, defaultValue: String): String? {
@@ -104,6 +112,7 @@ class Scene : Application() {
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         CrashHandler().init(this)
+
         /*
         val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
@@ -143,5 +152,10 @@ class Scene : Application() {
 
         // 息屏自动关闭悬浮窗
         EventBus.subscibe(ScreenOffCleanup(context))
+
+        // 如果上次打开应用成功获得root，触发一下root权限申请
+        if (getBoolean("root", false)) {
+            CheckRootStatus.checkRootAsync()
+        }
     }
 }

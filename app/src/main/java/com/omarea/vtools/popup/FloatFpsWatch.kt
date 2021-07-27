@@ -159,7 +159,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             fpsWatchStore.addHistory(
                 sessionId,
                 fps,
-                GlobalStatus.batteryTemperature,
+                GlobalStatus.temperatureCurrent,
                 ModeSwitcher.DEFAULT
             )
         }

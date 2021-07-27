@@ -10,10 +10,14 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.PermissionChecker
+import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 /**
@@ -33,7 +37,8 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
         } else {
             var completed = false
             therad = Thread {
-                rootStatus = KeepShellPublic.checkRoot()
+                setRootStatus(KeepShellPublic.checkRoot())
+
                 if (completed) {
                     return@Thread
                 }
@@ -106,7 +111,15 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
 
     companion object {
         private var rootStatus = false
+
+        public fun checkRootAsync() {
+            GlobalScope.launch(Dispatchers.IO) {
+                setRootStatus(KeepShellPublic.checkRoot())
+            }
+        }
+
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
             // 必需的权限
@@ -180,5 +193,10 @@ public class CheckRootStatus(var context: Context, private val next: Runnable? =
             get() {
                 return rootStatus
             }
+
+        private fun setRootStatus(root: Boolean) {
+            rootStatus = root
+            Scene.setBoolean("root", root)
+        }
     }
 }

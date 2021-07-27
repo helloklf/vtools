@@ -41,7 +41,7 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
 
             GlobalStatus.batteryStatus = status
             GlobalStatus.batteryCapacity = capacity
-            GlobalStatus.batteryTemperature = temp
+            GlobalStatus.setBatteryTemperature(temp)
 
             // 判断是否在充电
             // val chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)

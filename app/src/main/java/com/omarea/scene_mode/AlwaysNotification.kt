@@ -100,11 +100,7 @@ internal class AlwaysNotification(
             }
         }
 
-        // 更新电池温度
-        val temperature = batteryUtils.getBatteryTemperature().temperature
-        if (temperature > 10 && temperature < 100) {
-            GlobalStatus.batteryTemperature = temperature
-        }
+        GlobalStatus.updateBatteryTemperature() // 触发温度数据更新
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
@@ -114,7 +110,7 @@ internal class AlwaysNotification(
             status.packageName = packageName
             status.mode = mode
             status.time = System.currentTimeMillis()
-            status.temperature = GlobalStatus.batteryTemperature
+            status.temperature = GlobalStatus.temperatureCurrent
             status.status = GlobalStatus.batteryStatus
             status.io = GlobalStatus.batteryCurrentNow.toInt()
 
@@ -137,7 +133,7 @@ internal class AlwaysNotification(
             updateBatteryStatus();
 
             batteryIO = "${GlobalStatus.batteryCurrentNow}mA"
-            batteryTemp = "${GlobalStatus.batteryTemperature}°C"
+            batteryTemp = "${GlobalStatus.temperatureCurrent}°C"
 
             if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
                 batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(GlobalStatus.batteryCapacity))

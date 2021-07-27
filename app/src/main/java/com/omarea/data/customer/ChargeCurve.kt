@@ -74,7 +74,11 @@ class ChargeCurve(context: Context) : IEventReceiver {
             batteryManager.getIntProperty(BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE)
 
             if (Math.abs(GlobalStatus.batteryCurrentNow) > 100) {
-                storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity, GlobalStatus.batteryTemperature)
+                storage.addHistory(
+                        GlobalStatus.batteryCurrentNow,
+                        GlobalStatus.batteryCapacity,
+                        GlobalStatus.updateBatteryTemperature()
+                )
             }
         } else {
             cancelUpdate()
