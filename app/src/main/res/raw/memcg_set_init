@@ -27,18 +27,18 @@ if [[ "$scene_memcg" != "" ]]; then
     mkdir -p $group_lmt
     # > 12GB
     if [[ $MemTotalKB -gt 12582912 ]]; then
-      echo 4096M > $group_lmt/memory.soft_limit_in_bytes
+      echo 2048M > $group_lmt/memory.soft_limit_in_bytes
     # > 8GB
     elif [[ $MemTotalKB -gt 8388608 ]]; then
-      echo 2048M > $group_lmt/memory.soft_limit_in_bytes
+      echo 1024M > $group_lmt/memory.soft_limit_in_bytes
     # > 6GB
     elif [[ $MemTotalKB -gt 6291456 ]]; then
-      echo 1024M > $group_lmt/memory.soft_limit_in_bytes
+      echo 768M > $group_lmt/memory.soft_limit_in_bytes
     # > 4GB
     elif [[ $MemTotalKB -gt 4194304 ]]; then
-      echo 768M > $group_lmt/memory.soft_limit_in_bytes
-    else
       echo 512M > $group_lmt/memory.soft_limit_in_bytes
+    else
+      echo 384M > $group_lmt/memory.soft_limit_in_bytes
     fi
     echo 8192M > $group_lmt/memory.memsw.limit_in_bytes
     # echo 512M > $group_lmt/memory.limit_in_bytes
