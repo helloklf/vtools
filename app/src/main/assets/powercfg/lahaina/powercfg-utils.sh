@@ -433,14 +433,14 @@ watch_app() {
   local current_watch=$(getprop $prop)
   if [[ "$current_watch" != "" ]]; then
     kill -9 $current_watch 2>/dev/null
-    setprop vtools.perf.watch ""
+    setprop $prop ""
   fi
 
   if [[ "$app" == "" ]]; then
     return
   fi
 
-  setprop vtools.perf.watch "$$"
+  setprop $prop "$$"
   while true
   do
     sleep $interval
@@ -448,7 +448,7 @@ watch_app() {
     if [[ "$current" == "$app" ]]; then
       $on_tick $current
     else
-      setprop vtools.perf.watch ""
+      setprop $prop ""
       if [[ "$on_change" ]]; then
         $on_change $current
       fi
@@ -519,7 +519,7 @@ adjustment_by_top_app() {
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 45 60 54 70 59 72
           fi
-          sched_boost 1 1
+          sched_boost 1 0
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000

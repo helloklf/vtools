@@ -418,14 +418,14 @@ watch_app() {
   local current_watch=$(getprop $prop)
   if [[ "$current_watch" != "" ]]; then
     kill -9 $current_watch 2>/dev/null
-    setprop vtools.perf.watch ""
+    setprop $prop ""
   fi
 
   if [[ "$app" == "" ]]; then
     return
   fi
 
-  setprop vtools.perf.watch "$$"
+  setprop $prop "$$"
   while true
   do
     sleep $interval
@@ -433,7 +433,7 @@ watch_app() {
     if [[ "$current" == "$app" ]]; then
       $on_tick $current
     else
-      setprop vtools.perf.watch ""
+      setprop $prop ""
       if [[ "$on_change" ]]; then
         $on_change $current
       fi
@@ -445,9 +445,9 @@ watch_app() {
 yuan_shen_opt() {
   sleep 10
   yuan_shen_opt_run
-  sleep 30
+  sleep 50
   yuan_shen_opt_run
-  sleep 60
+  sleep 30
   yuan_shen_opt_run
   sleep 30
   yuan_shen_opt_run

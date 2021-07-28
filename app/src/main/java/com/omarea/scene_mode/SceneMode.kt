@@ -9,10 +9,7 @@ import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.library.shell.CGroupMemoryUtlis
-import com.omarea.library.shell.GAppsUtilis
-import com.omarea.library.shell.LocationHelper
-import com.omarea.library.shell.SwapUtils
+import com.omarea.library.shell.*
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -51,7 +48,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
     private val floatScreenRotation = FloatScreenRotation(context)
 
     public fun cancelFreezeAppThread() {
-        KeepShellPublic.doCmdSync("setprop vtools.freeze_delay ''")
+        PropsUtils.setPorp("vtools.freeze_delay", "")
     }
 
     public class FreezeAppThread(
