@@ -1,14 +1,20 @@
 cgroup_app="$1"
 cgroup_mem="$2"
 
-if [[ -d /dev/memcg ]]; then
-    scene_memcg="/sys/fs/cgroup/memory"
-elif [[ -d /sys/fs/cgroup ]]; then
-    scene_memcg="/dev/memcg"
+if [[ -d /sys/fs/cgroup ]]; then
+  scene_memcg="/sys/fs/cgroup/memory"
+elif [[ -d /dev/memcg ]]; then
+  scene_memcg="/dev/memcg"
 fi
 
 if [[ "$scene_memcg" != "" ]]; then
     pgrep -f $cgroup_app | while read pid; do
-        echo $pid > $scene_memcg$cgroup_mem/tasks
+        echo $pid > $scene_memcg$cgroup_mem/cgroup.procs
+        #ls /proc/$pid/task | while read tid; do
+        #   echo $tid > $scene_memcg$cgroup_mem/tasks
+        #done
+        if [[ "$cgroup_mem" == "/scene_limit2" ]]; then
+            echo 1 > $scene_memcg$cgroup_mem/memory.force_empty
+        fi
     done
 fi

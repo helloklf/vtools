@@ -1,17 +1,17 @@
-if [[ -d /dev/memcg ]]; then
-  scene_memcg="/dev/memcg"
-elif [[ -d /sys/fs/cgroup ]]; then
+if [[ -d /sys/fs/cgroup ]]; then
   scene_memcg="/sys/fs/cgroup/memory"
+elif [[ -d /dev/memcg ]]; then
+  scene_memcg="/dev/memcg"
 fi
 
-function init_group() {
+init_group() {
   local g=$scene_memcg/$1
   if [[ ! -d $g ]]; then
     mkdir -p $g
   fi
   echo $2 > $g/memory.swappiness
   echo 1 > $g/memory.oom_control
-  echo 1 > $g/memory.move_charge_at_immigrate
+  echo 1 > $g/memory.use_hierarchy
 }
 
 if [[ "$scene_memcg" != "" ]]; then
@@ -20,7 +20,6 @@ if [[ "$scene_memcg" != "" ]]; then
     init_group scene_lock 100
     init_group scene_perf 10
     init_group scene_sys 0
-    echo 1 > $scene_memcg/memory.move_charge_at_immigrate
 
     MemTotalStr=`cat /proc/meminfo | grep MemTotal`
     MemTotalKB=${MemTotalStr:16:8}
@@ -45,7 +44,7 @@ if [[ "$scene_memcg" != "" ]]; then
     # echo 512M > $group_lmt/memory.kmem.limit_in_bytes
     echo 0 > $group_lmt/memory.oom_control
     echo 100 > $group_lmt/memory.swappiness
-    echo 1 > $group_lmt/memory.move_charge_at_immigrate
+    echo 1 > $group_lmt/memory.use_hierarchy
   fi
 
   group_lmt2=$scene_memcg/scene_limit2
@@ -55,6 +54,17 @@ if [[ "$scene_memcg" != "" ]]; then
     echo 8192M > $group_lmt2/memory.memsw.limit_in_bytes
     echo 0 > $group_lmt2/memory.oom_control
     echo 100 > $group_lmt2/memory.swappiness
-    echo 1 > $group_lmt2/memory.move_charge_at_immigrate
+    echo 1 > $group_lmt/memory.use_hierarchy
   fi
+
+  if [[ -f $scene_memcg/sys_critical/memory.swappiness ]]; then
+    echo 0 > $scene_memcg/sys_critical/memory.swappiness
+  fi
+  if [[ -f $scene_memcg/sys_critical/memory.swappiness ]]; then
+    echo 0 > $scene_memcg/sys_critical/memory.swappiness
+  fi
+  find $scene_memcg -name memory.move_charge_at_immigrate | while read row; do
+    echo 1 > $row
+  done
+
 fi

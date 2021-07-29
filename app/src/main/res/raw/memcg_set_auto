@@ -1,21 +1,21 @@
-if [[ -d /dev/memcg ]]; then
+if [[ -d /sys/fs/cgroup ]]; then
   scene_memcg="/sys/fs/cgroup/memory"
-elif [[ -d /sys/fs/cgroup ]]; then
+elif [[ -d /dev/memcg ]]; then
   scene_memcg="/dev/memcg"
 fi
 
-if [[ -f $scene_memcg/scene_limit/tasks ]]; then
-  cat /dev/cpuset/background/tasks | while read line ; do
+if [[ -f $scene_memcg/scene_limit/cgroup.procs ]]; then
+  cat /dev/cpuset/background/cgroup.procs | while read line ; do
     if [[ -f /proc/$line/oom_adj ]]; then
       oom_adj=`cat /proc/$line/oom_adj`
       memory_group=`grep 'memory:' /proc/$line/cgroup | cut -f2 -d '/'`
       if [[ "$memory_group" == "" ]] && [[ $oom_adj -gt 10 ]]; then
-        echo $line > $scene_memcg/scene_limit/tasks
+        echo $line > $scene_memcg/scene_limit/cgroup.procs
       fi
     fi
   done
 else
-  cat /dev/cpuset/background/tasks | while read line ; do
+  cat /dev/cpuset/background/cgroup.procs | while read line ; do
     if [[ -f /proc/$line/oom_adj ]]; then
       oom_adj=`cat /proc/$line/oom_adj`
       memory_group=`grep 'memory:' /proc/$line/cgroup | cut -f2 -d '/'`
@@ -26,6 +26,6 @@ else
   done
 fi
 
-# cat /dev/cpuset/background/tasks | while read line ; do
+# cat /dev/cpuset/background/cgroup.procs | while read line ; do
 #   echo all > /proc/$line/reclaim 2>/dev/null 2> /dev/null
 # done
