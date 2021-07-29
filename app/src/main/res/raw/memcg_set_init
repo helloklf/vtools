@@ -1,7 +1,7 @@
 if [[ -d /dev/memcg ]]; then
-  scene_memcg="/sys/fs/cgroup/memory"
-elif [[ -d /sys/fs/cgroup ]]; then
   scene_memcg="/dev/memcg"
+elif [[ -d /sys/fs/cgroup ]]; then
+  scene_memcg="/sys/fs/cgroup/memory"
 fi
 
 function init_group() {
