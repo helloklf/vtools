@@ -96,6 +96,23 @@ else
     echo $TargetRecycle > $modify_path
     # 级别0用在实时加速中，最重要的保持系统的持续流畅，隐藏缩短回收持续时间，减少卡顿
     if [[ "$level" == "0" ]]; then
+      if [[ -d /sys/fs/cgroup ]]; then
+        scene_memcg="/sys/fs/cgroup/memory"
+      elif [[ -d /dev/memcg ]]; then
+        scene_memcg="/dev/memcg"
+      fi
+
+      if [[ -f $scene_memcg/scene_lock/cgroup.procs ]]; then
+        cat /dev/cpuset/background/cgroup.procs | while read line ; do
+          if [[ -f /proc/$line/oom_adj ]]; then
+            oom_adj=`cat /proc/$line/oom_adj`
+            if [[ $oom_adj -gt 10 ]] && [[ $(grep -E 'memory:/scene_lock$' /proc/$line/cgroup) == "" ]]; then
+              echo $line > $scene_memcg/scene_lock/cgroup.procs
+            fi
+          fi
+        done
+      fi
+
       # TODO:去掉 log
       current_app=`getprop vtools.powercfg_app`
       echo $current_app $(($RecyclingSize / 1024))MB >> /cache/force_compact.log
