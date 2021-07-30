@@ -462,7 +462,7 @@ yuan_shen_opt() {
   yuan_shen_opt_run
   sleep 30
   yuan_shen_opt_run
-  sleep 60
+  sleep 30
   yuan_shen_opt_run
   sleep 30
   yuan_shen_opt_run
