@@ -14,6 +14,10 @@ public class CGroupMemoryUtlis(private val context: Context) {
     companion object {
         private var supported: Boolean? = null
         private var memcgShell: String? = null
+        public val inited: Boolean
+            get () {
+                return memcgShell != null
+            }
     }
 
     public val isSupported: Boolean
@@ -24,9 +28,9 @@ public class CGroupMemoryUtlis(private val context: Context) {
             return supported == true
         }
 
-    public fun setGroup(packageName: String, group: String) {
+    public fun init() {
         // memcgShell 为null为未初始化或初始化失败状态，需要先执行初始化
-        if (memcgShell == null) {
+        if (memcgShell == null && isSupported) {
             val initShell = RawText.getRawText(context, R.raw.memcg_set_init).toByteArray(Charset.defaultCharset())
             val execShell = RawText.getRawText(context, R.raw.memcg_set).toByteArray(Charset.defaultCharset())
             val initOutName = "memcg_set_init.sh"
@@ -41,6 +45,14 @@ public class CGroupMemoryUtlis(private val context: Context) {
                 memcgShell = "sh $fullExecPath '%s' '%s' > /dev/null 2>&1 &"
             }
         }
+    }
+
+    public fun setGroup(packageName: String, group: String) {
+        if (!isSupported) {
+            return
+        }
+
+        init()
 
         if (memcgShell != null) {
             val groupPath = (if (group.isNotEmpty()) {
