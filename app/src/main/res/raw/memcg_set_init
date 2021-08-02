@@ -42,7 +42,7 @@ if [[ "$scene_memcg" != "" ]]; then
     echo 8192M > $group_lmt/memory.memsw.limit_in_bytes
     # echo 512M > $group_lmt/memory.limit_in_bytes
     # echo 512M > $group_lmt/memory.kmem.limit_in_bytes
-    echo 0 > $group_lmt/memory.oom_control
+    echo 1 > $group_lmt/memory.oom_control
     echo 100 > $group_lmt/memory.swappiness
     echo 1 > $group_lmt/memory.use_hierarchy
   fi
@@ -52,7 +52,7 @@ if [[ "$scene_memcg" != "" ]]; then
     mkdir -p $group_lmt2
     echo 192M > $group_lmt2/memory.soft_limit_in_bytes
     echo 8192M > $group_lmt2/memory.memsw.limit_in_bytes
-    echo 0 > $group_lmt2/memory.oom_control
+    echo 1 > $group_lmt2/memory.oom_control
     echo 100 > $group_lmt2/memory.swappiness
     echo 1 > $group_lmt/memory.use_hierarchy
   fi
