@@ -505,7 +505,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
                     util.setGroup(app, mode)
                 }
             }, 3000)
-        } else if (mode == "scene_limit2") {
+        } else if (mode == "scene_cache") {
             Scene.postDelayed({
                 if (currentSceneConfig?.packageName != app) {
                     util.setGroup(app, mode)

@@ -58,7 +58,7 @@ class CGroupManager(private val context: Context) {
     private fun onTick(period: Int) {
         val currentTime = System.currentTimeMillis()
         if (period == 0) {
-            val targetGroup = "scene_limit2"
+            val targetGroup = "scene_cache"
             val toRecycle = history.filter {
                 it.state == ProcessHistory.STATE_LIMITED && (currentTime - it.leaveTime) >= periodTime
             }

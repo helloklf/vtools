@@ -47,7 +47,7 @@ if [[ "$scene_memcg" != "" ]]; then
     echo 1 > $group_lmt/memory.use_hierarchy
   fi
 
-  group_lmt2=$scene_memcg/scene_limit2
+  group_lmt2=$scene_memcg/scene_cache
   if [[ ! -e $group_lmt2 ]]; then
     mkdir -p $group_lmt2
     echo 192M > $group_lmt2/memory.soft_limit_in_bytes
