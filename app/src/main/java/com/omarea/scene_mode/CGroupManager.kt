@@ -71,7 +71,7 @@ class CGroupManager(private val context: Context) {
                 }
             }
         } else {
-            val targetGroup = "scene_limit"
+            val targetGroup = "scene_bg"
             val toRecycle = history.filter {
                 it.state == ProcessHistory.STATE_BACKGROUND && (currentTime - it.leaveTime) >= periodTickInterval
             }
