@@ -499,13 +499,13 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
     }
 
     private fun setGroupAutoDelay(util: CGroupMemoryUtlis, app: String, mode: String) {
-        if (mode == "scene_limit") {
+        if (mode == "scene_bg") {
             Scene.postDelayed({
                 if (currentSceneConfig?.packageName != app) {
                     util.setGroup(app, mode)
                 }
             }, 3000)
-        } else if (mode == "scene_limit2") {
+        } else if (mode == "scene_cache") {
             Scene.postDelayed({
                 if (currentSceneConfig?.packageName != app) {
                     util.setGroup(app, mode)

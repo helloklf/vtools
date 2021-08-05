@@ -13,7 +13,7 @@ if [[ "$scene_memcg" != "" ]]; then
         #ls /proc/$pid/task | while read tid; do
         #   echo $tid > $scene_memcg$cgroup_mem/tasks
         #done
-        if [[ "$cgroup_mem" == "/scene_limit2" ]]; then
+        if [[ "$cgroup_mem" == "/scene_cache" ]]; then
             echo 1 > $scene_memcg$cgroup_mem/memory.force_empty
         fi
     done

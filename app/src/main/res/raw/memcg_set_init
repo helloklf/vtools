@@ -15,11 +15,11 @@ init_group() {
 }
 
 if [[ "$scene_memcg" != "" ]]; then
-  group_lmt=$scene_memcg/scene_limit
+  group_lmt=$scene_memcg/scene_bg
   if [[ ! -e $group_lmt ]]; then
     init_group scene_lock 100
     init_group scene_perf 10
-    init_group scene_sys 0
+    init_group scene_fg 0
 
     MemTotalStr=`cat /proc/meminfo | grep MemTotal`
     MemTotalKB=${MemTotalStr:16:8}
@@ -47,7 +47,7 @@ if [[ "$scene_memcg" != "" ]]; then
     echo 1 > $group_lmt/memory.use_hierarchy
   fi
 
-  group_lmt2=$scene_memcg/scene_limit2
+  group_lmt2=$scene_memcg/scene_cache
   if [[ ! -e $group_lmt2 ]]; then
     mkdir -p $group_lmt2
     echo 192M > $group_lmt2/memory.soft_limit_in_bytes
