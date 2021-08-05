@@ -1,0 +1,17 @@
+D:\Android\SDK\build-tools\30.0.2\dx  --dex --output=./jar/scene_cgroup_service.dex ./jar/adb_process.jar
+
+adb push ./jar/scene_cgroup_service.dex /sdcard/scene_cgroup_service.dex
+
+adb shell
+su
+dalvikvm32 -cp /sdcard/scene_cgroup_service.dex Main
+# 或【后台运行】
+nohup dalvikvm32 -cp /sdcard/scene_cgroup_service.dex Main > /dev/null 2>&1 &
+
+
+adb shell dalvikvm -cp /sdcard/scene_cgroup_service.dex Main || app_process -Djava.class.path=/sdcard/scene_cgroup_service.dex /sdcard Main
+
+
+# 直接启动jar也是可以的，但是dalvikvm也可以启动dex文件
+adb push ./jar/scene_cgroup_service.dex /sdcard/scene_cgroup_service.jar
+adb shell dalvikvm -cp /sdcard/scene_cgroup_service.jar Main
