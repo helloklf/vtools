@@ -55,6 +55,14 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        String cgroupReclaim = args.length > 0 ? args[0].trim() : "active";
+        String bgCGroup = "scene_bg";
+        if (cgroupReclaim.equals("passive")) {
+            bgCGroup = "scene_lock";
+        } else if (cgroupReclaim.equals("force")) {
+            bgCGroup = "scene_cache";
+        }
+
         String memcg = "";
         if (new File("/sys/fs/cgroup/memory").exists()) {
             memcg = "/sys/fs/cgroup/memory";
@@ -65,7 +73,7 @@ public class Main {
         File fTopProcs = new File("/dev/cpuset/top-app/cgroup.procs");
         File fBgProcs = new File("/dev/cpuset/background/cgroup.procs");
         File fgGroup = new File(memcg + "/scene_fg/cgroup.procs");
-        File bgGroup = new File(memcg + "/scene_bg/cgroup.procs");
+        File bgGroup = new File(memcg + "/" + bgCGroup + "/cgroup.procs");
 
         if (memcg.isEmpty() || !(fTopProcs.exists() && fBgProcs.exists())) {
             System.out.println("The kernel does not support this feature!");
