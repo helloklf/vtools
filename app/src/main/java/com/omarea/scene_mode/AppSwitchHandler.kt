@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
@@ -186,6 +187,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     //自动切换模式
     private fun autoToggleMode(packageName: String?) {
         if (packageName != null && packageName != lastModePackage) {
+            lastModePackage = packageName
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(packageName, firstMode)!!
                 if (
@@ -198,15 +200,14 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                     }
                 }
             }
-            lastModePackage = packageName
             setCurrentPowercfgApp(packageName)
             updateModeNofity() // 应用改变后更新通知
         }
     }
 
     private fun toggleConfig(mode: String, packageName: String) {
-        executePowercfgMode(mode, packageName)
         lastMode = mode
+        executePowercfgMode(mode, packageName)
     }
 
     private fun delayToggleConfig(mode: String, packageName: String) {
