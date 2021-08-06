@@ -1,60 +1,56 @@
-if [[ -d /dev/memcg ]]; then
+if [[ -d /sys/fs/cgroup ]]; then
   scene_memcg="/sys/fs/cgroup/memory"
-elif [[ -d /sys/fs/cgroup ]]; then
+elif [[ -d /dev/memcg ]]; then
   scene_memcg="/dev/memcg"
 fi
 
-function init_group() {
+init_group() {
   local g=$scene_memcg/$1
   if [[ ! -d $g ]]; then
     mkdir -p $g
   fi
   echo $2 > $g/memory.swappiness
   echo 1 > $g/memory.oom_control
-  echo 1 > $g/memory.move_charge_at_immigrate
+  echo 1 > $g/memory.use_hierarchy
 }
 
 if [[ "$scene_memcg" != "" ]]; then
-  group_lmt=$scene_memcg/scene_limit
-  if [[ ! -e $group_lmt ]]; then
-    init_group scene_lock 100
-    init_group scene_perf 10
-    init_group scene_sys 0
-    echo 1 > $scene_memcg/memory.move_charge_at_immigrate
+  init_group scene_perf 10
+  init_group scene_fg 0
+  init_group scene_lock 100
+  init_group scene_bg 100
+  init_group scene_cache 100
 
-    MemTotalStr=`cat /proc/meminfo | grep MemTotal`
-    MemTotalKB=${MemTotalStr:16:8}
-    mkdir -p $group_lmt
-    # > 12GB
-    if [[ $MemTotalKB -gt 12582912 ]]; then
-      echo 2048M > $group_lmt/memory.soft_limit_in_bytes
-    # > 8GB
-    elif [[ $MemTotalKB -gt 8388608 ]]; then
-      echo 1024M > $group_lmt/memory.soft_limit_in_bytes
-    # > 6GB
-    elif [[ $MemTotalKB -gt 6291456 ]]; then
-      echo 768M > $group_lmt/memory.soft_limit_in_bytes
-    # > 4GB
-    elif [[ $MemTotalKB -gt 4194304 ]]; then
-      echo 512M > $group_lmt/memory.soft_limit_in_bytes
-    else
-      echo 384M > $group_lmt/memory.soft_limit_in_bytes
-    fi
-    echo 8192M > $group_lmt/memory.memsw.limit_in_bytes
-    # echo 512M > $group_lmt/memory.limit_in_bytes
-    # echo 512M > $group_lmt/memory.kmem.limit_in_bytes
-    echo 0 > $group_lmt/memory.oom_control
-    echo 100 > $group_lmt/memory.swappiness
-    echo 1 > $group_lmt/memory.move_charge_at_immigrate
-  fi
+  MemTotalStr=`cat /proc/meminfo | grep MemTotal`
+  MemTotalKB=${MemTotalStr:16:8}
 
-  group_lmt2=$scene_memcg/scene_limit2
-  if [[ ! -e $group_lmt2 ]]; then
-    mkdir -p $group_lmt2
-    echo 192M > $group_lmt2/memory.soft_limit_in_bytes
-    echo 8192M > $group_lmt2/memory.memsw.limit_in_bytes
-    echo 0 > $group_lmt2/memory.oom_control
-    echo 100 > $group_lmt2/memory.swappiness
-    echo 1 > $group_lmt2/memory.move_charge_at_immigrate
+  group_lmt=$scene_memcg/scene_bg
+  limit_mb='384M'
+  if [[ $MemTotalKB -gt 12582912 ]]; then # > 12GB
+    limit_mb=2048M
+  elif [[ $MemTotalKB -gt 8388608 ]]; then # > 8GB
+    limit_mb=1024M
+  elif [[ $MemTotalKB -gt 6291456 ]]; then # > 6GB
+    limit_mb=768M
+  elif [[ $MemTotalKB -gt 4194304 ]]; then # > 4GB
+    limit_mb=512M
   fi
+  echo $limit_mb > $scene_memcg/scene_bg/memory.soft_limit_in_bytes
+  # echo 8192M > $scene_memcg/scene_bg/memory.memsw.limit_in_bytes
+  # echo 512M > $scene_memcg/scene_bg/memory.limit_in_bytes
+  # echo 512M > $scene_memcg/scene_bg/memory.kmem.limit_in_bytes
+
+  echo 192M > $scene_memcg/scene_cache/memory.soft_limit_in_bytes
+  # echo 8192M > $scene_memcg/scene_cache/memory.memsw.limit_in_bytes
+
+  if [[ -f $scene_memcg/sys_critical/memory.swappiness ]]; then
+    echo 0 > $scene_memcg/sys_critical/memory.swappiness
+  fi
+  if [[ -f $scene_memcg/system/memory.swappiness ]]; then
+    echo 0 > $scene_memcg/system/memory.swappiness
+  fi
+  find $scene_memcg -name memory.move_charge_at_immigrate | while read row; do
+    echo 1 > $row
+  done
+
 fi

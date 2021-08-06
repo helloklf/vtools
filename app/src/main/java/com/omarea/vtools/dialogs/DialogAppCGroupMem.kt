@@ -59,15 +59,15 @@ class DialogAppCGroupMem(var context: Activity, val current: String?, val iResul
         }
         view.findViewById<View>(R.id.cgroup_sys).setOnClickListener {
             dialog.dismiss()
-            onItemClick("scene_sys")
+            onItemClick("scene_fg")
         }
         view.findViewById<View>(R.id.cgroup_limit).setOnClickListener {
             dialog.dismiss()
-            onItemClick("scene_limit")
+            onItemClick("scene_bg")
         }
         view.findViewById<View>(R.id.cgroup_limit2).setOnClickListener {
             dialog.dismiss()
-            onItemClick("scene_limit2")
+            onItemClick("scene_cache")
         }
     }
 }

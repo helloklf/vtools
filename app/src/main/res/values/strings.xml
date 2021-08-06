@@ -72,9 +72,9 @@
         <item></item>
         <item>scene_lock</item>
         <item>scene_perf</item>
-        <item>scene_sys</item>
-        <item>scene_limit</item>
-        <item>scene_limit2</item>
+        <item>scene_fg</item>
+        <item>scene_bg</item>
+        <item>scene_cache</item>
     </string-array>
 
     <string name="config_save_fail">配置保存失败！</string>
