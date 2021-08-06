@@ -23,25 +23,15 @@ if [[ "$scene_memcg" != "" ]]; then
 
   MemTotalStr=`cat /proc/meminfo | grep MemTotal`
   MemTotalKB=${MemTotalStr:16:8}
+  #echo $((MemTotalKB/1024/30))M
 
-  group_lmt=$scene_memcg/scene_bg
-  limit_mb='384M'
-  if [[ $MemTotalKB -gt 12582912 ]]; then # > 12GB
-    limit_mb=2048M
-  elif [[ $MemTotalKB -gt 8388608 ]]; then # > 8GB
-    limit_mb=1024M
-  elif [[ $MemTotalKB -gt 6291456 ]]; then # > 6GB
-    limit_mb=768M
-  elif [[ $MemTotalKB -gt 4194304 ]]; then # > 4GB
-    limit_mb=512M
-  fi
-  echo $limit_mb > $scene_memcg/scene_bg/memory.soft_limit_in_bytes
+  echo $((MemTotalKB/1024/4))M > $scene_memcg/scene_lock/memory.soft_limit_in_bytes
+  echo $((MemTotalKB/1024/10))M > $scene_memcg/scene_bg/memory.soft_limit_in_bytes
+  echo $((MemTotalKB/1024/30))M > $scene_memcg/scene_cache/memory.soft_limit_in_bytes
+
   # echo 8192M > $scene_memcg/scene_bg/memory.memsw.limit_in_bytes
   # echo 512M > $scene_memcg/scene_bg/memory.limit_in_bytes
   # echo 512M > $scene_memcg/scene_bg/memory.kmem.limit_in_bytes
-
-  echo 192M > $scene_memcg/scene_cache/memory.soft_limit_in_bytes
-  # echo 8192M > $scene_memcg/scene_cache/memory.memsw.limit_in_bytes
 
   if [[ -f $scene_memcg/sys_critical/memory.swappiness ]]; then
     echo 0 > $scene_memcg/sys_critical/memory.swappiness
