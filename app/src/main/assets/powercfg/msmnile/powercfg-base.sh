@@ -109,8 +109,8 @@ echo 5000 > /proc/sys/vm/dirty_writeback_centisecs
 
 set_cpuset(){
   pgrep -f $1 | while read pid; do
-    echo $pid > /dev/cpuset/$2/tasks
-    echo $pid > /dev/stune/$2/tasks
+    echo $pid > /dev/cpuset/$2/cgroup.procs
+    echo $pid > /dev/stune/$2/cgroup.procs
   done
 }
 
