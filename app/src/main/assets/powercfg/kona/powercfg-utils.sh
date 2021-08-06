@@ -371,6 +371,36 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+# HePingJingYing
+pubgmhd_opt_run () {
+  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+    return
+  fi
+
+  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
+  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
+  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
+  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+         "RenderThread"*)
+           taskset -p "80" "$tid" 2>&1 > /dev/null
+         ;;
+         *)
+           taskset -p "7F" "$tid" 2>&1 > /dev/null
+         ;;
+        esac
+      fi
+    done
+  fi
+}
+
 # YuanShen
 yuan_shen_opt_run() {
   if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
