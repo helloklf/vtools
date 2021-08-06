@@ -234,10 +234,6 @@ class SwapUtils(private val context: Context) {
     // 强制触发内存回收
     // level    0:极微    1:轻微    2:更重    3:极端
     fun forceKswapd(level: Int): String {
-        if (level == 0 && !CGroupMemoryUtlis.inited) {
-            CGroupMemoryUtlis(context).init()
-        }
-
         if (swapForceKswapdScript == null) {
             swapForceKswapdScript = FileWrite.writePrivateShellFile("addin/force_compact.sh", "addin/force_compact.sh", context)
             KeepShellPublic.doCmdSync("rm /cache/force_compact.log 2>/dev/null")

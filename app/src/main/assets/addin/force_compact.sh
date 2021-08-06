@@ -51,24 +51,6 @@ elif [[ "$level" == "0" ]]; then
   else
     TargetRecycle=$(($MemTotal / 100 * 10))
   fi
-
-  # CGroup
-  if [[ -d /sys/fs/cgroup ]]; then
-    scene_memcg="/sys/fs/cgroup/memory"
-  elif [[ -d /dev/memcg ]]; then
-    scene_memcg="/dev/memcg"
-  fi
-
-  if [[ -f $scene_memcg/scene_lock/cgroup.procs ]]; then
-    cat /dev/cpuset/background/cgroup.procs | while read line ; do
-      if [[ -f /proc/$line/oom_adj ]]; then
-        oom_adj=`cat /proc/$line/oom_adj`
-        if [[ $oom_adj -gt 10 ]] && [[ $(grep -E 'memory:/$' /proc/$line/cgroup) != "" ]]; then
-          echo $line > $scene_memcg/scene_lock/cgroup.procs
-        fi
-      fi
-    done
-  fi
 else
   if [[ $friendly == "true" ]]; then
     TargetRecycle=$(($MemTotal / 100 * 20))
