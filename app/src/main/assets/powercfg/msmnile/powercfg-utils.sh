@@ -585,8 +585,8 @@ adjustment_by_top_app() {
         echo 0-7 > /dev/cpuset/top-app/cpus
       fi
       pgrep -f $top_app | while read pid; do
-        # echo $pid > /dev/cpuset/foreground/tasks
-        echo $pid > /dev/stune/background/tasks
+        # echo $pid > /dev/cpuset/foreground/cgroup.procs
+        echo $pid > /dev/stune/background/cgroup.procs
       done
 
       sched_config "85 85" "100 100" "240" "400"

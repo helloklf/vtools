@@ -678,8 +678,8 @@ adjustment_by_top_app() {
         cpuctl top-app 0 1 0.1 max
       fi
       pgrep -f $top_app | while read pid; do
-        # echo $pid > /dev/cpuset/foreground/tasks
-        echo $pid > /dev/stune/background/tasks
+        # echo $pid > /dev/cpuset/foreground/cgroup.procs
+        echo $pid > /dev/stune/background/cgroup.procs
       done
 
       sched_config "85 85" "100 100" "300" "400"

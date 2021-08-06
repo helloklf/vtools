@@ -15,6 +15,7 @@ thermal_files=(
 "${thermal_file_prefix}chg-only${thermal_file_suffix}"
 "${thermal_file_prefix}class0${thermal_file_suffix}"
 "${thermal_file_prefix}tgame${thermal_file_suffix}"
+"${thermal_file_prefix}navigation${thermal_file_suffix}"
 )
 elif [[ "$model" == "M2012K11AC" ]]; then
 thermal_file_prefix2="thermal-india-"
