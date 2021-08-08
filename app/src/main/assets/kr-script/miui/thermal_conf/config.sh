@@ -86,6 +86,7 @@ function install_thermal() {
             echo '复制' $thermal
             cp "$resource_dir/general.conf" "$install_dir/$thermal"
         fi
+        dos2unix "$install_dir/$thermal" 2> /dev/null
     done
     echo "$mode" > "$mode_state_save"
 }

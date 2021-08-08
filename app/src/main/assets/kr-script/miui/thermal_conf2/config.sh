@@ -101,6 +101,7 @@ function install_thermal() {
       cp "$resource_dir/general.conf" "$install_dir/$thermal"
       chmod 644 "$install_dir/$thermal"
     fi
+    dos2unix "$install_dir/$thermal" 2> /dev/null
   done
   echo "$mode" > "$mode_state_save"
 
