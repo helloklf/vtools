@@ -529,7 +529,7 @@ adjustment_by_top_app() {
           yuan_shen_opt &
           # sched_config "40 60" "50 75" "120" "150"
         fi
-        cpuset '0-1' '0-3' '0-3' '0-7'
+        cpuset '0-1' '0-3' '0-7' '0-7'
     ;;
 
 
