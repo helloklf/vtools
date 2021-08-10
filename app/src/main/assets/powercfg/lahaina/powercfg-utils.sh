@@ -380,6 +380,35 @@ set_task_affinity() {
   fi
 }
 
+# HePingJingYing
+pubgmhd_opt_run () {
+  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+    return
+  fi
+
+  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
+  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
+  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
+  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+         "RenderThread"*)
+           taskset -p "80" "$tid" 2>&1 > /dev/null
+         ;;
+         *)
+           taskset -p "7F" "$tid" 2>&1 > /dev/null
+         ;;
+        esac
+      fi
+    done
+  fi
+}
 
 # YuanShen
 yuan_shen_opt_run() {
@@ -417,57 +446,51 @@ yuan_shen_opt_run() {
   fi
 }
 
-# watch_app [time] [on_tick] [on_change]
+# watch_app [on_tick] [on_change]
 watch_app() {
-  local interval="$1"
-  local on_tick="$2"
-  local on_change="$3"
+  local interval=120
+  local on_tick="$1"
+  local on_change="$2"
   local app=$(getprop vtools.powercfg_app)
 
   if [[ "$on_tick" == "" ]]; then
     return
   fi
 
-  local prop='vtools.perf.watch'
-
-  local current_watch=$(getprop $prop)
-  if [[ "$current_watch" != "" ]]; then
-    kill -9 $current_watch 2>/dev/null
-    setprop $prop ""
-  fi
-
   if [[ "$app" == "" ]]; then
     return
   fi
 
-  setprop $prop "$$"
+  procs=$(pgrep -f com.omarea.*powercfg.sh)
+  last_proc=$(echo "$procs" | tail -n 1)
+  if [[ "$last_proc" != "" ]]; then
+    echo "$procs" | grep -v "$last_proc" | while read pid; do
+      kill -9 $pid 2> /dev/null
+    done
+  fi
+
+  ticks=0
   while true
   do
-    sleep $interval
+    if [[ $ticks -gt 3 ]]; then
+      sleep $interval
+    elif [[ $ticks -gt 0 ]]; then
+      sleep 30
+    else
+      sleep 10
+    fi
+    ticks=$((ticks + 1))
+
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
       $on_tick $current
     else
-      setprop $prop ""
       if [[ "$on_change" ]]; then
         $on_change $current
       fi
       return
     fi
   done
-}
-
-yuan_shen_opt() {
-  sleep 10
-  yuan_shen_opt_run
-  sleep 30
-  yuan_shen_opt_run
-  sleep 30
-  yuan_shen_opt_run
-  sleep 30
-  yuan_shen_opt_run
-
-  watch_app 120 yuan_shen_opt_run
 }
 
 adjustment_by_top_app() {
@@ -489,7 +512,6 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
-          yuan_shen_opt &
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 55 67 70 89 71 89
@@ -502,7 +524,6 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
-          yuan_shen_opt &
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -513,7 +534,6 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
-          yuan_shen_opt &
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -523,9 +543,9 @@ adjustment_by_top_app() {
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
-          yuan_shen_opt &
         fi
-        cpuset '0-1' '0-1' '0-3' '0-7'
+        cpuset '0-1' '0-1' '0-7' '0-7'
+        watch_app yuan_shen_opt_run &
     ;;
 
     # Wang Zhe Rong Yao
@@ -548,21 +568,21 @@ adjustment_by_top_app() {
           sched_config "60 68" "72 78" "300" "400"
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_gpu_max_freq 676000000
-          cpuset '0-1' '0-1' '0-3' '0-7'
+          cpuset '0-1' '0-1' '0-6' '0-7'
         elif [[ "$action" = "performance" ]]; then
           conservative_mode 52 70 70 85 67 82
           sched_boost 1 0
           stune_top_app 0 0
           set_cpu_freq 1036800 1708800 960000 2419200 844800 2841600
           set_gpu_max_freq 738000000
-          cpuset '0-1' '0-1' '0-3' '0-7'
+          cpuset '0-1' '0-1' '0-6' '0-7'
         elif [[ "$action" = "fast" ]]; then
           conservative_mode 42 60 54 70 60 72
           sched_boost 1 1
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
-          cpuset '0-1' '0-1' '0-3' '0-7'
+          cpuset '0-1' '0-1' '0-6' '0-7'
         fi
     ;;
 
