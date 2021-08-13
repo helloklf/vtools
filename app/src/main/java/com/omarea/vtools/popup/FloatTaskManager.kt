@@ -22,6 +22,7 @@ class FloatTaskManager(private val context: Context) {
     companion object {
         var mView: View? = null
         private var locked = false
+        private var lastTouchDown = 0L
         val show: Boolean
             get() {
                 return mView != null
@@ -86,16 +87,6 @@ class FloatTaskManager(private val context: Context) {
             private var touchStartY = 0f
             private var touchStartRawX = 0f
             private var touchStartRawY = 0f
-            private var touchStartTime = 0L
-            private var lastClickTime = 0L
-
-            private fun onClick() {
-                if (System.currentTimeMillis() - lastClickTime < 300) {
-                    hidePopupWindow()
-                } else {
-                    lastClickTime = System.currentTimeMillis()
-                }
-            }
 
             @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -110,7 +101,6 @@ class FloatTaskManager(private val context: Context) {
                             touchStartRawX = event.rawX
                             touchStartRawY = event.rawY
                             isTouchDown = true
-                            touchStartTime = System.currentTimeMillis()
                         }
                         MotionEvent.ACTION_MOVE -> {
                             if (isTouchDown) {
@@ -149,7 +139,14 @@ class FloatTaskManager(private val context: Context) {
 
     // 更新任务列表
     private fun updateData() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastTouchDown < 2000) {
+            return
+        }
         val data = processUtils.allProcess
+        if (currentTime - lastTouchDown < 3000) {
+            return
+        }
         handle.post {
             (mView?.findViewById<ListView>(R.id.process_list)?.adapter as FloatProcessAdapter?)?.setList(data)
         }
@@ -159,10 +156,11 @@ class FloatTaskManager(private val context: Context) {
         locked = false
 
         mView = LayoutInflater.from(context).inflate(R.layout.fw_process, null)
-        mView?.findViewById<ListView>(R.id.process_list)?.adapter = FloatProcessAdapter(this.context)
         // mView?.setBackgroundColor(Color.WHITE)
 
-        val process_list = mView?.findViewById<ListView>(R.id.process_list)!!
+        val process_list = mView?.findViewById<ListView>(R.id.process_list)!!.apply {
+            adapter = FloatProcessAdapter(this.context)
+        }
         val fw_float_minimize = mView?.findViewById<ImageButton>(R.id.fw_float_minimize)!!
         val process_filter = mView?.findViewById<TextView>(R.id.process_filter)!!
         val fw_float_pin = mView?.findViewById<View>(R.id.fw_float_pin)!!
@@ -175,21 +173,23 @@ class FloatTaskManager(private val context: Context) {
             process_filter.text = if (filterMode == FloatProcessAdapter.FILTER_ANDROID) "应用" else "全部"
         }
 
-        // 长按进程杀死应用
-        process_list.setOnItemLongClickListener { _, _, position, id ->
+        var lastClick: Int? = null
+        process_list.setOnItemClickListener { _, _, position, id ->
+            val current = System.currentTimeMillis()
             val adapter = (process_list.adapter as FloatProcessAdapter)
-            val processInfo = adapter.getItem(position) as ProcessInfo
+            val processInfo = adapter.getItem(position)
             if (processInfo.name.equals(context.packageName)) {
-                Toast.makeText(context, "自杀是不行的", Toast.LENGTH_SHORT).show()
-                return@setOnItemLongClickListener true
+                Toast.makeText(context, "自杀是不允许的~", Toast.LENGTH_SHORT).show()
+                return@setOnItemClickListener
             }
-            processUtils.killProcess(processInfo)
-            adapter.removeItem(position)
-
-            true
-        }
-        process_list.setOnItemClickListener { _, _, _, _ ->
-            Toast.makeText(context, "如需结束进程，请长按它~", Toast.LENGTH_SHORT).show()
+            if (current - lastTouchDown > 3000 || processInfo.pid != lastClick) {
+                lastTouchDown = System.currentTimeMillis()
+                lastClick = processInfo.pid
+                Toast.makeText(context, "如需结束进程，请再次点击", Toast.LENGTH_SHORT).show()
+            } else {
+                processUtils.killProcess(processInfo)
+                adapter.removeItem(position)
+            }
         }
 
         // 锁定位置
