@@ -1,10 +1,9 @@
-import com.sun.javaws.exceptions.ExitException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 public class Main {
     private static String readAllText(File file) {
@@ -42,6 +41,19 @@ public class Main {
         return false;
     }
 
+    // method (file\anon\all)
+    private static void reclaimPid(String pid, String method) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("/proc/" + pid + "/reclaim"));
+            byte[] bytes = method.getBytes();
+            fileOutputStream.write(bytes, 0, bytes.length);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException ex) {
+            System.out.println("WritePid Fail: " + ex.getMessage());
+        }
+    }
+
     private static void writePid(String pid, File groupProcs) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(groupProcs);
@@ -51,6 +63,100 @@ public class Main {
             fileOutputStream.close();
         } catch (IOException ex) {
             System.out.println("WritePid Fail: " + ex.getMessage());
+        }
+    }
+
+    // 内存空闲比例
+    private static double getMemFreeRatio() {
+        String[] memInfos = readAllText(new File("/proc/meminfo")).split("\n");
+        double total = 0;
+        double free = 0;
+        for (String row : memInfos) {
+            if (row.startsWith("MemTotal")) {
+                String value = row.substring(row.indexOf(":") + 1, row.lastIndexOf(" "));
+                total = Integer.parseInt(value.trim());
+            } else if (row.startsWith("MemAvailable")) {
+                String value = row.substring(row.indexOf(":") + 1, row.lastIndexOf(" "));
+                free = Integer.parseInt(value.trim());
+            }
+        }
+        if (total > 0 && free > 0) {
+            return free / total;
+        }
+        return 0;
+    }
+
+    static class WatchForeground extends Thread {
+        private File bgGroup;
+        public WatchForeground(File bgGroup) {
+            this.bgGroup = bgGroup;
+        }
+
+        @Override
+        public void run() {
+            File fFgProcs = new File("/dev/cpuset/foreground/cgroup.procs");
+            String currentFProcs = "";
+            if (fFgProcs.exists()) {
+                while (true) {
+                    String str = readAllText(fFgProcs);
+                    if (!str.equals(currentFProcs)) {
+                        currentFProcs = str;
+                        String[] fgProcs = currentFProcs.split("\n");
+                        ArrayList<String> recyclable = new ArrayList<>();
+                        double memFreeRatio = getMemFreeRatio();
+                        // foreground
+                        for (String pid: fgProcs) {
+                            // if (getOomADJ(pid) > 0) {
+                            if (getOomADJ(pid) > 1) {
+                                writePid(pid, bgGroup);
+                                recyclable.add(pid);
+                            }
+                        }
+                        // reclaim
+                        if (memFreeRatio < 0.3) {
+                            String method = (memFreeRatio < 0.2) ? "all" : "file";
+                            for (String pid: recyclable) {
+                                reclaimPid(pid, method);
+                            }
+                        }
+                    }
+
+                    try {
+                        Thread.sleep(30000);
+                    } catch (Exception ignored){}
+                }
+            }
+        }
+    }
+
+    static class MemoryWatch extends Thread {
+        private File bgGroup;
+        public MemoryWatch(File bgGroup) {
+            this.bgGroup = bgGroup;
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                double memFreeRatio = getMemFreeRatio();
+                String method = "";
+                if (memFreeRatio < 0.2) {
+                    method = "all";
+                } else if (memFreeRatio < 0.3) {
+                    method = "file";
+                } else {
+                    return;
+                }
+
+                String[] recyclable = readAllText(bgGroup).split("\n");
+                for (String pid: recyclable) {
+                    reclaimPid(pid, method);
+                }
+
+                try {
+                    Thread.sleep(30000);
+                } catch (Exception ignored){}
+            }
         }
     }
 
@@ -84,6 +190,9 @@ public class Main {
             return;
         }
 
+        new WatchForeground(bgGroup).start();
+        new MemoryWatch(bgGroup).start();
+
         String currentTopProcs = "";
         while (true) {
             String topProcsStr = readAllText(fTopProcs);
@@ -92,16 +201,29 @@ public class Main {
 
                 String[] topProcs = readAllText(fTopProcs).split("\n");
                 String[] bgProcs = readAllText(fBgProcs).split("\n");
+                double memFreeRatio = getMemFreeRatio();
+                ArrayList<String> recyclable = new ArrayList<>();
+                // top
                 for (String pid : topProcs) {
                     if (include(bgProcs, pid) && getOomADJ(pid) > 0) {
                         writePid(pid, bgGroup);
+                        recyclable.add(pid);
                     } else {
                         writePid(pid, fgGroup);
                     }
                 }
+                // background
                 for (String pid : bgProcs) {
                     if (!include(topProcs, pid)) {
                         writePid(pid, bgGroup);
+                        recyclable.add(pid);
+                    }
+                }
+                // reclaim
+                if (memFreeRatio < 0.3) {
+                    String method = (memFreeRatio < 0.2) ? "all" : "file";
+                    for (String pid: recyclable) {
+                        reclaimPid(pid, method);
                     }
                 }
             }
