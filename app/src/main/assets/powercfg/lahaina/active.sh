@@ -38,7 +38,8 @@ if [[ "$action" = "powersave" ]]; then
   sched_limit 0 0 0 2000 0 1000
   cpuset '0-2' '0-3' '0-3' '0-7'
   stune_top_app 0 0
-  cpuctl top-app 0 1 0 max
+  # cpuctl top-app 0 1 0 max
+  cpuctl top-app 0 1 0.05 max
   bw_min
   bw_down 3 3
 
@@ -56,7 +57,7 @@ elif [[ "$action" = "balance" ]]; then
   sched_limit 0 0 0 500 0 500
   cpuset '0-2' '0-3' '0-6' '0-7'
   stune_top_app 0 0
-  cpuctl top-app 0 1 0.1 max
+  cpuctl top-app 0 1 0.25 max
   bw_min
   bw_down 2 2
 

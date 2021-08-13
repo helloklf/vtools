@@ -97,8 +97,8 @@ process_opt() {
   set_cpuset surfaceflinger top-app
   set_cpuset system_server top-app
   set_cpuset vendor.qti.hardware.display.composer-service top-app
-  set_cpuset mediaserver background
-  set_cpuset media.hwcodec background
+  # set_cpuset mediaserver background
+  # set_cpuset media.hwcodec background
 
   set_task_affinity `pgrep com.miui.home` 11111111
   set_task_affinity `pgrep com.miui.home` 11110000
@@ -112,8 +112,7 @@ cpuctl () {
 }
 
 cpuctl top-app 0 0 0 max
-# cpuctl foreground 0 0 0 '0.8'
-cpuctl foreground 0 0 0 0
+cpuctl foreground 0 0 0 '0.8'
 cpuctl background 0 0 0 0
 
 echo 0 > /dev/stune/nnapi-hal/schedtune.boost
