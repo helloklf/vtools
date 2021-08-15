@@ -581,7 +581,7 @@ adjustment_by_top_app() {
       if [[ "$action" == "balance" ]] && [[ "$top_app" == "com.miui.home" ]]; then
         sched_boost 1 0
         stune_top_app 1 1
-        sched_config "45 62" "55 75" "85" "100"
+        sched_config "35 52" "45 65" "65" "80"
       elif [[ "$action" != "powersave" ]]; then
         sched_boost 1 1
         stune_top_app 1 1

@@ -32,6 +32,14 @@ public class Main {
         return -1;
     }
 
+    private static String getCpuSet(String pid) {
+        String adj = readAllText(new File("/proc/" + pid + "/cpuset"));
+        if (!adj.isEmpty()) {
+            return adj;
+        }
+        return "/";
+    }
+
     private static boolean include(String[] arr, String value) {
         for (String s : arr) {
             if (s.equals(value)) {
@@ -66,22 +74,46 @@ public class Main {
         }
     }
 
+    // 提取 /proc/meminfo 里某一行的数值，
+    // 例： [MemFree:          138828 kB] => [138828]
+    private static int getMemInfoRowKB(String row) {
+        return Integer.parseInt(
+                row.substring(
+                        row.indexOf(":") + 1,
+                        row.lastIndexOf(" ")
+                ).trim()
+        );
+    }
+
     // 内存空闲比例
     private static double getMemFreeRatio() {
         String[] memInfos = readAllText(new File("/proc/meminfo")).split("\n");
         double total = 0;
         double free = 0;
+        double swapCached = 0;
         for (String row : memInfos) {
             if (row.startsWith("MemTotal")) {
-                String value = row.substring(row.indexOf(":") + 1, row.lastIndexOf(" "));
-                total = Integer.parseInt(value.trim());
+                total = getMemInfoRowKB(row);
             } else if (row.startsWith("MemAvailable")) {
-                String value = row.substring(row.indexOf(":") + 1, row.lastIndexOf(" "));
-                free = Integer.parseInt(value.trim());
+                free = getMemInfoRowKB(row);
+            } else if (row.startsWith("SwapCached")) {
+                swapCached = getMemInfoRowKB(row);
             }
         }
         if (total > 0 && free > 0) {
-            return free / total;
+            return (free + swapCached) / total;
+        }
+        return 0;
+    }
+
+    // 获取空闲SWAP
+    private static int getSwapFreeMB() {
+        String[] memInfos = readAllText(new File("/proc/meminfo")).split("\n");
+        for (String row : memInfos) {
+            if (row.startsWith("SwapFree")) {
+                String value = row.substring(row.indexOf(":") + 1, row.lastIndexOf(" "));
+                return Integer.parseInt(value.trim()) / 1024;
+            }
         }
         return 0;
     }
@@ -113,10 +145,18 @@ public class Main {
                             }
                         }
                         // reclaim
-                        if (memFreeRatio < 0.3) {
-                            String method = (memFreeRatio < 0.2) ? "all" : "file";
-                            for (String pid: recyclable) {
-                                reclaimPid(pid, method);
+                        if (memFreeRatio < 0.25) {
+                            int swapFree = getSwapFreeMB();
+                            if (swapFree >= 300) {
+                                String method = "";
+                                if (memFreeRatio < 0.19 && swapFree > 500) {
+                                    method = "all";
+                                } else {
+                                    method = "file";
+                                }
+                                for (String pid: recyclable) {
+                                    reclaimPid(pid, method);
+                                }
                             }
                         }
                     }
@@ -137,25 +177,43 @@ public class Main {
 
         @Override
         public void run() {
+            long lastReclaim = 0L;
             while (true) {
                 double memFreeRatio = getMemFreeRatio();
-                String method = "";
-                if (memFreeRatio < 0.2) {
-                    method = "all";
-                } else if (memFreeRatio < 0.3) {
-                    method = "file";
-                } else {
-                    return;
-                }
-
-                String[] recyclable = readAllText(bgGroup).split("\n");
-                for (String pid: recyclable) {
-                    reclaimPid(pid, method);
-                }
 
                 try {
-                    Thread.sleep(30000);
+                    if (memFreeRatio >= 0.6) {
+                        Thread.sleep(180000);
+                    } else if (memFreeRatio >= 0.5) {
+                        Thread.sleep(120000);
+                    } else if (memFreeRatio > 0.4) {
+                        Thread.sleep(60000);
+                    } else {
+                        Thread.sleep(30000);
+                    }
                 } catch (Exception ignored){}
+
+                memFreeRatio = getMemFreeRatio();
+                int swapFree = getSwapFreeMB();
+                if (swapFree >= 300 && memFreeRatio < 0.22) {
+                    String method = "";
+                    if (memFreeRatio < 0.15 && swapFree > 500) {
+                        method = "all";
+                    } else {
+                        method = "file";
+                        // 间隔120秒执行过Reclaim 跳过
+                        if (System.currentTimeMillis() - lastReclaim < 120000) {
+                            continue;
+                        }
+                    }
+
+                    String[] recyclable = readAllText(bgGroup).split("\n");
+                    for (String pid: recyclable) {
+                        reclaimPid(pid, method);
+                    }
+                    lastReclaim = System.currentTimeMillis();
+                }
+
             }
         }
     }
@@ -205,7 +263,7 @@ public class Main {
                 ArrayList<String> recyclable = new ArrayList<>();
                 // top
                 for (String pid : topProcs) {
-                    if (include(bgProcs, pid) && getOomADJ(pid) > 0) {
+                    if (include(bgProcs, pid) && getOomADJ(pid) > 1) {
                         writePid(pid, bgGroup);
                         recyclable.add(pid);
                     } else {
@@ -214,16 +272,24 @@ public class Main {
                 }
                 // background
                 for (String pid : bgProcs) {
-                    if (!include(topProcs, pid)) {
+                    if (!include(topProcs, pid) && getOomADJ(pid) > 1) {
                         writePid(pid, bgGroup);
                         recyclable.add(pid);
                     }
                 }
                 // reclaim
-                if (memFreeRatio < 0.3) {
-                    String method = (memFreeRatio < 0.2) ? "all" : "file";
-                    for (String pid: recyclable) {
-                        reclaimPid(pid, method);
+                if (memFreeRatio < 0.25) {
+                    int swapFree = getSwapFreeMB();
+                    if (swapFree >= 300) {
+                        String method = "";
+                        if (memFreeRatio < 0.19 && swapFree > 500) {
+                            method = "all";
+                        } else {
+                            method = "file";
+                        }
+                        for (String pid: recyclable) {
+                            reclaimPid(pid, method);
+                        }
                     }
                 }
             }
