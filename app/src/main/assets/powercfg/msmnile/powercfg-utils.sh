@@ -158,6 +158,48 @@ reset_basic_governor() {
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
 
+
+
+bw_down() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local down1="$1"
+  local down2="$2"
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down1)}" > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' "{print \$(NF-$down2)}" > $path/max_freq
+}
+
+bw_min() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+}
+
+bw_max() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+}
+
+bw_max_always() {
+  local path='/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+}
+
 devfreq_backup () {
   local devfreq_backup=/cache/devfreq_backup.prop
   local backup_state=`getprop vtools.dev_freq_backup`
@@ -189,6 +231,7 @@ devfreq_performance () {
       fi
     done
   fi
+  bw_max
 }
 
 devfreq_restore () {
