@@ -14,7 +14,7 @@ source $2
 
 
 if [[ "$delay" != "" ]]; then
-  uuid=`cat /proc/sys/kernel/random/uuid`
+  uuid=`date "+%Y%m%d%H%M%S"`
   setprop vtools.freeze_delay "$uuid"
 
   sleep $delay
