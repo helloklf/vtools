@@ -155,7 +155,7 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 set_cpu_freq()
 {
   echo $1 $2 $3 $4
-  echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo "0:$2 1:$2 2:$2 3:$2 4:$2 5:$2 6:$4 7:$6" > /sys/module/msm_performance/parameters/cpu_max_freq
   echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
   echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
   echo $3 > /sys/devices/system/cpu/cpufreq/policy6/scaling_min_freq

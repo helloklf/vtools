@@ -1,11 +1,5 @@
 #!/system/bin/sh
 
-# cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-# 300000 576000 768000 1017600 1248000 1324800 1497600 1612800 1708800 1804800
-
-# cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_available_frequencies
-# 300000 652800 806400 979200 1094400 1209600 1324800 1555200 1708800 1843200 1939200 2169600 2208000
-
 target=`getprop ro.board.platform`
 
 chmod 0755 /sys/devices/system/cpu/cpu0/online

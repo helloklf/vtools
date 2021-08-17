@@ -141,14 +141,12 @@ echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
-function set_cpu_freq()
-{
-    echo $1 $2 $3 $4
-  echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
-  echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-  echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-  echo $3 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_min_freq
-  echo $4 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq
+function set_cpu_freq() {
+  echo "0:$2 1:$2 2:$2 3:$2 4:$2 5:$2 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
+  echo $1 > /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+  echo $2 > /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
+  echo $3 > /sys/devices/system/cpu/cpufreq/policy6/scaling_min_freq
+  echo $4 > /sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq
 }
 
 function set_input_boost_freq() {
