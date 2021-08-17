@@ -43,6 +43,7 @@ if [[ "$action" = "powersave" ]]; then
   set_hispeed_freq 1209600 825600 940800
   set_hispeed_load 90 90 90
   cpuset '0-2' '0-3' '0-3' '0-7'
+  bw_down 1
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -58,6 +59,7 @@ elif [[ "$action" = "balance" ]]; then
   set_hispeed_freq 1478400 1056000 1286400
   set_hispeed_load 80 90 90
   cpuset '0-2' '0-3' '0-6' '0-7'
+  bw_down 1
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -73,6 +75,7 @@ elif [[ "$action" = "performance" ]]; then
   set_hispeed_freq 1632000 1708800 2016000
   set_hispeed_load 60 70 80
   cpuset '0-2' '0-3' '0-6' '0-7'
+  bw_max
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -88,6 +91,7 @@ elif [[ "$action" = "fast" ]]; then
   set_hispeed_freq 1632000 1612800 1708800
   set_hispeed_load 50 60 70
   cpuset '0-1' '0-3' '0-6' '0-7'
+  bw_max
 
 
 fi

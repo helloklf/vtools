@@ -145,7 +145,15 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
 
     fun getLaunchedFreezeApp(): List<String> {
-        return freezList.map { it.packageName }
+        val apps = ArrayList<String>().apply {
+            addAll(freezList.map { it.packageName })
+        }
+        context.getForegroundApps().forEach {
+            if (!apps.contains(it)) {
+                apps.add(it)
+            }
+        }
+        return apps
     }
 
     fun setFreezeAppLeaveTime(packageName: String) {
