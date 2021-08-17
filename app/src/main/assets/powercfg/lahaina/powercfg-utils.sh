@@ -326,10 +326,17 @@ stune_top_app() {
 }
 
 cpuctl () {
- echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
- echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
- echo $4 > /dev/cpuctl/$1/cpu.uclamp.min
- echo $5 > /dev/cpuctl/$1/cpu.uclamp.max
+  echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
+  echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
+  echo $4 > /dev/cpuctl/$1/cpu.uclamp.min
+  echo $5 > /dev/cpuctl/$1/cpu.uclamp.max
+}
+mk_cpuctl () {
+  mkdir -p "/dev/cpuctl/$1"
+  echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
+  echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
+  echo $4 > /dev/cpuctl/$1/cpu.uclamp.min
+  echo $5 > /dev/cpuctl/$1/cpu.uclamp.max
 }
 
 cpuset() {
@@ -431,10 +438,12 @@ yuan_shen_opt_run() {
 
         case "$comm" in
          "UnityMain")
+           echo $tid > /dev/cpuctl/top-app/heavy/tasks
            taskset -p "F0" "$tid" 2>&1 > /dev/null
          ;;
          # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
          "UnityGfxDevice"*|"UnityMultiRende"*)
+           echo $tid > /dev/cpuctl/top-app/heavy/tasks
            taskset -p "70" "$tid" 2>&1 > /dev/null
          ;;
          *)
