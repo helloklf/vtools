@@ -146,17 +146,8 @@ public class Main {
                         }
                         // reclaim
                         if (memFreeRatio < 0.25) {
-                            int swapFree = getSwapFreeMB();
-                            if (swapFree >= 300) {
-                                String method = "";
-                                if (memFreeRatio < 0.19 && swapFree > 500) {
-                                    method = "all";
-                                } else {
-                                    method = "file";
-                                }
-                                for (String pid: recyclable) {
-                                    reclaimPid(pid, method);
-                                }
+                            synchronized (threadSync) {
+                                threadSync.notifyAll();
                             }
                         }
                     }
@@ -168,6 +159,8 @@ public class Main {
             }
         }
     }
+
+    static final Object threadSync = new Object();
 
     static class MemoryWatch extends Thread {
         private File bgGroup;
@@ -181,17 +174,20 @@ public class Main {
             while (true) {
                 double memFreeRatio = getMemFreeRatio();
 
-                try {
-                    if (memFreeRatio >= 0.6) {
-                        Thread.sleep(180000);
-                    } else if (memFreeRatio >= 0.5) {
-                        Thread.sleep(120000);
-                    } else if (memFreeRatio > 0.4) {
-                        Thread.sleep(60000);
-                    } else {
-                        Thread.sleep(30000);
+                synchronized (threadSync) {
+                    try {
+                        if (memFreeRatio >= 0.6) {
+                            threadSync.wait(180000);
+                        } else if (memFreeRatio >= 0.5) {
+                            threadSync.wait(120000);
+                        } else if (memFreeRatio > 0.4) {
+                            threadSync.wait(60000);
+                        } else {
+                            threadSync.wait(30000);
+                        }
+                    } catch (InterruptedException ignored) {
                     }
-                } catch (Exception ignored){}
+                }
 
                 memFreeRatio = getMemFreeRatio();
                 int swapFree = getSwapFreeMB();
@@ -279,17 +275,8 @@ public class Main {
                 }
                 // reclaim
                 if (memFreeRatio < 0.25) {
-                    int swapFree = getSwapFreeMB();
-                    if (swapFree >= 300) {
-                        String method = "";
-                        if (memFreeRatio < 0.19 && swapFree > 500) {
-                            method = "all";
-                        } else {
-                            method = "file";
-                        }
-                        for (String pid: recyclable) {
-                            reclaimPid(pid, method);
-                        }
+                    synchronized (threadSync) {
+                        threadSync.notifyAll();
                     }
                 }
             }
