@@ -104,16 +104,10 @@ process_opt() {
   set_task_affinity `pgrep com.miui.home` 11110000
 }
 
-cpuctl () {
- echo $2 > /dev/cpuctl/$1/cpu.uclamp.sched_boost_no_override
- echo $3 > /dev/cpuctl/$1/cpu.uclamp.latency_sensitive
- echo $4 > /dev/cpuctl/top-app/cpu.uclamp.min
- echo $5 > /dev/cpuctl/top-app/cpu.uclamp.max
-}
-
 cpuctl top-app 0 0 0 max
 cpuctl foreground 0 0 0 '0.8'
 cpuctl background 0 0 0 0
+mk_cpuctl 'top-app/heavy' 1 1 max max
 
 echo 0 > /dev/stune/nnapi-hal/schedtune.boost
 echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
