@@ -174,7 +174,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
                 <TextView
-                    android:text="Buffers "
+                    android:text="Dirty "
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
