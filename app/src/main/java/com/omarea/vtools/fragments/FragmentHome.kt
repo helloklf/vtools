@@ -48,7 +48,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler(Looper.getMainLooper())
     private var cpuLoadUtils = CpuLoadUtils()
-    private val batteryUtils = BatteryUtils()
+    private val memoryUtils = MemoryUtils()
 
     private suspend fun forceKSWAPD(mode: Int): String {
         return withContext(Dispatchers.Default) {
@@ -303,8 +303,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         val temperature = GlobalStatus.updateBatteryTemperature()
 
         updateRamInfo()
+        val memInfo = memoryUtils.memoryInfo
+
         myHandler.post {
             try {
+                home_swap_cached.text = "" + (memInfo.swapCached / 1024) + "MB"
+                home_buffers.text = "" + (memInfo.buffers / 1024) + "MB"
+                home_dirty.text = "" + (memInfo.dirty / 1024) + "MB"
+
                 home_running_time.text = elapsedRealtimeStr()
                 if (batteryCurrentNow != Long.MIN_VALUE && batteryCurrentNow != Long.MAX_VALUE) {
                     home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
