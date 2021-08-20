@@ -409,6 +409,36 @@ set_task_affinity() {
   taskset -p "$mask" "$pid" 1>/dev/null
 }
 
+# HePingJingYing
+pubgmhd_opt_run () {
+  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+    return
+  fi
+
+  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
+  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
+  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
+  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+         "RenderThread"*)
+           taskset -p "80" "$tid" 2>&1 > /dev/null
+         ;;
+         *)
+           taskset -p "7F" "$tid" 2>&1 > /dev/null
+         ;;
+        esac
+      fi
+    done
+  fi
+}
+
 # YuanShen
 yuan_shen_opt_run() {
   if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
@@ -504,7 +534,6 @@ adjustment_by_top_app() {
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 3
           set_cpu_freq 1036800 1785600 1497600 1804800 1056000 2227200
-          set_hispeed_freq 1708800 1708800 2016000
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
@@ -512,14 +541,12 @@ adjustment_by_top_app() {
           sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
           set_cpu_freq 1036800 1785600 1056000 2016000 1056000 2419200
-          set_hispeed_freq 1708800 1056000 1056000
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
           set_cpu_freq 1036800 1478400 1056000 2419200 1056000 2841600
-          set_hispeed_freq 1708800 1708800 1708800
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 0
@@ -527,8 +554,18 @@ adjustment_by_top_app() {
           sched_limit 5000 0 10000 0 5000 0
           # sched_config "40 60" "50 75" "120" "150"
         fi
+        set_hispeed_freq 0 0 0
         cpuset '0-1' '0-3' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
+    ;;
+
+    "com.tencent.tmgp.pubgmhd")
+      manufacturer=$(getprop ro.product.manufacturer)
+      if [[ "$manufacturer" == "Xiaomi" ]]; then
+        cpuset '0-1' '0-3' '0-7' '0-7'
+        watch_app pubgmhd_opt_run &
+      fi
+      set_hispeed_freq 0 0 0
     ;;
 
     # Wang Zhe Rong Yao

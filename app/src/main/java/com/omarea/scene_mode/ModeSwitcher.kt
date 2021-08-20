@@ -239,7 +239,6 @@ open class ModeSwitcher {
                     if (configProvider.isNotEmpty()) {
                         val dynamic = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
                         val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)
-                        val time2 = System.currentTimeMillis()
                         if (dynamic && strictMode) {
                             keepShellExec(
                                     "export top_app=$packageName\n" +

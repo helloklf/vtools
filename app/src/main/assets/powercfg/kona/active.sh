@@ -56,8 +56,8 @@ elif [[ "$action" = "balance" ]]; then
   gpu_pl_up 0
   sched_boost 1 0
   set_hispeed_freq 1612800 1056000 1305600
-  sched_config "59 72" "75 82" "200" "400"
-  sched_limit 0 0 0 500 0 500
+  sched_config "53 72" "70 82" "200" "400"
+  sched_limit 0 0 0 0 0 0
   cpuset '0-2' '0-3' '0-6' '0-7'
   stune_top_app 0 0
 
@@ -70,7 +70,7 @@ elif [[ "$action" = "performance" ]]; then
   gpu_pl_up 1
   sched_boost 1 0
   set_hispeed_freq 1612800 1766400 2073600
-  sched_config "59 70" "70 80" "200" "400"
+  sched_config "50 70" "65 82" "200" "400"
   sched_limit 0 0 0 0 0 0
   cpuset '0-1' '0-3' '0-6' '0-7'
   stune_top_app 1 0
@@ -84,7 +84,7 @@ elif [[ "$action" = "fast" ]]; then
   set_hispeed_freq 1612800 1670400 1862400
   gpu_pl_up 2
   sched_boost 1 1
-  sched_config "56 70" "65 80" "300" "400"
+  sched_config "47 70" "60 82" "300" "400"
   sched_limit 5000 0 2000 0 2000 0
   cpuset '0' '0-3' '0-6' '0-7'
   stune_top_app 1 50
