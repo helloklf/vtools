@@ -373,17 +373,16 @@ set_task_affinity() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+  if [[ $(getprop vtools.powercfg_app | grep com.tencent.tmgp.pubgmhd) == "" ]]; then
     return
   fi
 
-  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
   # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
   # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
-  if [[ "$pid" != "" ]]; then
+  ps -ef -o PID,NAME | grep -e "com.tencent.tmgp.pubgmhd$" | cut -f1 -d ' ' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
@@ -391,6 +390,7 @@ pubgmhd_opt_run () {
         case "$comm" in
          "RenderThread"*)
            taskset -p "80" "$tid" 2>&1 > /dev/null
+           echo 1
          ;;
          *)
            taskset -p "7F" "$tid" 2>&1 > /dev/null
@@ -398,7 +398,7 @@ pubgmhd_opt_run () {
         esac
       fi
     done
-  fi
+  done
 }
 
 # YuanShen
@@ -522,11 +522,8 @@ adjustment_by_top_app() {
     ;;
 
     "com.tencent.tmgp.pubgmhd")
-      manufacturer=$(getprop ro.product.manufacturer)
-      if [[ "$manufacturer" == "Xiaomi" ]]; then
-        cpuset '0-1' '0-3' '0-7' '0-7'
-        watch_app pubgmhd_opt_run &
-      fi
+      cpuset '0-1' '0-3' '0-7' '0-7'
+      watch_app pubgmhd_opt_run &
       set_hispeed_freq 0 0 0
     ;;
 
