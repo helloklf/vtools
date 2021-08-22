@@ -689,12 +689,12 @@ adjustment_by_top_app() {
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
         echo 0-5 > /dev/cpuset/top-app/cpus
-        cpuctl top-app 0 0 0 0.1
+        cpuctl top-app 0 0 0 0.5
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
-        cpuctl top-app 0 0 0 0.5
+        cpuctl top-app 0 1 0 max
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 0
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
