@@ -373,17 +373,16 @@ set_task_affinity() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+  if [[ $(getprop vtools.powercfg_app | grep com.tencent.tmgp.pubgmhd) == "" ]]; then
     return
   fi
 
-  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
   # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
   # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
-  if [[ "$pid" != "" ]]; then
+  ps -ef -o PID,NAME | grep -e "com.tencent.tmgp.pubgmhd$" | cut -f1 -d ' ' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
@@ -391,6 +390,7 @@ pubgmhd_opt_run () {
         case "$comm" in
          "RenderThread"*)
            taskset -p "80" "$tid" 2>&1 > /dev/null
+           echo 1
          ;;
          *)
            taskset -p "7F" "$tid" 2>&1 > /dev/null
@@ -398,7 +398,7 @@ pubgmhd_opt_run () {
         esac
       fi
     done
-  fi
+  done
 }
 
 # YuanShen
@@ -496,7 +496,6 @@ adjustment_by_top_app() {
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 4
           set_cpu_freq 1036800 1804800 1478400 1766400 1075200 2265600
-          set_hispeed_freq 1708800 1766400 2073600
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
@@ -504,14 +503,12 @@ adjustment_by_top_app() {
           sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
           set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
-          set_hispeed_freq 1708800 1056000 1075200
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
           set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
-          set_hispeed_freq 1708800 1766400 1747200
           sched_limit 5000 0 5000 0 5000 0
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 0
@@ -519,10 +516,16 @@ adjustment_by_top_app() {
           sched_limit 5000 0 10000 0 5000 0
           # sched_config "40 60" "50 75" "120" "150"
         fi
+        set_hispeed_freq 0 0 0
         cpuset '0-1' '0-3' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
     ;;
 
+    "com.tencent.tmgp.pubgmhd")
+      cpuset '0-1' '0-3' '0-7' '0-7'
+      watch_app pubgmhd_opt_run &
+      set_hispeed_freq 0 0 0
+    ;;
 
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")

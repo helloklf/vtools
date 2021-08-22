@@ -21,8 +21,8 @@ android {
         applicationId "com.omarea.scene"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 202107181
-        versionName "4.4 Core"
+        versionCode 202108221
+        versionName "4.5 Core"
         externalNativeBuild {
             cmake {
                 cppFlags ""
