@@ -16,7 +16,6 @@ import com.omarea.library.shell.PropsUtils
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
-import java.lang.Exception
 
 /**
  * Created by Hello on 2017/12/27.

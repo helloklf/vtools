@@ -6,7 +6,6 @@ import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
 import com.omarea.library.shell.PropsUtils
 import com.omarea.library.shell.Uperf
 import com.omarea.store.SpfConfig

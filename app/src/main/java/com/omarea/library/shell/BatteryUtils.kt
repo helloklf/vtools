@@ -1,11 +1,6 @@
 package com.omarea.library.shell
 
-import android.content.Context
-import com.omarea.Scene
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
 import com.omarea.model.BatteryStatus
 
 /**

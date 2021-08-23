@@ -191,7 +191,7 @@ class ActivityStartSplash : Activity() {
             } else {
                 initContractAction()
             }
-        }, false, InstallBusybox(this)).forceGetRoot()
+        }, InstallBusybox(this)).forceGetRoot()
     }
 
     /**

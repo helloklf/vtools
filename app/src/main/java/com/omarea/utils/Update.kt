@@ -1,21 +1,16 @@
 package com.omarea.utils
 
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
-import androidx.core.content.FileProvider
 import com.omarea.common.ui.DialogHelper
 import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
 
@@ -36,7 +31,7 @@ class Update {
 
     fun checkUpdate(context: Context) {
         val handler = Handler(Looper.getMainLooper());
-        Thread(Runnable {
+        Thread {
             //http://47.106.224.127/
             try {
                 val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/Scene4C.json")
@@ -79,7 +74,7 @@ class Update {
                 }
                 */
             }
-        }).start()
+        }.start()
     }
 
     private fun update(context: Context, jsonObject: JSONObject) {
@@ -87,7 +82,7 @@ class Update {
                 "下载新版本" + jsonObject.getString("versionName") + " ？",
                 "更新内容：" + "\n\n" + jsonObject.getString("message"),
                 {
-                    var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/Scene4C/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
+                    var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/Scene4C/app-release${jsonObject.getInt("versionCode")}.apk"
                     if (jsonObject.has("downloadUrl")) {
                         downloadUrl = jsonObject.getString("downloadUrl")
                     }
@@ -99,74 +94,7 @@ class Update {
                     } catch (ex: java.lang.Exception) {
                         Toast.makeText(context, "启动下载失败！", Toast.LENGTH_SHORT).show()
                     }
-                    /*
-                    //创建下载任务,downloadUrl就是下载链接
-                    val request = DownloadManager.Request(Uri.parse(downloadUrl));
-                    //指定下载路径和下载文件名
-                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Scene_" + jsonObject.getString("versionName") + ".apk");
-                    //在通知栏显示下载进度
-                    request.allowScanningByMediaScanner();
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    //获取下载管理器
-                    val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    //将下载任务加入下载队列，否则不会进行下载
-                    val taskId = downloadManager.enqueue(request)
-
-                    val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-                    context.registerReceiver(object : BroadcastReceiver() {
-                        override fun onReceive(context: Context?, intent: Intent?) {
-                            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                            if (id == taskId) {
-                                val path = getRealFilePath(context!!, downloadManager.getUriForDownloadedFile(taskId))
-                                Toast.makeText(context, "下载完成，请手动点击下载通知安装更新！", Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }, intentFilter)
-                    */
                 })
                 .setCancelable(false)
-    }
-
-    fun getRealFilePath(context: Context, uri: Uri?): String? {
-        if (null == uri) return null
-        val scheme = uri.scheme
-        var data: String? = null
-        if (scheme == null)
-            data = uri.path
-        else if (ContentResolver.SCHEME_FILE == scheme) {
-            data = uri.path
-        } else if (ContentResolver.SCHEME_CONTENT == scheme) {
-            val cursor = context.contentResolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null)
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-                    if (index > -1) {
-                        data = cursor.getString(index)
-                    }
-                }
-                cursor.close()
-            }
-        }
-        return data
-    }
-
-
-    // 安装Apk
-    private fun installApk(context: Context, filePath: String) {
-        try {
-            val i = Intent(Intent.ACTION_VIEW)
-            // i.setDataAndType(Uri.fromFile(File(filePath)), "application/vnd.android.package-archive")
-
-            val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", File(filePath))
-            i.setDataAndType(fileUri, "application/vnd.android.package-archive")
-
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(i)
-        } catch (e: Exception) {
-            Log.e("installApk", "" + e.message)
-            // Log.e(TAG, "安装失败")
-            e.printStackTrace()
-        }
     }
 }

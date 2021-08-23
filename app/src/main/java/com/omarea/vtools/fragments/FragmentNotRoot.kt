@@ -21,7 +21,7 @@ class FragmentNotRoot : androidx.fragment.app.Fragment() {
                 if (this.activity != null) {
                     this.activity!!.recreate()
                 }
-            }, false, null).forceGetRoot()
+            }, null).forceGetRoot()
         }
     }
 

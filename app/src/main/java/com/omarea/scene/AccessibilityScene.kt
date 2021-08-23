@@ -8,9 +8,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.LruCache
-import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo

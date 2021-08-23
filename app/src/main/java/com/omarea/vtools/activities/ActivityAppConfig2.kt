@@ -77,7 +77,7 @@ class ActivityAppConfig2 : ActivityBase() {
     private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(this)
-        applistHelper = AppListHelper(this, false)
+        applistHelper = AppListHelper(this)
         spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         sceneConfigStore = SceneConfigStore(this.context)

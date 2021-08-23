@@ -8,7 +8,7 @@ import com.omarea.store.SpfConfig
 import java.util.*
 
 class ElectricityUnit {
-    public fun getDefaultElectricityUnit(context: Context): Int {
+    fun getDefaultElectricityUnit(context: Context): Int {
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         val currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         return if (Build.MANUFACTURER.toUpperCase(Locale.getDefault()) == "XIAOMI") {

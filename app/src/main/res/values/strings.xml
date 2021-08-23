@@ -212,6 +212,7 @@
     <string name="detail_scene_extra">Scene功能</string>
     <string name="detail_scene_monitor">性能监视器</string>
     <string name="detail_scene_monitor_desc">显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)</string>
+    <string name="detail_reset">设定重置</string>
 
 
 </resources>
