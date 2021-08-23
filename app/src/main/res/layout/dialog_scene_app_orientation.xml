@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.omarea.common.ui.OverScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -26,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="屏幕显示方式" />
+                android:text="@string/orientation_title" />
 
             <TextView
                 android:id="@+id/confirm_message"
@@ -36,7 +35,7 @@
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:paddingTop="8dp"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
-                android:text="指定此应用运行期间，屏幕显示方向" />
+                android:text="@string/orientation_desc" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -100,14 +99,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="默认" />
+                            android:text="@string/orientation_default" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="保持应用程序清单声明的显示方式" />
+                            android:text="@string/orientation_default_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -146,14 +145,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="自动旋转" />
+                            android:text="@string/orientation_auto" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="根据传感器自动旋转屏幕方向" />
+                            android:text="@string/orientation_auto_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -192,14 +191,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="强制旋转" />
+                            android:text="@string/orientation_force_auto" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="根据传感器自动旋转屏幕方向" />
+                            android:text="@string/orientation_force_auto_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -238,14 +237,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="强制横屏" />
+                            android:text="@string/orientation_horizontal" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="强制横屏显示此应用" />
+                            android:text="@string/orientation_horizontal_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -284,14 +283,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="强制竖屏" />
+                            android:text="@string/orientation_vertical" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="强制此应用竖屏显示" />
+                            android:text="@string/orientation_vertical_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -315,13 +314,13 @@
             <Button
                 android:id="@+id/btn_cancel"
                 style="@style/dialogCancelBtn"
-                android:text="取消" />
+                android:text="@string/btn_cancel" />
 
             <Button
                 android:id="@+id/btn_confirm"
                 style="@style/dialogConfirmBtn"
                 android:layout_marginStart="8dp"
-                android:text="确定" />
+                android:text="@string/btn_confirm" />
         </LinearLayout>
 
     </LinearLayout>

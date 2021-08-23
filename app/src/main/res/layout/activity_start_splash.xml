@@ -42,7 +42,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15sp"
             android:layout_marginBottom="40sp"
-            android:text="现在，先校验一些权限设置..."
+            android:text="@string/splash_checking"
             android:textAlignment="center"
             android:textColor="?android:colorAccent"
             android:textSize="12sp" />

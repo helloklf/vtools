@@ -18,40 +18,40 @@
 
             <TextView
                 android:id="@+id/confirm_title"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/error_root" />
+
             <TextView
                 android:id="@+id/confirm_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="8dp"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                android:text="@string/error_root_desc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="@string/error_root_desc" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal">
 
             <Button
-                android:text="@string/btn_skip"
                 android:id="@+id/btn_skip"
                 style="@style/dialogCancelBtn"
-                android:layout_marginEnd="8dp">
-            </Button>
+                android:layout_marginEnd="8dp"
+                android:text="@string/btn_skip"></Button>
+
             <Button
                 android:id="@+id/btn_retry"
                 style="@style/dialogConfirmBtn"
-                android:text="@string/btn_retry">
-            </Button>
+                android:text="@string/btn_retry"></Button>
         </LinearLayout>
 
     </LinearLayout>

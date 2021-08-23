@@ -26,7 +26,7 @@
                 style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="峰值统计" />
+                android:text="@string/batstat_max_values" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_temperature"
                         android:gravity="center_vertical"
-                        android:text="温度"
+                        android:text="@string/batstat_temperature"
                         android:textAlignment="center"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
@@ -84,7 +84,7 @@
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_output"
                         android:gravity="center_vertical"
-                        android:text="耗电"
+                        android:text="@string/batstat_bat_out"
                         android:textAlignment="center"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
@@ -116,7 +116,7 @@
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_intput"
                         android:gravity="center_vertical"
-                        android:text="充电"
+                        android:text="@string/batstat_bat_in"
                         android:textAlignment="center"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
@@ -141,25 +141,27 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="0dp">
+
             <LinearLayout
                 android:id="@+id/settings_step_charge"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <com.omarea.ui.HelpIcon
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:text="这里统计的只是每个应用在前台显示时的整机耗电，而电流和温度显示的是所有检测记录的平均值。这意味着此数值数值会受其它后台应用耗电影响！\n\n此数据由Scene的辅助服务自行统计，如果你已经保持场景模式后台运行一段时间，却一直得不到数据，请检查概览界面的电流显示是否正确，如果错误请手动校准电流单位。" />
+                    app:text="@string/batstat_records_desc" />
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="应用使用记录" />
+                    android:layout_weight="1"
+                    android:text="@string/batstat_records" />
             </LinearLayout>
 
 

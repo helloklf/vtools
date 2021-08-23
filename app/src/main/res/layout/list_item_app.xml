@@ -6,10 +6,10 @@
 
     <CheckBox
         android:id="@+id/select_state"
-        android:layout_marginStart="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
         android:clickable="false"
         android:editable="false"
         android:focusable="false"
@@ -17,10 +17,10 @@
 
     <ImageView
         android:id="@+id/ItemIcon"
-        android:layout_marginStart="8dp"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
         android:maxWidth="45dp"
         android:maxHeight="45dp"
         android:minWidth="45dp"

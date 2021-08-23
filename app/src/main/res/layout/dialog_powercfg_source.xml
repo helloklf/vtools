@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.omarea.common.ui.OverScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:alpha="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:alpha="0.85"
+        android:orientation="vertical"
         android:paddingLeft="8dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="8dp"
-        android:orientation="vertical">
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <TextView
+            style="@style/textDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            style="@style/textDefault"
-            android:text="选择配置源"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="@string/schedule_source" />
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/source_official_conservative"
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
+                android:background="@drawable/action_menu_icon_bg"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_1"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:background="@drawable/action_menu_icon_bg"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -51,37 +51,38 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="经典配置" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/schedule_classics" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Scene提供的预设，各个模式泾渭分明" />
+                    android:text="@string/schedule_classics_desc" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/source_official_active"
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
+                android:background="@drawable/action_menu_icon_bg"
                 android:scaleType="centerInside"
                 android:src="@drawable/source_2"
-                android:background="@drawable/action_menu_icon_bg"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -93,16 +94,16 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="偏重性能" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/schedule_positive" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Scene提供的预设，整体上更关注性能释放" />
+                    android:text="@string/schedule_positive_desc" />
             </LinearLayout>
 
         </LinearLayout>

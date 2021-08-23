@@ -8,18 +8,19 @@
         layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <LinearLayout
-        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="8dp"
-            android:layout_marginHorizontal="10dp"
             android:background="@drawable/filter_toolbar_bg"
             android:paddingStart="10dp"
             android:paddingEnd="0dp">
@@ -30,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="搜索应用名"
+                android:hint="@string/apps_search_placeholder"
                 android:imeOptions="actionSearch"
                 android:inputType="textFilter"
                 android:padding="8dp"

@@ -6,32 +6,33 @@
     android:padding="12dp">
 
     <LinearLayout
-        android:alpha="0.8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="150dp"
         android:layout_marginTop="6dp"
+        android:alpha="0.8"
         android:background="@drawable/confirm_dialog_bg"
+        android:minHeight="150dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/confirm_title"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="16dp"
             style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
             android:text="@string/electricity_unit_adj" />
+
         <TextView
             android:id="@+id/confirm_message"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="16dp"
-            android:text="@string/electricity_unit_adj_desc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:text="@string/electricity_unit_adj_desc" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,17 +103,16 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_confirm"
-            android:layout_marginStart="0dp"
             style="@style/dialogConfirmBtn"
-            android:text="确定">
-        </Button>
+            android:layout_marginStart="0dp"
+            android:text="确定"></Button>
     </LinearLayout>
 
 </LinearLayout>

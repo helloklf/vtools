@@ -16,12 +16,13 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
+                android:layout_marginBottom="16dp"
                 android:orientation="vertical"
                 android:paddingStart="16dp"
                 android:paddingTop="0dp"
                 android:paddingEnd="16dp"
-                android:paddingBottom="16dp"
-                android:layout_marginBottom="16dp">
+                android:paddingBottom="16dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -32,9 +33,9 @@
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="配置源/作者：" />
 
                     <TextView
@@ -47,38 +48,38 @@
 
                     <ImageButton
                         android:id="@+id/config_author_icon"
-                        android:src="@drawable/source_switch"
-                        android:scaleType="centerInside"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:paddingEnd="0dp"
-                        android:paddingStart="5dp"
-                        android:background="@null"
-                        android:tint="?android:colorAccent"
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:background="@null"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="0dp"
+                        android:paddingBottom="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/source_switch"
+                        android:tint="?android:colorAccent" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp">
+                    android:layout_height="70dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/powercfg_powersave"
                         android:id="@+id/cpu_config_p0"
                         style="@style/InCardListItem"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/powercfg_powersave"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center_vertical"
-                            android:scaleType="centerInside"
                             android:padding="6dp"
+                            android:scaleType="centerInside"
                             android:src="@drawable/mode_powersave" />
 
                         <LinearLayout
@@ -90,36 +91,36 @@
 
                             <TextView
                                 style="@style/textTitle"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/powersave" />
+                                android:text="@string/powersave"
+                                android:textColor="@android:color/white" />
 
                             <TextView
                                 style="@style/textSmall"
-                                android:alpha="0.6"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="老年人直呼内行" />
+                                android:alpha="0.6"
+                                android:text="老年人直呼内行"
+                                android:textColor="@android:color/white" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/powercfg_balance"
                         android:id="@+id/cpu_config_p1"
                         style="@style/InCardListItem"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/powercfg_balance"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:padding="8dp"
                             android:layout_gravity="center_vertical"
+                            android:padding="8dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/mode_balance" />
 
@@ -132,42 +133,43 @@
 
                             <TextView
                                 style="@style/textTitle"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/balance" />
+                                android:text="@string/balance"
+                                android:textColor="@android:color/white" />
 
                             <TextView
                                 style="@style/textSmall"
-                                android:alpha="0.6"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="慢点 世界赏心悦目" />
+                                android:alpha="0.6"
+                                android:text="慢点 世界赏心悦目"
+                                android:textColor="@android:color/white" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                 </LinearLayout>
+
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp">
+                    android:layout_height="70dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/powercfg_performance"
-                        android:layout_marginEnd="4dp"
                         android:id="@+id/cpu_config_p2"
                         style="@style/InCardListItem"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/powercfg_performance"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:padding="6dp"
                             android:layout_gravity="center_vertical"
+                            android:padding="6dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/mode_performance" />
 
@@ -180,36 +182,36 @@
 
                             <TextView
                                 style="@style/textTitle"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/performance" />
+                                android:text="@string/performance"
+                                android:textColor="@android:color/white" />
 
                             <TextView
                                 style="@style/textSmall"
-                                android:alpha="0.6"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="玩把游戏压压惊" />
+                                android:alpha="0.6"
+                                android:text="玩把游戏压压惊"
+                                android:textColor="@android:color/white" />
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/powercfg_fast"
                         android:id="@+id/cpu_config_p3"
-                        android:layout_marginStart="4dp"
                         style="@style/InCardListItem"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/powercfg_fast"
                         android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:padding="9dp"
                             android:layout_gravity="center_vertical"
+                            android:padding="9dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/mode_fast" />
 
@@ -222,18 +224,18 @@
 
                             <TextView
                                 style="@style/textTitle"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/fast" />
+                                android:text="@string/fast"
+                                android:textColor="@android:color/white" />
 
                             <TextView
                                 style="@style/textSmall"
-                                android:alpha="0.6"
-                                android:textColor="@android:color/white"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="快乐总是短暂的" />
+                                android:alpha="0.6"
+                                android:text="快乐总是短暂的"
+                                android:textColor="@android:color/white" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -277,31 +279,32 @@
             </LinearLayout>
 
             <LinearLayout
+                style="@style/ListCardItem"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="0dp"
-                style="@style/ListCardItem">
+                android:layout_marginBottom="0dp">
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/auto"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:padding="11dp"
                         android:background="@drawable/action_menu_icon_bg"
                         android:backgroundTint="@color/colorPrimary"
+                        android:padding="11dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/auto"
                         app:tint="#ffffff" />
+
                     <LinearLayout
-                        android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <Switch
@@ -321,16 +324,18 @@
 
                 <LinearLayout
                     android:id="@+id/dynamic_control_opts"
-                    android:background="@drawable/in_card_item"
-                    android:padding="10dp"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:background="@drawable/in_card_item"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -355,10 +360,11 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:orientation="horizontal">
+
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -389,6 +395,7 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingEnd="8dp">
+
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -398,9 +405,9 @@
                             android:id="@+id/strict_mode"
                             style="@style/textTitle"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
                             android:text="严格模式" />
 
                     </LinearLayout>
@@ -412,6 +419,7 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingEnd="8dp">
+
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -421,9 +429,9 @@
                             android:id="@+id/delay_switch"
                             style="@style/textTitle"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
                             android:text="延迟切换" />
 
                     </LinearLayout>
@@ -431,30 +439,31 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
                 <LinearLayout
                     android:id="@+id/nav_battery_stats"
-                    android:layout_weight="1"
-                    android:layout_height="65dp"
-                    android:background="@drawable/krscript_item_ripple"
                     style="@style/ListCardItemSmall"
+                    android:layout_height="65dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/battery"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:padding="9dp"
                         android:background="@drawable/action_menu_icon_bg"
                         android:backgroundTint="@color/colorPrimary"
+                        android:padding="9dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/battery"
                         app:tint="#ffffff" />
 
                     <LinearLayout
@@ -466,9 +475,9 @@
 
                         <TextView
                             style="@style/textTitle"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
                             android:text="耗电统计" />
 
                         <TextView
@@ -482,30 +491,31 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
+                        android:alpha="0.8"
+                        android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/arrow"
-                        android:background="@null"
-                        android:alpha="0.8"
                         app:tint="#808080" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/nav_app_scene"
-                    android:layout_weight="1"
-                    android:layout_height="65dp"
-                    android:background="@drawable/krscript_item_ripple"
                     style="@style/ListCardItemSmall"
+                    android:layout_height="65dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_menu_profile"
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:padding="10dp"
                         android:background="@drawable/action_menu_icon_bg"
                         android:backgroundTint="@color/colorPrimary"
+                        android:padding="10dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_menu_profile"
                         app:tint="#ffffff" />
 
                     <LinearLayout
@@ -517,9 +527,9 @@
 
                         <TextView
                             style="@style/textTitle"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
                             android:text="应用策略" />
 
                         <TextView
@@ -533,10 +543,10 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center_vertical"
+                        android:alpha="0.8"
+                        android:background="@null"
                         android:scaleType="centerInside"
                         android:src="@drawable/arrow"
-                        android:background="@null"
-                        android:alpha="0.8"
                         app:tint="#808080" />
                 </LinearLayout>
             </LinearLayout>

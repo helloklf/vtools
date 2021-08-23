@@ -28,22 +28,22 @@
 
         <TextView
             android:id="@+id/fw_cpu_load"
-            android:layout_marginStart="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="--"
-            android:minWidth="20dp"
-            android:textColor="#ffffff"
+            android:layout_marginStart="2dp"
             android:fontFamily="monospace"
+            android:minWidth="20dp"
+            android:text="--"
+            android:textColor="#ffffff"
             android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="5dp"
             android:text="GPU:"
             android:textColor="#dddddd"
             android:textSize="8dp"
@@ -51,22 +51,22 @@
 
         <TextView
             android:id="@+id/fw_gpu_load"
-            android:layout_marginStart="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="--"
-            android:minWidth="20dp"
-            android:textColor="#ffffff"
+            android:layout_marginStart="2dp"
             android:fontFamily="monospace"
+            android:minWidth="20dp"
+            android:text="--"
+            android:textColor="#ffffff"
             android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="5dp"
             android:text="FPS:"
             android:textAlignment="center"
             android:textColor="#dddddd"
@@ -75,28 +75,28 @@
 
         <TextView
             android:id="@+id/fw_fps"
-            android:layout_marginStart="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="--"
-            android:minWidth="22dp"
-            android:textColor="#ffffff"
+            android:layout_marginStart="2dp"
             android:fontFamily="monospace"
+            android:minWidth="22dp"
+            android:text="--"
+            android:textColor="#ffffff"
             android:textSize="8dp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_marginStart="2dp"
             android:id="@+id/fw_battery_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textAlignment="center"
-            android:text="--"
-            android:minWidth="34dp"
-            android:textColor="#ffffff"
+            android:layout_marginStart="2dp"
             android:fontFamily="monospace"
+            android:minWidth="34dp"
+            android:text="--"
+            android:textAlignment="center"
+            android:textColor="#ffffff"
             android:textSize="8dp"
             android:textStyle="bold" />
     </LinearLayout>

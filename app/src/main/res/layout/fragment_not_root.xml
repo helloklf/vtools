@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:text="未ROOT"
+        android:text="@string/nr_unauthorized"
         android:textAlignment="center"
         android:textColor="?android:colorAccent"
         android:textSize="40dp" />
@@ -18,7 +18,7 @@
         style="@style/textSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="未获取ROOT权限，部分功能已被禁用"
+        android:text="@string/nr_unauthorized_desc"
         android:textAlignment="center"
         android:textSize="11dp" />
 

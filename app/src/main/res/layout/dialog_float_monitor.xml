@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.omarea.common.ui.OverScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,130 +20,135 @@
 
             <TextView
                 android:id="@+id/confirm_title"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="使用监视器" />
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:text="@string/monitor_title" />
+
             <TextView
                 android:id="@+id/confirm_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:paddingTop="8dp"
-                android:text="选择要显示的监视器悬浮窗"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="@string/monitor_desc" />
 
             <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:background="@drawable/in_card_item"
                 android:padding="@dimen/activity_vertical_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                style="@style/textSmall"
-                android:text="说明：负载监视器窗口可单击[展开/折叠]详情，双击关闭"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="@string/monitor_tip" />
 
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:background="@drawable/in_card_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="70dp"
                     android:gravity="center_vertical"
+                    android:minHeight="70dp"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
                     <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FB8C00"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FB8C00"
                         android:src="@drawable/fw_float_monitor"
                         app:tint="@android:color/white" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="负载监视器" />
+                            android:text="@string/monitor_perf" />
+
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="显示CPU、GPU、RAM和电池状态" />
+                            android:text="@string/monitor_perf_desc" />
                     </LinearLayout>
 
                     <Switch
                         android:id="@+id/monitor_perf"
-                        android:enabled="true"
-                        android:checked="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:checked="false"
+                        android:enabled="true" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="70dp"
                     android:gravity="center_vertical"
+                    android:minHeight="70dp"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
                     <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#5E35B1"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#5E35B1"
                         android:src="@drawable/fw_float_monitor"
                         app:tint="@android:color/white" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="迷你监视器" />
+                            android:text="@string/monitor_mini" />
+
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="显示CPU、GPU负载和电池温度" />
+                            android:text="@string/monitor_mini_desc" />
                     </LinearLayout>
 
                     <Switch
                         android:id="@+id/monitor_game"
-                        android:enabled="true"
-                        android:checked="false"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:checked="false"
+                        android:enabled="true" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -151,10 +156,10 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_cancel"

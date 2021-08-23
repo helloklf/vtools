@@ -68,7 +68,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
-                            android:text="物理内存"
+                            android:text="@string/home_mem"
                             android:textSize="12dp" />
 
                         <TextView
@@ -107,7 +107,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
-                            android:text="交换分区"
+                            android:text="@string/home_swap"
                             android:textSize="12dp" />
 
                         <TextView
@@ -227,7 +227,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical|end"
-                            android:text="核心数" />
+                            android:text="@string/home_cores" />
 
                         <TextView
                             android:id="@+id/cpu_core_total_load"
@@ -441,7 +441,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="已开机"
+                            android:text="@string/home_time"
                             android:textColor="#ff888888" />
 
                         <TextView
@@ -477,7 +477,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="访问Scene官网"
+                            android:text="@string/home_scene"
                             android:textColor="#ff888888" />
                     </LinearLayout>
                 </LinearLayout>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,83 +18,87 @@
             android:id="@+id/confirm_title"
             style="@style/dialogTitle"
             android:text="自动加速策略" />
+
         <TextView
             android:id="@+id/confirm_message"
             style="@style/dialogDesc"
             android:text="应用前台运行期间，每隔10秒检查剩余内存，若空闲内存低于16%，主动触发内存回收。" />
 
         <FrameLayout
-            android:visibility="gone"
-            android:layout_margin="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:visibility="gone">
+
             <SeekBar
                 android:id="@+id/swap_size"
                 style="@style/SceneSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:max="64"
                 android:orientation="horizontal"
-                android:progress="8"
-                android:max="64" />
+                android:progress="8" />
 
             <TextView
                 android:id="@+id/swap_size_text"
-                android:text="0MB"
                 style="@style/textSmall"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0MB" />
         </FrameLayout>
 
         <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@drawable/in_card_item_inactive"
             android:padding="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            style="@style/textSmall"
-            android:text="说明：如果你不清楚此策略的适用场景和利弊，又不愿意实践得出结论的话，请勿使用它！以免带来负面体验。"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="说明：如果你不清楚此策略的适用场景和利弊，又不愿意实践得出结论的话，请勿使用它！以免带来负面体验。" />
 
         <LinearLayout
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@drawable/in_card_item_inactive"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="70dp"
                 android:gravity="center_vertical"
+                android:minHeight="70dp"
                 android:orientation="horizontal"
                 android:padding="6dp">
 
                 <ImageView
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/dialog_icon_bg"
-                    android:backgroundTint="#2196F3"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="6dp"
+                    android:background="@drawable/dialog_icon_bg"
+                    android:backgroundTint="#2196F3"
                     android:src="@drawable/swap_data"
                     app:tint="@android:color/white" />
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="启用策略" />
+
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
@@ -106,21 +109,21 @@
 
                 <Switch
                     android:id="@+id/boost_policy_mem"
-                    android:checked="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:checked="false" />
             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_cancel"
@@ -128,9 +131,9 @@
             android:text="取消" />
 
         <Button
-            android:layout_marginStart="8dp"
             android:id="@+id/btn_confirm"
             style="@style/dialogConfirmBtn"
+            android:layout_marginStart="8dp"
             android:text="确定" />
     </LinearLayout>
 

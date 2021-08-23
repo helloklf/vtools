@@ -132,4 +132,14 @@
 
     <string name="toolkit_install_path">toolkit</string>
 
+    <string name="scene_service_config_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
+    <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
+    <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
+
+    <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
+    <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
+    <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>
+    <string name="power_fastboot_cmd">sync;reboot bootloader;</string>
+    <string name="power_recovery_cmd">sync;reboot recovery;</string>
+    <string name="power_emergency_cmd">sync;reboot edl;</string>
 </resources>

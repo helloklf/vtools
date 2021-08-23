@@ -6,52 +6,54 @@
     android:keepScreenOn="false">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="false"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_list"
-            android:minWidth="140dp"
+            style="@style/SceneTabLayout"
             android:layout_width="wrap_content"
             android:background="@null"
-            style="@style/SceneTabLayout" />
+            android:minWidth="140dp" />
 
         <View
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="1dp" />
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/action_graph"
-            android:src="@drawable/graph"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginRight="10dp"
             android:background="@null"
-            android:tint="?android:textColorPrimary"
             android:padding="7dp"
             android:scaleType="centerInside"
-            android:layout_width="45dp"
-            android:layout_height="45dp" />
+            android:src="@drawable/graph"
+            android:tint="?android:textColorPrimary" />
+
         <ImageButton
             android:id="@+id/action_power"
-            android:src="@drawable/ic_power"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginRight="10dp"
             android:background="@null"
-            android:tint="?android:textColorPrimary"
             android:padding="7dp"
             android:scaleType="centerInside"
-            android:layout_width="45dp"
-            android:layout_height="45dp" />
+            android:src="@drawable/ic_power"
+            android:tint="?android:textColorPrimary" />
     </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/tab_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="?actionBarSize" />
 
 </RelativeLayout>

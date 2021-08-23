@@ -27,12 +27,12 @@
 
         <TextView
             android:id="@+id/ItemTitle"
+            style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:lines="1"
-            android:text=""
-            style="@style/textTitle" />
+            android:text="" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,23 +41,23 @@
 
             <TextView
                 android:id="@+id/ItemSummary"
+                style="@style/textSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:minWidth="60dp"
                 android:textAlignment="textStart"
-                style="@style/textSmall"
                 android:textColor="#0094ff" />
 
             <TextView
                 android:id="@+id/ItemDesc"
+                style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_horizontal"
                 android:layout_weight="1"
                 android:lines="1"
-                android:text=""
-                style="@style/textSmall" />
+                android:text="" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

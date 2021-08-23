@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.omarea.common.ui.OverScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:alpha="0.85"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:alpha="0.85"
+        android:orientation="vertical"
         android:paddingLeft="8dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="8dp"
-        android:orientation="vertical">
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <TextView
+            style="@style/textDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            style="@style/textDefault"
-            android:text="选择操作"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="@string/power_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,22 +29,23 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="65dp"
-                android:background="@drawable/krscript_item_ripple"
                 android:id="@+id/power_shutdown"
                 style="@style/ListCardItemSmall"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/krscript_item_ripple"
+                android:minHeight="65dp"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:alpha="0.8"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:alpha="0.8"
+                    android:background="@drawable/action_menu_icon_bg"
                     android:scaleType="centerInside"
                     android:src="@drawable/power_shutdown"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:background="@drawable/action_menu_icon_bg"
                     app:tint="#ffffff" />
 
                 <LinearLayout
@@ -57,38 +57,39 @@
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_marginBottom="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="关机" />
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/power_shutdown_force" />
 
                     <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="正常关机" />
+                        android:text="@string/power_shutdown" />
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="1"
-                android:layout_height="65dp"
-                android:background="@drawable/krscript_item_ripple"
                 android:id="@+id/power_reboot"
                 style="@style/ListCardItemSmall"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/krscript_item_ripple"
+                android:minHeight="65dp"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:alpha="0.8"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/power_reboot"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:alpha="0.8"
                     android:background="@drawable/action_menu_icon_bg"
                     android:backgroundTint="#8BC34A"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/power_reboot"
                     app:tint="#ffffff" />
 
                 <LinearLayout
@@ -100,39 +101,41 @@
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_marginBottom="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="重启" />
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/power_reboot_force" />
 
                     <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="正常重启" />
+                        android:text="@string/power_reboot" />
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/power_hot_reboot"
+
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                android:src="@drawable/power_hot_reboot"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
                 android:background="@drawable/action_menu_icon_bg"
                 android:backgroundTint="#00BCD4"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_hot_reboot"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -144,38 +147,40 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="热重启" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/power_hot_reboot" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="只重启系界面而不重新引导系统（可能引发Bug）" />
+                    android:text="@string/power_hot_reboot2" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/power_recovery"
+
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                android:src="@drawable/power_recovery"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
                 android:background="@drawable/action_menu_icon_bg"
                 android:backgroundTint="#C8787878"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_recovery"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -187,40 +192,43 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recovery" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/power_recovery" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="重启到Recovery模式（俗称卡刷模式）" />
+                    android:text="@string/power_recovery_desc" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/power_fastboot"
+
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                android:src="@drawable/power_fastboot"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
                 android:background="@drawable/action_menu_icon_bg"
                 android:backgroundTint="#C8787878"
                 android:padding="10dp"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_fastboot"
                 app:tint="#ffffff" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -230,39 +238,41 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Fastboot" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/power_fastboot" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="重启到Fastboot模式（俗称USB线刷模式）" />
+                    android:text="@string/power_fastboot_desc" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:layout_height="65dp"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/power_emergency"
+
             style="@style/ListCardItemSmall"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/krscript_item_ripple"
+            android:minHeight="65dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:alpha="0.8"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerInside"
-                android:src="@drawable/power_emergency"
-                android:padding="11dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:alpha="0.8"
                 android:background="@drawable/action_menu_icon_bg"
                 android:backgroundTint="#C8787878"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/power_emergency"
                 app:tint="#ffffff" />
 
             <LinearLayout
@@ -274,16 +284,16 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="9008(EDL)" />
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/power_9008_edl" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="重启到9008模式，*此模式仅限部分骁龙设备可用" />
+                    android:text="@string/power_9008_desc" />
             </LinearLayout>
 
         </LinearLayout>

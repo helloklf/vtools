@@ -1,13 +1,10 @@
 <resources>
 
+    <string name="btn_cancel">取消</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_exit">退出</string>
     <string name="btn_skip">跳过</string>
     <string name="btn_retry">重试</string>
-    <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
-
-    <string name="error_root">抱歉，没有获取到ROOT权限</string>
-    <string name="error_root_desc">没有ROOT权限，将失去许多特色功能。\n如果你错过了授权提示，或未看到弹窗，请找到你的ROOT管理器，手动设置允许Scene使用ROOT权限~</string>
 
     <string name="app_name">Scene4 Core Edition</string>
     <string name="app_name_short">Scene4C</string>
@@ -27,6 +24,7 @@
     <string name="balance">均衡模式</string>
     <string name="performance">性能模式</string>
     <string name="fast">极速模式</string>
+    <string name="global_default">全局默认</string>
     <string name="powersave_short">省电</string>
     <string name="balance_short">均衡</string>
     <string name="performance_short">性能</string>
@@ -78,31 +76,142 @@
     </string-array>
 
     <string name="config_save_fail">配置保存失败！</string>
+
+    <!--自启动-->
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
     <string name="boot_use_powercfg">应用调度配置…</string>
 
-    <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
-    <string name="start_app_fail">启动应用失败！</string>
-    <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
+    <string name="app_schedule">调度</string>
+    <string name="app_home">概览</string>
 
-    <string name="scene_service_config_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
-    <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
-    <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
+    <!--概览-->
+    <string name="home_mem">物理内存</string>
+    <string name="home_swap">交换分区</string>
+    <string name="home_cores">核心数</string>
+    <string name="home_scene">访问Scene官网</string>
+    <string name="home_time">已开机</string>
 
+    <!--未ROOT页-->
+    <string name="nr_unauthorized">未ROOT</string>
+    <string name="nr_unauthorized_desc">未获取ROOT权限，部分功能已被禁用</string>
+
+    <!--耗电统计-->
+    <string name="batstat_max_values">峰值统计</string>
+    <string name="batstat_temperature">温度</string>
+    <string name="batstat_bat_out">耗电</string>
+    <string name="batstat_bat_in">充电</string>
+    <string name="batstat_records">应用使用记录</string>
+    <string name="batstat_records_desc">这里统计的只是每个应用在前台显示时的整机耗电，而电流和温度显示的是所有检测记录的平均值。这意味着此数值数值会受其它后台应用耗电影响！\n\n此数据由Scene的辅助服务自行统计，如果你已经保持场景模式后台运行一段时间，却一直得不到数据，请检查概览界面的电流显示是否正确，如果错误请手动校准电流单位。</string>
+
+    <!--常驻通知-->
+    <string name="notific_battery">电池</string>
+
+    <!--第一屏、权限提示-->
+    <string name="splash_checking">现在，先校验一些权限设置…</string>
     <string name="scene_contract_title">风险声明</string>
     <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的。如需还原所有修改，只需关闭或卸载软件并重启手机。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
-
-    <string name="app_schedule">调度</string>
-    <string name="app_home">概览</string>
+    <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
+    <string name="error_root">抱歉，没有获取到ROOT权限</string>
+    <string name="error_root_desc">没有ROOT权限，将失去许多特色功能。\n如果你错过了授权提示，或未看到弹窗，请找到你的ROOT管理器，手动设置允许Scene使用ROOT权限~</string>
+    <string name="start_app_fail">启动应用失败！</string>
+    <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
+    <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
 
-    <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
-    <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
-    <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>
-    <string name="power_fastboot_cmd">sync;reboot bootloader;</string>
-    <string name="power_recovery_cmd">sync;reboot recovery;</string>
-    <string name="power_emergency_cmd">sync;reboot edl;</string>
+    <!--调度配置源选择-->
+    <string name="schedule_source">选择配置源</string>
+    <string name="schedule_classics">经典配置</string>
+    <string name="schedule_classics_desc">Scene提供的预设，各个模式泾渭分明</string>
+    <string name="schedule_positive">偏重性能</string>
+    <string name="schedule_positive_desc">Scene提供的预设，整体上更关注性能释放</string>
+
+    <!--电源菜单-->
+    <string name="power_title">选择操作</string>
+    <string name="power_shutdown_force">关机</string>
+    <string name="power_shutdown">正常关机</string>
+    <string name="power_reboot_force">重启</string>
+    <string name="power_reboot">正常重启</string>
+    <string name="power_hot_reboot">热重启</string>
+    <string name="power_hot_reboot2">只重启系界面而不重新引导系统（可能引发Bug）</string>
+    <string name="power_recovery">Recovery</string>
+    <string name="power_recovery_desc">重启到Recovery模式（俗称卡刷模式）</string>
+    <string name="power_fastboot">Fastboot</string>
+    <string name="power_fastboot_desc">重启到Fastboot模式（俗称USB线刷模式）</string>
+    <string name="power_9008_edl">9008(EDL)</string>
+    <string name="power_9008_desc">重启到9008模式，*此模式仅限部分骁龙设备可用</string>
+
+    <!--监视器悬浮窗选择-->
+    <string name="monitor_title">使用监视器</string>
+    <string name="monitor_desc">选择要显示的监视器悬浮窗</string>
+    <string name="monitor_tip">说明：负载监视器窗口可单击[展开/折叠]详情，双击关闭</string>
+    <string name="monitor_perf">负载监视器</string>
+    <string name="monitor_perf_desc">显示CPU、GPU、RAM和电池状态</string>
+    <string name="monitor_mini">迷你监视器</string>
+    <string name="monitor_mini_desc">显示CPU、GPU负载和电池温度</string>
+
+    <!--内存CGroup选择弹窗-->
+    <string name="cgroup_title">设定应用cgroup(memory)</string>
+    <string name="cgroup_default">系统默认</string>
+    <string name="cgroup_default_desc">SWAP使用策略遵循系统全局配置</string>
+    <string name="cgroup_general">普通应用</string>
+    <string name="cgroup_general_desc">允许积极的将(此应用的)内存交换到SWAP</string>
+    <string name="cgroup_prior">优先内存</string>
+    <string name="cgroup_prior_desc">尽量避免将(此应用的)内存交换到SWAP</string>
+    <string name="cgroup_core">重要进程</string>
+    <string name="cgroup_core_desc">禁止将(此应用的)内存交换到SWAP</string>
+    <string name="cgroup_restricted">受限后台</string>
+    <string name="cgroup_restricted_desc">限制物理内存使用量，允许积极的将(此应用的)内存交换到SWAP</string>
+    <string name="cgroup_reclaim">回收内存</string>
+    <string name="cgroup_reclaim_desc">只允许占用极少的物理内存，允许积极的将(此应用的)内存交换到SWAP</string>
+
+    <!--屏幕旋转设置 弹窗-->
+    <string name="orientation_title">屏幕显示方式</string>
+    <string name="orientation_desc">指定此应用运行期间，屏幕显示方向</string>
+    <string name="orientation_default">默认</string>
+    <string name="orientation_default_desc">保持应用程序清单声明的显示方式</string>
+    <string name="orientation_auto">自动旋转</string>
+    <string name="orientation_auto_desc">根据传感器自动旋转屏幕方向</string>
+    <string name="orientation_force_auto">强制旋转</string>
+    <string name="orientation_force_auto_desc">根据传感器自动旋转屏幕方向</string>
+    <string name="orientation_horizontal">强制横屏</string>
+    <string name="orientation_horizontal_desc">强制横屏显示此应用</string>
+    <string name="orientation_vertical">强制竖屏</string>
+    <string name="orientation_vertical_desc">强制此应用竖屏显示</string>
+
+    <!--应用调度策略选择 弹窗-->
+    <string name="schedule_title">选择性能调节策略</string>
+    <string name="schedule_powersave_desc">打开此应用时，切换到省电模式</string>
+    <string name="schedule_balance_desc">打开此应用时，切换到均衡模式</string>
+    <string name="schedule_perf_desc">打开此应用时，切换到性能模式</string>
+    <string name="schedule_fast_desc">打开此应用时，切换到极速模式</string>
+    <string name="schedule_global_desc">此应用的性能调节模式跟随“全局默认”的设置</string>
+    <string name="schedule_more">更多选项</string>
+    <string name="schedule_keep">保持状态</string>
+    <string name="schedule_keep_desc">打开应用时保持当前性能调节状态</string>
+
+    <!--应用(场景)配置-->
+    <string name="apps_search_placeholder">搜索应用名</string>
+    <string name="detail_automate">打开应用自动执行操作</string>
+    <string name="detail_tuning">性能调节</string>
+    <string name="detail_schedule">调节性能至</string>
+    <string name="detail_cgroup_fg">内存(cgroup) 前台时</string>
+    <string name="detail_cgroup_bg">内存(cgroup) 离开后</string>
+    <string name="detail_booster">自动加速(memory)</string>
+    <string name="detail_general">基本设置</string>
+    <string name="detail_brightness_manual">关闭自动亮度</string>
+    <string name="detail_gps_on">打开GPS（离开后还原）</string>
+    <string name="detail_rotation">旋转屏幕</string>
+    <string name="detail_immerse">沉浸体验</string>
+    <string name="detail_immerse_nav">隐藏导航栏</string>
+    <string name="detail_immerse_status">隐藏状态栏</string>
+    <string name="detail_dis_notification">屏蔽通知</string>
+    <string name="detail_immerse_tip">屏蔽通知时Scene会自动清除新通知，可能错失消息。按键屏蔽状态下，将使用长按替代短按操作</string>
+    <string name="detail_scene_extra">Scene功能</string>
+    <string name="detail_scene_monitor">性能监视器</string>
+    <string name="detail_scene_monitor_desc">显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)</string>
+
+
 </resources>

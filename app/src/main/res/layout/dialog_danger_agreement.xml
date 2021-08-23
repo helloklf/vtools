@@ -19,58 +19,61 @@
 
             <TextView
                 android:id="@+id/confirm_title"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/scene_contract_title" />
+
             <TextView
                 android:id="@+id/confirm_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingStart="@dimen/activity_horizontal_margin"
                 android:paddingTop="8dp"
                 android:paddingBottom="@dimen/activity_vertical_margin"
-                android:text="@string/scene_contract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:text="@string/scene_contract" />
 
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:background="@drawable/in_card_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="70dp"
                     android:gravity="center_vertical"
+                    android:minHeight="70dp"
                     android:orientation="horizontal"
                     android:padding="6dp">
 
                     <ImageView
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/dialog_icon_bg"
-                        android:backgroundTint="#FF5252"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="6dp"
+                        android:background="@drawable/dialog_icon_bg"
+                        android:backgroundTint="#FF5252"
                         android:src="@drawable/icon_danger"
                         app:tint="@android:color/white" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="接受风险" />
+
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
@@ -81,10 +84,10 @@
 
                     <Switch
                         android:id="@+id/agreement"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -92,22 +95,21 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_cancel"
                 style="@style/dialogCancelBtn"
                 android:layout_marginEnd="8dp"
-                android:text="还是算了">
-            </Button>
+                android:text="还是算了"></Button>
+
             <Button
                 android:id="@+id/btn_confirm"
                 style="@style/dialogConfirmBtn"
-                android:text="继续使用">
-            </Button>
+                android:text="继续使用"></Button>
         </LinearLayout>
 
     </LinearLayout>

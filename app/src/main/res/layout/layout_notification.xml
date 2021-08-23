@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="均衡模式"
+                android:text="--"
                 android:textSize="10dp" />
         </LinearLayout>
     </LinearLayout>
@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="电池"
+                android:text="@string/notific_battery"
                 android:textAlignment="textEnd"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
                 android:textSize="14dp"

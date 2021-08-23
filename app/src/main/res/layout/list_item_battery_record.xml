@@ -43,7 +43,7 @@
                 style="@style/textSmall"
                 android:layout_width="52dp"
                 android:layout_height="wrap_content"
-                android:text="@string/balance" />
+                android:text="--" />
 
             <TextView
                 android:id="@+id/itemAvgIO"
@@ -55,9 +55,9 @@
             <TextView
                 android:id="@+id/itemTemperature"
                 style="@style/textSmall"
-                android:minWidth="40dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="40dp"
                 android:text="0°C" />
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="0分钟"
+                android:text=""
                 android:textAlignment="textEnd" />
         </LinearLayout>
     </LinearLayout>
