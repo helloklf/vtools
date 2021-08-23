@@ -420,7 +420,7 @@ pubgmhd_opt_run () {
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
-  ps -ef -o PID,NAME | grep -e "com.tencent.tmgp.pubgmhd$" | cut -f1 -d ' ' | while read pid; do
+  ps -ef -o PID,NAME | grep -e "com.tencent.tmgp.pubgmhd$" | egrep -o '[0-9]{1,}' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
