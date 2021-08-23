@@ -47,7 +47,7 @@ class ActivityAppConfig2 : ActivityBase() {
         setContentView(R.layout.activity_app_config2)
 
         setBackArrow()
-        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         this.onViewCreated()
     }
@@ -118,7 +118,7 @@ class ActivityAppConfig2 : ActivityBase() {
                     }).show()
         }
 
-        scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
+        scene_app_list.setOnItemLongClickListener { parent, view, position, _ ->
             try {
                 val item = (parent.adapter.getItem(position) as AppInfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
@@ -130,7 +130,7 @@ class ActivityAppConfig2 : ActivityBase() {
             true
         }
 
-        config_search_box.setOnEditorActionListener { v, actionId, event ->
+        config_search_box.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 loadList()
                 return@setOnEditorActionListener true

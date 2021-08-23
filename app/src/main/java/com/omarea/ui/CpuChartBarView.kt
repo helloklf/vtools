@@ -82,7 +82,7 @@ class CpuChartBarView : View {
                 mainPaint?.alpha = 127 + ((ratio / 100.0f) * 255).toInt()
             }
 
-            var top = 0f
+            var top: Float
             if (ratio <= 2) {
                 top = mHeight - 10f
             } else if (ratio >= 98) {

@@ -101,7 +101,7 @@ public class AccessibilityScene : AccessibilityService() {
             sceneConfigChanged = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     updateConfig()
-                    Scene.toast("辅助服务配置已更新~", Toast.LENGTH_SHORT)
+                    Scene.toast(getString(R.string.accessibility_updated), Toast.LENGTH_SHORT)
                 }
             }
             registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_service_config_change_action)))
@@ -383,13 +383,13 @@ public class AccessibilityScene : AccessibilityService() {
         }
     }
 
-    private fun destory() {
-        Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
+    private fun destroy() {
+        Toast.makeText(applicationContext, getString(R.string.accessibility_closed), Toast.LENGTH_SHORT).show()
         if (appSwitchHandler != null) {
             appSwitchHandler?.onInterrupt()
             appSwitchHandler = null
             // disableSelf()
-            stopSelf()
+            // stopSelf()
             // System.exit(0)
         }
     }
@@ -403,7 +403,7 @@ public class AccessibilityScene : AccessibilityService() {
             sceneConfigChanged = null
         }
         serviceIsConnected = false
-        destory()
+        destroy()
         stopSelf()
         return super.onUnbind(intent)
     }
@@ -412,6 +412,6 @@ public class AccessibilityScene : AccessibilityService() {
     }
 
     override fun onDestroy() {
-        this.destory()
+        this.destroy()
     }
 }

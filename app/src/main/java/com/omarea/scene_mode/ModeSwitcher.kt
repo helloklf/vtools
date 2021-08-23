@@ -56,22 +56,22 @@ open class ModeSwitcher {
             val source = getCurrentSource()
             return (when (source) {
                 "SOURCE_OUTSIDE_UPERF" -> {
-                    "外部来源(Uperf)"
+                    Scene.context.getString(R.string.source_uperf)
                 }
                 "SOURCE_OUTSIDE" -> {
-                    "外部来源"
+                    Scene.context.getString(R.string.source_outside)
                 }
                 "SOURCE_SCENE_CONSERVATIVE" -> {
-                    "Scene-经典"
+                    Scene.context.getString(R.string.source_classics)
                 }
                 "SOURCE_SCENE_ACTIVE" -> {
-                    "Scene-性能"
+                    Scene.context.getString(R.string.source_perf)
                 }
                 "SOURCE_NONE" -> {
-                    "未定义"
+                    Scene.context.getString(R.string.source_undefined)
                 }
                 else -> {
-                    "未知"
+                    context.getString(R.string.source_unknown)
                 }
             })
         }
@@ -92,13 +92,13 @@ open class ModeSwitcher {
 
         internal fun getModName(mode: String): String {
             when (mode) {
-                POWERSAVE -> return "省电模式"
-                PERFORMANCE -> return "性能模式"
-                FAST -> return "极速模式"
-                BALANCE -> return "均衡模式"
-                IGONED -> return "保持状态"
-                "" -> return "全局默认"
-                else -> return "未知模式"
+                POWERSAVE -> return Scene.context.getString(R.string.powersave)
+                PERFORMANCE -> return Scene.context.getString(R.string.performance)
+                FAST -> return Scene.context.getString(R.string.fast)
+                BALANCE -> return Scene.context.getString(R.string.balance)
+                IGONED -> return Scene.context.getString(R.string.kepp_state)
+                "" -> return Scene.context.getString(R.string.global_default)
+                else -> return Scene.context.getString(R.string.unknown_mode)
             }
         }
 

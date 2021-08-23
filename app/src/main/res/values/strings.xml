@@ -23,8 +23,10 @@
     <string name="powersave">省电模式</string>
     <string name="balance">均衡模式</string>
     <string name="performance">性能模式</string>
+    <string name="kepp_state">保持状态</string>
     <string name="fast">极速模式</string>
     <string name="global_default">全局默认</string>
+    <string name="unknown_mode">未知模式</string>
     <string name="powersave_short">省电</string>
     <string name="balance_short">均衡</string>
     <string name="performance_short">性能</string>
@@ -118,6 +120,7 @@
     <string name="error_root_desc">没有ROOT权限，将失去许多特色功能。\n如果你错过了授权提示，或未看到弹窗，请找到你的ROOT管理器，手动设置允许Scene使用ROOT权限~</string>
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
+    <string name="scene_write_settings">请为Scene授予“修改系统设置”权限，以确保“辅助服务”能正常运行！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
 
@@ -213,6 +216,16 @@
     <string name="detail_scene_monitor">性能监视器</string>
     <string name="detail_scene_monitor_desc">显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)</string>
     <string name="detail_reset">设定重置</string>
+    <string name="accessibility_updated">辅助服务配置已更新~</string>
+    <string name="accessibility_closed">Scene - 辅助服务已关闭！</string>
+    <string name="accessibility_app_config_updated">配置参数已更新，将在下次切换应用时生效！</string>
 
+    <!--配置源-->
+    <string name="source_uperf">外部来源(Uperf)</string>
+    <string name="source_outside">外部来源</string>
+    <string name="source_classics">Scene-经典</string>
+    <string name="source_perf">Scene-性能</string>
+    <string name="source_undefined">未定义</string>
+    <string name="source_unknown">未知</string>
 
 </resources>

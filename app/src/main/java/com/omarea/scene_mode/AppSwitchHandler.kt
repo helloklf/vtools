@@ -321,7 +321,7 @@ class AppSwitchHandler(private var context: AccessibilityScene, override val isA
                 val pendingResult = goAsync()
 
                 updateConfig()
-                Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
+                Scene.toast(context.getString(R.string.accessibility_app_config_updated), Toast.LENGTH_SHORT)
 
                 pendingResult.finish()
             }

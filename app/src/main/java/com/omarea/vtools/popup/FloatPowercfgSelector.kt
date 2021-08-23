@@ -306,7 +306,7 @@ class FloatPowercfgSelector(context: Context) {
         }
 
         // 点击back键可消除
-        view.setOnKeyListener { v, keyCode, event ->
+        view.setOnKeyListener { v, keyCode, _ ->
             when (keyCode) {
                 KeyEvent.KEYCODE_BACK -> {
                     close()

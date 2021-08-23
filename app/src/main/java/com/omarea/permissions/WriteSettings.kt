@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.vtools.R
 
 
 /**
@@ -15,7 +16,6 @@ import com.omarea.common.shell.KeepShellPublic
  */
 
 class WriteSettings {
-    private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
     fun getPermission(context: Context): Boolean {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -36,7 +36,10 @@ class WriteSettings {
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             // context.startActivity(intent)
             try {
-                Toast.makeText(context, "请为Scene授予“修改系统设置”权限，以确保“辅助服务”能正常运行！", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,
+                        context.getString(R.string.scene_write_settings),
+                        Toast.LENGTH_LONG
+                ).show()
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri = Uri.fromParts("package", context.getPackageName(), null)
                 intent.setData(uri)
