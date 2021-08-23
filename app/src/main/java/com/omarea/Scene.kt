@@ -18,6 +18,7 @@ import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.util.*
 
 class Scene : Application() {
     companion object {
@@ -87,6 +88,10 @@ class Scene : Application() {
         if (lastThemeId != theme) {
             setTheme(theme)
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

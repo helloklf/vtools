@@ -4,6 +4,7 @@
     package="com.omarea.vtools"
     android:installLocation="internalOnly">
 
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
     <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/> -->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -103,7 +104,7 @@
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:screenOrientation="behind"
-            android:label="应用场景">
+            android:label="@string/menu_app_scene">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -127,7 +128,7 @@
 
         <service
             android:name="com.omarea.scene.AccessibilityScene"
-            android:label="Scene 辅助服务"
+            android:label="@string/accessibility_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -142,16 +143,12 @@
         </service>
         <service
             android:name="com.omarea.scene_mode.NotificationListenerService"
-            android:label="通知过滤服务"
+            android:label="@string/notification_filter"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service
-            android:name=".services.BootService"
-            android:enabled="true"
-            android:permission="" />
         <service
             android:name="com.omarea.scene_mode.SceneTileService"
             android:icon="@drawable/p4"

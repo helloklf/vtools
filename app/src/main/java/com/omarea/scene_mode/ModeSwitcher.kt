@@ -71,7 +71,7 @@ open class ModeSwitcher {
                     Scene.context.getString(R.string.source_undefined)
                 }
                 else -> {
-                    context.getString(R.string.source_unknown)
+                    Scene.context.getString(R.string.source_unknown)
                 }
             })
         }

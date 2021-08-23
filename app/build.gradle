@@ -17,7 +17,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion '29.0.2'
     defaultConfig {
-        resConfigs "zh"
+        resConfigs "zh,en"
         applicationId "com.omarea.scene"
         minSdkVersion 23
         targetSdkVersion 30

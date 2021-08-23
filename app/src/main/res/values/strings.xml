@@ -9,6 +9,7 @@
     <string name="app_name">Scene4 Core Edition</string>
     <string name="app_name_short">Scene4C</string>
 
+    <string name="accessibility_name">Scene 辅助服务</string>
     <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
 
     <string name="menu_app_scene">应用场景</string>
@@ -211,7 +212,7 @@
     <string name="detail_immerse_nav">隐藏导航栏</string>
     <string name="detail_immerse_status">隐藏状态栏</string>
     <string name="detail_dis_notification">屏蔽通知</string>
-    <string name="detail_immerse_tip">屏蔽通知时Scene会自动清除新通知，可能错失消息。按键屏蔽状态下，将使用长按替代短按操作</string>
+    <string name="detail_immerse_tip">屏蔽通知时Scene会自动清除新通知，可能错过重要消息</string>
     <string name="detail_scene_extra">Scene功能</string>
     <string name="detail_scene_monitor">性能监视器</string>
     <string name="detail_scene_monitor_desc">显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)</string>
@@ -227,5 +228,6 @@
     <string name="source_perf">Scene-性能</string>
     <string name="source_undefined">未定义</string>
     <string name="source_unknown">未知</string>
+    <string name="notification_filter">通知过滤服务</string>
 
 </resources>

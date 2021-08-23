@@ -1,0 +1,227 @@
+<resources>
+
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="btn_exit">Exit</string>
+    <string name="btn_skip">Skip</string>
+    <string name="btn_retry">Retry</string>
+
+    <string name="app_name">Scene4 Core Edition</string>
+    <string name="app_name_short">Scene4C</string>
+
+    <string name="accessibility_name">Scene 辅助服务</string>
+    <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
+
+    <string name="menu_app_scene">应用场景</string>
+    <string name="menu_battery_stats">耗电统计</string>
+
+    <string name="electricity_unit_adj">电流单位校准</string>
+    <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
+    <string name="electricity_unit_as">显示为：</string>
+    <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
+
+    <string name="please_wait">Please Wait…</string>
+    <string name="powersave">Powersave</string>
+    <string name="balance">Balance</string>
+    <string name="performance">Performance</string>
+    <string name="kepp_state">Keep state</string>
+    <string name="fast">Fast</string>
+    <string name="global_default">Global default</string>
+    <string name="unknown_mode">unknown</string>
+    <string name="powersave_short">Powersave</string>
+    <string name="balance_short">Balance</string>
+    <string name="performance_short">Performance</string>
+    <string name="fast_short">Fast</string>
+    <string name="not_support_config">No supported configuration file was found</string>
+
+    <string-array name="default_powercfg_mode_options">
+        <item>@string/powersave</item>
+        <item>@string/balance</item>
+        <item>@string/performance</item>
+        <item>@string/fast</item>
+    </string-array>
+    <string-array name="sleep_powercfg_mode_options">
+        <item>@string/powersave</item>
+        <item>@string/balance</item>
+        <item>@string/performance</item>
+        <item>@string/kepp_state</item>
+    </string-array>
+    <string-array name="powercfg_modes_filter">
+        <item>All</item>
+        <item>@string/powersave_short</item>
+        <item>@string/balance_short</item>
+        <item>@string/performance_short</item>
+        <item>@string/fast_short</item>
+        <item>@string/global_default</item>
+        <item>@string/kepp_state</item>
+    </string-array>
+    <string-array name="powercfg_apptype_filter">
+        <item>User</item>
+        <item>System</item>
+        <item>All</item>
+    </string-array>
+
+    <string-array name="cgroup_mem_options">
+        <item>@string/cgroup_default</item>
+        <item>@string/cgroup_general</item>
+        <item>@string/cgroup_prior</item>
+        <item>@string/cgroup_core</item>
+        <item>@string/cgroup_restricted</item>
+        <item>@string/cgroup_reclaim</item>
+    </string-array>
+    <string-array name="cgroup_mem_values">
+        <item></item>
+        <item>scene_lock</item>
+        <item>scene_perf</item>
+        <item>scene_fg</item>
+        <item>scene_bg</item>
+        <item>scene_cache</item>
+    </string-array>
+
+    <string name="config_save_fail">Failed to save configuration!</string>
+
+    <string name="app_schedule">Scheduler</string>
+    <string name="app_home">Overview</string>
+
+    <!--概览-->
+    <string name="home_mem">Physical</string>
+    <string name="home_swap">Virtual</string>
+    <string name="home_cores">Cores</string>
+    <string name="home_scene">About Scene</string>
+    <string name="home_time">Running</string>
+
+    <!--未ROOT页-->
+    <string name="nr_unauthorized">Unauthorized</string>
+    <string name="nr_unauthorized_desc">The ROOT permission is not obtained</string>
+
+    <!--耗电统计-->
+    <string name="batstat_max_values">Crest Values</string>
+    <string name="batstat_temperature">Temperature</string>
+    <string name="batstat_bat_out">Discharge</string>
+    <string name="batstat_bat_in">Charge</string>
+    <string name="batstat_records">APP usage records</string>
+    <string name="batstat_records_desc">The statistics here are only the power consumption of the whole machine when each application is displayed in the foreground, while the current and temperature show the average of all detection records.This means that this value is affected by the power consumption of other background applications!\n\n This data is collected by the auxiliary service of Scene. If you have kept the Scene mode running in the background for a period of time but haven\'t got the data, please check whether the current display on the overview interface is correct. If not, please manually calibrate the current unit.</string>
+
+    <!--常驻通知-->
+    <string name="notific_battery">Battery</string>
+
+    <!--第一屏、权限提示-->
+    <string name="splash_checking">Now, check the permission Settings…</string>
+    <string name="scene_contract_title">Risk warning</string>
+    <string name="scene_contract">Scene Core Edition is an application that focuses on performance scheduling.It does not modify any system files, so it is safe in most cases.To undo all the changes, simply close or uninstall the software and restart the phone.\n\n However, it should be noted that according to previous user feedback, using this software on some models of Meizu, LG, Google Pixel will force restoration to factory Settings, resulting in data loss!!</string>
+    <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
+    <string name="error_su_timeout">Wait timeout, make sure your Root manager is running, and try again!\n\n Make sure you don\'t prevent "authorization Manager (SuperSu, Magisk Manager, etc.)" from starting and allow background pop-ups, display hover Windows, etc.If no authorization dialog box is displayed, restart the phone and try again.\n</string>
+    <string name="error_root">Sorry, the ROOT permission is not granted</string>
+    <string name="error_root_desc">Without ROOT, you lose many features.\n If you miss the authorization prompt, or do not see the popup, go to your ROOT manager and manually set the Scene to use ROOT permissions ~</string>
+    <string name="start_app_fail">Failed to Start an App</string>
+    <string name="scene_need_write_sys_settings">Please grant Scene the "modify system Settings" permission!</string>
+    <string name="scene_write_settings">Please grant Scene the "modify system Settings" permission, This is recommended</string>
+    <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
+    <string name="busybox_nonsupport">Busybox from the Scene does not support your current system. Please download and install Busybox by yourself</string>
+
+    <!--调度配置源选择-->
+    <string name="schedule_source">Choose a source</string>
+    <string name="schedule_classics">Classic</string>
+    <string name="schedule_classics_desc">Presets from the Scene. The four modes adapt to different scenes</string>
+    <string name="schedule_positive">Quickly</string>
+    <string name="schedule_positive_desc">Presets from the Scene. Contains four more performance-oriented patterns</string>
+
+    <!--电源菜单-->
+    <string name="power_title">Please choose</string>
+    <string name="power_shutdown_force">Shutdown()</string>
+    <string name="power_shutdown">Shutdown(General)</string>
+    <string name="power_reboot_force">Reboot</string>
+    <string name="power_reboot">Reboot(General)</string>
+    <string name="power_hot_reboot">Hot Reboot</string>
+    <string name="power_hot_reboot2">Reboot the system screen without rebooting the system (possibly causing bugs)</string>
+    <string name="power_recovery">Recovery</string>
+    <string name="power_recovery_desc">Restart to recover emergency mode</string>
+    <string name="power_fastboot">Fastboot</string>
+    <string name="power_fastboot_desc">Restart to Fastboot mode</string>
+    <string name="power_9008_edl">9008(EDL)</string>
+    <string name="power_9008_desc">Restart to 9008 mode for some Qualcomm models available</string>
+
+    <!--监视器悬浮窗选择-->
+    <string name="monitor_title">Choose monitor</string>
+    <string name="monitor_desc">Choose the monitor hover window you want to display</string>
+    <string name="monitor_tip">Tips：In the [Classic Monitor], Single click Expand or Collapse details, Double click to close it</string>
+    <string name="monitor_perf">Classic Monitor</string>
+    <string name="monitor_perf_desc">Displays the CPU, GPU, RAM, and battery status</string>
+    <string name="monitor_mini">Mini monitor</string>
+    <string name="monitor_mini_desc">Displays the CPU, GPU, RAM, and battery status, Use a smaller window</string>
+
+    <!--内存CGroup选择弹窗-->
+    <string name="cgroup_title">Choose cgroup(memory)</string>
+    <string name="cgroup_default">System default</string>
+    <string name="cgroup_default_desc">The swappiness follows with the system global configuration</string>
+    <string name="cgroup_general">General</string>
+    <string name="cgroup_general_desc">Switch to more swappines to promote swap</string>
+    <string name="cgroup_prior">Prior</string>
+    <string name="cgroup_prior_desc">Make swappines smaller and swap less</string>
+    <string name="cgroup_core">Core Process</string>
+    <string name="cgroup_core_desc">Set swappines to 0, Avoid swap</string>
+    <string name="cgroup_restricted">Restricted</string>
+    <string name="cgroup_restricted_desc">Limit physical memory usage and allow swapping</string>
+    <string name="cgroup_reclaim">Reclaim</string>
+    <string name="cgroup_reclaim_desc">Only a small amount of physical memory is allowed, and memory swapping is actively allowed</string>
+
+    <!--屏幕旋转设置 弹窗-->
+    <string name="orientation_title">screen orientation</string>
+    <string name="orientation_desc">Specifies the direction of the screen when using this application</string>
+    <string name="orientation_default">Default</string>
+    <string name="orientation_default_desc">Maintains the display of application manifest declarations</string>
+    <string name="orientation_auto">Auto-rotation</string>
+    <string name="orientation_auto_desc">Automatically rotate the screen direction according to the sensor</string>
+    <string name="orientation_force_auto">Forced(Auto)</string>
+    <string name="orientation_force_auto_desc">Automatically rotate the screen direction according to the sensor</string>
+    <string name="orientation_horizontal">Forced(landscape)</string>
+    <string name="orientation_horizontal_desc">Force the application to landscape</string>
+    <string name="orientation_vertical">Forced(portrait)</string>
+    <string name="orientation_vertical_desc">Force this application to display in portrait</string>
+
+    <!--应用调度策略选择 弹窗-->
+    <string name="schedule_title">Choose a policy</string>
+    <string name="schedule_powersave_desc">When you open this application, switch to power saving mode</string>
+    <string name="schedule_balance_desc">When this application is opened, switch to the balancing mode</string>
+    <string name="schedule_perf_desc">When you open this application, switch to performance mode</string>
+    <string name="schedule_fast_desc">When you open this app, switch to top speed mode</string>
+    <string name="schedule_global_desc">The performance tuning mode of this application is set to [Global Default]</string>
+    <string name="schedule_more">Show More</string>
+    <string name="schedule_keep">Keep policy</string>
+    <string name="schedule_keep_desc">Keep the current policy when switching to this application</string>
+
+    <!--应用(场景)配置-->
+    <string name="apps_search_placeholder">Search name</string>
+    <string name="detail_automate">Open the application to automatically perform operations</string>
+    <string name="detail_tuning">Performance tuning</string>
+    <string name="detail_schedule">Policy change to</string>
+    <string name="detail_cgroup_fg">Memory(cgroup) fg</string>
+    <string name="detail_cgroup_bg">Memory(cgroup) bg</string>
+    <string name="detail_booster">Auto Boost(memory)</string>
+    <string name="detail_general">Basic settings</string>
+    <string name="detail_brightness_manual">Manual brightness</string>
+    <string name="detail_gps_on">Enable GPS</string>
+    <string name="detail_rotation">Screen orientation</string>
+    <string name="detail_immerse">immerse</string>
+    <string name="detail_immerse_nav">Hide navigation bar</string>
+    <string name="detail_immerse_status">Hide status bar</string>
+    <string name="detail_dis_notification">Disable notification Prompt</string>
+    <string name="detail_immerse_tip">When you block notifications, the Scene automatically clears new notifications, which may cause missed messages</string>
+    <string name="detail_scene_extra">Scene extra</string>
+    <string name="detail_scene_monitor">Performeter</string>
+    <string name="detail_scene_monitor_desc">Mini performance monitor showing Scene (Amoled please worry about the screen ~)</string>
+    <string name="detail_reset">Rest Settings</string>
+    <string name="accessibility_updated">The AccessibilityService configuration has been updated~</string>
+    <string name="accessibility_closed">Scene - AccessibilityService closed！</string>
+    <string name="accessibility_app_config_updated">The configuration parameters have been updated!</string>
+
+    <!--配置源-->
+    <string name="source_uperf">Outside(Uperf)</string>
+    <string name="source_outside">Outside</string>
+    <string name="source_classics">Scene(Classics)</string>
+    <string name="source_perf">Scene(Quickly)</string>
+    <string name="source_undefined">Undefined</string>
+    <string name="source_unknown">Unknown</string>
+    <string name="notification_filter">Notification filter</string>
+
+</resources>
