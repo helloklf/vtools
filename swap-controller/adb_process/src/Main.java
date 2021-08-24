@@ -6,6 +6,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class Main {
+    private static double critical = 0.15;
+    private static double high = 0.20;
+    private static double middle = 0.22;
+
     private static String readAllText(File file) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
@@ -50,7 +54,7 @@ public class Main {
     }
 
     // method (file\anon\all)
-    private static void reclaimPid(String pid, String method) {
+    private static void reclaimByPID(String pid, String method) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File("/proc/" + pid + "/reclaim"));
             byte[] bytes = method.getBytes();
@@ -62,7 +66,7 @@ public class Main {
         }
     }
 
-    private static void writePid(String pid, File groupProcs) {
+    private static void writePID(String pid, File groupProcs) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(groupProcs);
             byte[] bytes = pid.getBytes();
@@ -87,11 +91,11 @@ public class Main {
 
     // 内存空闲比例
     private static double getMemFreeRatio() {
-        String[] memInfos = readAllText(new File("/proc/meminfo")).split("\n");
+        String[] memArr = readAllText(new File("/proc/meminfo")).split("\n");
         double total = 0;
         double free = 0;
         double swapCached = 0;
-        for (String row : memInfos) {
+        for (String row : memArr) {
             if (row.startsWith("MemTotal")) {
                 total = getMemInfoRowKB(row);
             } else if (row.startsWith("MemAvailable")) {
@@ -119,7 +123,7 @@ public class Main {
     }
 
     static class WatchForeground extends Thread {
-        private File bgGroup;
+        private final File bgGroup;
         public WatchForeground(File bgGroup) {
             this.bgGroup = bgGroup;
         }
@@ -134,18 +138,16 @@ public class Main {
                     if (!str.equals(currentFProcs)) {
                         currentFProcs = str;
                         String[] fgProcs = currentFProcs.split("\n");
-                        ArrayList<String> recyclable = new ArrayList<>();
                         double memFreeRatio = getMemFreeRatio();
                         // foreground
                         for (String pid: fgProcs) {
                             // if (getOomADJ(pid) > 0) {
                             if (getOomADJ(pid) > 1) {
-                                writePid(pid, bgGroup);
-                                recyclable.add(pid);
+                                writePID(pid, bgGroup);
                             }
                         }
                         // reclaim
-                        if (memFreeRatio < 0.25) {
+                        if (memFreeRatio <= high) {
                             synchronized (threadSync) {
                                 threadSync.notifyAll();
                             }
@@ -153,7 +155,7 @@ public class Main {
                     }
 
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(60000);
                     } catch (Exception ignored){}
                 }
             }
@@ -163,7 +165,7 @@ public class Main {
     static final Object threadSync = new Object();
 
     static class MemoryWatch extends Thread {
-        private File bgGroup;
+        private final File bgGroup;
         public MemoryWatch(File bgGroup) {
             this.bgGroup = bgGroup;
         }
@@ -191,9 +193,9 @@ public class Main {
 
                 memFreeRatio = getMemFreeRatio();
                 int swapFree = getSwapFreeMB();
-                if (swapFree >= 300 && memFreeRatio < 0.22) {
+                if (swapFree >= 300 && memFreeRatio <= middle) {
                     String method = "";
-                    if (memFreeRatio < 0.15 && swapFree > 500) {
+                    if (memFreeRatio < critical && swapFree > 500) {
                         method = "all";
                     } else {
                         method = "file";
@@ -205,7 +207,7 @@ public class Main {
 
                     String[] recyclable = readAllText(bgGroup).split("\n");
                     for (String pid: recyclable) {
-                        reclaimPid(pid, method);
+                        reclaimByPID(pid, method);
                     }
                     lastReclaim = System.currentTimeMillis();
                 }
@@ -215,12 +217,39 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        String cgroupReclaim = args.length > 0 ? args[0].trim() : "active";
-        String bgCGroup = "scene_bg";
-        if (cgroupReclaim.equals("passive")) {
-            bgCGroup = "scene_lock";
-        } else if (cgroupReclaim.equals("force")) {
-            bgCGroup = "scene_cache";
+        String cgroupReclaim = args.length > 0 ? args[0].trim() : "passive";
+        String bgCGroup;
+        switch (cgroupReclaim) {
+            /*
+            case "passive": {
+                bgCGroup = "scene_lock";
+                critical = 0.15;
+                high = 0.20;
+                middle = 0.22;
+                break;
+            }
+            */
+            case "force": {
+                bgCGroup = "scene_cache";
+                critical = 0.2;
+                high = 0.25;
+                middle = 0.28;
+                break;
+            }
+            case "active": {
+                bgCGroup = "scene_bg";
+                critical = 0.18;
+                high = 0.22;
+                middle = 0.25;
+                break;
+            }
+            default: {
+                bgCGroup = "scene_lock";
+                critical = 0.15;
+                high = 0.20;
+                middle = 0.22;
+                break;
+            }
         }
 
         String memcg = "";
@@ -248,6 +277,7 @@ public class Main {
         new MemoryWatch(bgGroup).start();
 
         String currentTopProcs = "";
+        long lastChange = 0L;
         while (true) {
             String topProcsStr = readAllText(fTopProcs);
             if (!topProcsStr.equals(currentTopProcs)) {
@@ -256,31 +286,37 @@ public class Main {
                 String[] topProcs = readAllText(fTopProcs).split("\n");
                 String[] bgProcs = readAllText(fBgProcs).split("\n");
                 double memFreeRatio = getMemFreeRatio();
-                ArrayList<String> recyclable = new ArrayList<>();
                 // top
                 for (String pid : topProcs) {
                     if (include(bgProcs, pid) && getOomADJ(pid) > 1) {
-                        writePid(pid, bgGroup);
-                        recyclable.add(pid);
+                        writePID(pid, bgGroup);
                     } else {
-                        writePid(pid, fgGroup);
+                        writePID(pid, fgGroup);
                     }
                 }
                 // background
                 for (String pid : bgProcs) {
                     if (!include(topProcs, pid) && getOomADJ(pid) > 1) {
-                        writePid(pid, bgGroup);
-                        recyclable.add(pid);
+                        writePID(pid, bgGroup);
                     }
                 }
                 // reclaim
-                if (memFreeRatio < 0.25) {
+                if (memFreeRatio <= middle) {
                     synchronized (threadSync) {
                         threadSync.notifyAll();
                     }
                 }
+                lastChange = System.currentTimeMillis();
+                Thread.sleep(5000);
+            } else {
+                long curTime = System.currentTimeMillis();
+                // 超过10分钟没有切换应用，延迟轮询间隔
+                if (curTime - lastChange > 600000) {
+                    Thread.sleep(10000);
+                } else {
+                    Thread.sleep(5000);
+                }
             }
-            Thread.sleep(5000);
         }
 
         /*
