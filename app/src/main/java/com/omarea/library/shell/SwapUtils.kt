@@ -168,7 +168,7 @@ class SwapUtils(private val context: Context) {
     fun resizeZram(sizeVal: Int, algorithm: String = "") {
         val keepShell = KeepShell()
         val currentSize = zramCurrentSizeMB
-        if (currentSize != sizeVal || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
+        if (currentSize != sizeVal || (algorithm.isNotEmpty() && algorithm != compAlgorithm) || !zramEnabled) {
             val sb = StringBuilder()
             sb.append("echo 4 > /sys/block/zram0/max_comp_streams\n")
             sb.append("sync\n")
