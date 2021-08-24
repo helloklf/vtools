@@ -9,29 +9,36 @@
     <string name="app_name">Scene4 Core Edition</string>
     <string name="app_name_short">Scene4C</string>
 
-    <string name="accessibility_name">Scene 辅助服务</string>
-    <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
+    <string name="accessibility_name">Scene Accessibility Service</string>
+    <string name="accessibility_service_description">Activate the service to use the scheduling mode (gear) auto-switch</string>
+    <string name="accessibility_activate">Please activate the Accessibility Service</string>
+    <string name="accessibility_activate_desc">This service is required to adjust performance according to application, automatically switch GPS, and record power consumption speed</string>
 
-    <string name="menu_app_scene">应用场景</string>
-    <string name="menu_battery_stats">耗电统计</string>
+    <string name="menu_app_scene">Apps Scene</string>
+    <string name="menu_battery_stats">Battery Stats</string>
+    <string name="menu_battery_stats_desc">View the power consumption(electricity) recorded during application use</string>
 
-    <string name="electricity_unit_adj">电流单位校准</string>
-    <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
-    <string name="electricity_unit_as">显示为：</string>
-    <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
+    <string name="electricity_unit_adj">Unit calibration</string>
+    <string name="electricity_unit_adj_desc">The original value divided by: </string>
+    <string name="electricity_unit_as">Show as: </string>
+    <string name="electricity_unit_adj_desc2">Charge should be shown as positive,\ndischarge should be shown as negative</string>
 
     <string name="please_wait">Please Wait…</string>
-    <string name="powersave">Powersave</string>
+    <string name="powersave">Efficiency</string>
     <string name="balance">Balance</string>
     <string name="performance">Performance</string>
     <string name="kepp_state">Keep state</string>
-    <string name="fast">Fast</string>
+    <string name="fast">Extreme</string>
     <string name="global_default">Global default</string>
     <string name="unknown_mode">unknown</string>
-    <string name="powersave_short">Powersave</string>
-    <string name="balance_short">Balance</string>
-    <string name="performance_short">Performance</string>
-    <string name="fast_short">Fast</string>
+    <string name="powersave_short">@string/powersave</string>
+    <string name="balance_short">@string/balance</string>
+    <string name="performance_short">@string/performance</string>
+    <string name="fast_short">@string/fast</string>
+    <string name="powersave_desc">It\'s reading time</string>
+    <string name="balance_desc">Suitable for most cases</string>
+    <string name="performance_desc">Play games to relax</string>
+    <string name="fast_desc">Happiness is short</string>
     <string name="not_support_config">No supported configuration file was found</string>
 
     <string-array name="default_powercfg_mode_options">
@@ -87,8 +94,13 @@
     <string name="home_mem">Physical</string>
     <string name="home_swap">Virtual</string>
     <string name="home_cores">Cores</string>
+    <string name="home_core">Cores</string>
     <string name="home_scene">About Scene</string>
     <string name="home_time">Running</string>
+    <string name="home_cache_cleared">Caches cleared…</string>
+    <string name="home_reclaim_tip">Start to reclaim a little memory (long press to reclaim more ~)</string>
+    <string name="home_governor_params">Governor Values</string>
+    <string name="home_load">Load: </string>
 
     <!--未ROOT页-->
     <string name="nr_unauthorized">Unauthorized</string>
@@ -101,12 +113,17 @@
     <string name="batstat_bat_in">Charge</string>
     <string name="batstat_records">APP usage records</string>
     <string name="batstat_records_desc">The statistics here are only the power consumption of the whole machine when each application is displayed in the foreground, while the current and temperature show the average of all detection records.This means that this value is affected by the power consumption of other background applications!\n\n This data is collected by the auxiliary service of Scene. If you have kept the Scene mode running in the background for a period of time but haven\'t got the data, please check whether the current display on the overview interface is correct. If not, please manually calibrate the current unit.</string>
+    <string name="batstat_cleared">Record cleared</string>
 
     <!--常驻通知-->
     <string name="notific_battery">Battery</string>
 
     <!--第一屏、权限提示-->
     <string name="splash_checking">Now, check the permission Settings…</string>
+    <string name="splash_access_permissions">Check and obtain the required permissions……</string>
+    <string name="splash_check_busybox">Check the Busybox version…</string>
+    <string name="splash_completed">Completed!</string>
+    <string name="splash_agree">I agree</string>
     <string name="scene_contract_title">Risk warning</string>
     <string name="scene_contract">Scene Core Edition is an application that focuses on performance scheduling.It does not modify any system files, so it is safe in most cases.To undo all the changes, simply close or uninstall the software and restart the phone.\n\n However, it should be noted that according to previous user feedback, using this software on some models of Meizu, LG, Google Pixel will force restoration to factory Settings, resulting in data loss!!</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
@@ -118,6 +135,7 @@
     <string name="scene_write_settings">Please grant Scene the "modify system Settings" permission, This is recommended</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
     <string name="busybox_nonsupport">Busybox from the Scene does not support your current system. Please download and install Busybox by yourself</string>
+    <string name="not_root_disabled">You cannot use this feature without obtaining ROOT permission</string>
 
     <!--调度配置源选择-->
     <string name="schedule_source">Choose a source</string>
@@ -125,13 +143,15 @@
     <string name="schedule_classics_desc">Presets from the Scene. The four modes adapt to different scenes</string>
     <string name="schedule_positive">Quickly</string>
     <string name="schedule_positive_desc">Presets from the Scene. Contains four more performance-oriented patterns</string>
+    <string name="schedule_scene_desc">Detect APP switchover, automatically change the mode</string>
+    <string name="schedule_scene">Automatic shift</string>
 
     <!--电源菜单-->
     <string name="power_title">Please choose</string>
-    <string name="power_shutdown_force">Shutdown()</string>
-    <string name="power_shutdown">Shutdown(General)</string>
-    <string name="power_reboot_force">Reboot</string>
-    <string name="power_reboot">Reboot(General)</string>
+    <string name="power_shutdown">Shutdown</string>
+    <string name="power_shutdown_desc">General shutdown</string>
+    <string name="power_reboot">Reboot</string>
+    <string name="power_reboot_desc">General restart</string>
     <string name="power_hot_reboot">Hot Reboot</string>
     <string name="power_hot_reboot2">Reboot the system screen without rebooting the system (possibly causing bugs)</string>
     <string name="power_recovery">Recovery</string>
@@ -180,21 +200,32 @@
     <string name="orientation_vertical_desc">Force this application to display in portrait</string>
 
     <!--应用调度策略选择 弹窗-->
-    <string name="schedule_title">Choose a policy</string>
-    <string name="schedule_powersave_desc">When you open this application, switch to power saving mode</string>
-    <string name="schedule_balance_desc">When this application is opened, switch to the balancing mode</string>
-    <string name="schedule_perf_desc">When you open this application, switch to performance mode</string>
-    <string name="schedule_fast_desc">When you open this app, switch to top speed mode</string>
-    <string name="schedule_global_desc">The performance tuning mode of this application is set to [Global Default]</string>
+    <string name="schedule_title">Choose a mode</string>
+    <string name="schedule_powersave_desc">When you go to this app, switch to [Efficiency] mode</string>
+    <string name="schedule_balance_desc">When you go to this app, switch to the [Balance] mode</string>
+    <string name="schedule_perf_desc">When you go to this app, switch to [Performance] mode</string>
+    <string name="schedule_fast_desc">When you go to this app, switch to top [Extreme] mode</string>
+    <string name="schedule_global_desc">When you go to this app, Switch to the mode specified by the [Global Default]</string>
     <string name="schedule_more">Show More</string>
-    <string name="schedule_keep">Keep policy</string>
-    <string name="schedule_keep_desc">Keep the current policy when switching to this application</string>
+    <string name="schedule_keep">Keep mode</string>
+    <string name="schedule_keep_desc">Keep the current mode when switching to this application</string>
+
+    <string name="schedule_screen_on">Global Default(Screen On)</string>
+    <string name="schedule_screen_on_desc">When the mobile phone enters the standby state and switches to the specified mode, this mode is used by default for applications whose scheduling mode is not set separately.\n\n To set a separate mode for an application, please click [Application Mode] at the bottom of the current interface.</string>
+    <string name="schedule_screen_off">Global Default(Screen Off)</string>
+    <string name="schedule_screen_off_desc">After the phone enters the standby state, switch to the specified mode</string>
+    <string name="schedule_delay_desc">If the foreground application changes, wait 5 seconds before switching the scheduling mode</string>
+    <string name="schedule_delay">Delay switch</string>
+    <string name="schedule_enhanced">Enhanced mode</string>
+    <string name="schedule_enhanced_desc">This feature is currently only available for some local Chinese apps. \n\n若未开启此选项，Scene只会在需要变换档位时执行调度配置文件，例如：在多个设为[省电模式]的应用之间切换，调度配置文件只会被执行一次。\n\n严格模式下，Scene会在每次前台应用发生变化时都执行调度配置文件，并告知被切换到前台运行的应用(包名)。调度配置作者可利用此特性，为不同的应用单独设计调度参数，而不再受限于只有四个档位的限制。\n\n骁龙855、865、888机型使用[经典配置][偏重性能]配置源时，可开启严格模式，在以下应用中体验专属优化:\n原神(官服、B服、小米服)\n闲鱼、淘宝、京东、天猫、百度贴吧\n双生视界\n哔哩哔哩、抖音\n\n其它处理器机型，除非正在使用外部配置源头(且配置作者已注明支持此特性)，否则无需开启此选项！</string>
+    <string name="schedule_app">Application Mode</string>
+    <string name="schedule_app_desc">Set a scheduling mode for each application</string>
 
     <!--应用(场景)配置-->
     <string name="apps_search_placeholder">Search name</string>
     <string name="detail_automate">Open the application to automatically perform operations</string>
     <string name="detail_tuning">Performance tuning</string>
-    <string name="detail_schedule">Policy change to</string>
+    <string name="detail_schedule">Mode change to</string>
     <string name="detail_cgroup_fg">Memory(cgroup) fg</string>
     <string name="detail_cgroup_bg">Memory(cgroup) bg</string>
     <string name="detail_booster">Auto Boost(memory)</string>
@@ -211,6 +242,15 @@
     <string name="detail_scene_monitor">Performeter</string>
     <string name="detail_scene_monitor_desc">Mini performance monitor showing Scene (Amoled please worry about the screen ~)</string>
     <string name="detail_reset">Rest Settings</string>
+    <string name="detail_app_uninstalled">The App has been uninstalled!</string>
+    <string name="detail_dynamic_required">Please go back to the function menu and enable the [Automatic shift]</string>
+    <string name="detail_reset_title">Make sure to reset?</string>
+    <string name="detail_reset_desc">This will clear your [performance tuning, manual brightness, screen rotation, memory (Cgroup), auto boost, performance Monitor] options for individual app configurations!</string>
+    <string name="detail_manual_brightness">Manual brightness  </string>
+    <string name="detail_disable_notification">Disable notification  </string>
+    <string name="detail_disable_keys">Disable Keys  </string>
+    <string name="detail_auto_freeze">Auto freeze  </string>
+    <string name="detail_open_gps">GPS-ON  </string>
     <string name="accessibility_updated">The AccessibilityService configuration has been updated~</string>
     <string name="accessibility_closed">Scene - AccessibilityService closed！</string>
     <string name="accessibility_app_config_updated">The configuration parameters have been updated!</string>
@@ -222,6 +262,11 @@
     <string name="source_perf">Scene(Quickly)</string>
     <string name="source_undefined">Undefined</string>
     <string name="source_unknown">Unknown</string>
+    <string name="source_author">Source/Author: </string>
     <string name="notification_filter">Notification filter</string>
+
+    <string name="kernel_unsupported">Sorry, your Linux kernel does not support this feature.</string>
+    <string name="enabled">Enabled</string>
+    <string name="not_enabled">Disabled</string>
 
 </resources>

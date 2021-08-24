@@ -60,13 +60,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="@string/power_shutdown_force" />
+                        android:text="@string/power_shutdown" />
 
                     <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/power_shutdown" />
+                        android:text="@string/power_shutdown_desc" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -104,13 +104,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:text="@string/power_reboot_force" />
+                        android:text="@string/power_reboot" />
+
 
                     <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/power_reboot" />
+                        android:text="@string/power_reboot_desc" />
                 </LinearLayout>
 
             </LinearLayout>

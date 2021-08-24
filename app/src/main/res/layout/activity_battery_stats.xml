@@ -47,23 +47,23 @@
                         android:layout_height="70dp" />
 
                     <TextView
+                        android:id="@+id/battery_max_temperature_text"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_temperature"
                         android:gravity="center_vertical"
-                        android:text="@string/batstat_temperature"
                         android:textAlignment="center"
+                        android:text="0°C"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/battery_max_temperature_text"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/battery_max_temperature"
                         android:layout_marginTop="4dp"
-                        android:text="0°C"
+                        android:text="@string/batstat_temperature"
                         android:textAlignment="center" />
                 </RelativeLayout>
 
@@ -80,23 +80,23 @@
                         android:layout_height="70dp" />
 
                     <TextView
+                        android:id="@+id/battery_max_output_text"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_output"
                         android:gravity="center_vertical"
-                        android:text="@string/batstat_bat_out"
+                        android:text="0mA"
                         android:textAlignment="center"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/battery_max_output_text"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/battery_max_output"
                         android:layout_marginTop="4dp"
-                        android:text="0mA"
+                        android:text="@string/batstat_bat_out"
                         android:textAlignment="center" />
                 </RelativeLayout>
 
@@ -112,23 +112,23 @@
                         android:layout_height="70dp" />
 
                     <TextView
+                        android:id="@+id/battery_max_intput_text"
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:layout_alignTop="@id/battery_max_intput"
                         android:gravity="center_vertical"
-                        android:text="@string/batstat_bat_in"
                         android:textAlignment="center"
+                        android:text="0mA"
                         android:textColor="#77888888"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/battery_max_intput_text"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/battery_max_intput"
                         android:layout_marginTop="4dp"
-                        android:text="0mA"
+                        android:text="@string/batstat_bat_in"
                         android:textAlignment="center" />
                 </RelativeLayout>
             </LinearLayout>

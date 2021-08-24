@@ -11,9 +11,12 @@
 
     <string name="accessibility_name">Scene 辅助服务</string>
     <string name="accessibility_service_description">激活服务以使用调度策略(档位)自动切换功能</string>
+    <string name="accessibility_activate">未激活辅助服务，点此去激活</string>
+    <string name="accessibility_activate_desc">按应用调节性能、自动开关GPS、记录耗电速度，均需要激活此服务</string>
 
     <string name="menu_app_scene">应用场景</string>
     <string name="menu_battery_stats">耗电统计</string>
+    <string name="menu_battery_stats_desc">查看应用使用过程中记录的功耗(电流)数据</string>
 
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
@@ -32,6 +35,10 @@
     <string name="balance_short">均衡</string>
     <string name="performance_short">性能</string>
     <string name="fast_short">极速</string>
+    <string name="powersave_desc">老年人直呼内行</string>
+    <string name="balance_desc">慢点 世界赏心悦目</string>
+    <string name="performance_desc">玩把游戏压压惊</string>
+    <string name="fast_desc">快乐总是短暂的</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
 
     <string-array name="default_powercfg_mode_options">
@@ -93,8 +100,13 @@
     <string name="home_mem">物理内存</string>
     <string name="home_swap">交换分区</string>
     <string name="home_cores">核心数</string>
+    <string name="home_core">核心</string>
     <string name="home_scene">访问Scene官网</string>
     <string name="home_time">已开机</string>
+    <string name="home_cache_cleared">缓存已清理…</string>
+    <string name="home_reclaim_tip">开始回收少量内存(长按回收更多~)</string>
+    <string name="home_governor_params">调度器参数</string>
+    <string name="home_load">负载：</string>
 
     <!--未ROOT页-->
     <string name="nr_unauthorized">未ROOT</string>
@@ -107,12 +119,17 @@
     <string name="batstat_bat_in">充电</string>
     <string name="batstat_records">应用使用记录</string>
     <string name="batstat_records_desc">这里统计的只是每个应用在前台显示时的整机耗电，而电流和温度显示的是所有检测记录的平均值。这意味着此数值数值会受其它后台应用耗电影响！\n\n此数据由Scene的辅助服务自行统计，如果你已经保持场景模式后台运行一段时间，却一直得不到数据，请检查概览界面的电流显示是否正确，如果错误请手动校准电流单位。</string>
+    <string name="batstat_cleared">统计记录已清理</string>
 
     <!--常驻通知-->
     <string name="notific_battery">电池</string>
 
     <!--第一屏、权限提示-->
     <string name="splash_checking">现在，先校验一些权限设置…</string>
+    <string name="splash_access_permissions">检查并获取必需权限……</string>
+    <string name="splash_check_busybox">检查Busybox是否安装…</string>
+    <string name="splash_completed">启动完成！</string>
+    <string name="splash_agree">同意继续</string>
     <string name="scene_contract_title">风险声明</string>
     <string name="scene_contract">Scene Core Edition 是一款专注于性能调度的应用。它不会修改任何系统文件，因此绝大多数情况下都是安全的。如需还原所有修改，只需关闭或卸载软件并重启手机。\n\n但需要注意的是，根据以往的用户反馈，在Meizu、LG、Google Pixel的部分机型上使用此软件，会强制恢复出厂设置导致数据丢失！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
@@ -124,6 +141,7 @@
     <string name="scene_write_settings">请为Scene授予“修改系统设置”权限，以确保“辅助服务”能正常运行！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
+    <string name="not_root_disabled">没有获得ROOT权限，不能使用本功能</string>
 
     <!--调度配置源选择-->
     <string name="schedule_source">选择配置源</string>
@@ -131,13 +149,15 @@
     <string name="schedule_classics_desc">Scene提供的预设，各个模式泾渭分明</string>
     <string name="schedule_positive">偏重性能</string>
     <string name="schedule_positive_desc">Scene提供的预设，整体上更关注性能释放</string>
+    <string name="schedule_scene_desc">根据前台应用变化，自动切换模式</string>
+    <string name="schedule_scene">动态响应</string>
 
     <!--电源菜单-->
     <string name="power_title">选择操作</string>
-    <string name="power_shutdown_force">关机</string>
-    <string name="power_shutdown">正常关机</string>
-    <string name="power_reboot_force">重启</string>
-    <string name="power_reboot">正常重启</string>
+    <string name="power_shutdown">关机</string>
+    <string name="power_shutdown_desc">正常关机</string>
+    <string name="power_reboot">重启</string>
+    <string name="power_reboot_desc">正常重启</string>
     <string name="power_hot_reboot">热重启</string>
     <string name="power_hot_reboot2">只重启系界面而不重新引导系统（可能引发Bug）</string>
     <string name="power_recovery">Recovery</string>
@@ -196,6 +216,17 @@
     <string name="schedule_keep">保持状态</string>
     <string name="schedule_keep_desc">打开应用时保持当前性能调节状态</string>
 
+    <string name="schedule_screen_on">全局默认（亮屏状态）</string>
+    <string name="schedule_screen_on_desc">未单独设置调度模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请点击当前界面下方的 [应用策略]</string>
+    <string name="schedule_screen_off">待机时切换</string>
+    <string name="schedule_screen_off_desc">手机进入待机状态后，将切换至选定的模式</string>
+    <string name="schedule_delay_desc">前台应用发生变化后，延迟5s再执行调度模式切换</string>
+    <string name="schedule_delay">延迟切换</string>
+    <string name="schedule_enhanced">严格模式</string>
+    <string name="schedule_enhanced_desc">若未开启此选项，Scene只会在需要变换档位时执行调度配置文件，例如：在多个设为[省电模式]的应用之间切换，调度配置文件只会被执行一次。\n\n严格模式下，Scene会在每次前台应用发生变化时都执行调度配置文件，并告知被切换到前台运行的应用(包名)。调度配置作者可利用此特性，为不同的应用单独设计调度参数，而不再受限于只有四个档位的限制。\n\n骁龙855、865、888机型使用[经典配置][偏重性能]配置源时，可开启严格模式，在以下应用中体验专属优化:\n原神(官服、B服、小米服)\n闲鱼、淘宝、京东、天猫、百度贴吧\n双生视界\n哔哩哔哩、抖音\n\n其它处理器机型，除非正在使用外部配置源头(且配置作者已注明支持此特性)，否则无需开启此选项！</string>
+    <string name="schedule_app">应用策略</string>
+    <string name="schedule_app_desc">为每个应用单独设置调度策略</string>
+
     <!--应用(场景)配置-->
     <string name="apps_search_placeholder">搜索应用名</string>
     <string name="detail_automate">打开应用自动执行操作</string>
@@ -217,6 +248,15 @@
     <string name="detail_scene_monitor">性能监视器</string>
     <string name="detail_scene_monitor_desc">显示Scene的迷你性能监视器(OLED设备小心烧屏哦~)</string>
     <string name="detail_reset">设定重置</string>
+    <string name="detail_reset_title">确定重置？</string>
+    <string name="detail_reset_desc">这将清空你对单个应用配置的【性能调节、独立亮度、屏幕旋转、内存(cgroup)、自动加速、性能监视器】选项！</string>
+    <string name="detail_app_uninstalled">所选的应用已被卸载！</string>
+    <string name="detail_dynamic_required">请先回到功能菜单，开启 [动态响应] 功能</string>
+    <string name="detail_manual_brightness">独立亮度 </string>
+    <string name="detail_disable_notification">屏蔽通知  </string>
+    <string name="detail_disable_keys">屏蔽按键  </string>
+    <string name="detail_auto_freeze">自动冻结  </string>
+    <string name="detail_open_gps">打开GPS  </string>
     <string name="accessibility_updated">辅助服务配置已更新~</string>
     <string name="accessibility_closed">Scene - 辅助服务已关闭！</string>
     <string name="accessibility_app_config_updated">配置参数已更新，将在下次切换应用时生效！</string>
@@ -228,6 +268,11 @@
     <string name="source_perf">Scene-性能</string>
     <string name="source_undefined">未定义</string>
     <string name="source_unknown">未知</string>
+    <string name="source_author">配置源/作者：</string>
     <string name="notification_filter">通知过滤服务</string>
+
+    <string name="kernel_unsupported">抱歉，您的内核不支持该功能特性~</string>
+    <string name="enabled">已启用</string>
+    <string name="not_enabled">未启用</string>
 
 </resources>

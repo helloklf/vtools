@@ -36,7 +36,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="配置源/作者：" />
+                        android:text="@string/source_author" />
 
                     <TextView
                         android:id="@+id/config_author"
@@ -101,7 +101,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:alpha="0.6"
-                                android:text="老年人直呼内行"
+                                android:text="@string/powersave_desc"
                                 android:textColor="@android:color/white" />
                         </LinearLayout>
 
@@ -143,7 +143,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:alpha="0.6"
-                                android:text="慢点 世界赏心悦目"
+                                android:text="@string/balance_desc"
                                 android:textColor="@android:color/white" />
                         </LinearLayout>
 
@@ -192,7 +192,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:alpha="0.6"
-                                android:text="玩把游戏压压惊"
+                                android:text="@string/performance_desc"
                                 android:textColor="@android:color/white" />
                         </LinearLayout>
 
@@ -234,7 +234,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:alpha="0.6"
-                                android:text="快乐总是短暂的"
+                                android:text="@string/fast_desc"
                                 android:textColor="@android:color/white" />
                         </LinearLayout>
 
@@ -267,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:text="未激活辅助服务，点此去激活" />
+                        android:text="@string/accessibility_activate" />
                 </LinearLayout>
 
                 <TextView
@@ -275,7 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="按应用调节性能、自动开关GPS、记录耗电速度，均需要激活此服务" />
+                    android:text="@string/accessibility_activate_desc" />
             </LinearLayout>
 
             <LinearLayout
@@ -312,13 +312,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="动态响应" />
+                            android:text="@string/schedule_scene" />
 
                         <TextView
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="激活[辅助服务]后，可根据前台应用，自动切换模式" />
+                            android:text="@string/schedule_scene_desc" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -339,7 +339,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:text="未单独设置调度模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请点击当前界面下方的 [应用策略]" />
+                            app:text="@string/schedule_screen_on_desc" />
 
                         <TextView
                             style="@style/textTitle"
@@ -347,7 +347,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="全局默认（亮屏状态）" />
+                            android:text="@string/schedule_screen_on" />
 
                         <Spinner
                             android:id="@+id/first_mode"
@@ -368,7 +368,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:text="手机进入待机状态后，将切换至选定的模式" />
+                            app:text="@string/schedule_screen_off_desc" />
 
                         <TextView
                             style="@style/textTitle"
@@ -376,7 +376,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="待机时切换" />
+                            android:text="@string/schedule_screen_off" />
 
                         <Spinner
                             android:id="@+id/sleep_mode"
@@ -399,7 +399,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:text="一般模式下，Scene只会在需要变换档位时执行调度配置文件，例如：在多个设为[省电模式]的应用之间切换，调度配置文件只会被执行一次。\n\n严格模式下，Scene会在每次前台应用发生变化时都执行调度配置文件，并告知被切换到前台运行的应用(包名)。调度配置作者可利用此特性，为不同的应用单独设计调度参数，而不再受限于只有四个档位的限制。\n\n骁龙855、865、888机型使用[经典配置][偏重性能]配置源时，可开启严格模式，在以下应用中体验专属优化:\n原神(官服、B服、小米服)\n闲鱼、淘宝、京东、天猫、百度贴吧\n双生视界\n哔哩哔哩、抖音\n\n其它处理器机型，除非正在使用外部配置源头(且配置作者已注明支持此特性)，否则无需开启此选项！" />
+                            app:text="@string/schedule_enhanced_desc" />
 
                         <Switch
                             android:id="@+id/strict_mode"
@@ -408,7 +408,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="严格模式" />
+                            android:text="@string/schedule_enhanced" />
 
                     </LinearLayout>
 
@@ -423,7 +423,7 @@
                         <com.omarea.ui.HelpIcon
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:text="前台应用发生变化后，延迟5s再执行调度模式切换" />
+                            app:text="@string/schedule_delay_desc" />
 
                         <Switch
                             android:id="@+id/delay_switch"
@@ -432,7 +432,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="延迟切换" />
+                            android:text="@string/schedule_delay" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -478,13 +478,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="耗电统计" />
+                            android:text="@string/menu_battery_stats" />
 
                         <TextView
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="查看应用使用过程中记录的功耗(电流)数据" />
+                            android:text="@string/menu_battery_stats_desc" />
                     </LinearLayout>
 
                     <ImageView
@@ -530,13 +530,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="应用策略" />
+                            android:text="@string/schedule_app" />
 
                         <TextView
                             style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="为每个应用单独设置调度策略" />
+                            android:text="@string/schedule_app_desc" />
                     </LinearLayout>
 
                     <ImageView

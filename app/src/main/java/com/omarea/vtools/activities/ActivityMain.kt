@@ -129,7 +129,7 @@ class ActivityMain : ActivityBase() {
 
     private fun actionGraph() {
         if (!CheckRootStatus.lastCheckResult) {
-            Toast.makeText(this, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.not_root_disabled), Toast.LENGTH_SHORT).show()
             return
         }
         if (Build.VERSION.SDK_INT >= 23) {

@@ -101,7 +101,7 @@ class ActivityAppDetails : ActivityBase() {
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
-                DialogHelper.helpInfo(this, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [动态响应] 功能")
+                DialogHelper.helpInfo(this, "", getString(R.string.detail_dynamic_required))
                 return@setOnClickListener
             }
 
@@ -129,7 +129,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_cgroup_mem.setOnClickListener {
             val utlis = CGroupMemoryUtlis(this)
             if (!utlis.isSupported) {
-                DialogHelper.helpInfo(this, "", "抱歉，您的内核不支持该功能特性~")
+                DialogHelper.helpInfo(this, "", getString(R.string.kernel_unsupported))
                 return@setOnClickListener
             }
             DialogAppCGroupMem(this, sceneConfigInfo.fgCGroupMem, object : DialogAppCGroupMem.IResultCallback {
@@ -145,7 +145,7 @@ class ActivityAppDetails : ActivityBase() {
         app_details_cgroup_mem2.setOnClickListener {
             val utlis = CGroupMemoryUtlis(this)
             if (!utlis.isSupported) {
-                DialogHelper.helpInfo(this, "", "抱歉，您的内核不支持该功能特性~")
+                DialogHelper.helpInfo(this, "", getString(R.string.kernel_unsupported))
                 return@setOnClickListener
             }
 
@@ -162,7 +162,7 @@ class ActivityAppDetails : ActivityBase() {
             DialogAppBoostPolicy(this, sceneConfigInfo.dynamicBoostMem, object : DialogAppBoostPolicy.IResultCallback {
                 override fun onChange(enabled: Boolean) {
                     sceneConfigInfo.dynamicBoostMem = enabled
-                    (it as TextView).text = if (enabled) "已启用" else "未启用"
+                    (it as TextView).text = if (enabled) getString(R.string.enabled) else getString(R.string.not_enabled)
                     _result = RESULT_OK
                 }
             }).show()
@@ -287,7 +287,7 @@ class ActivityAppDetails : ActivityBase() {
         try {
             packageInfo = packageManager.getPackageInfo(app, 0)
         } catch (ex: Exception) {
-            Toast.makeText(applicationContext, "所选的应用已被卸载！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, getString(R.string.detail_app_uninstalled), Toast.LENGTH_SHORT).show()
         }
         if (packageInfo == null) {
             finish()

@@ -82,14 +82,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             home_raminfo_text.text = getString(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
                 dropCaches()
-                Scene.toast("缓存已清理...", Toast.LENGTH_SHORT)
+                Scene.toast(getString(R.string.home_cache_cleared), Toast.LENGTH_SHORT)
             }
         }
 
         home_clear_swap.setOnClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
-                Scene.toast("开始回收少量内存(长按回收更多~)", Toast.LENGTH_SHORT)
+                Scene.toast(getString(R.string.home_reclaim_tip), Toast.LENGTH_SHORT)
                 val result = forceKSWAPD(1)
                 Scene.toast(result, Toast.LENGTH_SHORT)
             }
@@ -129,7 +129,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.alert(activity!!, "调度器参数", msg.toString())
+                DialogHelper.alert(activity!!, getString(R.string.home_governor_params), msg.toString())
             }
         }
 
@@ -243,7 +243,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             coreCount = CpuFrequencyUtil.getCoreCount()
             myHandler.post {
                 try {
-                    cpu_core_count.text = "$coreCount 核心"
+                    cpu_core_count.text = "$coreCount " + getString(R.string.home_core)
                 } catch (ex: Exception) {
                 }
             }
@@ -294,12 +294,12 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 home_battery_temperature.text = "${temperature}°C"
 
                 home_gpu_freq.text = gpuFreq
-                home_gpu_load.text = "负载：$gpuLoad%"
+                home_gpu_load.text = getString(R.string.home_load) + "$gpuLoad%"
                 if (gpuLoad > -1) {
                     home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 }
                 if (loads.containsKey(-1)) {
-                    cpu_core_total_load.text = "负载：" + loads[-1]!!.toInt().toString() + "%"
+                    cpu_core_total_load.text = getString(R.string.home_load) + loads[-1]!!.toInt().toString() + "%"
                     home_cpu_chat.setData(100.toFloat(), (100 - loads[-1]!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {

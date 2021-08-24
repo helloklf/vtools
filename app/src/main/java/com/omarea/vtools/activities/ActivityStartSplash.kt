@@ -65,7 +65,7 @@ class ActivityStartSplash : Activity() {
                         btnConfirm.text = timeout.toString() + "s"
                     } else {
                         timer.cancel()
-                        btnConfirm.text = "同意继续"
+                        btnConfirm.text = getString(R.string.splash_agree)
                     }
                 }
             }
@@ -130,7 +130,7 @@ class ActivityStartSplash : Activity() {
 
     private class CheckFileWirte(private val context: ActivityStartSplash) : Runnable {
         override fun run() {
-            context.start_state_text.text = "检查并获取必需权限……"
+            context.start_state_text.text = context.getString(R.string.splash_access_permissions)
             context.hasRoot = true
 
             context.checkFileWrite(InstallBusybox(context))
@@ -140,7 +140,7 @@ class ActivityStartSplash : Activity() {
 
     private class InstallBusybox(private val context: ActivityStartSplash) : Runnable {
         override fun run() {
-            context.start_state_text.text = "检查Busybox是否安装..."
+            context.start_state_text.text = context.getString(R.string.splash_check_busybox)
             Busybox(context).forceInstall(BusyboxInstalled(context))
         }
 
@@ -198,7 +198,7 @@ class ActivityStartSplash : Activity() {
      * 启动完成
      */
     private fun startToFinish() {
-        start_state_text.text = "启动完成！"
+        start_state_text.text = getString(R.string.splash_completed)
 
         val intent = Intent(this.applicationContext, ActivityMain::class.java)
         startActivity(intent)

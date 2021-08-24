@@ -63,7 +63,7 @@ class ActivityAppConfig2 : ActivityBase() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_reset -> {
-                DialogHelper.confirm(this, "确定重置？", "这将清空你对单个应用配置的【性能调节、独立亮度、屏幕旋转、内存(cgroup)、自动加速、性能监视器】选项！", {
+                DialogHelper.confirm(this, getString(R.string.detail_reset), getString(R.string.detail_reset_desc), {
                     sceneConfigStore.resetAll()
                     spfPowercfg.all.clear()
                     initDefaultConfig()
@@ -332,19 +332,19 @@ class ActivityAppConfig2 : ActivityBase() {
         item.sceneConfigInfo = configInfo
         val desc = StringBuilder()
         if (configInfo.aloneLight) {
-            desc.append("独立亮度 ")
+            desc.append(getString(R.string.detail_manual_brightness))
         }
         if (configInfo.disNotice) {
-            desc.append("屏蔽通知  ")
+            desc.append(getString(R.string.detail_disable_notification))
         }
         if (configInfo.disButton) {
-            desc.append("屏蔽按键  ")
+            desc.append(getString(R.string.detail_disable_keys))
         }
         if (configInfo.freeze) {
-            desc.append("自动冻结  ")
+            desc.append(getString(R.string.detail_auto_freeze))
         }
         if (configInfo.gpsOn) {
-            desc.append("打开GPS  ")
+            desc.append(getString(R.string.detail_open_gps))
         }
         if (configInfo.screenOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
             DialogAppOrientation.Transform(this).getName(configInfo.screenOrientation).run {

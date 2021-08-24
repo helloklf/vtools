@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatPowercfgSelector
 
 class ActivityPowerModeTile : AppCompatActivity() {
@@ -23,7 +24,7 @@ class ActivityPowerModeTile : AppCompatActivity() {
                 val overlayPermission = Intent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 overlayPermission.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                 overlayPermission.data = Uri.fromParts("package", this.packageName, null)
-                Toast.makeText(this, "为Scene授权显示悬浮窗权限，从而在应用中快速切换模式！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.permission_float), Toast.LENGTH_SHORT).show();
             } else {
                 FloatPowercfgSelector(this.applicationContext).open(this.packageName)
             }
