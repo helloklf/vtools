@@ -1,6 +1,7 @@
 package com.omarea.library.shell
 
 import android.content.Context
+import android.util.Log
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
@@ -35,9 +36,9 @@ class SwapUtils(private val context: Context) {
                 if (txt.contains("/data/swapfile") || txt.contains("/swapfile")) {
                     return "/data/swapfile"
                 } else {
-                    val loopNumber = PropsUtils.getProp("vtools.swap.loop")
-                    if (loopNumber.isNotEmpty() && loopNumber != "error" && txt.contains("loop$loopNumber")) {
-                        return "/dev/block/loop$loopNumber"
+                    val loopName = PropsUtils.getProp("vtools.swap.loop").split("/").lastOrNull()
+                    if (loopName != null && loopName != "error" && txt.contains(loopName)) {
+                        return loopName
                     }
                 }
             }
@@ -118,7 +119,8 @@ class SwapUtils(private val context: Context) {
         }
 
         val keepShell = KeepShell()
-        keepShell.doCmdSync(sb.toString())
+        val r =keepShell.doCmdSync(sb.toString())
+        Log.d("xx", r)
         keepShell.tryExit()
     }
 
@@ -135,7 +137,7 @@ class SwapUtils(private val context: Context) {
             sb.append("0")
         }
 
-        sb.append("\nrm -f $swapfilePath;")
+        sb.append("\nrm -f $swapfilePath")
 
         val keepShell = KeepShell()
         keepShell.doCmdSync(sb.toString())

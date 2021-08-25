@@ -163,9 +163,9 @@ public class Main {
     }
 
     static class ReclaimReason {
-        private static int REASON_MEMORY_WATCH = 1;
-        private static int REASON_APP_WATCH = 2;
-        private static int REASON_FOREGROUND_WATCH = 3;
+        private static final int REASON_MEMORY_WATCH = 1;
+        private static final int REASON_APP_WATCH = 2;
+        private static final int REASON_FOREGROUND_WATCH = 3;
 
         // 回收内存的原因（基于不同的回收原因，会有不同的力度）
         int reason = 1;
@@ -235,11 +235,9 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         String cgroupReclaim = args.length > 0 ? args[0].trim() : "passive";
-        String bgCGroup;
         switch (cgroupReclaim) {
             /*
             case "passive": {
-                bgCGroup = "scene_lock";
                 critical = 0.15;
                 high = 0.22;
                 middle = 0.25;
@@ -247,23 +245,26 @@ public class Main {
             }
             */
             case "force": {
-                bgCGroup = "scene_cache";
-                critical = 0.2;
+                critical = 0.23;
                 high = 0.27;
                 middle = 0.30;
                 break;
             }
             case "active": {
-                bgCGroup = "scene_bg";
-                critical = 0.18;
+                critical = 0.20;
                 high = 0.25;
                 middle = 0.28;
                 break;
             }
-            default: {
-                bgCGroup = "scene_lock";
+            case "lazy": {
                 critical = 0.15;
                 high = 0.22;
+                middle = 0.24;
+                break;
+            }
+            default: {
+                critical = 0.17;
+                high = 0.23;
                 middle = 0.25;
                 break;
             }
@@ -278,20 +279,20 @@ public class Main {
 
         File fTopProcs = new File("/dev/cpuset/top-app/cgroup.procs");
         File fBgProcs = new File("/dev/cpuset/background/cgroup.procs");
-        File fgGroup = new File(memcg + "/scene_fg/cgroup.procs");
-        File bgGroup = new File(memcg + "/" + bgCGroup + "/cgroup.procs");
+        File activeGroup = new File(memcg + "/scene_active/cgroup.procs");
+        File idleGroup = new File(memcg + "/scene_idle/cgroup.procs");
 
         if (memcg.isEmpty() || !(fTopProcs.exists() && fBgProcs.exists())) {
             System.out.println("The kernel does not support this feature!");
             return;
         }
-        if (!(fgGroup.exists() && bgGroup.exists())) {
+        if (!(activeGroup.exists() && idleGroup.exists())) {
             System.out.println("The CGroup has not been created!");
             return;
         }
 
-        new WatchForeground(bgGroup).start();
-        new MemoryWatch(bgGroup).start();
+        new WatchForeground(idleGroup).start();
+        new MemoryWatch(idleGroup).start();
 
         String currentTopProcs = "";
         long lastChange = 0L;
@@ -306,15 +307,15 @@ public class Main {
                 // top
                 for (String pid : topProcs) {
                     if (include(bgProcs, pid) && getOomADJ(pid) > 1) {
-                        writePID(pid, bgGroup);
+                        writePID(pid, idleGroup);
                     } else {
-                        writePID(pid, fgGroup);
+                        writePID(pid, activeGroup);
                     }
                 }
                 // background
                 for (String pid : bgProcs) {
                     if (!include(topProcs, pid) && getOomADJ(pid) > 1) {
-                        writePID(pid, bgGroup);
+                        writePID(pid, idleGroup);
                     }
                 }
                 // reclaim
