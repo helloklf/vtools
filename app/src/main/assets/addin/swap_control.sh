@@ -7,32 +7,36 @@ swapsize="$4"   # SWAP大小MB
 loop_save="vtools.swap.loop"
 next_loop_path=""
 
-# 获取下一个loop设备的索引
+# 获取下一个可用的loop设备
 get_next_loop() {
- local current_loop=`getprop $loop_save`
+  local current_loop=`getprop $loop_save`
 
- if [[ "$current_loop" != "" ]]; then
-   next_loop_path="$current_loop"
- fi
+  if [[ "$current_loop" != "" ]]
+  then
+    next_loop_path="$current_loop"
+  fi
 
- local loop_index=0
- # local used=`blkid | grep /dev/block/loop | cut -f1 -d ":"`
- local used=`blkid | grep /dev/block/loop`
- for loop in /dev/block/loop*
- do
-   if [[ "$loop_index" -gt "0" ]]; then
-     if [[ `echo $used | grep /dev/block/loop$loop_index` = "" ]]; then
-       return $loop_index
-     fi
-   fi
-   local loop_index=`expr $loop_index + 1`
- done
+  losetup -f 2>/dev/null
+  local nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+  if [[ "$nl" != "" ]]; then
+    next_loop_path="/dev/block/loop$nl"
+    return
+  fi
 
- if [[ -e "/dev/block/loop$loop_index" ]]; then
-   next_loop_path="/dev/block/loop$loop_index"
- else
-   next_loop_path=""
- fi
+  local loop_index=0
+  local used=`blkid | grep /dev/block/loop`
+  for loop in /dev/block/loop*
+  do
+    if [[ "$loop_index" -gt "0" ]]; then
+      if [[ `echo $used | grep /dev/block/loop$loop_index` = "" ]]; then
+        next_loop_path="/dev/block/loop$loop_index"
+        return
+      fi
+    fi
+    local loop_index=`expr $loop_index + 1`
+  done
+
+  next_loop_path=""
 }
 
 if [[ $loop == "1" ]]; then
