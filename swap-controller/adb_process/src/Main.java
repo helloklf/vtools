@@ -3,12 +3,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 public class Main {
     private static double critical = 0.15;
-    private static double high = 0.20;
-    private static double middle = 0.22;
+    private static double high = 0.22;
+    private static double middle = 0.25;
 
     private static String readAllText(File file) {
         try {
@@ -148,8 +147,9 @@ public class Main {
                         }
                         // reclaim
                         if (memFreeRatio <= high) {
-                            synchronized (threadSync) {
-                                threadSync.notifyAll();
+                            synchronized (reclaimReason) {
+                                reclaimReason.reason = ReclaimReason.REASON_FOREGROUND_WATCH;
+                                reclaimReason.notifyAll();
                             }
                         }
                     }
@@ -162,11 +162,20 @@ public class Main {
         }
     }
 
-    static final Object threadSync = new Object();
+    static class ReclaimReason {
+        private static int REASON_MEMORY_WATCH = 1;
+        private static int REASON_APP_WATCH = 2;
+        private static int REASON_FOREGROUND_WATCH = 3;
+
+        // 回收内存的原因（基于不同的回收原因，会有不同的力度）
+        int reason = 1;
+    }
+
+    private static final ReclaimReason reclaimReason = new ReclaimReason();
 
     static class MemoryWatch extends Thread {
         private final File bgGroup;
-        public MemoryWatch(File bgGroup) {
+        MemoryWatch(File bgGroup) {
             this.bgGroup = bgGroup;
         }
 
@@ -176,16 +185,17 @@ public class Main {
             while (true) {
                 double memFreeRatio = getMemFreeRatio();
 
-                synchronized (threadSync) {
+                synchronized (reclaimReason) {
+                    reclaimReason.reason = ReclaimReason.REASON_MEMORY_WATCH;
                     try {
                         if (memFreeRatio >= 0.6) {
-                            threadSync.wait(180000);
+                            reclaimReason.wait(180000);
                         } else if (memFreeRatio >= 0.5) {
-                            threadSync.wait(120000);
+                            reclaimReason.wait(120000);
                         } else if (memFreeRatio > 0.4) {
-                            threadSync.wait(60000);
+                            reclaimReason.wait(60000);
                         } else {
-                            threadSync.wait(30000);
+                            reclaimReason.wait(30000);
                         }
                     } catch (InterruptedException ignored) {
                     }
@@ -193,14 +203,21 @@ public class Main {
 
                 memFreeRatio = getMemFreeRatio();
                 int swapFree = getSwapFreeMB();
-                if (swapFree >= 300 && memFreeRatio <= middle) {
+                if (
+                        swapFree >= 300 &&
+                        (
+                            memFreeRatio <= high ||
+                            (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH)
+                        )
+                ) {
                     String method = "";
                     if (memFreeRatio < critical && swapFree > 500) {
                         method = "all";
                     } else {
                         method = "file";
-                        // 间隔120秒执行过Reclaim 跳过
-                        if (System.currentTimeMillis() - lastReclaim < 120000) {
+                        // 间隔120秒执行过Reclaim，且回收需求不是发生在前台应用切换 跳过
+                        if (reclaimReason.reason != ReclaimReason.REASON_APP_WATCH &&
+                            System.currentTimeMillis() - lastReclaim < 120000) {
                             continue;
                         }
                     }
@@ -224,30 +241,30 @@ public class Main {
             case "passive": {
                 bgCGroup = "scene_lock";
                 critical = 0.15;
-                high = 0.20;
-                middle = 0.22;
+                high = 0.22;
+                middle = 0.25;
                 break;
             }
             */
             case "force": {
                 bgCGroup = "scene_cache";
                 critical = 0.2;
-                high = 0.25;
-                middle = 0.28;
+                high = 0.27;
+                middle = 0.30;
                 break;
             }
             case "active": {
                 bgCGroup = "scene_bg";
                 critical = 0.18;
-                high = 0.22;
-                middle = 0.25;
+                high = 0.25;
+                middle = 0.28;
                 break;
             }
             default: {
                 bgCGroup = "scene_lock";
                 critical = 0.15;
-                high = 0.20;
-                middle = 0.22;
+                high = 0.22;
+                middle = 0.25;
                 break;
             }
         }
@@ -302,8 +319,9 @@ public class Main {
                 }
                 // reclaim
                 if (memFreeRatio <= middle) {
-                    synchronized (threadSync) {
-                        threadSync.notifyAll();
+                    synchronized (reclaimReason) {
+                        reclaimReason.reason = ReclaimReason.REASON_APP_WATCH;
+                        reclaimReason.notifyAll();
                     }
                 }
                 lastChange = System.currentTimeMillis();
@@ -318,61 +336,5 @@ public class Main {
                 }
             }
         }
-
-        /*
-        # CGroup
-        if [[ -d /sys/fs/cgroup/memory ]]; then
-          memcg="/sys/fs/cgroup/memory"
-        elif [[ -d /dev/memcg ]]; then
-          memcg="/dev/memcg"
-        fi
-
-        top_path=/dev/cpuset/top-app/cgroup.procs
-        bg_path=/dev/cpuset/background/cgroup.procs
-        bg_group=$memcg/scene_bg/cgroup.procs
-        fg_group=$memcg/scene_fg/cgroup.procs
-
-        if [[ ! -e $top_path ]] || [[ ! -e $bg_path ]] || [[ ! -e $fg_group ]] || [[ ! -e $bg_group ]]; then
-          return
-        fi
-
-        auto_set() {
-          bg_procs=$(cat $bg_path)
-          fg_procs=$(cat $top_path)
-
-          echo "$fg_procs" | while read line ; do
-            if [[ $(echo "$bg_procs" | grep -E "^$line\$") == '' ]]; then
-              echo $line > $fg_group
-            else
-              oom_adj=$(cat /proc/$line/oom_adj)
-              echo $line
-              if [[ $oom_adj -gt 0 ]]; then
-                echo $line > $bg_group
-              fi
-            fi
-          done
-
-          echo "$bg_procs" | while read line ; do
-            if [[ $(echo "$fg_procs" | grep -E "^$line\$") == '' ]]; then
-              echo $line > $bg_group
-            fi
-          done
-        }
-
-
-        last_procs=''
-        while true
-        do
-          current=$(cat $top_path)
-          if [[ "$current" != "$last_procs" ]]; then
-            last_procs=”$current”
-            auto_set
-          fi
-          sleep 5
-        done
-
-
-
-        */
     }
 }
