@@ -66,10 +66,10 @@ public class Main {
         }
     }
 
-    private static void writePID(String pid, File groupProcs) {
+    private static void writeFile(String content, File file) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(groupProcs);
-            byte[] bytes = pid.getBytes();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte[] bytes = content.getBytes();
             fileOutputStream.write(bytes, 0, bytes.length);
             fileOutputStream.flush();
             fileOutputStream.close();
@@ -143,7 +143,7 @@ public class Main {
                         for (String pid: fgProcs) {
                             // if (getOomADJ(pid) > 0) {
                             if (getOomADJ(pid) > 1) {
-                                writePID(pid, bgGroup);
+                                writeFile(pid, bgGroup);
                             }
                         }
                         // reclaim
@@ -179,6 +179,14 @@ public class Main {
         int oomAdj;
     }
 
+    static class WriteBack {
+        private File kernelReference = new File("/sys/block/zram0/writeback");
+
+        private void writeIdle() {
+            writeFile("idle", kernelReference);
+        }
+    }
+
     static class MemoryWatch extends Thread {
         private final File bgGroup;
         // 是否根据oomAdj对进程排序
@@ -189,6 +197,18 @@ public class Main {
 
         @Override
         public void run() {
+            // 判断ZRAM是否开启
+            boolean zramEnabled = readAllText(new File("/proc/swaps")).contains("/zram0");
+            boolean bdConfigured = false;
+            if (zramEnabled) {
+                File fileBD = new File("/sys/block/zram0/backing_dev");
+                String backingDev = fileBD.exists() ? readAllText(fileBD) : "";
+                bdConfigured = !(backingDev.equals("") || backingDev.equals("none"));
+            }
+            // 是否已配置ZRAM回写，如已配置 new WriteBack()
+            WriteBack writeBack = (zramEnabled && bdConfigured) ? new WriteBack() : null;
+
+
             long lastReclaim = 0L;
             while (true) {
                 double memFreeRatio = getMemFreeRatio();
@@ -210,56 +230,67 @@ public class Main {
                 }
 
                 memFreeRatio = getMemFreeRatio();
-                int swapFree = getSwapFreeMB();
-                if (
-                        swapFree >= 300 &&
-                        (
-                            memFreeRatio <= high ||
-                            (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH)
-                        )
-                ) {
-                    String method = "";
-                    if (memFreeRatio < critical && swapFree > 500) {
-                        method = "all";
-                    } else {
-                        method = "file";
-                        // 间隔120秒执行过Reclaim，且回收需求不是发生在前台应用切换 跳过
-                        if (reclaimReason.reason != ReclaimReason.REASON_APP_WATCH &&
-                            System.currentTimeMillis() - lastReclaim < 120000) {
-                            continue;
-                        }
+                // 是否内存不足
+                boolean lowMemory = memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
+                if (lowMemory) {
+                    // 如果配置了 ZRAM Writeback 先触发writeback
+                    if (writeBack != null) {
+                        writeBack.writeIdle();
+                        // writeback 介绍之后，更新空闲内存状态
+                        memFreeRatio = getMemFreeRatio();
+                        lowMemory = memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
                     }
 
-                    String[] recyclable = readAllText(bgGroup).split("\n");
-
-                    if (sortProcess) {
-                        List<LinuxProcess> processArr = new ArrayList<>();
-                        for (String id: recyclable) {
-                            LinuxProcess process = new LinuxProcess();
-                            process.pid = id;
-                            process.oomAdj = getOomADJ(id);
-                            processArr.add(process);
-                        }
-                        Collections.sort(processArr, new Comparator<LinuxProcess>() {
-                            @Override
-                            public int compare(LinuxProcess o1, LinuxProcess o2) {
-                            return o2.oomAdj - o1.oomAdj;
+                    if (lowMemory) {
+                        int swapFree = getSwapFreeMB();
+                        if (swapFree >= 300) {
+                            if (writeBack != null) {
+                                writeBack.writeIdle();
                             }
-                        });
 
-                        for (LinuxProcess process: processArr) {
-                            // System.out.println(">>" + process.pid + "|" + process.oomAdj + "|" + method);
-                            reclaimByPID(process.pid, method);
-                        }
-                    } else {
-                        for (String pid: recyclable) {
-                            reclaimByPID(pid, method);
+                            String method = "";
+                            if (memFreeRatio < critical && swapFree > 500) {
+                                method = "all";
+                            } else {
+                                method = "file";
+                                // 间隔120秒执行过Reclaim，且回收需求不是发生在前台应用切换 跳过
+                                if (reclaimReason.reason != ReclaimReason.REASON_APP_WATCH &&
+                                        System.currentTimeMillis() - lastReclaim < 120000) {
+                                    continue;
+                                }
+                            }
+
+                            String[] recyclable = readAllText(bgGroup).split("\n");
+
+                            if (sortProcess) {
+                                List<LinuxProcess> processArr = new ArrayList<>();
+                                for (String id : recyclable) {
+                                    LinuxProcess process = new LinuxProcess();
+                                    process.pid = id;
+                                    process.oomAdj = getOomADJ(id);
+                                    processArr.add(process);
+                                }
+                                Collections.sort(processArr, new Comparator<LinuxProcess>() {
+                                    @Override
+                                    public int compare(LinuxProcess o1, LinuxProcess o2) {
+                                        return o2.oomAdj - o1.oomAdj;
+                                    }
+                                });
+
+                                for (LinuxProcess process : processArr) {
+                                    // System.out.println(">>" + process.pid + "|" + process.oomAdj + "|" + method);
+                                    reclaimByPID(process.pid, method);
+                                }
+                            } else {
+                                for (String pid : recyclable) {
+                                    reclaimByPID(pid, method);
+                                }
+                            }
+
+                            lastReclaim = System.currentTimeMillis();
                         }
                     }
-
-                    lastReclaim = System.currentTimeMillis();
                 }
-
             }
         }
     }
@@ -339,15 +370,15 @@ public class Main {
                 // top
                 for (String pid : topProcs) {
                     if (include(bgProcs, pid) && getOomADJ(pid) > 1) {
-                        writePID(pid, idleGroup);
+                        writeFile(pid, idleGroup);
                     } else {
-                        writePID(pid, activeGroup);
+                        writeFile(pid, activeGroup);
                     }
                 }
                 // background
                 for (String pid : bgProcs) {
                     if (!include(topProcs, pid) && getOomADJ(pid) > 1) {
-                        writePID(pid, idleGroup);
+                        writeFile(pid, idleGroup);
                     }
                 }
                 // reclaim
