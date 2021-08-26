@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.*;
 
 public class Main {
     private static double critical = 0.15;
@@ -173,8 +174,15 @@ public class Main {
 
     private static final ReclaimReason reclaimReason = new ReclaimReason();
 
+    static class LinuxProcess {
+        String pid;
+        int oomAdj;
+    }
+
     static class MemoryWatch extends Thread {
         private final File bgGroup;
+        // 是否根据oomAdj对进程排序
+        private final boolean sortProcess = true;
         MemoryWatch(File bgGroup) {
             this.bgGroup = bgGroup;
         }
@@ -223,9 +231,32 @@ public class Main {
                     }
 
                     String[] recyclable = readAllText(bgGroup).split("\n");
-                    for (String pid: recyclable) {
-                        reclaimByPID(pid, method);
+
+                    if (sortProcess) {
+                        List<LinuxProcess> processArr = new ArrayList<>();
+                        for (String id: recyclable) {
+                            LinuxProcess process = new LinuxProcess();
+                            process.pid = id;
+                            process.oomAdj = getOomADJ(id);
+                            processArr.add(process);
+                        }
+                        Collections.sort(processArr, new Comparator<LinuxProcess>() {
+                            @Override
+                            public int compare(LinuxProcess o1, LinuxProcess o2) {
+                            return o2.oomAdj - o1.oomAdj;
+                            }
+                        });
+
+                        for (LinuxProcess process: processArr) {
+                            // System.out.println(">>" + process.pid + "|" + process.oomAdj + "|" + method);
+                            reclaimByPID(process.pid, method);
+                        }
+                    } else {
+                        for (String pid: recyclable) {
+                            reclaimByPID(pid, method);
+                        }
                     }
+
                     lastReclaim = System.currentTimeMillis();
                 }
 
@@ -234,6 +265,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException {
+
         String cgroupReclaim = args.length > 0 ? args[0].trim() : "passive";
         switch (cgroupReclaim) {
             /*
@@ -257,9 +289,9 @@ public class Main {
                 break;
             }
             case "lazy": {
-                critical = 0.15;
-                high = 0.22;
-                middle = 0.24;
+                critical = 0.14;
+                high = 0.16;
+                middle = 0.20;
                 break;
             }
             default: {
