@@ -798,7 +798,9 @@ class ActivitySwap : ActivityBase() {
             // 为此磁盘分配的内存量
             val memUsedTotal = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
 
-            if (memUsedTotal.length > 0) {
+            val zramWriteBackStat = if (swapUtils.zramWriteBackSupport) swapUtils.writeBackStat else null
+
+            val generalStats = if (memUsedTotal.length > 0) {
                 // 可用于存储的最大内存量
                 val memLimit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
                 // 消耗的最大内存量
@@ -826,6 +828,17 @@ class ActivitySwap : ActivityBase() {
                         zramInfoValueParseMB(origDataSize),
                         zramInfoValueParseMB(comprDataSize),
                         zramCompressionRatio(origDataSize, comprDataSize))
+            }
+            if (zramWriteBackStat != null) {
+                return generalStats + "\n\n" + String.format(
+                        getString(R.string.swap_zram_writback_stat),
+                        zramWriteBackStat.backingDev,
+                        zramWriteBackStat.backed / 1024,
+                        zramWriteBackStat.backReads / 1024,
+                        zramWriteBackStat.backWrites / 1024
+                )
+            } else {
+                return generalStats
             }
         }
     }

@@ -210,11 +210,21 @@ class BootService : IntentService("vtools-boot") {
             if (!swapFirst) {
                 sb.append("echo 0 > /proc/sys/vm/swappiness\n")
             }
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+
+            sb.append("echo 4 > /sys/block/zram0/max_comp_streams\n")
             sb.append("sync\n")
+
+            sb.append("if [[ -f /sys/block/zram0/backing_dev ]]; then\n")
+            sb.append("  backing_dev=$(cat /sys/block/zram0/backing_dev)\n")
+            sb.append("fi\n")
+
             sb.append("echo 3 > /proc/sys/vm/drop_caches\n")
             sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1\n")
             sb.append("echo 1 > /sys/block/zram0/reset\n")
+
+            sb.append("if [[ -f /sys/block/zram0/backing_dev ]]; then\n")
+            sb.append("  echo \"\$backing_dev\" > /sys/block/zram0/backing_dev\n")
+            sb.append("fi\n")
 
             if (algorithm.isNotEmpty()) {
                 sb.append("echo \"$algorithm\" > /sys/block/zram0/comp_algorithm\n")
@@ -226,7 +236,7 @@ class BootService : IntentService("vtools-boot") {
                 sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
             }
 
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+            sb.append("echo 4 > /sys/block/zram0/max_comp_streams\n")
             sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
             sb.append("swapon /dev/block/zram0 -p 0 >/dev/null 2>&1\n")
             sb.append("echo \$swappiness_bak > /proc/sys/vm/swappiness")

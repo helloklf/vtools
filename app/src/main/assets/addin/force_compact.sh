@@ -59,10 +59,24 @@ else
   fi
 fi
 
-# 如果可用内存大于目标可用内存大小，则不需要回收了
-if [[ $MemMemFree -gt $TargetRecycle ]]; then
-  echo '内存充足，不需要操作！'
-else
+zram_writback() {
+  if [[ ! -f /sys/block/zram0/backing_dev ]] || [[ $(cat /proc/swaps | grep zram0) == '' ]]; then
+    return 0
+  fi
+  backing_dev=$(cat /sys/block/zram0/backing_dev)
+  if [[ "$backing_dev" != '' ]] && [[ "$backing_dev" != 'none' ]]; then
+    echo all > /sys/block/zram0/idle
+    echo idle > /sys/block/zram0/writeback
+
+    MemMemFree=${MemMemFreeStr:16:8}
+    if [[ $MemMemFree -gt $TargetRecycle ]]; then
+      return 1
+    fi
+  fi
+  return 0
+}
+
+force_reclaim() {
   # 计算需要回收多少内存
   RecyclingSize=$(($TargetRecycle - $MemMemFree))
 
@@ -109,24 +123,24 @@ else
     fi
 
     while [ $sleep_time -gt 0 ]; do
-        sleep 1
-        MemMemFreeStr=`cat /proc/meminfo | grep MemFree`
-        MemMemFree=${MemMemFreeStr:16:8}
+      sleep 1
+      MemMemFreeStr=`cat /proc/meminfo | grep MemFree`
+      MemMemFree=${MemMemFreeStr:16:8}
 
-        # 如果内存已经回收足够，提前结束
-        if [[ $(($TargetRecycle - $MemMemFree)) -lt 100 ]]; then
-          break
-        fi
+      # 如果内存已经回收足够，提前结束
+      if [[ $(($TargetRecycle - $MemMemFree)) -lt 100 ]]; then
+        break
+      fi
 
-        SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
-        SwapFree=${SwapFreeStr:16:8}
-        # 如果SWAP可用空间已经不足，提前结束
-        if [[ $SwapFree -lt 100 ]]; then
-          break
-        fi
+      SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
+      SwapFree=${SwapFreeStr:16:8}
+      # 如果SWAP可用空间已经不足，提前结束
+      if [[ $SwapFree -lt 100 ]]; then
+        break
+      fi
 
-        # 否则继续等待倒计时结束
-        sleep_time=$(expr $sleep_time - 1)
+      # 否则继续等待倒计时结束
+      sleep_time=$(expr $sleep_time - 1)
     done
 
     # 还原原始设置
@@ -138,5 +152,21 @@ else
   else
     echo '操作失败，计算容量出错!'
   fi
+}
+
+# 如果可用内存大于目标可用内存大小，则不需要回收了
+if [[ $MemMemFree -gt $TargetRecycle ]]; then
+  echo '内存充足，不需要操作！'
+else
+  zram_writback
+
+  if [[ "$?" == '1' ]]; then
+    echo '已通过ZRAM回写释放足够的内存'
+  else
+    force_reclaim
+  fi
 fi
-echo 1 > /proc/sys/vm/compact_memory
+
+if [[ -f /proc/sys/vm/compact_memory ]]; then
+  echo 1 > /proc/sys/vm/compact_memory
+fi

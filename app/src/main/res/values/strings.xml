@@ -256,6 +256,7 @@
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率　　　：%s</string>
     <string name="swap_zram_stat_format2">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n压缩率　　　：%s</string>
+    <string name="swap_zram_writback_stat">ZRAM Writeback\n回写块：%s\n已回写：%dMB\n总读取：%dMB\n总回写：%dMB</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="swap_state_undefined">未创建</string>
     <string name="swap_state_created">未启动</string>
