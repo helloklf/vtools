@@ -1,6 +1,7 @@
 #!/system/bin/sh
 
 action=$1
+task=$2
 
 cfg_dir=$(cd $(dirname $0); pwd)
 

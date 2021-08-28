@@ -1,6 +1,7 @@
 package com.omarea.scene_mode
 
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
@@ -230,9 +231,10 @@ open class ModeSwitcher {
                     if (configProvider.isNotEmpty()) {
                         val strictMode = Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false) && Scene.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
                         if (strictMode) {
+                            val currentTime = SystemClock.elapsedRealtime()
                             keepShellExec(
                                     "export top_app=$packageName\n" +
-                                            "sh $configProvider '$mode' > /dev/null 2>&1"
+                                            "sh $configProvider '$mode' 'task$currentTime' > /dev/null 2>&1"
                             )
                         } else {
                             keepShellExec(
