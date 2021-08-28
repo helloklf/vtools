@@ -340,11 +340,11 @@ yuan_shen_opt_run() {
         case "$comm" in
          "UnityMain"|"UnityGfxDevice"*|"UnityMultiRende"*)
            # set cpu6-7
-           taskset -p "C0" "$tid" 2>&1 > /dev/null
+           taskset -p "C0" "$tid" > /dev/null 2>&1
          ;;
          *)
            # set cpu0-6
-           taskset -p "3F" "$tid" 2>&1 > /dev/null
+           taskset -p "3F" "$tid" > /dev/null 2>&1
          ;;
         esac
       fi
@@ -372,16 +372,16 @@ sgame_opt_run() {
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
         if [[ "$heavy_tid" == "$tid" ]]; then
-          taskset -p "C0" "$tid" 2>&1 > /dev/null
+          taskset -p "C0" "$tid" > /dev/null 2>&1
         else
           case "$comm" in
            "UnityMain"|"CoreThread"*|"NativeThread"*)
              # set cpu6-7
-             taskset -p "C0" "$tid" 2>&1 > /dev/null
+             taskset -p "C0" "$tid" > /dev/null 2>&1
            ;;
            *)
              # set cpu0-6
-             taskset -p "3F" "$tid" 2>&1 > /dev/null
+             taskset -p "3F" "$tid" > /dev/null 2>&1
            ;;
           esac
         fi

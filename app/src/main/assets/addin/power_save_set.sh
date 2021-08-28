@@ -80,9 +80,9 @@ then
     done
     for app in `pm list packages -3  | cut -f2 -d ':'`
     do
-        am set-inactive $app true 2>&1 > /dev/null
-        am set-idle $app true 2>&1 > /dev/null
-        am make-uid-idle --user current $app 2>&1 > /dev/null
+        am set-inactive $app true > /dev/null 2>&1
+        am set-idle $app true > /dev/null 2>&1
+        am make-uid-idle --user current $app > /dev/null 2>&1
     done
     dumpsys deviceidle step
     dumpsys deviceidle step

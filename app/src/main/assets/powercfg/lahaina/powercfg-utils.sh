@@ -389,32 +389,33 @@ set_task_affinity() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+  local current_app=$(getprop vtools.powercfg_app)
+  if [[ "$current_app" != 'com.tencent.tmgp.pubgmhd' ]] && [[ "$current_app" != 'com.tencent.ig' ]]; then
     return
   fi
 
-  pid=$(pgrep -f com.tencent.tmgp.pubgmhd | head -1)
   # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
   # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
-  if [[ "$pid" != "" ]]; then
+  ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
 
         case "$comm" in
          "RenderThread"*)
-           taskset -p "80" "$tid" 2>&1 > /dev/null
+           taskset -p "80" "$tid" > /dev/null 2>&1
+           echo 1
          ;;
          *)
-           taskset -p "7F" "$tid" 2>&1 > /dev/null
+           taskset -p "7F" "$tid" > /dev/null 2>&1
          ;;
         esac
       fi
     done
-  fi
+  done
 }
 
 # YuanShen
@@ -439,15 +440,15 @@ yuan_shen_opt_run() {
         case "$comm" in
          "UnityMain")
            echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "F0" "$tid" 2>&1 > /dev/null
+           taskset -p "F0" "$tid" > /dev/null 2>&1
          ;;
          # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
          "UnityGfxDevice"*|"UnityMultiRende"*)
            echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "70" "$tid" 2>&1 > /dev/null
+           taskset -p "70" "$tid" > /dev/null 2>&1
          ;;
          *)
-           taskset -p "7F" "$tid" 2>&1 > /dev/null
+           taskset -p "7F" "$tid" > /dev/null 2>&1
          ;;
         esac
       fi
@@ -460,21 +461,20 @@ watch_app() {
   local interval=120
   local on_tick="$1"
   local on_change="$2"
-  local app=$(getprop vtools.powercfg_app)
+  local app=$top_app
+  local current_pid=$$
 
-  if [[ "$on_tick" == "" ]]; then
+  if [[ "$on_tick" == "" ]] || [[ "$app" == "" ]]; then
     return
   fi
 
-  if [[ "$app" == "" ]]; then
-    return
-  fi
-
-  procs=$(pgrep -f com.omarea.*powercfg.sh)
-  last_proc=$(echo "$procs" | tail -n 1)
-  if [[ "$last_proc" != "" ]]; then
-    echo "$procs" | grep -v "$last_proc" | while read pid; do
-      kill -9 $pid 2> /dev/null
+  if [[ "$task" != "" ]]; then
+    pgrep -f com.omarea.*powercfg.sh | grep -v $current_pid | while read pid; do
+      local cmdline=$(cat /proc/$pid/cmdline | grep -a task)
+      echo '>>'
+      if [[ "$cmdline" != '' ]] && [[ $(echo $cmdline | grep $task) == '' ]];then
+        kill -9 $pid 2> /dev/null
+      fi
     done
   fi
 
@@ -505,7 +505,7 @@ watch_app() {
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
-    "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
+    "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili" | "com.miHoYo.GenshinImpact")
         # ctl_off cpu4
         # ctl_off cpu7
         manufacturer=$(getprop ro.product.manufacturer)

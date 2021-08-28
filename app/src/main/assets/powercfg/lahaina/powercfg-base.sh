@@ -109,7 +109,7 @@ cpuctl foreground 0 0 0 '0.8'
 cpuctl background 0 0 0 0
 mk_cpuctl 'top-app/heavy' 1 1 max max
 
-echo 0 > /dev/stune/nnapi-hal/schedtune.boost
-echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
+# echo 0 > /dev/stune/nnapi-hal/schedtune.boost
+# echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
 
 process_opt &
