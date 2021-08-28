@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.activity_app_config2.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class ActivityAppConfig2 : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences

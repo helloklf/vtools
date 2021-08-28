@@ -47,7 +47,7 @@ class FragmentCpuModes : Fragment() {
             inflater.inflate(R.layout.fragment_cpu_modes, container, false)
 
     private fun startService() {
-        Scene.toast("请在系统设置里激活[Scene 辅助服务]选项", Toast.LENGTH_SHORT)
+        Scene.toast(getString(R.string.accessibility_please_activate), Toast.LENGTH_SHORT)
         try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
@@ -69,7 +69,7 @@ class FragmentCpuModes : Fragment() {
             val value = (it as Switch).isChecked
             if (value && !(modeSwitcher.modeConfigCompleted())) {
                 it.isChecked = false
-                DialogHelper.alert(context!!, "提示", "在安装有效的调度配置之前，你不能开启此功能~")
+                DialogHelper.alert(context!!, getString(R.string.sorry), getString(R.string.schedule_unfinished))
             } else if (value && !AccessibleServiceHelper().serviceRunning(context!!)) {
                 it.isChecked = false
                 startService()
@@ -126,8 +126,8 @@ class FragmentCpuModes : Fragment() {
                     if (configInstaller.dynamicSupport(context!!)) {
                         DialogHelper.warning(
                             activity!!,
-                            "操作确认",
-                            "你正在使用其它作者提供的调度配置(位于/data/powercfg.sh)，切换到Scene自带的调度配置需将其删除。现在要删除它吗？\n\n* 删除后建议重启手机一次",
+                            getString(R.string.make_choice),
+                            getString(R.string.schedule_remove_outside),
                             {
                                 configInstaller.removeOutsideConfig()
                                 reStartService()
@@ -135,12 +135,12 @@ class FragmentCpuModes : Fragment() {
                                 chooseConfigSource()
                             })
                     } else {
-                        Scene.toast("你正在使用其它作者提供的调度配置~", Toast.LENGTH_LONG)
+                        Scene.toast(getString(R.string.schedule_unofficial), Toast.LENGTH_LONG)
                     }
                 } else if (configInstaller.dynamicSupport(context!!)) {
                     chooseConfigSource()
                 } else {
-                    Scene.toast("Scene Core Edition自带的调度策略尚未适配当前SOC~", Toast.LENGTH_LONG)
+                    Scene.toast(getString(R.string.schedule_unsupported), Toast.LENGTH_LONG)
                 }
             }
         }
@@ -158,7 +158,10 @@ class FragmentCpuModes : Fragment() {
                 val intent = Intent(context, ActivityAppConfig2::class.java)
                 startActivity(intent)
             } else {
-                DialogHelper.warning(activity!!, "请注意", "你未开启[动态响应]，Scene将根据前台应用变化调节设备性能！", {
+                DialogHelper.warning(
+                        activity!!,
+                        getString(R.string.please_notice),
+                        getString(R.string.schedule_dynamic_off), {
                     val intent = Intent(context, ActivityAppConfig2::class.java)
                     startActivity(intent)
                 })
@@ -262,8 +265,8 @@ class FragmentCpuModes : Fragment() {
             if (mode == ModeSwitcher.FAST && ModeSwitcher.getCurrentSource() == ModeSwitcher.SOURCE_OUTSIDE_UPERF) {
                 DialogHelper.warning(
                         activity!!,
-                        "提示说明",
-                        "Uperf调度仅提供了[卡顿/均衡/费电]三种模式，分别于Scene的[省电/均衡/性能]对应。\n而在Scene里选择[极速]模式时，实际生效为[费电]，即与选择 [性能]模式相同",
+                        getString(R.string.please_notice),
+                        getString(R.string.schedule_uperf_fast),
                         {
                             modeSwitcher.executePowercfgMode(mode, context!!.packageName)
                             updateState(cpu_config_p3, ModeSwitcher.FAST)

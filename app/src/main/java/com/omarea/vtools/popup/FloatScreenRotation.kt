@@ -20,9 +20,9 @@ class FloatScreenRotation(mContext: Context) {
 
         // 类型
         type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        if (mContext is AccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (mContext is AccessibilityService) {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {
             type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
@@ -41,7 +41,7 @@ class FloatScreenRotation(mContext: Context) {
     private var show: Boolean = false
     private val wm = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    public fun update(config: SceneConfigInfo) {
+    fun update(config: SceneConfigInfo) {
         val screenOrientation = config.screenOrientation
 
         if (screenOrientation == params.screenOrientation) {
@@ -51,13 +51,11 @@ class FloatScreenRotation(mContext: Context) {
         params.screenOrientation = screenOrientation
         Scene.post {
             if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-                // Log.d(">>>>", "恢复" + screenOrientation)
                 if (show) {
                     wm.removeViewImmediate(view)
                     show = false
                 }
             } else {
-                // Log.d(">>>>", "旋转" + screenOrientation)
                 if (show) {
                     wm.updateViewLayout(view, params)
                 } else {
@@ -68,7 +66,7 @@ class FloatScreenRotation(mContext: Context) {
         }
     }
 
-    public fun remove() {
+    fun remove() {
         if (show) {
             wm.removeViewImmediate(view)
         }

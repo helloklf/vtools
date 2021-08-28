@@ -17,12 +17,12 @@
         <TextView
             android:id="@+id/confirm_title"
             style="@style/dialogTitle"
-            android:text="自动加速策略" />
+            android:text="@string/auto_boost_strategy" />
 
         <TextView
             android:id="@+id/confirm_message"
             style="@style/dialogDesc"
-            android:text="应用前台运行期间，每隔10秒检查剩余内存，若空闲内存低于16%，主动触发内存回收。" />
+            android:text="@string/auto_boost_strategy_desc" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -58,7 +58,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:background="@drawable/in_card_item_inactive"
             android:padding="@dimen/activity_vertical_margin"
-            android:text="说明：如果你不清楚此策略的适用场景和利弊，又不愿意实践得出结论的话，请勿使用它！以免带来负面体验。" />
+            android:text="@string/auto_boost_strategy_tip" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,14 +97,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="启用策略" />
+                        android:text="@string/auto_boost_enable" />
 
                     <TextView
                         style="@style/textSecondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="RAM可用比例低于16%时，主动触发内存回收" />
+                        android:text="@string/auto_boost_enable_desc" />
                 </LinearLayout>
 
                 <Switch
@@ -128,13 +128,13 @@
         <Button
             android:id="@+id/btn_cancel"
             style="@style/dialogCancelBtn"
-            android:text="取消" />
+            android:text="@string/btn_cancel" />
 
         <Button
             android:id="@+id/btn_confirm"
             style="@style/dialogConfirmBtn"
             android:layout_marginStart="8dp"
-            android:text="确定" />
+            android:text="@string/btn_confirm" />
     </LinearLayout>
 
 </LinearLayout>
