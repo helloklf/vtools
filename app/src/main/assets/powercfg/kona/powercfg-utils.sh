@@ -431,7 +431,7 @@ yuan_shen_opt_run() {
            "UnityGfxDevice"*|"UnityMultiRende"*)
              taskset -p "70" "$tid" > /dev/null 2>&1
            ;;
-           "Worker Thread")
+           "Worker Thread"|"AudioTrack")
              taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            *)
@@ -440,6 +440,10 @@ yuan_shen_opt_run() {
           esac
         fi
       done
+      UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+      if [[ "$UnityMain" != "" ]]; then
+         taskset -p "80" "$UnityMain" > /dev/null 2>&1
+      fi
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
@@ -484,6 +488,10 @@ watch_app() {
     done
   fi
 
+  if [[ $(getprop vtools.powercfg_app) == "$app"]]; then
+      $on_tick
+  fi
+
   ticks=0
   while true
   do
@@ -498,7 +506,7 @@ watch_app() {
 
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
-      $on_tick $current
+      $on_tick
     else
       if [[ "$on_change" ]]; then
         $on_change $current

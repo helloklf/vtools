@@ -478,6 +478,10 @@ yuan_shen_opt_run() {
           esac
         fi
       done
+      UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+      if [[ "$UnityMain" != "" ]]; then
+         taskset -p "80" "$UnityMain" > /dev/null 2>&1
+      fi
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
@@ -509,7 +513,6 @@ watch_app() {
   local app=$top_app
   local current_pid=$$
 
-  echo "$app $current_pid $on_tick" > /cache/watch_app.log
   if [[ "$on_tick" == "" ]] || [[ "$app" == "" ]]; then
     return
   fi
@@ -521,6 +524,10 @@ watch_app() {
         kill -9 $pid 2> /dev/null
       fi
     done
+  fi
+
+  if [[ $(getprop vtools.powercfg_app) == "$app"]]; then
+      $on_tick
   fi
 
   ticks=0
@@ -537,7 +544,7 @@ watch_app() {
 
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
-      $on_tick $current
+      $on_tick
     else
       if [[ "$on_change" ]]; then
         $on_change $current
