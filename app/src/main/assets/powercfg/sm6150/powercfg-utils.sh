@@ -354,37 +354,33 @@ yuan_shen_opt_run() {
 
 # WangZheRongYao
 sgame_opt_run() {
-  if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
+  local game="tmgp.sgame"
+  if [[ $(getprop vtools.powercfg_app | grep $game) == "" ]]; then
     return
   fi
 
   # top -H -p $(pgrep -ef tmgp.sgame)
-  # pid=$(pgrep -ef tmgp.sgame)
-  pid=$(pgrep -ef tmgp.sgame)
-  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
-  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
-  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # pid=$(pgrep -ef $game)
+  pid=$(pgrep -ef $game)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   if [[ "$pid" != "" ]]; then
-    heavy_tid=$(top -H -b -q -n 1 -m 5 -p $(pgrep -ef tmgp.sgame) | grep 'Thread-' | cut -f1 -d ' ')
+    heavy_tid=$(top -H -b -q -n 1 -m 5 -p $pid | grep 'Thread-' | egrep  -o '[0-9]{1,}' | head -n 1)
     for tid in $(ls "/proc/$pid/task/"); do
-      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+      if [[ "$heavy_tid" == "$tid" ]]; then
+        taskset -p "C0" "$tid" > /dev/null 2>&1
+      elif [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
-        if [[ "$heavy_tid" == "$tid" ]]; then
-          taskset -p "C0" "$tid" > /dev/null 2>&1
-        else
-          case "$comm" in
-           "UnityMain"|"CoreThread"*|"NativeThread"*)
-             # set cpu6-7
-             taskset -p "C0" "$tid" > /dev/null 2>&1
-           ;;
-           *)
-             # set cpu0-6
-             taskset -p "3F" "$tid" > /dev/null 2>&1
-           ;;
-          esac
-        fi
+        case "$comm" in
+         "UnityMain"|"UnityGfx"|"CoreThread"*|"NativeThread")
+           # set cpu6-7
+           taskset -p "C0" "$tid" > /dev/null 2>&1
+         ;;
+         *)
+           # set cpu0-5
+           taskset -p "3F" "$tid" > /dev/null 2>&1
+         ;;
+        esac
       fi
     done
   fi
@@ -441,7 +437,7 @@ adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili")
-        ctl_off cpu4
+        ctl_off cpu0
         ctl_off cpu6
         set_cpu_freq 1708800 2500000 1209600 2750000
         set_hispeed_freq 0 0
@@ -474,7 +470,7 @@ adjustment_by_top_app() {
 
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")
-        ctl_off cpu4
+        ctl_off cpu0
         ctl_off cpu6
         set_cpu_freq 1708800 2500000 1209600 2750000
         set_hispeed_freq 0 0
@@ -522,7 +518,7 @@ adjustment_by_top_app() {
 
     # DouYin, BiliBili
     "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
-      ctl_on cpu4
+      ctl_on cpu0
       ctl_on cpu7
       sched_boost 0 0
       stune_top_app 0 0
