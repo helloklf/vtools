@@ -4,11 +4,16 @@ import android.content.Context;
 import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.ProcessInfo;
 import com.omarea.model.ThreadInfo;
 import com.omarea.shell_utils.ToyboxIntaller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /*
  * 进程管理相关
@@ -157,14 +162,14 @@ public class ProcessUtils2 {
     }
 
     // 获取某个进程的所有线程
-    public String getThreads(final int pid) {
+    private String getThreads(final int pid) {
         return KeepShellPublic.INSTANCE.doCmdSync(
             String.format("top -H -b -q -n 1 -p %d -o TID,%%CPU,CMD", pid)
         );
     }
 
     // 获取某个进程的所有线程
-    public ArrayList<ThreadInfo> getThreadLoads (final int pid) {
+    public List<ThreadInfo> getThreadLoads (final int pid) {
         String[] result = getThreads(pid).split("\n");
         ArrayList<ThreadInfo> threadData = new ArrayList<>();
         for (String row : result) {
@@ -187,7 +192,22 @@ public class ProcessUtils2 {
                 // Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
             }
         }
+        Collections.sort(threadData, new Comparator<ThreadInfo>() {
+            @Override
+            public int compare(ThreadInfo o1, ThreadInfo o2) {
+                double r = o2.cpuLoad - o1.cpuLoad;
+                return r > 0 ? 1 : (r < 0 ? -1 : 0);
+            }
+        });
+        int count = threadData.size();
+        List<ThreadInfo> top15 = threadData.subList(0, Math.min(count, 15));
+        /*
+        String taskDir = "/proc/" + pid + "/task/";
+        for (ThreadInfo threadInfo: top15) {
+            threadInfo.name = KernelProrp.INSTANCE.getProp(taskDir + threadInfo.tid + "/comm");
+        }
+        */
 
-        return threadData;
+        return top15;
     }
 }

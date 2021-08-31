@@ -85,10 +85,9 @@ class FloatMonitorThreads(private val mContext: Context) {
     private fun updateData() {
         val pid = this.pid
         if (pid > 0) {
-            val threads = processUtils.getThreadLoads(pid).sortedByDescending { it.cpuLoad }
-            val count = threads.size
-            val top15 = threads.subList(0, if (count > 15) 15 else count)
-            val text = top15.joinToString("\n", "$lastApp [$lastPid]\n") {
+            val top15 = processUtils.getThreadLoads(pid)
+            val text = top15.joinToString("\n",
+                "$lastApp [$lastPid]\nTop15, Sorted by %CPU\n") {
                 "${it.cpuLoad}% [${it.tid}] ${it.name}"
             }
             // val text = lastApp + "\n" + processUtils.getThreads(pid)
