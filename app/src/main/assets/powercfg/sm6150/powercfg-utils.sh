@@ -495,7 +495,8 @@ adjustment_by_top_app() {
           stune_top_app 1 100
           cpuset '0-1' '0-1' '0-1' '0-7'
         fi
-        watch_app sgame_opt_run &
+        # 这个策略很好，但是会被系统(游戏)覆盖，甚至互斥产生负面作用
+        # watch_app sgame_opt_run &
     ;;
 
     # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
