@@ -4,19 +4,23 @@
     android:layout_height="match_parent"
     android:layout_gravity="top"
     android:orientation="vertical">
-
+<!--
+    android:background="@drawable/shape_corner"
+-->
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/fw_logs"
         android:fontFamily="serif-monospace"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:background="#00000000"
+        android:background="@drawable/shape_corner"
         android:paddingStart="12dp"
         android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:textColor="#ffffff"
-        android:textSize="10sp"
+        android:textSize="9dp"
         android:shadowColor="#000000"
-        android:shadowRadius="3"
+        android:shadowRadius="2"
         android:shadowDx="2"
         android:shadowDy="2"
         android:textStyle="bold" />
