@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/fw_logs"
+        android:fontFamily="serif-monospace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:textColor="#ffffff"
+        android:textSize="10sp"
+        android:shadowColor="#000000"
+        android:shadowRadius="3"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:textStyle="bold" />
+</LinearLayout>

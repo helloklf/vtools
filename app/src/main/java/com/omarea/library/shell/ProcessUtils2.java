@@ -1,9 +1,11 @@
 package com.omarea.library.shell;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.model.ProcessInfo;
+import com.omarea.model.ThreadInfo;
 import com.omarea.shell_utils.ToyboxIntaller;
 
 import java.util.ArrayList;
@@ -133,6 +135,16 @@ public class ProcessUtils2 {
         return (processInfo.command.contains("app_process") && processInfo.name.matches(".*\\..*"));
     }
 
+    // 获取安卓应用主进程PID
+    public int getAppMainProcess(String packageName) {
+        String pid = KeepShellPublic.INSTANCE.doCmdSync(
+            String.format("ps -ef -o PID,NAME | grep -e %s$ | egrep -o '[0-9]{1,}' | head -n 1", packageName)
+        );
+        if (pid.isEmpty() || pid.equals("error")) {
+          return -1;
+        }
+        return Integer.parseInt(pid);
+    }
 
     // 强制结束进程
     public void killProcess(ProcessInfo processInfo) {
@@ -142,5 +154,40 @@ public class ProcessUtils2 {
         } else {
             killProcess(processInfo.pid);
         }
+    }
+
+    // 获取某个进程的所有线程
+    public String getThreads(final int pid) {
+        return KeepShellPublic.INSTANCE.doCmdSync(
+            String.format("top -H -b -q -n 1 -p %d -o TID,%%CPU,CMD", pid)
+        );
+    }
+
+    // 获取某个进程的所有线程
+    public ArrayList<ThreadInfo> getThreadLoads (final int pid) {
+        String[] result = getThreads(pid).split("\n");
+        ArrayList<ThreadInfo> threadData = new ArrayList<>();
+        for (String row : result) {
+            final String rowStr = row.trim();
+            final String[] cols = rowStr.split(" +");
+            if (cols.length > 2) {
+                try {
+                    ThreadInfo threadInfo = new ThreadInfo(){{
+                        tid = Integer.parseInt(cols[0]);
+                        cpuLoad = Double.parseDouble(cols[1]);
+                        name = rowStr.substring(
+                                rowStr.indexOf(cols[1]) + cols[1].length()
+                        ).trim();
+                    }};
+                    threadData.add(threadInfo);
+                } catch (Exception ex) {
+                    // Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
+                }
+            } else {
+                // Log.e("Scene-ProcessUtils", "" + ex.getMessage() + " -> " + row);
+            }
+        }
+
+        return threadData;
     }
 }

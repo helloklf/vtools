@@ -8,10 +8,7 @@ import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.popup.FloatFpsWatch
-import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.popup.FloatMonitorMini
-import com.omarea.vtools.popup.FloatTaskManager
+import com.omarea.vtools.popup.*
 
 class DialogMonitor(var context: Activity) {
     fun show() {
@@ -41,6 +38,22 @@ class DialogMonitor(var context: Activity) {
                     }
                 } else {
                     FloatTaskManager(context).hidePopupWindow()
+                }
+            }
+        }
+        view.findViewById<CompoundButton>(R.id.monitor_threads).run {
+            isChecked = FloatMonitorThreads.show == true
+            setOnClickListener {
+                if (isChecked) {
+                    val floatTaskManager = FloatMonitorThreads(context)
+                    if (floatTaskManager.supported) {
+                        FloatMonitorThreads(context).showPopupWindow()
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.monitor_process_unsupported), Toast.LENGTH_SHORT).show()
+                        isChecked = false
+                    }
+                } else {
+                    FloatMonitorThreads(context).hidePopupWindow()
                 }
             }
         }

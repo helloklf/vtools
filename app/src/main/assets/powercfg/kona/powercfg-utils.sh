@@ -467,6 +467,43 @@ yuan_shen_opt_run() {
   fi
 }
 
+# WangZheRongYao
+tmgp_sgame_opt_run() {
+  if [[ $(getprop vtools.powercfg_app | grep tmgp.sgame) == "" ]]; then
+    return
+  fi
+
+  # top -H -p $(pgrep -ef tmgp.sgame)
+  pid=$(pgrep -ef tmgp.sgame)
+
+  if [[ "$pid" != "" ]]; then
+    for tid in $(ls "/proc/$pid/task/"); do
+    if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+      comm=$(cat /proc/$pid/task/$tid/comm)
+
+      case "$comm" in
+       "UnityMain")
+         taskset -p "F0" "$tid" > /dev/null 2>&1
+       ;;
+       "UnityGfxDevice"*|"UnityMultiRende"*)
+         taskset -p "70" "$tid" > /dev/null 2>&1
+       ;;
+       "Worker Thread"|"AudioTrack"|"NDK MediaCodec"*|"ff_read_thread"*|"GVoice"*)
+         taskset -p "F" "$tid" > /dev/null 2>&1
+       ;;
+       *)
+         taskset -p "7F" "$tid" > /dev/null 2>&1
+       ;;
+      esac
+    fi
+    done
+    UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+    if [[ "$UnityMain" != "" ]]; then
+       taskset -p "80" "$UnityMain" > /dev/null 2>&1
+    fi
+  fi
+}
+
 # watch_app [on_tick] [on_change]
 watch_app() {
   local interval=120
