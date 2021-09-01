@@ -525,7 +525,7 @@ watch_app() {
     done
   fi
 
-  if [[ $(getprop vtools.powercfg_app) == "$app"]]; then
+  if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
       $on_tick
   fi
 
