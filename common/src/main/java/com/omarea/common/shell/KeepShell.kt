@@ -1,6 +1,9 @@
 package com.omarea.common.shell
 
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.OutputStream
 import java.nio.charset.Charset
@@ -125,6 +128,10 @@ public class KeepShell(private var rootMode: Boolean = true) {
     private var br = "\n\n".toByteArray(Charset.defaultCharset())
 
     private val shellOutputCache = StringBuilder()
+    private val startTag = "|SH>>|"
+    private val endTag = "|<<SH|"
+    private val startTagBytes = "\necho '$startTag'\n".toByteArray(Charset.defaultCharset())
+    private val endTagBytes = "\necho '$endTag'\n".toByteArray(Charset.defaultCharset())
 
     //执行脚本
     public fun doCmdSync(cmd: String): String {
@@ -132,36 +139,29 @@ public class KeepShell(private var rootMode: Boolean = true) {
             tryExit()
             Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
         }
-        val uuid = UUID.randomUUID().toString().subSequence(0, 4)
         getRuntimeShell()
 
-        val startTag = "|$uuid>"
-        val endTag = "<$uuid|"
 
         try {
             mLock.lockInterruptibly()
             currentIsIdle = false
 
-            out!!.run {
-                write(br)
-                write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
-                write(br)
-                write(cmd.toByteArray(Charset.defaultCharset()))
-                write(br)
-                write("echo \"\"".toByteArray(Charset.defaultCharset()))
-                write(br)
-                write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
-                write(br)
-                flush()
+            out?.run {
+                GlobalScope.launch(Dispatchers.IO) {
+                    write(startTagBytes)
+                    write(cmd.toByteArray(Charset.defaultCharset()))
+                    write(endTagBytes)
+                    flush()
+                }
             }
 
             var unstart = true
             while (true && reader != null) {
                 val line = reader!!.readLine()
-                if (line == null || line.contains(endTag)) {
-                    if (line != null) {
-                        shellOutputCache.append(line.substring(0, line.indexOf(endTag)))
-                    }
+                if (line == null) {
+                    break
+                } else if (line.contains(endTag)) {
+                    shellOutputCache.append(line.substring(0, line.indexOf(endTag)))
                     break
                 } else if (line.contains(startTag)) {
                     shellOutputCache.clear()
@@ -176,12 +176,6 @@ public class KeepShell(private var rootMode: Boolean = true) {
             // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
             return shellOutputCache.toString().trim()
         }
-        /* catch (e: IOException) {
-            tryExit()
-            Log.e("KeepShellAsync", "" + e.message)
-            return "error"
-        }
-        */
         catch (e: Exception) {
             tryExit()
             Log.e("KeepShellAsync", "" + e.message)
