@@ -431,7 +431,7 @@ yuan_shen_opt_run() {
            "UnityGfxDevice"*|"UnityMultiRende"*)
              taskset -p "70" "$tid" > /dev/null 2>&1
            ;;
-           "Worker Thread")
+           "Worker Thread"|"AudioTrack")
              taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            *)
@@ -440,6 +440,10 @@ yuan_shen_opt_run() {
           esac
         fi
       done
+      UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+      if [[ "$UnityMain" != "" ]]; then
+         taskset -p "80" "$UnityMain" > /dev/null 2>&1
+      fi
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
@@ -484,6 +488,10 @@ watch_app() {
     done
   fi
 
+  if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
+      $on_tick
+  fi
+
   ticks=0
   while true
   do
@@ -498,7 +506,7 @@ watch_app() {
 
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
-      $on_tick $current
+      $on_tick
     else
       if [[ "$on_change" ]]; then
         $on_change $current
@@ -519,22 +527,22 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 4
-          set_cpu_freq 1036800 1804800 1056000 1766400 1075200 2265600
-          sched_limit 10000 0 5000 0 5000 0
+          set_cpu_freq 1036800 1804800 1056000 1766400 1075200 2457600
+          sched_limit 10000 0 1000 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
-          set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2457600
+          set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2841600
           sched_limit 10000 0 0 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
-          set_cpu_freq 1036800 1420800 1056000 2419200 1075200 2841600
+          set_cpu_freq 1036800 1420800 1056000 2419200 1075200 3200000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then

@@ -478,6 +478,10 @@ yuan_shen_opt_run() {
           esac
         fi
       done
+      UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+      if [[ "$UnityMain" != "" ]]; then
+         taskset -p "80" "$UnityMain" > /dev/null 2>&1
+      fi
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
@@ -509,7 +513,6 @@ watch_app() {
   local app=$top_app
   local current_pid=$$
 
-  echo "$app $current_pid $on_tick" > /cache/watch_app.log
   if [[ "$on_tick" == "" ]] || [[ "$app" == "" ]]; then
     return
   fi
@@ -521,6 +524,10 @@ watch_app() {
         kill -9 $pid 2> /dev/null
       fi
     done
+  fi
+
+  if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
+      $on_tick
   fi
 
   ticks=0
@@ -537,7 +544,7 @@ watch_app() {
 
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
-      $on_tick $current
+      $on_tick
     else
       if [[ "$on_change" ]]; then
         $on_change $current
@@ -558,22 +565,22 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 3
-          set_cpu_freq 1036800 1785600 1056000 1708800 1056000 2227200
-          sched_limit 10000 0 5000 0 5000 0
+          set_cpu_freq 1036800 1785600 1056000 1708800 1056000 2419200
+          sched_limit 10000 0 1000 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
-          set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2419200
+          set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2841600
           sched_limit 10000 0 0 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
-          set_cpu_freq 1036800 1478400 1056000 2419200 1056000 2841600
+          set_cpu_freq 1036800 1478400 1056000 2419200 1056000 3000000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then

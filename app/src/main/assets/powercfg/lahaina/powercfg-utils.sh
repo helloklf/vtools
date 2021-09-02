@@ -453,6 +453,10 @@ yuan_shen_opt_run() {
         esac
       fi
     done
+    UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
+    if [[ "$UnityMain" != "" ]]; then
+       taskset -p "80" "$UnityMain" > /dev/null 2>&1
+    fi
   fi
 }
 
@@ -471,11 +475,14 @@ watch_app() {
   if [[ "$task" != "" ]]; then
     pgrep -f com.omarea.*powercfg.sh | grep -v $current_pid | while read pid; do
       local cmdline=$(cat /proc/$pid/cmdline | grep -a task)
-      echo '>>'
       if [[ "$cmdline" != '' ]] && [[ $(echo $cmdline | grep $task) == '' ]];then
         kill -9 $pid 2> /dev/null
       fi
     done
+  fi
+
+  if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
+      $on_tick
   fi
 
   ticks=0
@@ -492,7 +499,7 @@ watch_app() {
 
     current=$(getprop vtools.powercfg_app)
     if [[ "$current" == "$app" ]]; then
-      $on_tick $current
+      $on_tick
     else
       if [[ "$on_change" ]]; then
         $on_change $current
