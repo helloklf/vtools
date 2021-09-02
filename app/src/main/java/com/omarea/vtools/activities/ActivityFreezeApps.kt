@@ -672,7 +672,7 @@ class ActivityFreezeApps : ActivityBase() {
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
                 if (it.equals("com.android.vending")) {
-                    GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
+                    GAppsUtilis().enable(KeepShellPublic.secondaryKeepShell);
                 } else {
                     KeepShellPublic.doCmdSync("pm unsuspend ${it}\n pm unhide ${it}\n" + "pm enable ${it}")
                 }

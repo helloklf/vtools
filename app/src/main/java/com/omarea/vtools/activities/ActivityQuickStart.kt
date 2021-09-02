@@ -66,7 +66,7 @@ class ActivityQuickStart : Activity() {
             context.get()!!.hasRoot = true
 
             if (appPackageName.equals("com.android.vending")) {
-                GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().enable(KeepShellPublic.secondaryKeepShell);
             } else {
                 KeepShellPublic.doCmdSync("pm unsuspend ${appPackageName}\npm unhide ${appPackageName}\npm enable ${appPackageName}\n")
             }

@@ -112,7 +112,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
         fun suspendApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().disable(KeepShellPublic.secondaryKeepShell);
             } else {
                 KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app} || am kill current ${app}")
             }
@@ -120,7 +120,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
 
         fun freezeApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GAppsUtilis().disable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().disable(KeepShellPublic.secondaryKeepShell);
             } else {
                 KeepShellPublic.doCmdSync("pm disable ${app}")
             }
@@ -130,7 +130,7 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
             getCurrentInstance()?.setFreezeAppLeaveTime(app)
 
             if (app.equals("com.android.vending")) {
-                GAppsUtilis().enable(KeepShellPublic.getDefaultInstance());
+                GAppsUtilis().enable(KeepShellPublic.secondaryKeepShell);
             } else {
                 KeepShellPublic.doCmdSync("pm unsuspend ${app}\npm enable ${app}")
             }

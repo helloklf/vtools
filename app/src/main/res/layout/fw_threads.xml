@@ -19,9 +19,5 @@
         android:paddingBottom="10dp"
         android:textColor="#ffffff"
         android:textSize="9dp"
-        android:shadowColor="#000000"
-        android:shadowRadius="2"
-        android:shadowDx="2"
-        android:shadowDy="2"
         android:textStyle="bold" />
 </LinearLayout>

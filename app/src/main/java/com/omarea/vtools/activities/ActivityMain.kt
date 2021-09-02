@@ -66,7 +66,7 @@ class ActivityMain : ActivityBase() {
         override fun run() {
             super.run()
 
-            Thread.sleep(500)
+            sleep(500)
             if (
                     MagiskExtend.magiskSupported() &&
                     KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal.current.ini") != ""
@@ -172,12 +172,12 @@ class ActivityMain : ActivityBase() {
                 DialogHelper.alert(
                         this,
                         getString(R.string.sorry),
-                        "启动应用失败\n" + ex.message,
-                        {
-                            recreate()
-                        })
+                        "启动应用失败\n" + ex.message
+                ) {
+                    recreate()
+                }
             }
-            ThermalCheckThread(this).run()
+            ThermalCheckThread(this).start()
         }
 
     }

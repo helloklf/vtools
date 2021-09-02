@@ -7,7 +7,7 @@ import com.omarea.common.shell.RootFile.fileExists
 /**
  * 帧率检测
  */
-class FpsUtils(private val keepShell: KeepShell = KeepShellPublic.getDefaultInstance()) {
+class FpsUtils(private val keepShell: KeepShell = KeepShellPublic.secondaryKeepShell) {
     private var fpsFilePath: String? = null
     private var subStrCommand = "| awk '{print \$2}'"
 
