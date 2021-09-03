@@ -16,7 +16,6 @@ import com.omarea.vtools.R
  */
 
 open class ModeSwitcher {
-
     companion object {
         const val SOURCE_UNKNOWN = "UNKNOWN"
         const val SOURCE_SCENE_ACTIVE = "SOURCE_SCENE_ACTIVE"
@@ -109,6 +108,20 @@ open class ModeSwitcher {
 
         private var currentPowercfg: String = ""
         private var currentPowercfgApp: String = ""
+
+        public fun getCurrentPowerMode(): String {
+            if (!currentPowercfg.isEmpty()) {
+                return currentPowercfg
+            }
+            return PropsUtils.getProp("vtools.powercfg")
+        }
+
+        public fun getCurrentPowermodeApp(): String {
+            if (!currentPowercfgApp.isEmpty()) {
+                return currentPowercfgApp
+            }
+            return PropsUtils.getProp("vtools.powercfg_app")
+        }
     }
 
     internal fun getModIcon(mode: String): Int {
@@ -129,20 +142,6 @@ open class ModeSwitcher {
             FAST -> R.drawable.shortcut_p4
             else -> R.drawable.shortcut_p3
         }
-    }
-
-    fun getCurrentPowerMode(): String {
-        if (!currentPowercfg.isEmpty()) {
-            return currentPowercfg
-        }
-        return PropsUtils.getProp("vtools.powercfg")
-    }
-
-    internal fun getCurrentPowermodeApp(): String {
-        if (!currentPowercfgApp.isEmpty()) {
-            return currentPowercfgApp
-        }
-        return PropsUtils.getProp("vtools.powercfg_app")
     }
 
     internal fun setCurrent(powerCfg: String, app: String): ModeSwitcher {

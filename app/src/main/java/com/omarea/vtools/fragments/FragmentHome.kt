@@ -363,7 +363,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         btn_defaultmode.alpha = 0.4f
         btn_gamemode.alpha = 0.4f
         btn_fastmode.alpha = 0.4f
-        when (modeSwitcher.getCurrentPowerMode()) {
+        when (ModeSwitcher.getCurrentPowerMode()) {
             ModeSwitcher.BALANCE -> {
                 btn_defaultmode.alpha = 1f
             }
@@ -406,7 +406,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private fun installConfig(toMode: String) {
         val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        if (!dynamic && modeSwitcher.getCurrentPowerMode() == toMode) {
+        if (!dynamic && ModeSwitcher.getCurrentPowerMode() == toMode) {
             modeSwitcher.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
             myHandler.post {

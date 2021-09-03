@@ -121,7 +121,7 @@ class FloatPowercfgSelector(context: Context) {
         val serviceRunning = AccessibleServiceHelper().serviceRunning(context)
         var dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE)
-        var selectedMode = (if (dynamic) powerCfgSPF.getString(packageName, defaultMode) else modeSwitcher.getCurrentPowerMode())!!
+        var selectedMode = (if (dynamic) powerCfgSPF.getString(packageName, defaultMode) else ModeSwitcher.getCurrentPowerMode())!!
         val modeConfigCompleted = modeSwitcher.modeConfigCompleted()
 
         try {
@@ -192,7 +192,7 @@ class FloatPowercfgSelector(context: Context) {
                         switchMode.run()
                     }
                 } else {
-                    selectedMode = modeSwitcher.getCurrentPowerMode()
+                    selectedMode = ModeSwitcher.getCurrentPowerMode()
                     updateUI.run()
                 }
             }

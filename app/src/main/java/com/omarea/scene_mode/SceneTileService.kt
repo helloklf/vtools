@@ -29,7 +29,7 @@ class SceneTileService : TileService() {
     override fun onStartListening() {
         super.onStartListening()
 
-        val currentMode = ModeSwitcher().getCurrentPowerMode()
+        val currentMode = ModeSwitcher.getCurrentPowerMode()
         when (currentMode) {
             ModeSwitcher.POWERSAVE -> {
                 qsTile.run {

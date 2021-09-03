@@ -469,7 +469,7 @@ yuan_shen_opt_run() {
            "UnityGfxDevice"*|"UnityMultiRende"*)
              taskset -p "70" "$tid" > /dev/null 2>&1
            ;;
-           "Worker Thread")
+           "Worker Thread"|"AudioTrack")
              taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            *)
@@ -565,22 +565,22 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           sched_config "50 80" "67 95" "300" "400"
           gpu_pl_down 3
-          set_cpu_freq 1036800 1785600 1056000 1708800 1056000 2227200
-          sched_limit 10000 0 5000 0 5000 0
+          set_cpu_freq 1036800 1785600 1056000 1708800 1056000 2419200
+          sched_limit 10000 0 1000 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           sched_config "50 68" "67 80" "300" "400"
           gpu_pl_down 1
-          set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2419200
+          set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2841600
           sched_limit 10000 0 0 0 5000 0
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 1
-          set_cpu_freq 1036800 1478400 1056000 2419200 1056000 2841600
+          set_cpu_freq 1036800 1478400 1056000 2419200 1056000 3000000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then
