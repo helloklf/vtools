@@ -130,7 +130,11 @@
     <string name="splash_agree">I agree</string>
     <string name="scene_contract_title">Risk warning</string>
     <string name="scene_contract">Scene Core Edition is an application that focuses on performance scheduling.It does not modify any system files, so it is safe in most cases.To undo all the changes, simply close or uninstall the software and restart the phone.\n\n However, it should be noted that according to previous user feedback, using this software on some models of Meizu, LG, Google Pixel will force restoration to factory Settings, resulting in data loss!!</string>
-    <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
+    <string name="scene_contract_accept">Accept the risk</string>
+    <string name="scene_contract_accept_desc">I understand and am willing to take risks</string>
+    <string name="scene_contract_back">Reject</string>
+    <string name="scene_contract_continue">Agree</string>
+    <string name="permission_float">Please grant Scene [Display pop-up window] permission first</string>
     <string name="error_su_timeout">Wait timeout, make sure your Root manager is running, and try again!\n\n Make sure you don\'t prevent "authorization Manager (SuperSu, Magisk Manager, etc.)" from starting and allow background pop-ups, display hover Windows, etc.If no authorization dialog box is displayed, restart the phone and try again.\n</string>
     <string name="error_root">Sorry, the ROOT permission is not granted</string>
     <string name="error_root_desc">Without ROOT, you lose many features.\n If you miss the authorization prompt, or do not see the popup, go to your ROOT manager and manually set the Scene to use ROOT permissions ~</string>
@@ -285,4 +289,6 @@
     <string name="auto_boost_strategy_tip">Note: If swap is not enabled, this feature may not have much effect  </string>
     <string name="auto_boost_enable">Enable</string>
     <string name="auto_boost_enable_desc">When the available RAM ratio falls below 16%, memory reclamation is actively triggered</string>
+
+    <string name="language_example">Look here, Is this your preferred language?</string>
 </resources>

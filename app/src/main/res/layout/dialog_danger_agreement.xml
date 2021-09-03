@@ -72,14 +72,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="接受风险" />
+                            android:text="@string/scene_contract_accept" />
 
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="我已了解并愿意承担风险" />
+                            android:text="@string/scene_contract_accept_desc" />
                     </LinearLayout>
 
                     <Switch
@@ -104,12 +104,12 @@
                 android:id="@+id/btn_cancel"
                 style="@style/dialogCancelBtn"
                 android:layout_marginEnd="8dp"
-                android:text="还是算了"></Button>
+                android:text="@string/scene_contract_back" />
 
             <Button
                 android:id="@+id/btn_confirm"
                 style="@style/dialogConfirmBtn"
-                android:text="继续使用"></Button>
+                android:text="@string/scene_contract_continue" />
         </LinearLayout>
 
     </LinearLayout>
