@@ -148,7 +148,11 @@ class SwapUtils(private val context: Context) {
     // 是否支持zram
     val zramSupport: Boolean
         get() {
-            return KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;") == "1"
+            return KeepShellPublic.doCmdSync(
+                    "if [[ ! -e /dev/block/zram0 ]] && [[ -e /sys/class/zram-control ]]; then\n" +
+                    "  cat /sys/class/zram-control/hot_add\n" +
+                    "fi\n" +
+                    "if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;") == "1"
         }
 
     // 是否支持zram WriteBack

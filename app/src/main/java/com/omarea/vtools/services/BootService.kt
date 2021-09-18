@@ -203,6 +203,11 @@ class BootService : IntentService("vtools-boot") {
      * swapFirst：是否已开启可优先使用的swap，如果未开启，则在调整zram前，先将swappiness调为0，避免在回收时还在写入zram，导致回收时间变长！
      */
     private fun resizeZram(sizeVal: Int, algorithm: String = "", keepShell: KeepShell, swapFirst: Boolean = false) {
+        keepShell.doCmdSync(
+    "if [[ ! -e /dev/block/zram0 ]] && [[ -e /sys/class/zram-control ]]; then\n" +
+         "  cat /sys/class/zram-control/hot_add\n" +
+         "fi"
+        )
         val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
         if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
             val sb = StringBuilder()
