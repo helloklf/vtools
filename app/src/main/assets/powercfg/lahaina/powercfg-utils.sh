@@ -433,31 +433,79 @@ yuan_shen_opt_run() {
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   if [[ "$pid" != "" ]]; then
-    for tid in $(ls "/proc/$pid/task/"); do
-      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
-        comm=$(cat /proc/$pid/task/$tid/comm)
-
-        case "$comm" in
-         "UnityMain")
-           echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "F0" "$tid" > /dev/null 2>&1
-         ;;
-         # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
-         "UnityGfxDevice"*|"UnityMultiRende"*)
-           echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "70" "$tid" > /dev/null 2>&1
-         ;;
-         *)
-           taskset -p "7F" "$tid" > /dev/null 2>&1
-         ;;
-        esac
+    if [[ "$taskset_effective" == "" ]]; then
+      taskset_test $pid
+      if [[ "$?" == '1' ]]; then
+        taskset_effective=1
+      else
+        taskset_effective=0
+        exit
       fi
-    done
-    UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
-    if [[ "$UnityMain" != "" ]]; then
-       taskset -p "80" "$UnityMain" > /dev/null 2>&1
+    fi
+
+    local mode=$(getprop vtools.powercfg)
+    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
+      for tid in $(ls "/proc/$pid/task/"); do
+        if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+          comm=$(cat /proc/$pid/task/$tid/comm)
+
+          case "$comm" in
+           "UnityMain")
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
+           # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
+           "UnityGfxDevice"*|"UnityMultiRende"*)
+             taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           "Worker Thread"|"AudioTrack"|"Audio"*)
+             taskset -p "F" "$tid" > /dev/null 2>&1
+           ;;
+           *)
+             taskset -p "7F" "$tid" > /dev/null 2>&1
+           ;;
+          esac
+        fi
+      done
+    else
+      for tid in $(ls "/proc/$pid/task/"); do
+        if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+          comm=$(cat /proc/$pid/task/$tid/comm)
+
+          case "$comm" in
+           "UnityMain")
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
+           # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
+           "UnityGfxDevice"*|"UnityMultiRende"*)
+             taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           *)
+             taskset -p "7F" "$tid" > /dev/null 2>&1
+           ;;
+          esac
+        fi
+      done
     fi
   fi
+}
+
+# Check whether the taskset command is useful
+taskset_test() {
+  local pid="$1"
+  if [[ "$pid" == "" ]]; then
+    return 2
+  fi
+
+  # Compatibility Test
+  any_tid=$(ls /proc/$pid/task | head -n 1)
+  if [[ "$any_tid" != "" ]]; then
+    test_fail=$(taskset -p ff $any_tid 2>&1 | grep 'Operation not permitted')
+    if [[ "$test_fail" != "" ]]; then
+      echo 'taskset Cannot run on your device!' 1>&2
+      return 0
+    fi
+  fi
+  return 1
 }
 
 # watch_app [on_tick] [on_change]
@@ -518,49 +566,53 @@ adjustment_by_top_app() {
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            conservative_mode 45 60 80 95 71 89
             bw_min
             bw_down 3 3
+          else
+            sched_limit 10000 0 0 10000 0 10000
           fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
+          set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            conservative_mode 45 60 70 89 71 89
             bw_min
             bw_down 2 2
+          else
+            sched_limit 10000 0 0 10000 0 10000
           fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "55 68" "72 80" "300" "400"
-          set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
+          set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            conservative_mode 45 60 70 89 71 89
             bw_max
           fi
           sched_boost 1 0
           stune_top_app 0 0
-          set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
+          set_cpu_freq 806400 1804800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 60 54 70 59 72
+            conservative_mode 45 55 54 70 59 72
           fi
           sched_boost 1 0
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
         fi
-        cpuset '0-1' '0-1' '0-7' '0-7'
+        cpuset '0' '0' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
     ;;
 

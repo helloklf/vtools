@@ -455,21 +455,31 @@ yuan_shen_opt_run() {
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   if [[ "$pid" != "" ]]; then
+    if [[ "$taskset_effective" == "" ]]; then
+      taskset_test $pid
+      if [[ "$?" == '1' ]]; then
+        taskset_effective=1
+      else
+        taskset_effective=0
+        exit
+      fi
+    fi
+
     local mode=$(getprop vtools.powercfg)
-    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
+    if [[ "$mode" == 'powersave' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
 
           case "$comm" in
            "UnityMain")
-             taskset -p "F0" "$tid" > /dev/null 2>&1
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
            "UnityGfxDevice"*|"UnityMultiRende"*)
              taskset -p "70" "$tid" > /dev/null 2>&1
            ;;
-           "Worker Thread"|"AudioTrack")
+           "Worker Thread"|"AudioTrack"|"Audio"*)
              taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            *)
@@ -478,10 +488,6 @@ yuan_shen_opt_run() {
           esac
         fi
       done
-      UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
-      if [[ "$UnityMain" != "" ]]; then
-         taskset -p "80" "$UnityMain" > /dev/null 2>&1
-      fi
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
@@ -490,6 +496,7 @@ yuan_shen_opt_run() {
           case "$comm" in
            "UnityMain")
              taskset -p "F0" "$tid" > /dev/null 2>&1
+             taskset -p "80" "$tid" > /dev/null 2>&1
            ;;
            # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
            "UnityGfxDevice"*|"UnityMultiRende"*)
@@ -503,6 +510,25 @@ yuan_shen_opt_run() {
       done
     fi
   fi
+}
+
+# Check whether the taskset command is useful
+taskset_test() {
+  local pid="$1"
+  if [[ "$pid" == "" ]]; then
+    return 2
+  fi
+
+  # Compatibility Test
+  any_tid=$(ls /proc/$pid/task | head -n 1)
+  if [[ "$any_tid" != "" ]]; then
+    test_fail=$(taskset -p ff $any_tid 2>&1 | grep 'Operation not permitted')
+    if [[ "$test_fail" != "" ]]; then
+      echo 'taskset Cannot run on your device!' 1>&2
+      return 0
+    fi
+  fi
+  return 1
 }
 
 # watch_app [on_tick] [on_change]
@@ -564,22 +590,22 @@ adjustment_by_top_app() {
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "50 80" "67 95" "300" "400"
-          gpu_pl_down 3
-          set_cpu_freq 1036800 1785600 1056000 1708800 1056000 2419200
-          sched_limit 10000 0 1000 0 5000 0
-          cpuset '0' '0-1' '0-7' '0-7'
+          gpu_pl_down 2
+          set_cpu_freq 1785600 1785600 1056000 1708800 1056000 2419200
+          sched_limit 10000 0 0 5000 0 10000
+          cpuset '0' '0' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
-          sched_boost 1 0
-          stune_top_app 1 10
-          sched_config "50 68" "67 80" "300" "400"
+          sched_boost 0 0
+          stune_top_app 0 0
+          sched_config "70 78" "90 90" "300" "400"
           gpu_pl_down 1
           set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2841600
-          sched_limit 10000 0 0 0 5000 0
+          sched_limit 10000 0 0 20000 0 10000
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
-          gpu_pl_down 1
+          gpu_pl_down 0
           set_cpu_freq 1036800 1478400 1056000 2419200 1056000 3000000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'

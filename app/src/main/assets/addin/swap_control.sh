@@ -7,7 +7,6 @@ swapsize="$4"   # SWAP大小MB
 loop_save="vtools.swap.loop"
 next_loop_path=""
 
-alias losetup="busybox losetup"
 # 获取下一个可用的loop设备
 get_next_loop() {
   local current_loop=`getprop $loop_save`
@@ -17,8 +16,12 @@ get_next_loop() {
     return
   fi
 
-  losetup -f >/dev/null 2>&1
-  local nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+  loop_str=$(losetup -f >/dev/null 2>&1)
+  if [[ "$loop_str" == "" ]] && [[ $(busybox losetup -f >/dev/null 2>&1) != "" ]]; then
+    nl=$(busybox losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+  else
+    nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+  fi
   if [[ "$nl" != "" ]]; then
     next_loop_path="/dev/block/loop$nl"
     return
@@ -72,8 +75,7 @@ enable_swap() {
 
   if [[ $loop == "1" ]]; then
     # losetup $swap_mount $swapfile # 挂载
-    if [[ -e $swap_mount ]]
-    then
+    if [[ -e $swap_mount ]]; then
       losetup -d $swap_mount      # 删除loop设备
     fi
     losetup $swap_mount $swapfile   # 挂载为loop设备
