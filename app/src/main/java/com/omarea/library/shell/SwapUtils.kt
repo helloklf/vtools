@@ -294,8 +294,12 @@ class SwapUtils(private val context: Context) {
 
     val swapUsedSize: Int
         get() {
+            var loopName: String? = PropsUtils.getProp("vtools.swap.loop").split("/").lastOrNull()
+            if (loopName != null && !loopName.contains("loop")) {
+                loopName = null
+            }
             for (row in procSwaps) {
-                if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ")) {
+                if (row.startsWith("/swapfile ") || row.startsWith("/data/swapfile ") || (loopName != null && row.contains(loopName))) {
                     val cols = row.split(" ").toMutableList()
                     val sizeStr = cols[2]
                     val usedStr = cols[3]

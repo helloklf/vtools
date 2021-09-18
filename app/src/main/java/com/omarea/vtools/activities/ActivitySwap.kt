@@ -26,6 +26,7 @@ import com.omarea.common.ui.DialogItemChooserMini
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.library.basic.RadioGroupSimulator
 import com.omarea.library.shell.LMKUtils
+import com.omarea.library.shell.PropsUtils
 import com.omarea.library.shell.SwapModuleUtils
 import com.omarea.library.shell.SwapUtils
 import com.omarea.store.SpfConfig
@@ -594,10 +595,6 @@ class ActivitySwap : ActivityBase() {
         }
     }
 
-    private fun useConfig() {
-
-    }
-
     private var swapsTHRowCache: LinkedHashMap<String, String>? = null
     private val swapsTHRow: LinkedHashMap<String, String>
         get() {
@@ -628,6 +625,11 @@ class ActivitySwap : ActivityBase() {
         val zramStatus = getZRamStatus(compAlgorithm)
         val swapFileSize = swapUtils.swapFileSize
 
+        var loopName: String? = PropsUtils.getProp("vtools.swap.loop").split("/").lastOrNull()
+        if (loopName != null && !loopName.contains("loop")) {
+            loopName = null
+        }
+
         val list = ArrayList<HashMap<String, String>>()
         list.add(swapsTHRow)
 
@@ -654,7 +656,7 @@ class ActivitySwap : ActivityBase() {
             tr["priority"] = params[4]
             list.add(tr)
 
-            if (path.startsWith("/swapfile") || path.equals("/data/swapfile")) {
+            if (path.startsWith("/swapfile") || path.equals("/data/swapfile") || (loopName != null && path.contains(loopName))) {
                 try {
                     swapSize = size.toFloat()
                     swapFree = size.toFloat() - used.toFloat()
@@ -788,7 +790,6 @@ class ActivitySwap : ActivityBase() {
             var comprDataSize = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
             if (origDataSize.isBlank() || comprDataSize.isBlank()) {
                 val mmStat = KernelProrp.getProp("/sys/block/zram0/mm_stat").split("[ ]+".toRegex())
-                Log.d("Scene", "Swap - " + mmStat)
                 if (mmStat.size > 1) {
                     origDataSize = mmStat[0]
                     comprDataSize = mmStat[1]
