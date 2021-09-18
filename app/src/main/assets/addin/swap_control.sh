@@ -17,7 +17,7 @@ get_next_loop() {
   fi
 
   losetup -f >/dev/null 2>&1
-  local nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+  local nl=$(busybox losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
   if [[ "$nl" != "" ]]; then
     next_loop_path="/dev/block/loop$nl"
     return
