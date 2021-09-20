@@ -11,6 +11,7 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
@@ -26,6 +27,7 @@ import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
+import kotlinx.android.synthetic.main.dialog_danger_agreement.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.*
 import java.math.BigDecimal
@@ -146,6 +148,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 DialogHelper.alert(activity!!, "调度器参数", msg.toString())
             }
         }
+        extreme_performance_on.setOnClickListener {
+            val isChecked = (it as CompoundButton).isChecked
+            if (isChecked) {
+                ThermalDisguise().disableMessage()
+            } else {
+                ThermalDisguise().resumeMessage()
+            }
+        }
 
         home_device_name.text = when (Build.VERSION.SDK_INT) {
             31 -> "Android 12"
@@ -176,6 +186,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         } else {
             powermode_toggles.visibility = View.GONE
         }
+        // 卓越性能 目前仅限888处理器开放
+        extreme_performance.visibility = if (ThermalDisguise().supported()) View.VISIBLE else View.GONE
 
         setModeState()
         maxFreqs.clear()
@@ -346,6 +358,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 } else {
                     (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
                 }
+
             } catch (ex: Exception) {
 
             }
@@ -377,6 +390,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 btn_fastmode.alpha = 1f
             }
         }
+
+        extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }
 
     private fun stopTimer() {

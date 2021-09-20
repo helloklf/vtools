@@ -508,7 +508,6 @@ yuan_shen_opt_run() {
 
 board_sensor_temp=/sys/class/thermal/thermal_message/board_sensor_temp
 thermal_disguise() {
-  chmod 644 $board_sensor_temp
   if [[ "$1" == "1" ]] || [[ "$1" == "true" ]]; then
     chmod 644 $board_sensor_temp
     echo 38000 > $board_sensor_temp
@@ -526,7 +525,10 @@ thermal_disguise() {
 
     echo "thermal_disguise [enable]"
     chmod 000 $board_sensor_temp
+    setprop vtools.thermal.disguise 1
   else
+    setprop vtools.thermal.disguise 0
+    chmod 644 $board_sensor_temp
     echo 'thermal_disguise [disable]'
   fi
 }
@@ -793,7 +795,7 @@ adjustment_by_top_app() {
 
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
-        echo 0-5 > /dev/cpuset/top-app/cpus
+        echo 0-6 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 0 0 0.5
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0

@@ -600,4 +600,53 @@
             android:textColor="#ffffffff"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/extreme_performance"
+        android:visibility="gone"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:minHeight="55dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <ImageView
+            android:layout_marginStart="6dp"
+            android:background="@drawable/dialog_icon_bg"
+            android:backgroundTint="#FF5252"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/icon_danger"
+            app:tint="@android:color/white" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="卓越性能" />
+            <TextView
+                style="@style/textSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="解除锁帧及高温提示，请注意保护您的设备！" />
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/extreme_performance_on"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

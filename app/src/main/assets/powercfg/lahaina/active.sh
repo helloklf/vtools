@@ -37,7 +37,7 @@ if [[ "$action" = "powersave" ]]; then
   set_hispeed_freq 1612800 710400 844800
   sched_config "85 85" "96 96" "150" "400"
   sched_limit 0 0 0 2000 0 1000
-  cpuset '0-2' '0-3' '0-3' '0-7'
+  cpuset '0' '0-3' '0-3' '0-7'
   stune_top_app 0 0
   # cpuctl top-app 0 1 0 max
   cpuctl top-app 0 1 0.05 max
