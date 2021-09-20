@@ -375,6 +375,23 @@ gpu_pl_down() {
   fi
 }
 
+lock_value () {
+  chmod 644 $2
+  echo $1 > $2
+  chmod 444 $2
+}
+disable_migt() {
+  migt=/sys/module/migt/parameters
+  if [[ -d $migt ]]; then
+    lock_value '0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0' $migt/migt_freq
+    lock_value 0 $migt/glk_freq_limit_start
+    lock_value 0 $migt/glk_freq_limit_walt
+    lock_value '0 0 0' $migt/glk_maxfreq
+    lock_value '300000 710400 844800' $migt/glk_minfreq
+    lock_value '0 0 0' $migt/migt_ceiling_freq
+  fi
+}
+
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1
@@ -489,6 +506,31 @@ yuan_shen_opt_run() {
   fi
 }
 
+board_sensor_temp=/sys/class/thermal/thermal_message/board_sensor_temp
+thermal_disguise() {
+  chmod 644 $board_sensor_temp
+  if [[ "$1" == "1" ]] || [[ "$1" == "true" ]]; then
+    chmod 644 $board_sensor_temp
+    echo 38000 > $board_sensor_temp
+    # disguise_timeout=10
+    # while [ $disguise_timeout -gt 0 ]; do
+    #   echo $1 > $board_sensor_temp
+    #   disguise_timeout=$((disguise_timeout-1))
+    #   sleep 1
+    # done
+
+    # # restart mi_thermald
+    # # pgrep mi_thermald | xarg kill -9 2>/dev/null
+    # stop mi_thermald && start mi_thermald
+    # sleep 0.2
+
+    echo "thermal_disguise [enable]"
+    chmod 000 $board_sensor_temp
+  else
+    echo 'thermal_disguise [disable]'
+  fi
+}
+
 # Check whether the taskset command is useful
 taskset_test() {
   local pid="$1"
@@ -563,6 +605,7 @@ adjustment_by_top_app() {
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili" | "com.miHoYo.GenshinImpact")
         # ctl_off cpu4
         # ctl_off cpu7
+        thermal_disguise 1
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -595,7 +638,8 @@ adjustment_by_top_app() {
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 60 70 89 71 89
+            # conservative_mode 45 60 70 89 71 89
+            disable_migt
             bw_max
           fi
           sched_boost 1 0
@@ -605,7 +649,8 @@ adjustment_by_top_app() {
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 55 54 70 59 72
+            # conservative_mode 45 55 54 70 59 72
+            disable_migt
           fi
           sched_boost 1 0
           stune_top_app 1 55
@@ -620,6 +665,7 @@ adjustment_by_top_app() {
     "com.tencent.tmgp.sgame")
         # ctl_off cpu4
         # ctl_on cpu7
+        thermal_disguise 1
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 60 75 77 91 69 82
           sched_boost 0 0

@@ -112,4 +112,5 @@ mk_cpuctl 'top-app/heavy' 1 1 max max
 # echo 0 > /dev/stune/nnapi-hal/schedtune.boost
 # echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
 
+disable_migt
 process_opt &

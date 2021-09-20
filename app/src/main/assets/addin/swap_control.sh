@@ -18,10 +18,9 @@ get_next_loop() {
 
   loop_str=$(losetup -f >/dev/null 2>&1)
   if [[ "$loop_str" == "" ]] && [[ $(busybox losetup -f >/dev/null 2>&1) != "" ]]; then
-    nl=$(busybox losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
-  else
-    nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
+    alias losetup='busybox losetup'
   fi
+  nl=$(losetup -f | egrep -o '[0-9]{1,}' 2>/dev/null)
   if [[ "$nl" != "" ]]; then
     next_loop_path="/dev/block/loop$nl"
     return

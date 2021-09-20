@@ -43,6 +43,7 @@ if [[ "$action" = "powersave" ]]; then
   cpuctl top-app 0 1 0.05 max
   bw_min
   bw_down 3 3
+  thermal_disguise 0
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -61,6 +62,7 @@ elif [[ "$action" = "balance" ]]; then
   cpuctl top-app 0 1 0.25 max
   bw_min
   bw_down 2 2
+  thermal_disguise 0
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -77,6 +79,7 @@ elif [[ "$action" = "performance" ]]; then
   cpuctl top-app 0 1 0.5 max
   bw_min
   bw_max
+  thermal_disguise 0
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -92,6 +95,7 @@ elif [[ "$action" = "fast" ]]; then
   stune_top_app 1 50
   cpuctl top-app 0 1 max max
   bw_max_always
+  thermal_disguise 1
 
 
 fi
