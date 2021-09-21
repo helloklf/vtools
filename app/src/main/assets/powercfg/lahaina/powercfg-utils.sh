@@ -392,6 +392,35 @@ disable_migt() {
   fi
 }
 
+disable_mi_opt() {
+  if [[ $(getprop ro.product.manufacturer) == "Xiaomi" ]]; then
+    # pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver
+    pm disable com.xiaomi.joyose/.smartop.SmartOpService
+    # pm disable com.xiaomi.joyose.smartop.smartp.SmartPAlarmReceiver
+    pm disable com.xiaomi.joyose.sysbase.MetokClService
+
+    pm disable com.miui.daemon/.performance.cloudcontrol.CloudControlSyncService
+    pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService
+    pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService
+    pm disable com.miui.daemon/.performance.SysoptService
+    pm disable com.miui.daemon/.performance.server.ExecutorService
+    pm disable com.miui.daemon/.mqsas.jobs.EventUploadService
+    pm disable com.miui.daemon/.mqsas.jobs.FileUploadService
+    pm disable com.miui.daemon/.mqsas.jobs.HeartBeatUploadService
+    pm disable com.miui.daemon/.mqsas.providers.MQSProvider
+    pm disable com.miui.daemon/.performance.provider.PerfTurboProvider
+    pm disable com.miui.daemon/.performance.system.am.SysoptjobService
+    pm disable com.miui.daemon/.performance.system.am.MemCompactService
+    pm disable com.miui.daemon/.performance.statistics.services.FreeFragDumpService
+    pm disable com.miui.daemon/.performance.statistics.services.DefragService
+    pm disable com.miui.daemon/.performance.statistics.services.MeminfoService
+    pm disable com.miui.daemon/.performance.statistics.services.IonService
+    pm disable com.miui.daemon/.performance.statistics.services.GcBoosterService
+    pm disable com.miui.daemon/.mqsas.OmniTestReceiver
+  fi
+}
+
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1

@@ -114,3 +114,4 @@ mk_cpuctl 'top-app/heavy' 1 1 max max
 
 disable_migt
 process_opt &
+# disable_mi_opt &
