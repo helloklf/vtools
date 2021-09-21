@@ -433,6 +433,40 @@ set_task_affinity() {
   fi
 }
 
+# WangZheRongYao
+sgame_opt_run() {
+  local game="tmgp.sgame"
+  if [[ $(getprop vtools.powercfg_app | grep $game) == "" ]]; then
+    return
+  fi
+
+  # top -H -p $(pgrep -ef tmgp.sgame)
+  # pid=$(pgrep -ef $game)
+  pid=$(pgrep -ef $game)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  if [[ "$pid" != "" ]]; then
+    taskset -p "FF" "$pid" > /dev/null 2>&1
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$pid" == "$tid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+      elif [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+        case "$comm" in
+         "UnityMain")
+           # set cpu7
+           taskset -p "80" "$tid" > /dev/null 2>&1
+         ;;
+         *)
+           # set cpu0-6
+           taskset -p "7F" "$tid" > /dev/null 2>&1
+         ;;
+        esac
+      fi
+    done
+  fi
+}
+
 # HePingJingYing
 pubgmhd_opt_run () {
   local current_app=$(getprop vtools.powercfg_app)
@@ -446,6 +480,7 @@ pubgmhd_opt_run () {
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
+    taskset -p "FF" "$pid" > /dev/null 2>&1
     for tid in $(ls "/proc/$pid/task/"); do
       if [[ "$tid" == "$pid" ]]; then
         taskset -p "FF" "$tid" > /dev/null 2>&1
@@ -494,6 +529,7 @@ yuan_shen_opt_run() {
     fi
 
     local mode=$(getprop vtools.powercfg)
+    taskset -p "FF" "$pid" > /dev/null 2>&1
     if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ "$tid" == "$pid" ]]; then
