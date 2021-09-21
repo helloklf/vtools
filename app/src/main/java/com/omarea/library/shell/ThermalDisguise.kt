@@ -8,6 +8,8 @@ import java.util.*
 class ThermalDisguise {
     private final val boardSensorTemp = "/sys/class/thermal/thermal_message/board_sensor_temp"
     private final val migtMaxFreq = "/sys/module/migt/parameters/glk_maxfreq"
+    private final val gameServiceApp = "com.xiaomi.gamecenter.sdk.service"
+    private final val gameService = "com.xiaomi.gamecenter.sdk.service/.PidService"
     private final val vtoolsStorage = "vtools.thermal.disguise"
     public fun supported (): Boolean {
         if (Build.MANUFACTURER.toUpperCase(Locale.getDefault()) == "XIAOMI") {
@@ -23,11 +25,13 @@ class ThermalDisguise {
     public fun disableMessage () {
         KeepShellPublic.doCmdSync("" +
                 "chmod 644 $boardSensorTemp\n" +
-                "echo 38000 > $boardSensorTemp\n" +
+                "echo 36500 > $boardSensorTemp\n" +
                 "chmod 000 $boardSensorTemp\n" +
-                "chmod 644 $migtMaxFreq" +
-                "echo 0 0 0 > $migtMaxFreq" +
                 "chmod 644 $migtMaxFreq\n" +
+                "echo 0 0 0 > $migtMaxFreq\n" +
+                "chmod 644 $migtMaxFreq\n" +
+                "pm disable $gameService\n" +
+                "pm clear $gameServiceApp\n" +
                 "setprop $vtoolsStorage 1")
     }
 
@@ -35,6 +39,7 @@ class ThermalDisguise {
         KeepShellPublic.doCmdSync("" +
                 "chmod 644 $boardSensorTemp\n" +
                 "chmod 644 $migtMaxFreq\n" +
+                "pm enable $gameService\n" +
                 "setprop $vtoolsStorage 0")
     }
 

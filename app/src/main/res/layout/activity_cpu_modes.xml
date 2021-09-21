@@ -296,6 +296,26 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/extreme_performance"
+                android:visibility="gone"
+                style="@style/ListCardItem"
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/extreme_performance_on"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="卓越性能" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="解除游戏限频/锁帧及高温提示，请注意保护您的设备！" />
+            </LinearLayout>
+
+            <LinearLayout
                 style="@style/ListCardItem">
 
                 <LinearLayout

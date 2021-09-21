@@ -418,6 +418,10 @@ pubgmhd_opt_run () {
 
   ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -463,6 +467,10 @@ yuan_shen_opt_run() {
     local mode=$(getprop vtools.powercfg)
     if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -485,6 +493,10 @@ yuan_shen_opt_run() {
       done
     else
       for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -510,7 +522,7 @@ board_sensor_temp=/sys/class/thermal/thermal_message/board_sensor_temp
 thermal_disguise() {
   if [[ "$1" == "1" ]] || [[ "$1" == "true" ]]; then
     chmod 644 $board_sensor_temp
-    echo 38000 > $board_sensor_temp
+    echo 36500 > $board_sensor_temp
     # disguise_timeout=10
     # while [ $disguise_timeout -gt 0 ]; do
     #   echo $1 > $board_sensor_temp
@@ -526,8 +538,11 @@ thermal_disguise() {
     echo "thermal_disguise [enable]"
     chmod 000 $board_sensor_temp
     setprop vtools.thermal.disguise 1
+    pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    pm clear com.xiaomi.gamecenter.sdk.service 2>/dev/null
   else
     setprop vtools.thermal.disguise 0
+    pm enable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
     chmod 644 $board_sensor_temp
     echo 'thermal_disguise [disable]'
   fi
@@ -611,29 +626,29 @@ adjustment_by_top_app() {
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 60 80 95 71 89
+            conservative_mode 47 59 69 85 70 87
             bw_min
             bw_down 3 3
           else
-            sched_limit 10000 0 0 10000 0 10000
+            sched_limit 10000 0 0 2000 0 2000
           fi
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "60 68" "78 80" "300" "400"
+          sched_config "60 60" "78 70" "300" "400"
           set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 60 70 89 71 89
+            conservative_mode 42 57 68 84 70 86
             bw_min
             bw_down 2 2
           else
-            sched_limit 10000 0 0 10000 0 10000
+            sched_limit 10000 0 0 2000 0 2000
           fi
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "55 68" "72 80" "300" "400"
+          sched_config "55 60" "72 70" "300" "400"
           set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000

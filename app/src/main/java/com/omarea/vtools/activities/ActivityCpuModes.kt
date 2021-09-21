@@ -19,6 +19,7 @@ import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.library.shell.ThermalDisguise
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
@@ -136,6 +137,16 @@ class ActivityCpuModes : ActivityBase() {
         home_quick_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.HOME_QUICK_SWITCH, (it as CompoundButton).isChecked).apply()
         }
+        extreme_performance_on.setOnClickListener {
+            val isChecked = (it as CompoundButton).isChecked
+            if (isChecked) {
+                ThermalDisguise().disableMessage()
+            } else {
+                ThermalDisguise().resumeMessage()
+            }
+        }
+        // 卓越性能 目前仅限888处理器开放
+        extreme_performance.visibility = if (ThermalDisguise().supported()) View.VISIBLE else View.GONE
     }
 
     // 选择配置来源
@@ -297,6 +308,7 @@ class ActivityCpuModes : ActivityBase() {
             dynamic_control.isChecked = false
             reStartService()
         }
+        extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }
 
     private fun updateState(button: View, mode: String) {

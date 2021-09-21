@@ -148,14 +148,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 DialogHelper.alert(activity!!, "调度器参数", msg.toString())
             }
         }
-        extreme_performance_on.setOnClickListener {
-            val isChecked = (it as CompoundButton).isChecked
-            if (isChecked) {
-                ThermalDisguise().disableMessage()
-            } else {
-                ThermalDisguise().resumeMessage()
-            }
-        }
 
         home_device_name.text = when (Build.VERSION.SDK_INT) {
             31 -> "Android 12"
@@ -186,8 +178,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         } else {
             powermode_toggles.visibility = View.GONE
         }
-        // 卓越性能 目前仅限888处理器开放
-        extreme_performance.visibility = if (ThermalDisguise().supported()) View.VISIBLE else View.GONE
 
         setModeState()
         maxFreqs.clear()
@@ -390,8 +380,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 btn_fastmode.alpha = 1f
             }
         }
-
-        extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }
 
     private fun stopTimer() {
