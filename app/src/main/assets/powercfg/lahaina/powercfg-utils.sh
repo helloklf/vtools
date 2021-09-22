@@ -522,6 +522,11 @@ yuan_shen_opt_run() {
       taskset_test $pid
       if [[ "$?" == '1' ]]; then
         taskset_effective=1
+        if [[ "$mode" == 'balance' ]]; then
+          sched_config "55 49" "72 65" "300" "400"
+        elif [[ "$mode" == 'powersave' ]]; then
+          sched_config "55 53" "72 68" "300" "400"
+        fi
       else
         taskset_effective=0
         exit
@@ -654,7 +659,7 @@ watch_app() {
   fi
 
   if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
-      $on_tick
+    $on_tick
   fi
 
   ticks=0
@@ -688,14 +693,15 @@ adjustment_by_top_app() {
         # ctl_off cpu4
         # ctl_off cpu7
         thermal_disguise 1
+        set_hispeed_freq 0 0 0
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 47 59 69 85 70 87
+            conservative_mode 47 59 69 85 69 85
             bw_min
             bw_down 3 3
           else
-            sched_limit 10000 0 0 2000 0 2000
+            sched_limit 10000 0 0 2000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
@@ -705,17 +711,16 @@ adjustment_by_top_app() {
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 42 57 68 84 70 86
+            conservative_mode 42 57 68 84 69 83
             bw_min
             bw_down 2 2
           else
-            sched_limit 10000 0 0 2000 0 2000
+            sched_limit 10000 0 0 2000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "55 60" "72 70" "300" "400"
           set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
-          set_hispeed_freq 1708800 1440000 1075200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
