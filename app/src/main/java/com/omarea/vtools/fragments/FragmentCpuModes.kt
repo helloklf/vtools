@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
+import com.omarea.library.shell.ThermalDisguise
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
@@ -175,6 +176,16 @@ class FragmentCpuModes : Fragment() {
         if (!modeSwitcher.modeConfigCompleted() && configInstaller.dynamicSupport(context!!)) {
             installConfig(false)
         }
+        // 卓越性能 目前仅限888处理器开放
+        extreme_performance.visibility = if (ThermalDisguise().supported()) View.VISIBLE else View.GONE
+        extreme_performance_on.setOnClickListener {
+            val isChecked = (it as CompoundButton).isChecked
+            if (isChecked) {
+                ThermalDisguise().disableMessage()
+            } else {
+                ThermalDisguise().resumeMessage()
+            }
+        }
     }
 
     // 选择配置来源
@@ -304,6 +315,7 @@ class FragmentCpuModes : Fragment() {
             reStartService()
         }
         dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
+        extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }
 
     private fun updateState(button: View, mode: String) {

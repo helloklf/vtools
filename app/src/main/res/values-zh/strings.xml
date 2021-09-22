@@ -159,6 +159,8 @@
     <string name="schedule_positive_desc">Scene提供的预设，整体上更关注性能释放</string>
     <string name="schedule_scene_desc">根据前台应用变化，自动切换模式</string>
     <string name="schedule_scene">动态响应</string>
+    <string name="schedule_excellent">卓越性能</string>
+    <string name="schedule_excellent_desc">解除游戏限频/锁帧及高温提示，请注意保护您的设备！</string>
 
     <!--电源菜单-->
     <string name="power_title">选择操作</string>

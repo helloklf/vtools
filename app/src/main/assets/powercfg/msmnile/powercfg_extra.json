@@ -1,0 +1,83 @@
+{
+  "affinityMask": {
+    "0-3": "F",
+    "0-6": "7F",
+    "4-6": "70",
+    "4-7": "F0",
+    "0-7": "FF",
+    "7": "80"
+  },
+  "apps": [
+    {
+      "friendly": "原神",
+      "packages": [
+        "com.miHoYo.Yuanshen",
+        "com.miHoYo.ys.mi",
+        "com.miHoYo.ys.bilibili",
+        "com.miHoYo.GenshinImpact"
+      ],
+      "rules": [
+        {
+          "cmd": [
+            "UnityMain"
+          ],
+          "cores": "4-7"
+        },
+        {
+          "cmd": [
+            "UnityGfxDevice*",
+            "UnityMultiRende*"
+          ],
+          "cores": "4-6"
+        },
+        {
+          "cmd": [
+            "Worker Thread",
+            "AudioTrack"
+          ],
+          "targetMode": "powersave,balance",
+          "cores": "0-3"
+        },
+        {
+          "cmd": [
+            "*"
+          ],
+          "cores": "0-6"
+        }
+      ],
+      "heavy": [
+        {
+          "cmd": "UnityMain",
+          "cores": "7"
+        }
+      ]
+    },
+    {
+      "friendly": "和平精英",
+      "packages": [
+        "com.tencent.tmgp.pubgmhd",
+        "com.tencent.ig"
+      ],
+      "rules": [
+        {
+          "cmd": [
+            "RenderThread"
+          ],
+          "cores": "7"
+        },
+        {
+          "cmd": [
+            "*"
+          ],
+          "cores": "0-6"
+        }
+      ],
+      "heavy": [
+        {
+          "cmd": "UnityMain",
+          "cores": "7"
+        }
+      ]
+    }
+  ]
+}

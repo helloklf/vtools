@@ -37,12 +37,13 @@ if [[ "$action" = "powersave" ]]; then
   set_hispeed_freq 1612800 710400 844800
   sched_config "85 85" "96 96" "150" "400"
   sched_limit 0 0 0 2000 0 1000
-  cpuset '0-2' '0-3' '0-3' '0-7'
+  cpuset '0' '0-3' '0-3' '0-7'
   stune_top_app 0 0
   # cpuctl top-app 0 1 0 max
   cpuctl top-app 0 1 0.05 max
   bw_min
   bw_down 3 3
+  thermal_disguise 0
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -61,6 +62,7 @@ elif [[ "$action" = "balance" ]]; then
   cpuctl top-app 0 1 0.25 max
   bw_min
   bw_down 2 2
+  thermal_disguise 0
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -77,6 +79,7 @@ elif [[ "$action" = "performance" ]]; then
   cpuctl top-app 0 1 0.5 max
   bw_min
   bw_max
+  thermal_disguise 0
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -92,6 +95,7 @@ elif [[ "$action" = "fast" ]]; then
   stune_top_app 1 50
   cpuctl top-app 0 1 max max
   bw_max_always
+  thermal_disguise 1
 
 
 fi

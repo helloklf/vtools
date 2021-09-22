@@ -375,6 +375,52 @@ gpu_pl_down() {
   fi
 }
 
+lock_value () {
+  chmod 644 $2
+  echo $1 > $2
+  chmod 444 $2
+}
+disable_migt() {
+  migt=/sys/module/migt/parameters
+  if [[ -d $migt ]]; then
+    lock_value '0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0' $migt/migt_freq
+    lock_value 0 $migt/glk_freq_limit_start
+    lock_value 0 $migt/glk_freq_limit_walt
+    lock_value '0 0 0' $migt/glk_maxfreq
+    lock_value '300000 710400 844800' $migt/glk_minfreq
+    lock_value '0 0 0' $migt/migt_ceiling_freq
+  fi
+}
+
+disable_mi_opt() {
+  if [[ $(getprop ro.product.manufacturer) == "Xiaomi" ]]; then
+    # pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver
+    pm disable com.xiaomi.joyose/.smartop.SmartOpService
+    # pm disable com.xiaomi.joyose.smartop.smartp.SmartPAlarmReceiver
+    pm disable com.xiaomi.joyose.sysbase.MetokClService
+
+    pm disable com.miui.daemon/.performance.cloudcontrol.CloudControlSyncService
+    pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService
+    pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService
+    pm disable com.miui.daemon/.performance.SysoptService
+    pm disable com.miui.daemon/.performance.server.ExecutorService
+    pm disable com.miui.daemon/.mqsas.jobs.EventUploadService
+    pm disable com.miui.daemon/.mqsas.jobs.FileUploadService
+    pm disable com.miui.daemon/.mqsas.jobs.HeartBeatUploadService
+    pm disable com.miui.daemon/.mqsas.providers.MQSProvider
+    pm disable com.miui.daemon/.performance.provider.PerfTurboProvider
+    pm disable com.miui.daemon/.performance.system.am.SysoptjobService
+    pm disable com.miui.daemon/.performance.system.am.MemCompactService
+    pm disable com.miui.daemon/.performance.statistics.services.FreeFragDumpService
+    pm disable com.miui.daemon/.performance.statistics.services.DefragService
+    pm disable com.miui.daemon/.performance.statistics.services.MeminfoService
+    pm disable com.miui.daemon/.performance.statistics.services.IonService
+    pm disable com.miui.daemon/.performance.statistics.services.GcBoosterService
+    pm disable com.miui.daemon/.mqsas.OmniTestReceiver
+  fi
+}
+
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1
@@ -384,6 +430,40 @@ set_task_affinity() {
       taskset -p "$mask" "$tid" 1>/dev/null
     done
     taskset -p "$mask" "$pid" 1>/dev/null
+  fi
+}
+
+# WangZheRongYao
+sgame_opt_run() {
+  local game="tmgp.sgame"
+  if [[ $(getprop vtools.powercfg_app | grep $game) == "" ]]; then
+    return
+  fi
+
+  # top -H -p $(pgrep -ef tmgp.sgame)
+  # pid=$(pgrep -ef $game)
+  pid=$(pgrep -ef $game)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  if [[ "$pid" != "" ]]; then
+    taskset -p "FF" "$pid" > /dev/null 2>&1
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$pid" == "$tid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+      elif [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+        case "$comm" in
+         "UnityMain")
+           # set cpu7
+           taskset -p "80" "$tid" > /dev/null 2>&1
+         ;;
+         *)
+           # set cpu0-6
+           taskset -p "7F" "$tid" > /dev/null 2>&1
+         ;;
+        esac
+      fi
+    done
   fi
 }
 
@@ -400,7 +480,12 @@ pubgmhd_opt_run () {
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
+    taskset -p "FF" "$pid" > /dev/null 2>&1
     for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -433,31 +518,123 @@ yuan_shen_opt_run() {
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
 
   if [[ "$pid" != "" ]]; then
-    for tid in $(ls "/proc/$pid/task/"); do
-      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
-        comm=$(cat /proc/$pid/task/$tid/comm)
-
-        case "$comm" in
-         "UnityMain")
-           echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "F0" "$tid" > /dev/null 2>&1
-         ;;
-         # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
-         "UnityGfxDevice"*|"UnityMultiRende"*)
-           echo $tid > /dev/cpuctl/top-app/heavy/tasks
-           taskset -p "70" "$tid" > /dev/null 2>&1
-         ;;
-         *)
-           taskset -p "7F" "$tid" > /dev/null 2>&1
-         ;;
-        esac
+    if [[ "$taskset_effective" == "" ]]; then
+      taskset_test $pid
+      if [[ "$?" == '1' ]]; then
+        taskset_effective=1
+        if [[ "$mode" == 'balance' ]]; then
+          sched_config "55 49" "72 65" "300" "400"
+        elif [[ "$mode" == 'powersave' ]]; then
+          sched_config "55 53" "72 68" "300" "400"
+        fi
+      else
+        taskset_effective=0
+        exit
       fi
-    done
-    UnityMain=$(top -H -n 1 -b -q -m 5 -p $(pgrep -ef miHoYo) | grep UnityMain | head -n 1 | egrep  -o '[0-9]{1,}' | head -n 1)
-    if [[ "$UnityMain" != "" ]]; then
-       taskset -p "80" "$UnityMain" > /dev/null 2>&1
+    fi
+
+    local mode=$(getprop vtools.powercfg)
+    taskset -p "FF" "$pid" > /dev/null 2>&1
+    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
+      for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
+        if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+          comm=$(cat /proc/$pid/task/$tid/comm)
+
+          case "$comm" in
+           "UnityMain")
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
+           # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
+           "UnityGfxDevice"*|"UnityMultiRende"*)
+             taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           "Worker Thread"|"AudioTrack"|"Audio"*)
+             taskset -p "F" "$tid" > /dev/null 2>&1
+           ;;
+           *)
+             taskset -p "7F" "$tid" > /dev/null 2>&1
+           ;;
+          esac
+        fi
+      done
+    else
+      for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
+        if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+          comm=$(cat /proc/$pid/task/$tid/comm)
+
+          case "$comm" in
+           "UnityMain")
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
+           # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
+           "UnityGfxDevice"*|"UnityMultiRende"*)
+             taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           *)
+             taskset -p "7F" "$tid" > /dev/null 2>&1
+           ;;
+          esac
+        fi
+      done
     fi
   fi
+}
+
+board_sensor_temp=/sys/class/thermal/thermal_message/board_sensor_temp
+thermal_disguise() {
+  if [[ "$1" == "1" ]] || [[ "$1" == "true" ]]; then
+    chmod 644 $board_sensor_temp
+    echo 36500 > $board_sensor_temp
+    # disguise_timeout=10
+    # while [ $disguise_timeout -gt 0 ]; do
+    #   echo $1 > $board_sensor_temp
+    #   disguise_timeout=$((disguise_timeout-1))
+    #   sleep 1
+    # done
+
+    # # restart mi_thermald
+    # # pgrep mi_thermald | xarg kill -9 2>/dev/null
+    # stop mi_thermald && start mi_thermald
+    # sleep 0.2
+
+    echo "thermal_disguise [enable]"
+    chmod 000 $board_sensor_temp
+    setprop vtools.thermal.disguise 1
+    pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    pm clear com.xiaomi.gamecenter.sdk.service 2>/dev/null
+  else
+    setprop vtools.thermal.disguise 0
+    pm enable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    chmod 644 $board_sensor_temp
+    echo 'thermal_disguise [disable]'
+  fi
+}
+
+# Check whether the taskset command is useful
+taskset_test() {
+  local pid="$1"
+  if [[ "$pid" == "" ]]; then
+    return 2
+  fi
+
+  # Compatibility Test
+  any_tid=$(ls /proc/$pid/task | head -n 1)
+  if [[ "$any_tid" != "" ]]; then
+    test_fail=$(taskset -p ff $any_tid 2>&1 | grep 'Operation not permitted')
+    if [[ "$test_fail" != "" ]]; then
+      echo 'taskset Cannot run on your device!' 1>&2
+      return 0
+    fi
+  fi
+  return 1
 }
 
 # watch_app [on_tick] [on_change]
@@ -482,7 +659,7 @@ watch_app() {
   fi
 
   if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
-      $on_tick
+    $on_tick
   fi
 
   ticks=0
@@ -515,52 +692,59 @@ adjustment_by_top_app() {
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili" | "com.miHoYo.GenshinImpact")
         # ctl_off cpu4
         # ctl_off cpu7
+        thermal_disguise 1
+        set_hispeed_freq 0 0 0
         manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            conservative_mode 47 59 69 85 69 85
             bw_min
             bw_down 3 3
+          else
+            sched_limit 10000 0 0 2000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "60 68" "78 80" "300" "400"
-          set_cpu_freq 1036800 1708800 710400 1670400 844800 1670400
+          sched_config "60 60" "78 70" "300" "400"
+          set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            conservative_mode 42 57 68 84 69 83
             bw_min
             bw_down 2 2
+          else
+            sched_limit 10000 0 0 2000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "55 68" "72 80" "300" "400"
-          set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
-          set_hispeed_freq 1708800 1440000 1075200
+          sched_config "55 60" "72 70" "300" "400"
+          set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_gpu_max_freq 676000000
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 55 67 70 89 71 89
+            # conservative_mode 45 60 70 89 71 89
+            disable_migt
             bw_max
           fi
           sched_boost 1 0
           stune_top_app 0 0
-          set_cpu_freq 806400 1708800 710400 2419200 844800 2841600
+          set_cpu_freq 806400 1804800 710400 2419200 844800 2841600
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
-            conservative_mode 45 60 54 70 59 72
+            # conservative_mode 45 55 54 70 59 72
+            disable_migt
           fi
           sched_boost 1 0
           stune_top_app 1 55
           # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
         fi
-        cpuset '0-1' '0-1' '0-7' '0-7'
+        cpuset '0' '0' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
     ;;
 
@@ -568,6 +752,7 @@ adjustment_by_top_app() {
     "com.tencent.tmgp.sgame")
         # ctl_off cpu4
         # ctl_on cpu7
+        thermal_disguise 1
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 60 75 77 91 69 82
           sched_boost 0 0
@@ -695,7 +880,7 @@ adjustment_by_top_app() {
 
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
-        echo 0-5 > /dev/cpuset/top-app/cpus
+        echo 0-6 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 0 0 0.5
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0

@@ -153,6 +153,8 @@
     <string name="schedule_positive_desc">Presets from the Scene. Contains four more performance-oriented patterns</string>
     <string name="schedule_scene_desc">Detect APP switchover, automatically change the mode</string>
     <string name="schedule_scene">Automatic shift</string>
+    <string name="schedule_excellent">Excellent performance</string>
+    <string name="schedule_excellent_desc">Remove the game frequency limit/frame lock and high temperature prompt, please pay attention to protect your equipment!  </string>
 
     <!--电源菜单-->
     <string name="power_title">Please choose</string>
