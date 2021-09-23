@@ -411,7 +411,7 @@ set_task_affinity() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  local current_app=$(getprop vtools.powercfg_app)
+  local current_app=$top_app
   if [[ "$current_app" != 'com.tencent.tmgp.pubgmhd' ]] && [[ "$current_app" != 'com.tencent.ig' ]]; then
     return
   fi
@@ -423,6 +423,10 @@ pubgmhd_opt_run () {
 
   ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
     for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
       if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
         comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -467,6 +471,10 @@ yuan_shen_opt_run() {
 
     local mode=$(getprop vtools.powercfg)
     if [[ "$mode" == 'powersave' ]]; then
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
@@ -490,6 +498,10 @@ yuan_shen_opt_run() {
       done
     else
       for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
 

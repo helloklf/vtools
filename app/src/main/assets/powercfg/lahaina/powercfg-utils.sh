@@ -469,7 +469,7 @@ sgame_opt_run() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  local current_app=$(getprop vtools.powercfg_app)
+  local current_app=$top_app
   if [[ "$current_app" != 'com.tencent.tmgp.pubgmhd' ]] && [[ "$current_app" != 'com.tencent.ig' ]]; then
     return
   fi

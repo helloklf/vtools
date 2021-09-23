@@ -35,7 +35,7 @@ if [[ "$action" = "powersave" ]]; then
   gpu_pl_up 0
   sched_boost 0 0
   set_hispeed_freq 1612800 710400 844800
-  sched_config "85 85" "96 96" "150" "400"
+  sched_config "85 75" "96 86" "150" "400"
   sched_limit 0 0 0 2000 0 1000
   cpuset '0' '0-3' '0-3' '0-7'
   stune_top_app 0 0
@@ -55,7 +55,7 @@ elif [[ "$action" = "balance" ]]; then
   gpu_pl_up 0
   sched_boost 1 0
   set_hispeed_freq 1612800 1075200 1305600
-  sched_config "78 85" "89 96" "150" "400"
+  sched_config "78 70" "89 82" "150" "400"
   sched_limit 0 0 0 500 0 500
   cpuset '0-2' '0-3' '0-6' '0-7'
   stune_top_app 0 0
@@ -71,8 +71,8 @@ elif [[ "$action" = "performance" ]]; then
   set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
   gpu_pl_up 1
   sched_boost 1 0
-  set_hispeed_freq 1612800 1766400 2035200
-  sched_config "62 78" "72 85" "200" "400"
+  set_hispeed_freq 0 0 0
+  sched_config "62 55" "72 65" "200" "400"
   sched_limit 0 0 0 0 0 0
   cpuset '0-1' '0-3' '0-6' '0-7'
   stune_top_app 1 0
@@ -86,10 +86,10 @@ elif [[ "$action" = "fast" ]]; then
   # ctl_off cpu4
   # ctl_off cpu7
   set_cpu_freq 1401600 1804800 1766400 2600000 1670400 3200000
-  set_hispeed_freq 1612800 1670400 1785600
+  set_hispeed_freq 0 0 0
   gpu_pl_up 2
   sched_boost 1 1
-  sched_config "62 75" "70 80" "300" "400"
+  sched_config "62 35" "70 50" "300" "400"
   sched_limit 5000 0 2000 0 2000 0
   cpuset '0' '0-3' '0-6' '0-7'
   stune_top_app 1 50
