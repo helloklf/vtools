@@ -10,6 +10,8 @@
 # /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies
 # 840000000 778000000 738000000 676000000 608000000 540000000 491000000 443000000 379000000 315000000
 
+manufacturer=$(getprop ro.product.manufacturer)
+
 throttle() {
 hint_group=""
 if [[ "$top_app" != "" ]]; then
@@ -212,8 +214,13 @@ set_input_boost_freq() {
   local c1="$2"
   local c2="$3"
   local ms="$4"
-  echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/module/cpu_boost/parameters/input_boost_freq
-  echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
+  echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c1 5:$c1 6:$c1 7:$c2" > /sys/devices/system/cpu/cpu_boost/input_boost_freq
+  echo $ms > /sys/devices/system/cpu/cpu_boost/input_boost_ms
+  if [[ "$ms" -gt 0 ]]; then
+    echo 1 > /sys/devices/system/cpu/cpu_boost/sched_boost_on_input
+  else
+    echo 0 > /sys/devices/system/cpu/cpu_boost/sched_boost_on_input
+  fi
 }
 
 set_cpu_freq() {
@@ -393,7 +400,7 @@ disable_migt() {
 }
 
 disable_mi_opt() {
-  if [[ $(getprop ro.product.manufacturer) == "Xiaomi" ]]; then
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
     # pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
     pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver
     pm disable com.xiaomi.joyose/.smartop.SmartOpService
@@ -561,6 +568,31 @@ yuan_shen_opt_run() {
           esac
         fi
       done
+    elif [ "$mode" == 'performance' ]; then
+      for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
+        if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+          comm=$(cat /proc/$pid/task/$tid/comm)
+
+          case "$comm" in
+           "AudioTrack"|"Audio"*|"tp_schedule"*|"MIHOYO_NETWORK"|"FMOD"*|"NativeThread"|"UnityChoreograp"|"UnityPreload")
+             taskset -p "F" "$tid" > /dev/null 2>&1
+           ;;
+           "UnityMain")
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
+           "UnityGfxDevice"*|"UnityMultiRende"*)
+             taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           *)
+             taskset -p "7F" "$tid" > /dev/null 2>&1
+           ;;
+          esac
+        fi
+      done
     else
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ "$tid" == "$pid" ]]; then
@@ -694,7 +726,6 @@ adjustment_by_top_app() {
         # ctl_off cpu7
         thermal_disguise 1
         set_hispeed_freq 0 0 0
-        manufacturer=$(getprop ro.product.manufacturer)
         if [[ "$action" = "powersave" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 47 59 69 85 69 85
@@ -731,7 +762,10 @@ adjustment_by_top_app() {
           fi
           sched_boost 1 0
           stune_top_app 0 0
+          cpuctl top-app 0 1 0.05 max
           set_cpu_freq 806400 1804800 710400 2419200 844800 2841600
+          sched_limit 5000 0 0 2000 0 500
+          sched_config "65 55" "75 68" "200" "400"
           set_gpu_max_freq 738000000
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
@@ -741,7 +775,7 @@ adjustment_by_top_app() {
           fi
           sched_boost 1 0
           stune_top_app 1 55
-          # sched_config "40 60" "50 75" "120" "150"
+          sched_config "62 40" "70 52" "300" "400"
           set_gpu_max_freq 778000000
         fi
         cpuset '0' '0' '0-7' '0-7'
@@ -751,39 +785,41 @@ adjustment_by_top_app() {
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")
         # ctl_off cpu4
-        # ctl_on cpu7
+        # ctl_off cpu7
         thermal_disguise 1
+        set_cpu_pl 0
         if [[ "$action" = "powersave" ]]; then
-          conservative_mode 60 75 77 91 69 82
+          conservative_mode 58 70 75 90 69 82
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "60 68" "78 80" "300" "400"
           set_cpu_freq 806400 1708800 844800 1766400 844800 844800
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
-          cpuset '0-1' '0-1' '0-3' '0-6'
+          cpuset '0-1' '0-1' '0-3' '0-7'
+          sched_config "60 55" "78 70" "300" "400"
         elif [[ "$action" = "balance" ]]; then
-          conservative_mode 55 72 72 85 69 82
+          conservative_mode 53 68 70 85 69 82
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "60 68" "72 78" "300" "400"
           set_cpu_freq 1036800 1708800 960000 1996800 844800 2035200
           set_gpu_max_freq 676000000
           cpuset '0-1' '0-1' '0-6' '0-7'
+          sched_config "60 52" "72 68" "300" "400"
         elif [[ "$action" = "performance" ]]; then
-          conservative_mode 52 70 70 85 67 82
+          conservative_mode 50 65 69 80 67 80
           sched_boost 1 0
           stune_top_app 0 0
           set_cpu_freq 1036800 1708800 960000 2419200 844800 2841600
           set_gpu_max_freq 738000000
           cpuset '0-1' '0-1' '0-6' '0-7'
+          sched_config "62 49" "72 60" "200" "400"
         elif [[ "$action" = "fast" ]]; then
-          conservative_mode 42 60 54 70 60 72
+          conservative_mode 40 58 54 70 60 72
           sched_boost 1 1
           stune_top_app 1 55
-          # sched_config "40 60" "50 75" "120" "150"
           set_gpu_max_freq 778000000
           cpuset '0-1' '0-1' '0-6' '0-7'
+          sched_config "62 35" "70 50" "300" "400"
         fi
     ;;
 
@@ -847,22 +883,26 @@ adjustment_by_top_app() {
         gpu_pl_up 0
         sched_boost 0 0
         stune_top_app 0 0
-        sched_limit 0 0 0 2000 0 1000
+        set_cpu_pl 0
+        set_input_boost_freq 0 0 0 0
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 60 72 80 98 90 99
           cpuctl top-app 0 0 0 0.2
           set_cpu_freq 300000 1708800 710400 1440000 844800 844800
           set_gpu_max_freq 200000000
+          sched_limit 0 0 0 10000 0 2000
         elif [[ "$action" = "balance" ]]; then
           conservative_mode 59 70 78 97 90 99
           cpuctl top-app 0 1 0 0.8
           set_cpu_freq 300000 1708800 710400 1440000 844800 844800
           set_gpu_max_freq 300000000
+          sched_limit 0 0 0 10000 0 2000
         elif [[ "$action" = "performance" ]]; then
           sched_config "85 85" "96 96" "150" "400"
           cpuctl top-app 0 1 0 max
           set_cpu_freq 300000 1708800 710400 1555200 844800 1785600
           set_gpu_max_freq 491000000
+          sched_limit 0 0 0 5000 0 1000
         fi
       fi
     ;;
@@ -877,6 +917,8 @@ adjustment_by_top_app() {
 
       stune_top_app 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
+      set_cpu_pl 0
+      set_input_boost_freq 0 0 0 0
 
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
@@ -898,10 +940,10 @@ adjustment_by_top_app() {
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
         cpuctl top-app 0 1 0.1 max
       fi
-      pgrep -f $top_app | while read pid; do
-        # echo $pid > /dev/cpuset/foreground/cgroup.procs
-        echo $pid > /dev/stune/background/cgroup.procs
-      done
+      # pgrep -f $top_app | while read pid; do
+      #   # echo $pid > /dev/cpuset/foreground/cgroup.procs
+      #   echo $pid > /dev/stune/background/cgroup.procs
+      # done
 
       sched_config "85 85" "100 100" "300" "400"
     ;;

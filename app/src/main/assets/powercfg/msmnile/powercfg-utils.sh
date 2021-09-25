@@ -470,7 +470,7 @@ yuan_shen_opt_run() {
     fi
 
     local mode=$(getprop vtools.powercfg)
-    if [[ "$mode" == 'powersave' ]]; then
+    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
       if [[ "$tid" == "$pid" ]]; then
         taskset -p "FF" "$tid" > /dev/null 2>&1
         continue
@@ -506,6 +506,9 @@ yuan_shen_opt_run() {
           comm=$(cat /proc/$pid/task/$tid/comm)
 
           case "$comm" in
+           "AudioTrack"|"Audio"*|"tp_schedule"*|"MIHOYO_NETWORK"|"FMOD"*|"NativeThread"|"UnityChoreograp"|"UnityPreload")
+             taskset -p "F" "$tid" > /dev/null 2>&1
+           ;;
            "UnityMain")
              taskset -p "F0" "$tid" > /dev/null 2>&1
              taskset -p "80" "$tid" > /dev/null 2>&1
@@ -598,21 +601,22 @@ adjustment_by_top_app() {
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili" | "com.miHoYo.GenshinImpact")
         ctl_off cpu4
         ctl_off cpu7
+        set_hispeed_freq 0 0 0
         if [[ "$action" = "powersave" ]]; then
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "50 80" "67 95" "300" "400"
+          sched_config "62 60" "80 75" "300" "400"
           gpu_pl_down 2
-          set_cpu_freq 1785600 1785600 1056000 1708800 1056000 2419200
-          sched_limit 10000 0 0 5000 0 10000
+          set_cpu_freq 1632000 1785600 1056000 1708800 1056000 2419200
+          sched_limit 10000 0 0 5000 0 1000
           cpuset '0' '0' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "70 78" "90 90" "300" "400"
+          sched_config "62 58" "80 72" "300" "400"
           gpu_pl_down 1
-          set_cpu_freq 1036800 1785600 1056000 1804800 1056000 2841600
-          sched_limit 10000 0 0 20000 0 10000
+          set_cpu_freq 1632000 1785600 1056000 1804800 1056000 2841600
+          sched_limit 10000 0 0 5000 0 1000
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
@@ -628,7 +632,6 @@ adjustment_by_top_app() {
           # sched_config "40 60" "50 75" "120" "150"
           cpuset '0-1' '0-3' '0-7' '0-7'
         fi
-        set_hispeed_freq 0 0 0
         watch_app yuan_shen_opt_run &
     ;;
 
@@ -717,7 +720,7 @@ adjustment_by_top_app() {
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then
-        echo 0-5 > /dev/cpuset/top-app/cpus
+        echo 0-6 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "balance" ]]; then
         echo 0-6 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "performance" ]]; then
@@ -725,10 +728,10 @@ adjustment_by_top_app() {
       elif [[ "$action" = "fast" ]]; then
         echo 0-7 > /dev/cpuset/top-app/cpus
       fi
-      pgrep -f $top_app | while read pid; do
-        # echo $pid > /dev/cpuset/foreground/cgroup.procs
-        echo $pid > /dev/stune/background/cgroup.procs
-      done
+      # pgrep -f $top_app | while read pid; do
+      #   # echo $pid > /dev/cpuset/foreground/cgroup.procs
+      #   echo $pid > /dev/stune/background/cgroup.procs
+      # done
 
       sched_config "85 85" "100 100" "240" "400"
     ;;

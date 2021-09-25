@@ -70,7 +70,7 @@ case "$target" in
     # configure input boost settings
     echo "0:1324800" > /sys/devices/system/cpu/cpu_boost/input_boost_freq
     echo 120 > /sys/devices/system/cpu/cpu_boost/input_boost_ms
-    echo "0:0 1:0 2:0 3:0 4:2342400 5:0 6:0 7:2361600" > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_freq
+    echo "0:1804800 1:0 2:0 3:0 4:2342400 5:0 6:0 7:2361600" > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_freq
     echo 400 > /sys/devices/system/cpu/cpu_boost/powerkey_input_boost_ms
 
     # configure governor settings for gold cluster
