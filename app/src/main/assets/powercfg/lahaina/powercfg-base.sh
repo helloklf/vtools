@@ -107,11 +107,14 @@ process_opt() {
 cpuctl top-app 0 0 0 max
 cpuctl foreground 0 0 0 '0.8'
 cpuctl background 0 0 0 0
-mk_cpuctl 'top-app/heavy' 1 1 max max
+# mk_cpuctl 'top-app/heavy' 1 1 max max
 
 # echo 0 > /dev/stune/nnapi-hal/schedtune.boost
 # echo 0 > /dev/stune/nnapi-hal/schedtune.prefer_idle
 
+ctl_off cpu0
+ctl_off cpu4
+ctl_off cpu7
 disable_migt
 process_opt &
 disable_mi_opt &

@@ -37,13 +37,18 @@ if [[ "$action" = "powersave" ]]; then
   sched_boost 0 0
   set_hispeed_freq 1612800 710400 844800
   sched_config "85 75" "96 86" "150" "400"
-  sched_limit 0 1200 0 3000 0 1000
-  cpuset '0' '0-3' '0-3' '0-7'
+  sched_limit 0 1000 0 3000 0 1000
+  cpuset '0-2' '0-3' '0-3' '0-7'
   stune_top_app 0 0
   cpuctl top-app 0 0 0 max
   bw_min
   bw_down 3 3
   thermal_disguise 0
+  set_cpu_pl 0
+  set_input_boost_freq 0 0 0 0
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
+    stop miuibooster
+  fi
 
 
 elif [[ "$action" = "balance" ]]; then
@@ -64,6 +69,11 @@ elif [[ "$action" = "balance" ]]; then
   bw_min
   bw_down 2 2
   thermal_disguise 0
+  set_cpu_pl 0
+  set_input_boost_freq 0 0 0 0
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
+    stop miuibooster
+  fi
 
 
 elif [[ "$action" = "performance" ]]; then
@@ -81,6 +91,11 @@ elif [[ "$action" = "performance" ]]; then
   bw_min
   bw_max
   thermal_disguise 0
+  set_cpu_pl 1
+  set_input_boost_freq 1708800 1075200 0 80
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
+    start miuibooster
+  fi
 
 
 elif [[ "$action" = "fast" ]]; then
@@ -97,6 +112,11 @@ elif [[ "$action" = "fast" ]]; then
   cpuctl top-app 0 1 max max
   bw_max_always
   thermal_disguise 1
+  set_cpu_pl 1
+  set_input_boost_freq 0 0 0 0
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
+    start miuibooster
+  fi
 
 
 fi
