@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -187,6 +184,22 @@ public class Main {
         }
     }
 
+    static class ProcKiller extends Thread {
+        private static byte[] cmds = ("sh /system/bin/scene_task_min.sh\n\nexit 0\nexit 0\n").getBytes();
+
+        @Override
+        public void run() {
+            try {
+                Process process = Runtime.getRuntime().exec("sh");
+                OutputStream outputStream = process.getOutputStream();
+                outputStream.write(cmds);
+                outputStream.flush();
+                outputStream.close();
+                process.waitFor();
+            } catch (Exception ignored) {}
+        }
+    }
+
     static class MemoryWatch extends Thread {
         private final File bgGroup;
         // 是否根据oomAdj对进程排序
@@ -233,6 +246,14 @@ public class Main {
                 // 是否内存不足
                 boolean lowMemory = memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
                 if (lowMemory) {
+                    // 清理QQ、微信等应用的不重要子进程
+                    Thread killer = new ProcKiller();
+                    killer.start();
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ignored) {
+                    }
+
                     // 如果配置了 ZRAM Writeback 先触发writeback
                     if (writeBack != null) {
                         writeBack.writeIdle();
@@ -362,6 +383,9 @@ public class Main {
         while (true) {
             String topProcsStr = readAllText(fTopProcs);
             if (!topProcsStr.equals(currentTopProcs)) {
+                // 清理QQ、微信等应用的不重要子进程
+                // new ProcKiller().start();
+
                 currentTopProcs = topProcsStr;
 
                 String[] topProcs = readAllText(fTopProcs).split("\n");
