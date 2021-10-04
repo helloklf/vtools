@@ -608,11 +608,11 @@ thermal_disguise() {
     echo "thermal_disguise [enable]"
     chmod 000 $board_sensor_temp
     setprop vtools.thermal.disguise 1
-    pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
-    pm clear com.xiaomi.gamecenter.sdk.service 2>/dev/null
+    nohup pm clear com.xiaomi.gamecenter.sdk.service >/dev/null 2>&1 &
+    nohup pm disable com.xiaomi.gamecenter.sdk.service/.PidService >/dev/null 2>&1 &
   else
     setprop vtools.thermal.disguise 0
-    pm enable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    nohup pm enable com.xiaomi.gamecenter.sdk.service/.PidService >/dev/null 2>&1 &
     chmod 644 $board_sensor_temp
     echo 'thermal_disguise [disable]'
   fi
