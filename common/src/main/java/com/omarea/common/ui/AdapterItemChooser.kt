@@ -12,7 +12,7 @@ import java.util.*
 
 class AdapterItemChooser(private val context: Context, private var items: ArrayList<SelectItem>, private val multiple: Boolean) : BaseAdapter(), Filterable {
     interface SelectStateListener {
-        fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>)
+        fun onSelectChange(selected: List<SelectItem>)
     }
 
     private var selectStateListener: SelectStateListener? = null
@@ -154,6 +154,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
                     notifyDataSetChanged()
                 }
             }
+            selectStateListener?.onSelectChange(getSelectedItems())
         }
 
         viewHolder.itemTitle?.text = item.title

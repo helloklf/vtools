@@ -46,7 +46,7 @@ class DialogItemChooser(
                 }
                 adapter?.run {
                     setSelectStateListener(object : AdapterItemChooser.SelectStateListener {
-                        override fun onSelectChange(selected: List<AdapterAppChooser.AppInfo>) {
+                        override fun onSelectChange(selected: List<SelectItem>) {
                             selectAll.isChecked = selected.size == items.size
                         }
                     })
