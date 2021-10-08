@@ -49,6 +49,7 @@ class AdapterItemChooser2(
                 synchronized(adapter.mLock) {
                     values = ArrayList<SelectItem>(adapter.items)
                 }
+                val selected = adapter.currentSelected
 
                 val count = values.size
                 val newValues = ArrayList<SelectItem>()
@@ -56,19 +57,22 @@ class AdapterItemChooser2(
                 for (i in 0 until count) {
                     val value = values[i]
                     val valueText = if (value.title == null) "" else value.title!!.toLowerCase()
-
-                    // First match against the whole, non-splitted value
-                    if (valueText.contains(prefixString)) {
+                    if (selected.contains(value)) {
                         newValues.add(value)
                     } else {
-                        val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-                        val wordCount = words.size
+                        // First match against the whole, non-splitted value
+                        if (valueText.contains(prefixString)) {
+                            newValues.add(value)
+                        } else {
+                            val words = valueText.split(" ".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                            val wordCount = words.size
 
-                        // Start at index 0, in case valueText starts with space(s)
-                        for (k in 0 until wordCount) {
-                            if (words[k].contains(prefixString)) {
-                                newValues.add(value)
-                                break
+                            // Start at index 0, in case valueText starts with space(s)
+                            for (k in 0 until wordCount) {
+                                if (words[k].contains(prefixString)) {
+                                    newValues.add(value)
+                                    break
+                                }
                             }
                         }
                     }

@@ -79,18 +79,23 @@ class AdapterAppChooser(
                 synchronized(adapter.mLock) {
                     values = ArrayList<AppInfo>(adapter.apps)
                 }
+                val selected = adapter.getSelectedItems()
 
                 val count = values.size
                 val newValues = ArrayList<AppInfo>()
 
                 for (i in 0 until count) {
                     val value = values[i]
-                    val labelText = value.appName.toLowerCase()
-                    val valueText = value.packageName.toLowerCase()
-                    if (searchStr(labelText, prefixString)) {
+                    if (selected.contains(value)) {
                         newValues.add(value)
-                    } else if (searchStr(valueText, prefixString)) {
-                        newValues.add(value)
+                    } else {
+                        val labelText = value.appName.toLowerCase()
+                        val valueText = value.packageName.toLowerCase()
+                        if (searchStr(labelText, prefixString)) {
+                            newValues.add(value)
+                        } else if (searchStr(valueText, prefixString)) {
+                            newValues.add(value)
+                        }
                     }
                 }
 
