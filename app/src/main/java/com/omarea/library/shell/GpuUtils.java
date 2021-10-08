@@ -98,6 +98,7 @@ public class GpuUtils {
 
                     "/sys/class/devfreq/gpufreq/mali_ondemand/utilisation", // 麒麟
                     "/sys/kernel/debug/ged/hal/gpu_utilization", // 天玑820（cat /sys/kernel/debug/ged/hal/gpu_utilization | cut -f1 -d ' '）
+                    "/sys/kernel/ged/hal/gpu_utilization", // 天玑1100 1200（cat /sys/kernel/ged/hal/gpu_utilization | cut -f1 -d ' '）
                     "/sys/module/ged/parameters/gpu_loading" // 天玑820 数值比较好看，但是值经常为0，莫名其妙
             };
             GPU_LOAD_PATH = "";
