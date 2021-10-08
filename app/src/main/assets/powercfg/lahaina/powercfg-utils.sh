@@ -155,6 +155,7 @@ reset_basic_governor() {
   echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  set_gpu_offset 0
 }
 
 bw_down() {
@@ -291,6 +292,12 @@ set_gpu_min_freq() {
   # echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
 }
 
+set_gpu_offset() {
+  if [[ -f /sys/class/kgsl/kgsl-3d0/devfreq/mod_percent ]]; then
+    echo $((100 + $1)) > /sys/class/kgsl/kgsl-3d0/devfreq/mod_percent
+  fi
+}
+
 ctl_on() {
   echo 1 > /sys/devices/system/cpu/$1/core_ctl/enable
   if [[ "$2" != "" ]]; then
@@ -396,6 +403,8 @@ disable_migt() {
     lock_value '0 0 0' $migt/glk_maxfreq
     lock_value '300000 710400 844800' $migt/glk_minfreq
     lock_value '0 0 0' $migt/migt_ceiling_freq
+    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
+    killall -9 com.miui.daemon >/dev/null 2>&1
   fi
 }
 
@@ -411,6 +420,7 @@ disable_mi_opt() {
     pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService
     pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService
     pm disable com.miui.daemon/.performance.SysoptService
+    pm disable com.miui.daemon/.performance.MiuiPerfService
     pm disable com.miui.daemon/.performance.server.ExecutorService
     pm disable com.miui.daemon/.mqsas.jobs.EventUploadService
     pm disable com.miui.daemon/.mqsas.jobs.FileUploadService
@@ -740,6 +750,7 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
+          set_gpu_offset -5
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 42 57 68 84 69 83
@@ -753,6 +764,7 @@ adjustment_by_top_app() {
           sched_config "55 60" "72 70" "300" "400"
           set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_gpu_max_freq 676000000
+          set_gpu_offset -2
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -767,6 +779,7 @@ adjustment_by_top_app() {
           sched_limit 5000 0 0 2000 0 500
           sched_config "65 55" "75 68" "200" "400"
           set_gpu_max_freq 738000000
+          set_gpu_offset 0
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -777,6 +790,7 @@ adjustment_by_top_app() {
           stune_top_app 1 55
           sched_config "62 40" "70 52" "300" "400"
           set_gpu_max_freq 778000000
+          set_gpu_offset 2
         fi
         cpuset '0' '0' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
@@ -918,32 +932,31 @@ adjustment_by_top_app() {
       stune_top_app 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
       set_cpu_pl 0
-      set_input_boost_freq 0 0 0 0
 
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 0 0 0.5
+        set_input_boost_freq 1708800 1075200 0 500
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
-        cpuctl top-app 0 1 0 max
+        cpuctl top-app 0 0 0 max
+        set_input_boost_freq 1804800 1075200 0 500
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 0
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 1 0 max
+        set_input_boost_freq 1804800 1075200 0 500
       elif [[ "$action" = "fast" ]]; then
         sched_boost 1 0
         echo 0-7 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
         cpuctl top-app 0 1 0.1 max
+        set_input_boost_freq 1804800 1209600 0 1000
       fi
-      # pgrep -f $top_app | while read pid; do
-      #   # echo $pid > /dev/cpuset/foreground/cgroup.procs
-      #   echo $pid > /dev/stune/background/cgroup.procs
-      # done
 
       sched_config "85 85" "100 100" "300" "400"
     ;;
