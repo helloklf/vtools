@@ -79,7 +79,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                     scheduleAtFixedRate(object : TimerTask() {
                         private var ticks = 0
                         override fun run() {
-                            updateModeNofity(true) // 耗电统计 定时更新通知显示
+                            updateModeNoitfy(true) // 耗电统计 定时更新通知显示
 
                             ticks += interval
                             ticks %= 60
@@ -123,7 +123,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (!screenOn) {
                 notifyHelper.hideNotify()
                 stopTimer()
-                setDelyFreezeApps()
+                setDelayFreezeApps()
 
                 // 息屏后自动切换为省电模式
                 if (dynamicCore && lastMode.isNotEmpty()) {
@@ -168,11 +168,11 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         if (!screenOn) {
             screenOn = true
             startTimer() // 屏幕开启后开始定时更新通知
-            updateModeNofity() // 屏幕点亮后更新通知
+            updateModeNoitfy() // 屏幕点亮后更新通知
         }
     }
 
-    private fun setDelyFreezeApps() {
+    private fun setDelayFreezeApps() {
         val delay = spfGlobal.getInt(SpfConfig.GLOBAL_SPF_FREEZE_DELAY, 0)
         SceneMode.FreezeAppThread(context.applicationContext, true, if (delay > 0) (delay * 60) else 0).start()
     }
@@ -180,7 +180,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     /**
      * 更新通知
      */
-    private fun updateModeNofity(saveLog: Boolean = false) {
+    private fun updateModeNoitfy(saveLog: Boolean = false) {
         if (screenOn) {
             notifyHelper.notify(saveLog)
         }
@@ -203,7 +203,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                 }
             }
             setCurrentPowercfgApp(packageName)
-            updateModeNofity() // 应用改变后更新通知
+            updateModeNoitfy() // 应用改变后更新通知
         }
     }
 
@@ -322,7 +322,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     init {
         screenState = ScreenState(context)
 
-        updateModeNofity() // 服务启动后 更新通知
+        updateModeNoitfy() // 服务启动后 更新通知
 
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
