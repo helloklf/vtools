@@ -1,6 +1,7 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.Menu
@@ -15,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.omarea.Scene
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -50,22 +54,25 @@ class ActivityMain : ActivityBase() {
         }
     }
 
-    private class ThermalCheckThread(private var context: Context) : Thread() {
+    private class ThermalCheckThread(private var context: Activity) : Thread() {
         private fun deleteThermalCopyWarn(onYes: Runnable) {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete_thermal, null)
-            val dialog = DialogHelper.customDialog(context, view)
-            view.findViewById<View>(R.id.btn_no).setOnClickListener {
-                dialog.dismiss()
-            }
-            view.findViewById<View>(R.id.btn_yes).setOnClickListener {
-                dialog.dismiss()
-                onYes.run()
+            Scene.post {
+                if (!context.isFinishing) {
+                    val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete_thermal, null)
+                    val dialog = DialogHelper.customDialog(context, view)
+                    view.findViewById<View>(R.id.btn_no).setOnClickListener {
+                        dialog.dismiss()
+                    }
+                    view.findViewById<View>(R.id.btn_yes).setOnClickListener {
+                        dialog.dismiss()
+                        onYes.run()
+                    }
+                    dialog.setCancelable(false)
+                }
             }
         }
 
         override fun run() {
-            super.run()
-
             sleep(500)
             if (
                     MagiskExtend.magiskSupported() &&
@@ -115,6 +122,7 @@ class ActivityMain : ActivityBase() {
             // intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             startActivity(intent)
             finish()
+            return
         }
 
         /*
