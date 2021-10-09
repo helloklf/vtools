@@ -41,7 +41,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     private var ignoredList = ArrayList<String>()
     private val dynamicCore: Boolean
         get () {
-            return spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DELAY, false)
+            return spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         }
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var screenOn = false
