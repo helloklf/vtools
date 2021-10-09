@@ -156,6 +156,7 @@ reset_basic_governor() {
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
   set_gpu_offset 0
+  set_input_boost_freq 0 0 0 0
 }
 
 bw_down() {
@@ -174,6 +175,9 @@ bw_min() {
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
   cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
 }
 
 bw_max() {
@@ -181,6 +185,9 @@ bw_max() {
   cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
   cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
 }
 
@@ -192,6 +199,12 @@ bw_max_always() {
   echo $b_max > $path/min_freq
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
   local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
   echo $b_max > $path/min_freq
   echo $b_max > $path/max_freq
@@ -898,7 +911,6 @@ adjustment_by_top_app() {
         sched_boost 0 0
         stune_top_app 0 0
         set_cpu_pl 0
-        set_input_boost_freq 0 0 0 0
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 60 72 80 98 90 99
           cpuctl top-app 0 0 0 0.2
@@ -921,8 +933,8 @@ adjustment_by_top_app() {
       fi
     ;;
 
-    # DouYin, BiliBili
-    "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
+    # DouYin, BiliBili, TencentVideo, XiGua, KuaiShou, iQiyi
+    "com.ss.android.ugc.aweme"|"tv.danmaku.bili"|"com.tencent.qqlive"|"com.ss.android.article.video"|"com.smile.gifmaker"|"com.qiyi.video.sdkplayer")
       # ctl_on cpu4
       # ctl_on cpu7
 
@@ -937,25 +949,24 @@ adjustment_by_top_app() {
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 0 0 0.5
-        set_input_boost_freq 1708800 1075200 0 500
+        set_input_boost_freq 902400 1075200 0 500
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
         cpuctl top-app 0 0 0 max
-        set_input_boost_freq 1804800 1075200 0 500
+        set_input_boost_freq 902400 1555200 0 500
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 0
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 1 0 max
-        set_input_boost_freq 1804800 1075200 0 500
+        set_input_boost_freq 1497600 1555200 0 500
       elif [[ "$action" = "fast" ]]; then
         sched_boost 1 0
         echo 0-7 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
         cpuctl top-app 0 1 0.1 max
-        set_input_boost_freq 1804800 1209600 0 1000
       fi
 
       sched_config "85 85" "100 100" "300" "400"

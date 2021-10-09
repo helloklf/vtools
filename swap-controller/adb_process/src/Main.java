@@ -6,6 +6,7 @@ public class Main {
     private static double critical = 0.15;
     private static double high = 0.22;
     private static double middle = 0.25;
+    private static double prekill = 0.27;
 
     private static String readAllText(File file) {
         try {
@@ -243,9 +244,8 @@ public class Main {
                 }
 
                 memFreeRatio = getMemFreeRatio();
-                // 是否内存不足
-                boolean lowMemory = memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
-                if (lowMemory) {
+
+                if (memFreeRatio < prekill) {
                     // 清理QQ、微信等应用的不重要子进程
                     Thread killer = new ProcKiller();
                     killer.start();
@@ -253,13 +253,17 @@ public class Main {
                         sleep(1000);
                     } catch (InterruptedException ignored) {
                     }
+                }
 
+                // 是否内存不足
+                boolean lowMemory = isLowMemory(memFreeRatio);
+                if (lowMemory) {
                     // 如果配置了 ZRAM Writeback 先触发writeback
                     if (writeBack != null) {
                         writeBack.writeIdle();
                         // writeback 介绍之后，更新空闲内存状态
                         memFreeRatio = getMemFreeRatio();
-                        lowMemory = memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
+                        lowMemory = isLowMemory(memFreeRatio);
                     }
 
                     if (lowMemory) {
@@ -316,6 +320,11 @@ public class Main {
         }
     }
 
+    // 是否已经内存不足
+    private static boolean isLowMemory (double memFreeRatio) {
+        return memFreeRatio <= high || (memFreeRatio <= middle && reclaimReason.reason == ReclaimReason.REASON_APP_WATCH);
+    }
+
     public static void main(String[] args) throws InterruptedException {
 
         String cgroupReclaim = args.length > 0 ? args[0].trim() : "passive";
@@ -325,6 +334,7 @@ public class Main {
                 critical = 0.15;
                 high = 0.22;
                 middle = 0.25;
+                prekill = 0.27;
                 break;
             }
             */
@@ -332,24 +342,29 @@ public class Main {
                 critical = 0.23;
                 high = 0.27;
                 middle = 0.30;
+                prekill = 0.30;
                 break;
             }
             case "active": {
                 critical = 0.20;
                 high = 0.25;
                 middle = 0.28;
+                prekill = 0.30;
                 break;
             }
+            case "never":
             case "lazy": {
                 critical = 0.14;
                 high = 0.16;
                 middle = 0.20;
+                prekill = 0.27;
                 break;
             }
             default: {
                 critical = 0.17;
                 high = 0.23;
                 middle = 0.25;
+                prekill = 0.27;
                 break;
             }
         }
@@ -406,7 +421,7 @@ public class Main {
                     }
                 }
                 // reclaim
-                if (memFreeRatio <= middle) {
+                if (memFreeRatio <= prekill) {
                     synchronized (reclaimReason) {
                         reclaimReason.reason = ReclaimReason.REASON_APP_WATCH;
                         reclaimReason.notifyAll();
