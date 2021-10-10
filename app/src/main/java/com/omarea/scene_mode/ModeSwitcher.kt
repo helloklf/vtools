@@ -163,7 +163,7 @@ open class ModeSwitcher {
     }
 
     private fun keepShellExec(cmd: String) {
-        KeepShellPublic.doCmdSync(cmd)
+        KeepShellPublic.secondaryKeepShell.doCmdSync(cmd)
     }
 
     // init

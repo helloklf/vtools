@@ -46,6 +46,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var displayWidth = 1080
     private var displayHeight = 2340
+    // 是否是平板
+    private var isTablet: Boolean = false
 
     companion object {
         private var lastAnalyseThread: Long = 0
@@ -88,6 +90,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
             displayWidth = point.x
             displayHeight = point.y
         }
+
+        isTablet = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
 
     private fun updateConfig() {
@@ -295,7 +299,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
         this.modernModeEvent(null);
     }
 
-
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
         val effectiveWindows = this.getEffectiveWindows()
@@ -303,9 +306,28 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (effectiveWindows.isNotEmpty()) {
             try {
                 var lastWindow: AccessibilityWindowInfo? = null
+                // 最小窗口分辨率要求
+                val minWindowSize = if (isLandscap && !isTablet) {
+                    // 横屏时关注窗口大小，以显示区域大的主应用（平板设备不过滤窗口大小）
+                    // 屏幕一半大小，用于判断窗口是否是小窗（比屏幕一半大小小的的应用认为是窗口化运行）
+                    displayHeight * displayWidth / 2
+                } else {
+                    // 竖屏时以焦点窗口为前台应用，不关心窗口大小
+                    0
+                }
+
                 val logs = if (floatLogView == null) null else StringBuilder()
                 logs?.run {
-                    append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+                    append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}")
+                    if (isLandscap) {
+                        append(" 横向")
+                    } else {
+                        append(" 竖向")
+                    }
+                    if (isTablet) {
+                        append(" Tablet")
+                    }
+                    append("\n")
                     if (event != null) {
                         append("事件: ${event.source?.packageName}\n")
                     } else {
@@ -384,7 +406,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     }
                 }
                 logs?.append("\n")
-                if (lastWindow != null) {
+                if (lastWindow != null && lastWindowSize >= minWindowSize) {
                     val eventWindowId = event?.windowId
                     val lastWindowId = lastWindow.id
 
