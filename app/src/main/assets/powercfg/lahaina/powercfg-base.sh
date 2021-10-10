@@ -100,8 +100,8 @@ process_opt() {
   # set_cpuset mediaserver background
   # set_cpuset media.hwcodec background
 
-  set_task_affinity `pgrep com.miui.home` 11111111
-  set_task_affinity `pgrep com.miui.home` 11110000
+  # set_task_affinity `pgrep com.miui.home` 11111111
+  # set_task_affinity `pgrep com.miui.home` 11110000
 }
 
 cpuctl top-app 0 0 0 max
@@ -117,4 +117,12 @@ ctl_off cpu4
 ctl_off cpu7
 disable_migt
 process_opt &
-disable_mi_opt &
+
+# Disable MIUI's daemon\joyose
+# disable_mi_opt &
+
+# Uninstall MIUI's daemon\joyose
+uninstall_mi_opt &
+
+# Reinstall MIUI's daemon\joyose
+# reinstall_mi_opt &

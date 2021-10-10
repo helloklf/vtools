@@ -52,7 +52,9 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
                     serviceHelper.stopSceneModeService(mContext!!)
                 }
                 KeepShellPublic.doCmdSync("killall -9 $packageName || am force-stop $packageName")
-                // System.exit(0)
+
+                // Thread.setDefaultUncaughtExceptionHandler(mDefaultHandler)
+                // throw ex
             } else {
                 // val am = getSystemService (Context.ACTIVITY_SERVICE) as ActivityManager
                 // am.restartPackage(getPackageName());

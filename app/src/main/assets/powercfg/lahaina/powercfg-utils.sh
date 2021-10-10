@@ -416,38 +416,51 @@ disable_migt() {
     lock_value '0 0 0' $migt/glk_maxfreq
     lock_value '300000 710400 844800' $migt/glk_minfreq
     lock_value '0 0 0' $migt/migt_ceiling_freq
-    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
-    killall -9 com.miui.daemon >/dev/null 2>&1
   fi
+}
+
+uninstall_mi_opt() {
+  # pm uninstall --user 0 -k com.miui.daemon >/dev/null 2>&1
+  # pm uninstall --user 0 -k com.xiaomi.joyose >/dev/null 2>&1
+  pm uninstall --user 0 com.miui.daemon >/dev/null 2>&1
+  pm uninstall --user 0 com.xiaomi.joyose >/dev/null 2>&1
+}
+
+reinstall_mi_opt() {
+  uninstall_mi_opt
+  pm install-existing --user 0 com.miui.daemon >/dev/null 2>&1
+  pm install-existing --user 0 com.xiaomi.joyose >/dev/null 2>&1
 }
 
 disable_mi_opt() {
   if [[ "$manufacturer" == "Xiaomi" ]]; then
     # pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
-    pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver
-    pm disable com.xiaomi.joyose/.smartop.SmartOpService
-    # pm disable com.xiaomi.joyose.smartop.smartp.SmartPAlarmReceiver
-    pm disable com.xiaomi.joyose.sysbase.MetokClService
+    pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver >/dev/null 2>&1
+    pm disable com.xiaomi.joyose/.smartop.SmartOpService >/dev/null 2>&1
+    # pm disable com.xiaomi.joyose.smartop.smartp.SmartPAlarmReceiver >/dev/null 2>&1
+    pm disable com.xiaomi.joyose.sysbase.MetokClService >/dev/null 2>&1
 
-    pm disable com.miui.daemon/.performance.cloudcontrol.CloudControlSyncService
-    pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService
-    pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService
-    pm disable com.miui.daemon/.performance.SysoptService
-    pm disable com.miui.daemon/.performance.MiuiPerfService
-    pm disable com.miui.daemon/.performance.server.ExecutorService
-    pm disable com.miui.daemon/.mqsas.jobs.EventUploadService
-    pm disable com.miui.daemon/.mqsas.jobs.FileUploadService
-    pm disable com.miui.daemon/.mqsas.jobs.HeartBeatUploadService
-    pm disable com.miui.daemon/.mqsas.providers.MQSProvider
-    pm disable com.miui.daemon/.performance.provider.PerfTurboProvider
-    pm disable com.miui.daemon/.performance.system.am.SysoptjobService
-    pm disable com.miui.daemon/.performance.system.am.MemCompactService
-    pm disable com.miui.daemon/.performance.statistics.services.FreeFragDumpService
-    pm disable com.miui.daemon/.performance.statistics.services.DefragService
-    pm disable com.miui.daemon/.performance.statistics.services.MeminfoService
-    pm disable com.miui.daemon/.performance.statistics.services.IonService
-    pm disable com.miui.daemon/.performance.statistics.services.GcBoosterService
-    pm disable com.miui.daemon/.mqsas.OmniTestReceiver
+    pm disable com.miui.daemon/.performance.cloudcontrol.CloudControlSyncService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.SysoptService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.server.ExecutorService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.EventUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.FileUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.HeartBeatUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.providers.MQSProvider >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.provider.PerfTurboProvider >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.system.am.SysoptjobService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.system.am.MemCompactService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.FreeFragDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.DefragService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.MeminfoService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.IonService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.GcBoosterService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.OmniTestReceiver >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
+    killall -9 com.miui.daemon >/dev/null 2>&1
   fi
 }
 
@@ -565,7 +578,7 @@ yuan_shen_opt_run() {
 
     local mode=$(getprop vtools.powercfg)
     taskset -p "FF" "$pid" > /dev/null 2>&1
-    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
+    if [[ "$mode" == 'powersave' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ "$tid" == "$pid" ]]; then
           taskset -p "FF" "$tid" > /dev/null 2>&1
@@ -591,7 +604,7 @@ yuan_shen_opt_run() {
           esac
         fi
       done
-    elif [ "$mode" == 'performance' ]; then
+    elif [[ "$mode" == 'performance' ]] || [[ "$mode" == 'balance' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
         if [[ "$tid" == "$pid" ]]; then
           taskset -p "FF" "$tid" > /dev/null 2>&1
@@ -601,14 +614,14 @@ yuan_shen_opt_run() {
           comm=$(cat /proc/$pid/task/$tid/comm)
 
           case "$comm" in
-           "AudioTrack"|"Audio"*|"tp_schedule"*|"MIHOYO_NETWORK"|"FMOD"*|"NativeThread"|"UnityChoreograp"|"UnityPreload")
-             taskset -p "F" "$tid" > /dev/null 2>&1
-           ;;
            "UnityMain")
              taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            "UnityGfxDevice"*|"UnityMultiRende"*)
              taskset -p "70" "$tid" > /dev/null 2>&1
+           ;;
+           "AudioTrack"|"Audio"*|"tp_schedule"*|"MIHOYO_NETWORK"|"FMOD"*|"NativeThread"|"UnityChoreograp"|"UnityPreload")
+             taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            *)
              taskset -p "7F" "$tid" > /dev/null 2>&1
@@ -755,7 +768,7 @@ adjustment_by_top_app() {
             bw_min
             bw_down 3 3
           else
-            sched_limit 10000 0 0 2000 0 0
+            sched_limit 10000 0 0 5000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
@@ -763,21 +776,21 @@ adjustment_by_top_app() {
           set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
-          set_gpu_offset -5
+          set_gpu_offset -7
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 42 57 68 84 69 83
             bw_min
             bw_down 2 2
           else
-            sched_limit 10000 0 0 2000 0 0
+            sched_limit 10000 0 0 5000 0 0
           fi
           sched_boost 0 0
           stune_top_app 0 0
           sched_config "55 60" "72 70" "300" "400"
           set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_gpu_max_freq 676000000
-          set_gpu_offset -2
+          set_gpu_offset -5
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -949,7 +962,7 @@ adjustment_by_top_app() {
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 0 0 0.5
-        set_input_boost_freq 902400 1075200 0 500
+        set_input_boost_freq 902400 1440000 0 800
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus

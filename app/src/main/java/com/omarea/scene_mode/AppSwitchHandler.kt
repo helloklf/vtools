@@ -1,10 +1,7 @@
 package com.omarea.scene_mode
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -37,10 +34,13 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     private var lastMode = ""
     private var spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var sceneBlackList = context.getSharedPreferences(SpfConfig.SCENE_BLACK_LIST, Context.MODE_PRIVATE)
-    private var spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    private val spfGlobal: SharedPreferences
+        get() {
+            return Scene.globalConfig
+        }
     private var ignoredList = ArrayList<String>()
     private val dynamicCore: Boolean
-        get () {
+        get() {
             return spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         }
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)

@@ -32,8 +32,6 @@ class ThermalDisguise {
                 "chmod 644 $migtMaxFreq\n" +
                 "pm disable $gameService\n" +
                 "pm clear $gameServiceApp\n" +
-                "pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1\n" +
-                "killall -9 com.miui.daemon >/dev/null 2>&1\n" +
                 "setprop $vtoolsStorage 1")
     }
 

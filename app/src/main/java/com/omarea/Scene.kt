@@ -30,30 +30,29 @@ class Scene : Application() {
         public lateinit var thisPackageName: String
         private var nightMode = false
         private var config: SharedPreferences? = null
+        public val globalConfig:SharedPreferences
+            get () {
+                if (config == null) {
+                    config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                }
+                return config!!
+            }
+
         public val isNightMode: Boolean
             get() {
                 return nightMode
             }
 
         public fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-            if (config == null) {
-                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            }
-            return config!!.getBoolean(key, defaultValue)
+            return globalConfig.getBoolean(key, defaultValue)
         }
 
         public fun setBoolean(key: String, value: Boolean) {
-            if (config == null) {
-                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            }
-            config!!.edit().putBoolean(key, value).apply()
+            globalConfig.edit().putBoolean(key, value).apply()
         }
 
         public fun getString(key: String, defaultValue: String): String? {
-            if (config == null) {
-                config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            }
-            return config!!.getString(key, defaultValue)
+            return globalConfig.getString(key, defaultValue)
         }
 
         public fun toast(message: String, time: Int) {
@@ -109,8 +108,13 @@ class Scene : Application() {
         nightMode = ((newConfig.uiMode and Configuration.UI_MODE_NIGHT_YES) != 0)
     }
 
+    override fun onCreate() {
+        super.onCreate()
+    }
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+        context = this
         CrashHandler().init(this)
 
         /*
@@ -123,8 +127,6 @@ class Scene : Application() {
         if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
             nightMode = true
         }
-
-        context = this
         thisPackageName = this.packageName
 
         // 安装busybox

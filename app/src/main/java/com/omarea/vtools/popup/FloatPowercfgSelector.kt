@@ -20,6 +20,9 @@ import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 弹窗辅助类
@@ -199,24 +202,40 @@ class FloatPowercfgSelector(context: Context) {
         }
         btn_ignore.visibility = if (dynamic) View.VISIBLE else View.GONE
 
+        // 震动反馈
+        val hapticFeedback = Runnable {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    try {
+                        view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    } catch (ex: Exception) {}
+                }
+            }
+        }
+
         if (modeConfigCompleted) {
             btn_powersave.setOnClickListener {
+                hapticFeedback.run()
                 selectedMode = ModeSwitcher.POWERSAVE
                 switchMode.run()
             }
             btn_defaultmode.setOnClickListener {
+                hapticFeedback.run()
                 selectedMode = ModeSwitcher.BALANCE
                 switchMode.run()
             }
             btn_gamemode.setOnClickListener {
+                hapticFeedback.run()
                 selectedMode = ModeSwitcher.PERFORMANCE
                 switchMode.run()
             }
             btn_fastmode.setOnClickListener {
+                hapticFeedback.run()
                 selectedMode = ModeSwitcher.FAST
                 switchMode.run()
             }
             btn_ignore.setOnClickListener {
+                hapticFeedback.run()
                 if (dynamic) {
                     if (selectedMode != ModeSwitcher.IGONED) {
                         selectedMode = ModeSwitcher.IGONED

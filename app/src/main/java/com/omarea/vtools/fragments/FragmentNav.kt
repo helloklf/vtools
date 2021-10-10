@@ -60,6 +60,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
     }
 
     private fun startService() {
+        AccessibleServiceHelper().stopSceneModeService(activity!!.applicationContext)
+
         /* 使用ROOT权限激活辅助服务会导致某些授权拿不到，导致事件触发不完整 */
         /*
 
@@ -70,6 +72,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 try {
                     myHandler.post {
                         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        // intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME)
                         startActivity(intent)
                     }
                 } catch (e: Exception) {
@@ -90,6 +94,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
         Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
         try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            // intent.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME)
             startActivity(intent)
         } catch (e: Exception) {
         }
