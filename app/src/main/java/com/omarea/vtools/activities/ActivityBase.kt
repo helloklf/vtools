@@ -14,13 +14,13 @@ import com.omarea.vtools.R
 open class ActivityBase : AppCompatActivity() {
     public lateinit var themeMode: ThemeMode
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        this.themeMode = ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState, persistentState)
+        this.themeMode = ThemeSwitch.switchTheme(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        this.themeMode = ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
+        this.themeMode = ThemeSwitch.switchTheme(this)
     }
 
     protected val context: Context

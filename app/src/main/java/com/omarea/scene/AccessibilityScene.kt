@@ -32,6 +32,8 @@ public class AccessibilityScene : AccessibilityService() {
 
     private var displayWidth = 1080
     private var displayHeight = 2340
+    // 是否是平板
+    private var isTablet: Boolean = false
 
     // 标准模式下会多次分析和检测窗口内容提高准确性同时保证及时性，一次窗口变化可能会检测3~5次
     // 而低功耗模式则以减少检测频率为主，尽可能降低性能消耗，通常只检测1~2次
@@ -71,6 +73,8 @@ public class AccessibilityScene : AccessibilityService() {
             displayWidth = point.x
             displayHeight = point.y
         }
+
+        isTablet = resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }
 
     private fun updateConfig() {
@@ -229,14 +233,24 @@ public class AccessibilityScene : AccessibilityService() {
         if (effectiveWindows.isNotEmpty()) {
             try {
                 var lastWindow: AccessibilityWindowInfo? = null
-                // TODO:
-                //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
-                //      但在类原生系统上表现并不好，例如：有缺口的屏幕或有导航键的系统，报告的窗口大小则可能不包括缺口高度区域和导航键区域高度
-                //      因此，现在将逻辑调整为：从所有应用窗口中选出最接近全屏的一个，判定为前台应用
-                //      当然，这并不意味着完美，只是暂时没有更好的解决方案……
+                // 最小窗口分辨率要求
+                val minWindowSize = if (isLandscap && !isTablet) {
+                    // 横屏时关注窗口大小，以显示区域大的主应用（平板设备不过滤窗口大小）
+                    // 屏幕一半大小，用于判断窗口是否是小窗（比屏幕一半大小小的的应用认为是窗口化运行）
+                    displayHeight * displayWidth / 2
+                } else {
+                    // 竖屏时以焦点窗口为前台应用，不关心窗口大小
+                    0
+                }
 
                 var lastWindowSize = 0
                 var lastWindowFocus = false
+
+                // 无焦点窗口（一般处于过渡动画或窗口切换过程中）
+                if (effectiveWindows.find { it.isActive || it.isFocused } == null) {
+                    return
+                }
+
                 for (window in effectiveWindows) {
                     /*
                     val wp = window.root?.packageName
@@ -272,7 +286,7 @@ public class AccessibilityScene : AccessibilityService() {
                     }
                 }
 
-                if (lastWindow != null) {
+                if (lastWindow != null && lastWindowSize >= minWindowSize) {
                     val eventWindowId = event?.windowId
                     val lastWindowId = lastWindow.id
 
