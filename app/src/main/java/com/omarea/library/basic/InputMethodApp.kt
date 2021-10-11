@@ -1,7 +1,11 @@
 package com.omarea.library.basic
 
 import android.content.Context
+import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 获取系统的输入法
@@ -13,6 +17,20 @@ internal class InputMethodApp(private var context: Context) {
      * 获取系统已安装的输入法
      */
     fun getInputMethods(): ArrayList<String> {
+        // settings get secure enabled_input_methods
+        try {
+            val enable = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ENABLED_INPUT_METHODS)
+            if (!enable.isNullOrEmpty()) {
+                val list = arrayListOf<String>()
+                enable.split(":").map {
+                    it.split("/").first()
+                }.toCollection(list)
+                return list
+            }
+        } catch (ex: Exception) {
+        }
+
         val ignoredList = arrayListOf<String>()
         val im = (context.getSystemService(Context.INPUT_METHOD_SERVICE)) as InputMethodManager?
         return if (im == null) {

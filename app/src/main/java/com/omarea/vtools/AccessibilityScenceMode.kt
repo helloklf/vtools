@@ -419,15 +419,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             }
                         } else {
                             lastAnalyseThread = System.currentTimeMillis()
-                            // try {
-                            // val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
-                            // thread.start()
                             windowAnalyse(lastWindow, lastAnalyseThread)
                             if (event != null) {
                                 startActivityPolling()
                             }
-                            // thread.wait(300);
-                            // } catch (Exception ignored){}
                         }
                     } else {
                         val wp = if (eventWindowId == lastWindowId) {
@@ -524,43 +519,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
             if (lastAnalyseThread == tid && wp != null) {
                 val pa = wp.toString()
-                if (!(isLandscap  && inputMethods.contains(pa))) {
+                if (!(isLandscap && inputMethods.contains(pa))) {
                     GlobalStatus.lastPackageName = pa
                     EventBus.publish(EventType.APP_SWITCH)
                 }
-            }
-        }
-    }
-
-    class WindowAnalyzeThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
-        override fun run() {
-            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
-            val root = (try {
-                windowInfo.root
-            } catch (ex: Exception) {
-                null
-            })
-            val wp = (try {
-                root?.packageName
-            } catch (ex: Exception) {
-                null
-            })
-            // MIUI 优化，打开MIUI多任务界面时当做没有发生应用切换
-            if (wp?.equals("com.miui.home") == true) {
-                /*
-                val node = root?.findAccessibilityNodeInfosByText("小窗应用")?.firstOrNull()
-                Log.d("Scene-MIUI", "" + node?.parent?.viewIdResourceName)
-                Log.d("Scene-MIUI", "" + node?.viewIdResourceName)
-                */
-                val node = root?.findAccessibilityNodeInfosByViewId("com.miui.home:id/txtSmallWindowContainer")?.firstOrNull()
-                if (node != null) {
-                    return
-                }
-            }
-
-            if (lastAnalyseThread == tid && wp != null) {
-                GlobalStatus.lastPackageName = wp.toString()
-                EventBus.publish(EventType.APP_SWITCH)
             }
         }
     }
