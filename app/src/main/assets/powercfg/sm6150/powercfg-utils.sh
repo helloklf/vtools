@@ -7,8 +7,6 @@
 # GPU
 # 180000000 267000000 355000000 430000000 565000000 650000000 700000000
 
-# throttle
-
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率

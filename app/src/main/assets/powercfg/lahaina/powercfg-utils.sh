@@ -12,40 +12,6 @@
 
 manufacturer=$(getprop ro.product.manufacturer)
 
-throttle() {
-hint_group=""
-if [[ "$top_app" != "" ]]; then
-distinct_apps="
-game=com.miHoYo.Yuanshen,com.miHoYo.ys.bilibili,com.miHoYo.ys.mi
-
-mgame=com.bilibili.gcg2.bili
-sgame=com.tencent.tmgp.sgame
-
-heavy=com.taobao.idlefish,com.taobao.taobao,com.miui.home,com.android.browser,com.baidu.tieba_mini,com.baidu.tieba,com.jingdong.app.mall
-
-music=com.netease.cloudmusic,com.kugou.android,com.kugou.android.lite
-
-video=com.ss.android.ugc.aweme,tv.danmaku.bili
-"
-
-  hint_group=$(echo -e "$distinct_apps" | grep "$top_app" | cut -f1 -d "=")
-  current_hint=$(getprop vtools.powercfg_hint)
-  hint_mode="${action}:${hint_group}"
-
-  if [[ "$hint_mode" == "$current_hint" ]]; then
-    echo "$top_app [$hint_mode > $current_hint] skip!" >> /cache/powercfg_skip.log
-    exit 0
-  fi
-
-else
-  hint_mode="${action}"
-fi
-
-setprop vtools.powercfg_hint "$hint_mode"
-}
-
-# throttle
-
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
