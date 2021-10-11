@@ -51,7 +51,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper = AlwaysNotification(context, true)
-    private val sceneMode = SceneMode.getInstanceOrInit(context, SceneConfigStore(context))!!
+    private val sceneMode = SceneMode.getNewInstance(context, SceneConfigStore(context))!!
     private var timer: Timer? = null
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var sceneAppChanged: BroadcastReceiver? = null

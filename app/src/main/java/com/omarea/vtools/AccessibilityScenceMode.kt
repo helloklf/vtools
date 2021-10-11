@@ -562,14 +562,13 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-    private fun deestory() {
-        Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
+    private fun destroy() {
         if (appSwitchHandler != null) {
+            Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
             appSwitchHandler?.onInterrupt()
             appSwitchHandler = null
             // disableSelf()
             stopSelf()
-            // System.exit(0)
         }
     }
 
@@ -626,7 +625,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             sceneConfigChanged = null
         }
         serviceIsConnected = false
-        deestory()
+        destroy()
         stopSelf()
         return super.onUnbind(intent)
     }
@@ -635,6 +634,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     override fun onDestroy() {
-        this.deestory()
+        this.destroy()
     }
 }
