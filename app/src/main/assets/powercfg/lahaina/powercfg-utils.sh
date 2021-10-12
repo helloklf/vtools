@@ -740,7 +740,6 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           sched_config "60 60" "78 70" "300" "400"
           set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
-          # set_gpu_max_freq 540000000
           set_gpu_max_freq 491000000
           set_gpu_offset -7
         elif [[ "$action" = "balance" ]]; then
@@ -846,8 +845,8 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
+    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
       if [[ "$action" = "powersave" ]]; then
         sched_boost 1 0
         sched_config "78 85" "89 96" "150" "400"
@@ -859,11 +858,7 @@ adjustment_by_top_app() {
         fi
       elif [[ "$action" = "balance" ]]; then
         cpuctl top-app 0 1 max max
-        if [[ "$top_app" == "com.miui.home" ]]; then
-          sched_boost 1 0
-        else
-          sched_boost 1 1
-        fi
+        sched_boost 1 1
         stune_top_app 1 1
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 1
@@ -873,6 +868,27 @@ adjustment_by_top_app() {
         sched_boost 1 1
         stune_top_app 1 20
         cpuctl top-app 1 1 max max
+      fi
+    ;;
+
+    "com.miui.home")
+      if [[ "$action" = "powersave" ]]; then
+        sched_boost 1 0
+        sched_config "78 85" "89 96" "150" "400"
+        sched_limit 0 0 0 0 0 0
+        set_input_boost_freq 902400 1555200 0 1000
+      elif [[ "$action" = "balance" ]]; then
+        set_input_boost_freq 902400 1555200 0 1000
+        sched_boost 1 0
+        stune_top_app 0 0
+      elif [[ "$action" = "performance" ]]; then
+        sched_boost 1 0
+        stune_top_app 0 0
+        set_input_boost_freq 902400 1555200 1420800 1000
+      elif [[ "$action" = "fast" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 20
+        set_input_boost_freq 902400 1996800 1420800 1000
       fi
     ;;
 
