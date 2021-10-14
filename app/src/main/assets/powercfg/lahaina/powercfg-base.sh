@@ -105,7 +105,7 @@ process_opt() {
 }
 
 cpuctl top-app 0 0 0 max
-cpuctl foreground 0 0 0 '0.8'
+cpuctl foreground 0 0 0 1
 cpuctl background 0 0 0 0
 # mk_cpuctl 'top-app/heavy' 1 1 max max
 

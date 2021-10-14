@@ -23,7 +23,7 @@ gpu_min_pl=8
 # GPU最大 power level
 gpu_max_pl=0
 
-# MaxFrequency、MinFrequency
+# MaxFrequency, MinFrequency
 for freq in $gpu_freqs; do
   if [[ $freq -gt $gpu_max_freq ]]; then
     gpu_max_freq=$freq
@@ -720,6 +720,8 @@ watch_app() {
   done
 }
 
+
+
 adjustment_by_top_app() {
   case "$top_app" in
     # YuanShen
@@ -845,17 +847,12 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
+    "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
       if [[ "$action" = "powersave" ]]; then
         sched_boost 1 0
         sched_config "78 85" "89 96" "150" "400"
         sched_limit 0 0 0 0 0 0
-        if [[ "$top_app" == "com.speedsoftware.rootexplorer" ]] || [[ "$top_app" == "com.estrongs.android.pop" ]];then
-          cpuctl top-app 0 1 0.1 max
-        else
-          cpuctl top-app 0 1 0 max
-        fi
+        cpuctl top-app 0 1 0.1 max
       elif [[ "$action" = "balance" ]]; then
         cpuctl top-app 0 1 max max
         sched_boost 1 1
@@ -870,25 +867,49 @@ adjustment_by_top_app() {
         cpuctl top-app 1 1 max max
       fi
     ;;
-
-    "com.miui.home")
+    # XianYu, TaoBao, Browser, TieBa Fast, TieBa, JingDong, TianMao, Mei Tuan, PuPuChaoShi, Alipay
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.pupumall.customer" | "com.eg.android.AlipayGphone")
       if [[ "$action" = "powersave" ]]; then
         sched_boost 1 0
         sched_config "78 85" "89 96" "150" "400"
         sched_limit 0 0 0 0 0 0
+        cpuctl top-app 0 1 0 max
         set_input_boost_freq 902400 1555200 0 1000
       elif [[ "$action" = "balance" ]]; then
-        set_input_boost_freq 902400 1555200 0 1000
+        cpuctl top-app 0 1 max max
         sched_boost 1 0
         stune_top_app 0 0
+        set_input_boost_freq 902400 1555200 0 1000
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 0
-        stune_top_app 0 0
-        set_input_boost_freq 902400 1555200 1420800 1000
+        stune_top_app 1 0
+        cpuctl top-app 0 1 0 max
+        set_input_boost_freq 902400 1766400 1440000 2000
       elif [[ "$action" = "fast" ]]; then
         sched_boost 1 1
         stune_top_app 1 20
-        set_input_boost_freq 902400 1996800 1420800 1000
+        cpuctl top-app 1 1 max max
+      fi
+    ;;
+
+    "com.miui.home")
+      sched_limit 0 0 0 0 0 0
+      if [[ "$action" = "powersave" ]]; then
+        sched_boost 1 0
+        sched_config "78 45" "89 66" "150" "400"
+        set_input_boost_freq 902400 1555200 0 1000
+      elif [[ "$action" = "balance" ]]; then
+        set_input_boost_freq 902400 1766400 1440000 2000
+        sched_boost 1 0
+      elif [[ "$action" = "performance" ]]; then
+        sched_boost 1 0
+        stune_top_app 0 0
+        set_input_boost_freq 902400 1996800 1785600 2000
+      elif [[ "$action" = "fast" ]]; then
+        set_cpu_freq 300000 1804800 710400 2419200 825600 2841600
+        sched_boost 1 0
+        stune_top_app 1 0
+        set_input_boost_freq 902400 1996800 1420800 2000
       fi
     ;;
 
@@ -908,13 +929,13 @@ adjustment_by_top_app() {
         set_cpu_pl 0
         if [[ "$action" = "powersave" ]]; then
           conservative_mode 60 72 80 98 90 99
-          cpuctl top-app 0 0 0 0.2
+          cpuctl top-app 0 0 0 1
           set_cpu_freq 300000 1708800 710400 1440000 844800 844800
           set_gpu_max_freq 200000000
           sched_limit 0 0 0 10000 0 2000
         elif [[ "$action" = "balance" ]]; then
           conservative_mode 59 70 78 97 90 99
-          cpuctl top-app 0 1 0 0.8
+          cpuctl top-app 0 1 0 1
           set_cpu_freq 300000 1708800 710400 1440000 844800 844800
           set_gpu_max_freq 300000000
           sched_limit 0 0 0 10000 0 2000
@@ -943,20 +964,40 @@ adjustment_by_top_app() {
       if [[ "$action" = "powersave" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
-        cpuctl top-app 0 0 0 0.5
-        set_input_boost_freq 902400 1440000 0 800
+        cpuctl top-app 0 0 0 1
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_input_boost_freq 902400 1440000 0 2000
+          set_cpu_freq 902400 1708800 710400 1555200 844800 1785600
+        elif [[ "$top_app" == "tv.danmaku.bili" ]]; then
+          set_input_boost_freq 902400 1440000 0 500
+        else
+          set_input_boost_freq 902400 1440000 0 1000
+        fi
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         echo 0-6 > /dev/cpuset/top-app/cpus
         set_cpu_freq 300000 1708800 710400 1881600 844800 2035200
-        cpuctl top-app 0 0 0 max
-        set_input_boost_freq 902400 1555200 0 500
+        cpuctl top-app 0 0 0 1
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_input_boost_freq 902400 1555200 0 2000
+          set_cpu_freq 902400 1804800 710400 1881600 844800 2035200
+        elif [[ "$top_app" == "tv.danmaku.bili" ]]; then
+          set_input_boost_freq 902400 1555200 0 500
+        else
+          set_input_boost_freq 902400 1555200 0 1000
+        fi
       elif [[ "$action" = "performance" ]]; then
         sched_boost 1 0
         set_cpu_freq 300000 1804800 710400 1881600 844800 2035200
         echo 0-7 > /dev/cpuset/top-app/cpus
         cpuctl top-app 0 1 0 max
-        set_input_boost_freq 1497600 1555200 0 500
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_input_boost_freq 1497600 1555200 0 2000
+        elif [[ "$top_app" == "tv.danmaku.bili" ]]; then
+          set_input_boost_freq 1497600 1555200 0 500
+        else
+          set_input_boost_freq 1497600 1555200 0 1000
+        fi
       elif [[ "$action" = "fast" ]]; then
         sched_boost 1 0
         echo 0-7 > /dev/cpuset/top-app/cpus
