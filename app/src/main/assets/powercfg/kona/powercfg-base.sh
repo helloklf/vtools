@@ -55,6 +55,13 @@ case "$target" in
     # Turn on scheduler boost for top app main
     echo 1 > /proc/sys/kernel/sched_boost_top_app
 
+    # colocation v3 settings
+    echo 51 > /proc/sys/kernel/sched_min_task_util_for_boost
+    echo 35 > /proc/sys/kernel/sched_min_task_util_for_colocation
+
+    # Enable conservative pl
+    echo 1 > /proc/sys/kernel/sched_conservative_pl
+
     # configure governor settings for silver cluster
     echo "schedutil" > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
     echo 0 > /sys/devices/system/cpu/cpufreq/policy0/schedutil/down_rate_limit_us

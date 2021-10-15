@@ -245,6 +245,7 @@ public class Main {
 
                 memFreeRatio = getMemFreeRatio();
 
+                /*
                 if (memFreeRatio < prekill) {
                     // 清理QQ、微信等应用的不重要子进程
                     Thread killer = new ProcKiller();
@@ -254,6 +255,7 @@ public class Main {
                     } catch (InterruptedException ignored) {
                     }
                 }
+                */
 
                 // 是否内存不足
                 boolean lowMemory = isLowMemory(memFreeRatio);

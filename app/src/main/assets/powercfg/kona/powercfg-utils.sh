@@ -121,6 +121,7 @@ reset_basic_governor() {
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/def_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  set_input_boost_freq 0 0 0 0
 }
 
 devfreq_performance () {
@@ -393,7 +394,7 @@ yuan_shen_opt_run() {
 
   if [[ "$pid" != "" ]]; then
     if [[ "$taskset_effective" == "" ]]; then
-      taskset_test $pid
+      taskset_test ${pid}
       if [[ "$?" == '1' ]]; then
         taskset_effective=1
       else
@@ -529,10 +530,10 @@ watch_app() {
 
 adjustment_by_top_app() {
   case "$top_app" in
-    # YuanShen
+    # GenshinImpact
     "com.miHoYo.Yuanshen" | "com.miHoYo.ys.mi" | "com.miHoYo.ys.bilibili" | "com.miHoYo.GenshinImpact")
-        ctl_off cpu4
-        ctl_off cpu7
+        # ctl_off cpu4
+        # ctl_off cpu7
         set_hispeed_freq 0 0 0
         if [[ "$action" = "powersave" ]]; then
           sched_boost 0 0
@@ -567,6 +568,7 @@ adjustment_by_top_app() {
         watch_app yuan_shen_opt_run &
     ;;
 
+    # pubg
     "com.tencent.tmgp.pubgmhd" | "com.tencent.ig")
       cpuset '0-1' '0-3' '0-7' '0-7'
       watch_app pubgmhd_opt_run &
@@ -575,8 +577,8 @@ adjustment_by_top_app() {
 
     # Wang Zhe Rong Yao
     "com.tencent.tmgp.sgame")
-        ctl_off cpu4
-        ctl_on cpu7
+        # ctl_off cpu4
+        # ctl_on cpu7
         if [[ "$action" = "powersave" ]]; then
           # sched_config "55 68" "69 78" "300" "400"
           sched_config "52 55" "69 67" "300" "400"
@@ -625,15 +627,34 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
-      if [[ "$action" == "powersave" ]] || [[ "$action" == "balance" ]]; then
-        set_input_boost_freq 1075200 1478400 1516800 1000
+    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、PuPuChaoShi
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.pupumall.customer")
+      if [[ "$action" == "powersave" ]]; then
+        set_input_boost_freq 1075200 1478400 1516800 2000
+      elif [[ "$action" == "balance" ]]; then
+        set_input_boost_freq 1075200 1766400 1516800 2000
+      elif [[ "$action" == "performance" ]]; then
+        set_input_boost_freq 1075200 2054400 1516800 2000
       else
         sched_boost 1 1
         stune_top_app 1 1
         sched_config "45 62" "55 75" "85" "100"
-        # echo 4-6 > /dev/cpuset/top-app/cpus
+      fi
+    ;;
+
+    "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
+      if [[ "$action" == "powersave" ]]; then
+        set_input_boost_freq 1075200 1478400 1516800 2000
+      elif [[ "$action" == "balance" ]]; then
+        set_input_boost_freq 1075200 1766400 1516800 2000
+      elif [[ "$action" == "performance" ]]; then
+        sched_boost 1 0
+        stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
       fi
     ;;
 
@@ -685,32 +706,35 @@ adjustment_by_top_app() {
 
     # DouYin, BiliBili
     "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
-      ctl_on cpu4
-      ctl_on cpu7
+      # ctl_on cpu4
+      # ctl_on cpu7
+      # set_ctl cpu4 85 45 0
+      # set_ctl cpu7 80 40 0
 
-      set_ctl cpu4 85 45 0
-      set_ctl cpu7 80 40 0
-
-      sched_boost 0 0
-      stune_top_app 0 0
-      set_input_boost_freq 0 0 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
-
       if [[ "$action" = "powersave" ]]; then
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        set_input_boost_freq 979200 1478400 0 2000
       elif [[ "$action" = "balance" ]]; then
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        set_input_boost_freq 979200 1670400 0 1500
       elif [[ "$action" = "performance" ]]; then
-        echo 0-6 > /dev/cpuset/top-app/cpus
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "70 70" "90 90" "240" "400"
+        set_input_boost_freq 1248000 1766400 1401600 1000
       elif [[ "$action" = "fast" ]]; then
-        echo 0-7 > /dev/cpuset/top-app/cpus
+        sched_boost 1 0
+        stune_top_app 1 0
+        sched_config "65 65" "75 80" "300" "400"
+        set_input_boost_freq 1708800 2054400 1862400 1000
       fi
-      # pgrep -f $top_app | while read pid; do
-      #   # echo $pid > /dev/cpuset/foreground/cgroup.procs
-      #   echo $pid > /dev/stune/background/cgroup.procs
-      # done
-
-      sched_config "85 85" "100 100" "240" "400"
     ;;
 
     "default")
