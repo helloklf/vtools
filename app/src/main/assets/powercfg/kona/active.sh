@@ -39,7 +39,7 @@ if [[ "$action" = "powersave" ]]; then
   set_cpu_freq 300000 1708800 710400 1574400 844800 1747200
   gpu_pl_up 0
   sched_boost 0 0
-  set_hispeed_freq 1612800 710400 844800
+  set_hispeed_freq 1075200 710400 844800
   sched_config "70 67" "86 80" "200" "400"
   sched_limit 0 0 0 2000 0 1000
   cpuset '0-2' '0-3' '0-3' '0-7'

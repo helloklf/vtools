@@ -1,10 +1,10 @@
 C:\Users\helloklf\AppData\Local\Android\Sdk\build-tools\30.0.3\dx  --dex --output=./jar/scene_swap_service.dex ./jar/scene_cgroup_service.jar
 
-adb push ./jar/scene_cgroup_service.dex /sdcard/scene_cgroup_service.dex
+adb push ./jar/scene_swap_service.dex /sdcard/scene_swap_service.dex
 
 adb shell
 su
-dalvikvm32 -cp /sdcard/scene_cgroup_service.dex Main passive
+dalvikvm32 -cp /sdcard/scene_swap_service.dex Main passive
 # 或【后台运行】
 nohup dalvikvm -cp /sdcard/scene_cgroup_service.dex Main > /dev/null 2>&1 &
 

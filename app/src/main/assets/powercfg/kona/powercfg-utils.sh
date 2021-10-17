@@ -548,14 +548,14 @@ adjustment_by_top_app() {
           stune_top_app 0 0
           sched_config "60 57" "87 72" "300" "400"
           gpu_pl_down 2
-          set_cpu_freq 1036800 1804800 1056000 2054400 1075200 2841600
+          set_cpu_freq 1075200 1804800 1056000 2054400 1075200 2841600
           sched_limit 10000 0 0 5000 0 1000
           cpuset '0' '0-1' '0-7' '0-7'
         elif [[ "$action" = "performance" ]]; then
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 0
-          set_cpu_freq 1036800 1420800 1056000 2419200 1075200 3200000
+          set_cpu_freq 1075200 1420800 1056000 2419200 1075200 3200000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then
@@ -717,12 +717,18 @@ adjustment_by_top_app() {
         stune_top_app 0 0
         sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_cpu_freq 1075200 1708800 710400 1574400 844800 1747200
+        fi
         set_input_boost_freq 979200 1478400 0 2000
       elif [[ "$action" = "balance" ]]; then
         sched_boost 0 0
         stune_top_app 0 0
         sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_cpu_freq 1075200 1804800 710400 1862400 844800 2073600
+        fi
         set_input_boost_freq 979200 1670400 0 1500
       elif [[ "$action" = "performance" ]]; then
         sched_boost 0 0

@@ -121,6 +121,7 @@ reset_basic_governor() {
   echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+  set_input_boost_freq 0 0 0 0
 }
 
 
@@ -141,6 +142,9 @@ bw_min() {
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
   cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
+  cat $path/available_frequencies | awk -F ' ' '{print $1}' > $path/min_freq
 }
 
 bw_max() {
@@ -148,6 +152,9 @@ bw_max() {
   cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
   cat $path/available_frequencies | awk -F ' ' '{print $NF}' > $path/max_freq
 }
 
@@ -159,6 +166,12 @@ bw_max_always() {
   echo $b_max > $path/min_freq
 
   local path='/sys/class/devfreq/soc:qcom,cpu-cpu-llcc-bw'
+  local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
+  echo $b_max > $path/min_freq
+  echo $b_max > $path/max_freq
+  echo $b_max > $path/min_freq
+
+  local path='/sys/class/devfreq/1d84000.ufshc'
   local b_max=`cat $path/available_frequencies | awk -F ' ' '{print $NF}'`
   echo $b_max > $path/min_freq
   echo $b_max > $path/max_freq
@@ -435,12 +448,12 @@ yuan_shen_opt_run() {
     fi
 
     local mode=$(getprop vtools.powercfg)
-    if [[ "$mode" == 'balance' || "$mode" == 'powersave' ]]; then
-      if [[ "$tid" == "$pid" ]]; then
-        taskset -p "FF" "$tid" > /dev/null 2>&1
-        continue
-      fi
+    if [[ "$mode" == 'powersave' ]]; then
       for tid in $(ls "/proc/$pid/task/"); do
+        if [[ "$tid" == "$pid" ]]; then
+          taskset -p "FF" "$tid" > /dev/null 2>&1
+          continue
+        fi
         if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
           comm=$(cat /proc/$pid/task/$tid/comm)
 
@@ -570,10 +583,10 @@ adjustment_by_top_app() {
         if [[ "$action" = "powersave" ]]; then
           sched_boost 0 0
           stune_top_app 0 0
-          sched_config "62 60" "80 75" "300" "400"
+          sched_config "62 60" "70 75" "300" "400"
           gpu_pl_down 2
-          set_cpu_freq 1632000 1785600 1056000 1708800 1056000 2419200
-          sched_limit 10000 0 0 5000 0 1000
+          set_cpu_freq 1785600 1785600 1056000 1708800 1056000 2419200
+          sched_limit 0 0 0 5000 0 1000
           cpuset '0' '0' '0-7' '0-7'
         elif [[ "$action" = "balance" ]]; then
           sched_boost 0 0
@@ -587,15 +600,17 @@ adjustment_by_top_app() {
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 0
-          set_cpu_freq 1036800 1478400 1056000 2419200 1056000 3000000
-          sched_limit 5000 0 5000 0 5000 0
+          set_cpu_freq 1036800 1785600 1056000 2419200 1056000 3000000
+          sched_limit 5000 0 1000 0 5000 0
+          sched_config "40 60" "60 75" "120" "150"
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then
           sched_boost 1 0
-          stune_top_app 1 100
-          sched_limit 5000 0 10000 0 5000 0
-          # sched_config "40 60" "50 75" "120" "150"
+          stune_top_app 1 50
+          sched_limit 5000 0 5000 0 10000 0
+          sched_config "40 60" "60 75" "120" "150"
           cpuset '0-1' '0-3' '0-7' '0-7'
+          bw_max_always
         fi
         watch_app yuan_shen_opt_run &
     ;;
@@ -652,17 +667,56 @@ adjustment_by_top_app() {
         cpuset '0-1' '0-3' '0-3' '0-7'
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
-      if [[ "$action" == "balance" ]] && [[ "$top_app" == "com.miui.home" ]]; then
-        sched_boost 1 0
-        stune_top_app 1 1
+    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、PuPuChaoShi
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.pupumall.customer")
+      if [[ "$action" == "powersave" ]]; then
+        set_input_boost_freq 1785600 0 0 2000
+        sched_config "50 65" "70 80" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        set_input_boost_freq 1785600 0 0 2000
+        sched_config "50 62" "65 78" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
+        set_input_boost_freq 1785600 0 0 2000
         sched_config "45 62" "55 75" "85" "100"
-      elif [[ "$action" != "powersave" ]]; then
+      else
         sched_boost 1 1
         stune_top_app 1 1
         sched_config "45 62" "55 75" "85" "100"
-        # echo 4-6 > /dev/cpuset/top-app/cpus
+      fi
+    ;;
+
+    "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
+      if [[ "$action" == "powersave" ]]; then
+        set_input_boost_freq 1785600 0 0 2000
+        sched_config "50 65" "68 72" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        set_input_boost_freq 1785600 0 0 2000
+        sched_config "45 50" "60 68" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
+        sched_boost 1 0
+        stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
+      fi
+    ;;
+
+    "com.miui.home")
+      if [[ "$action" == "powersave" ]]; then
+        set_input_boost_freq 1785600 1401600 1612800 2000
+        sched_config "45 52" "65 65" "65" "80"
+      elif [[ "$action" == "balance" ]]; then
+        set_input_boost_freq 1785600 1804800 1920000 2000
+        sched_config "40 52" "55 65" "65" "80"
+      elif [[ "$action" == "performance" ]]; then
+        sched_config "35 52" "45 65" "65" "80"
+        set_input_boost_freq 1785600 1804800 1920000 2000
+      else
+        sched_boost 1 1
+        stune_top_app 1 1
+        sched_config "35 52" "45 65" "65" "80"
       fi
     ;;
 
@@ -675,30 +729,39 @@ adjustment_by_top_app() {
     "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
       ctl_on cpu4
       ctl_on cpu7
-
       set_ctl cpu4 85 45 0
       set_ctl cpu7 80 40 0
 
-      sched_boost 0 0
-      stune_top_app 0 0
-      set_cpu_pl 0
       echo 0-3 > /dev/cpuset/foreground/cpus
-
       if [[ "$action" = "powersave" ]]; then
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_cpu_freq 1305600 1785600 710400 1401600 844800 1497600
+        fi
+        set_input_boost_freq 1785600 0 0 2000
       elif [[ "$action" = "balance" ]]; then
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "85 85" "100 100" "240" "400"
         echo 0-6 > /dev/cpuset/top-app/cpus
+        if [[ "$top_app" == "com.ss.android.ugc.aweme" ]]; then
+          set_cpu_freq 1305600 1785600 710400 1708800 825600 1920000
+        fi
+        set_input_boost_freq 1785600 0 0 2000
       elif [[ "$action" = "performance" ]]; then
-        echo 0-6 > /dev/cpuset/top-app/cpus
+        sched_boost 0 0
+        stune_top_app 0 0
+        sched_config "70 70" "90 90" "240" "400"
+        set_input_boost_freq 1785600 0 0 2000
       elif [[ "$action" = "fast" ]]; then
-        echo 0-7 > /dev/cpuset/top-app/cpus
+        sched_boost 1 0
+        stune_top_app 1 0
+        sched_config "65 65" "75 80" "300" "400"
+        set_input_boost_freq 1708800 0 0 2000
       fi
-      # pgrep -f $top_app | while read pid; do
-      #   # echo $pid > /dev/cpuset/foreground/cgroup.procs
-      #   echo $pid > /dev/stune/background/cgroup.procs
-      # done
-
-      sched_config "85 85" "100 100" "240" "400"
     ;;
 
     "default")
