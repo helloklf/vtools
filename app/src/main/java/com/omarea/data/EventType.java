@@ -13,5 +13,7 @@ public enum EventType {
     APP_SWITCH,                 // 应用切换
     SCENE_MODE_ACTION,          // 场景模式 常驻通知动作触发
     BOOT_COMPLETED,             // 启动完成
-    TIMER                       // 定时器
+    TIMER,                      // 定时器
+
+    SERVICE_UPDATE,             // 服务配置更新
 }

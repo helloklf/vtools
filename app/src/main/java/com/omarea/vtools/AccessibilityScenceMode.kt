@@ -19,6 +19,7 @@ import com.omarea.Scene
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
+import com.omarea.data.IEventReceiver
 import com.omarea.library.basic.InputMethodApp
 import com.omarea.library.basic.LauncherApps
 import com.omarea.library.calculator.Flags
@@ -38,7 +39,10 @@ import kotlin.collections.ArrayList
 /**
  * Created by helloklf on 2016/8/27.
  */
-public class AccessibilityScenceMode : AccessibilityService() {
+public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
+    override val isAsync: Boolean
+        get() = false
+
     private var flagRequestKeyEvent = true
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscap = false
@@ -122,6 +126,39 @@ public class AccessibilityScenceMode : AccessibilityService() {
         serviceInfo = info
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        EventBus.subscribe(this)
+    }
+
+    override fun eventFilter(eventType: EventType): Boolean {
+        return eventType == EventType.SERVICE_UPDATE || eventType == EventType.SCREEN_ON
+    }
+
+    override fun onReceive(eventType: EventType) {
+        if (eventType == EventType.SERVICE_UPDATE) {
+            if (setLogView()) {
+                modernModeEvent()
+            }
+        } else if (eventType == EventType.SCREEN_ON) {
+            if (!serviceIsConnected) {
+                Scene.toast("辅助服务已失效，请重新激活辅助服务！")
+            }
+        }
+    }
+
+    private fun setLogView(): Boolean {
+        val showLogView = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)
+        if (showLogView && floatLogView == null) {
+            floatLogView = FloatLogView(this)
+            return true
+        } else if (!showLogView && floatLogView != null) {
+            floatLogView?.hide()
+            floatLogView = null
+        }
+        return false
+    }
+
     public override fun onServiceConnected() {
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -147,10 +184,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
 
         getDisplaySize()
-
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
-            floatLogView = FloatLogView(this)
-        }
+        setLogView()
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD, false) && spf.getBoolean(SpfConfig.GLOBAL_SPF_SKIP_AD_PRECISE, false)) {
             AutoSkipCloudData().updateConfig(this, false)
         }
@@ -563,6 +597,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private fun destroy() {
+        EventBus.unsubscribe(this)
         if (appSwitchHandler != null) {
             Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
             appSwitchHandler?.onInterrupt()

@@ -277,8 +277,8 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             context.unregisterReceiver(sceneAppChanged)
             sceneAppChanged = null
         }
-        EventBus.unsubscibe(notifyHelper)
-        EventBus.unsubscibe(this)
+        EventBus.unsubscribe(notifyHelper)
+        EventBus.unsubscribe(this)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -367,7 +367,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         context.registerReceiver(sceneConfigChanged, IntentFilter(context.getString(R.string.scene_change_action)))
         context.registerReceiver(sceneAppChanged, IntentFilter(context.getString(R.string.scene_appchange_action)))
 
-        EventBus.subscibe(notifyHelper)
-        EventBus.subscibe(this)
+        EventBus.subscribe(notifyHelper)
+        EventBus.subscribe(this)
     }
 }

@@ -37,8 +37,8 @@ public class EventBus {
      *
      * @param eventReceiver 事件接收器
      */
-    public static void subscibe(IEventReceiver eventReceiver) {
-        if (eventReceivers.indexOf(eventReceiver) < 0) {
+    public static void subscribe(IEventReceiver eventReceiver) {
+        if (!eventReceivers.contains(eventReceiver)) {
             eventReceivers.add(eventReceiver);
         }
     }
@@ -48,8 +48,8 @@ public class EventBus {
      *
      * @param eventReceiver 事件接收器
      */
-    public static void unsubscibe(IEventReceiver eventReceiver) {
-        if (eventReceivers.indexOf(eventReceiver) > -1) {
+    public static void unsubscribe(IEventReceiver eventReceiver) {
+        if (eventReceivers.contains(eventReceiver)) {
             eventReceivers.remove(eventReceiver);
         }
     }

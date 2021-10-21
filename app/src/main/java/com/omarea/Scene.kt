@@ -147,13 +147,13 @@ class Scene : Application() {
         TimingTaskManager(this).updateAlarmManager()
 
         // 事件任务
-        EventBus.subscibe(TriggerIEventMonitor(this))
+        EventBus.subscribe(TriggerIEventMonitor(this))
 
         // 充电曲线
-        EventBus.subscibe(ChargeCurve(this))
+        EventBus.subscribe(ChargeCurve(this))
 
         // 息屏自动关闭悬浮窗
-        EventBus.subscibe(ScreenOffCleanup(context))
+        EventBus.subscribe(ScreenOffCleanup(context))
 
         // 如果上次打开应用成功获得root，触发一下root权限申请
         if (getBoolean("root", false)) {

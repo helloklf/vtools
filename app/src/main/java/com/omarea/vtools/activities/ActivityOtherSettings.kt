@@ -11,6 +11,8 @@ import android.widget.Switch
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.shell_utils.AppErrorLogcatUtils
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -57,6 +59,8 @@ class ActivityOtherSettings : ActivityBase() {
         settings_debug_layer.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)
         settings_debug_layer.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, (it as Switch).isChecked).apply()
+
+            EventBus.publish(EventType.SERVICE_UPDATE)
         }
 
         settings_help_icon.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, true)

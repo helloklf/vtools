@@ -105,7 +105,7 @@ public class FloatFpsWatch(private val mContext: Context) {
         mWindowManager!!.addView(mView, params)
 
         startTimer()
-        EventBus.subscibe(appWatch)
+        EventBus.subscribe(appWatch)
 
         return true
     }
@@ -191,7 +191,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             show = false
         }
         sessionId = -1
-        EventBus.unsubscibe(appWatch)
+        EventBus.unsubscribe(appWatch)
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
