@@ -497,13 +497,42 @@ adjustment_by_top_app() {
         # watch_app sgame_opt_run &
     ;;
 
-    # XianYu, TaoBao, MIUI Home, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、RE、ES、PuPuChaoShi
-    "com.taobao.idlefish" | "com.taobao.taobao" | "com.miui.home" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop" | "com.pupumall.customer")
-      if [[ "$action" == "balance" ]] && [[ "$top_app" == "com.miui.home" ]]; then
+    # XianYu, TaoBao, Browser, TieBa Fast, TieBa、JingDong、TianMao、Mei Tuan、PuPuChaoShi
+    "com.taobao.idlefish" | "com.taobao.taobao" | "com.android.browser" | "com.baidu.tieba_mini" | "com.baidu.tieba" | "com.jingdong.app.mall" | "com.tmall.wireless" | "com.sankuai.meituan" | "com.pupumall.customer")
+      if [[ "$action" == "powersave" ]]; then
+        sched_config "45 62" "55 75" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 1
+        sched_config "45 62" "55 75" "85" "100"
+      fi
+    ;;
+
+    "com.speedsoftware.rootexplorer" | "com.estrongs.android.pop")
+      if [[ "$action" == "powersave" ]]; then
+        sched_config "45 62" "55 75" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        sched_config "40 50" "50 65" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
         sched_boost 1 0
         stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 1
+        sched_config "40 50" "50 65" "85" "100"
+      fi
+    ;;
+
+
+    "com.miui.home")
+      if [[ "$action" == "powersave" ]]; then
+        sched_config "45 62" "55 75" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        sched_config "40 50" "50 65" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
         sched_config "35 52" "45 65" "65" "80"
-      elif [[ "$action" != "powersave" ]]; then
+      else
         sched_boost 1 1
         stune_top_app 1 1
         sched_config "45 62" "55 75" "85" "100"
@@ -519,17 +548,23 @@ adjustment_by_top_app() {
     "com.ss.android.ugc.aweme" | "tv.danmaku.bili")
       ctl_on cpu0
       ctl_on cpu7
-      sched_boost 0 0
-      stune_top_app 0 0
       echo 0-3 > /dev/cpuset/foreground/cpus
 
       if [[ "$action" = "powersave" ]]; then
+        sched_boost 0 0
+        stune_top_app 0 0
         echo 0-5 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "balance" ]]; then
-        echo 0-6 > /dev/cpuset/top-app/cpus
+        sched_boost 0 0
+        stune_top_app 0 0
+        echo 0-7 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "performance" ]]; then
-        echo 0-6 > /dev/cpuset/top-app/cpus
+        sched_boost 1 0
+        stune_top_app 1 0
+        echo 0-7 > /dev/cpuset/top-app/cpus
       elif [[ "$action" = "fast" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 10
         echo 0-7 > /dev/cpuset/top-app/cpus
       fi
       pgrep -f $top_app | while read pid; do

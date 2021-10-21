@@ -51,12 +51,14 @@ if [ "$action" = "powersave" ]; then
   sched_config 85 96 380 500
   sched_limit 0 500 0 1000
   cpuset '0-1' '0-3' '0-3' '0-7'
+  stune_top_app 0 0
 
 elif [ "$action" = "balance" ]; then
   set_cpu_freq 5000 1708800 5000 1708800
-  set_input_boost_freq 1248000 0 40
+  set_input_boost_freq 0 0 0
   set_hispeed_freq 1248000 1209600
   sched_boost 1 0
+  stune_top_app 0 0
   ctl_off cpu0
   ctl_on cpu6
   sched_config 70 85 300 400
@@ -65,10 +67,11 @@ elif [ "$action" = "balance" ]; then
 
 elif [ "$action" = "performance" ]; then
   set_cpu_freq 300000 1804800 300000 2208000
-  set_input_boost_freq 1497600 1555200 40
+  set_input_boost_freq 0 0 0
   set_hispeed_freq 1708800 1209600
   gpu_pl_up 1
   sched_boost 1 0
+  stune_top_app 1 0
   ctl_off cpu0
   ctl_off cpu6
   sched_config 60 78 300 400
@@ -81,9 +84,11 @@ elif [ "$action" = "fast" ]; then
   set_hispeed_freq 300000 300000
   gpu_pl_up 2
   sched_boost 1 1
+  stune_top_app 1 30
   ctl_off cpu0
   ctl_off cpu6
   sched_config 57 75 300 400
   sched_limit 3000 2000 0 0
   cpuset '0-1' '0-3' '0-5' '0-7'
+
 fi

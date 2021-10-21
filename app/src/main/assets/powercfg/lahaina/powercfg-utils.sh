@@ -121,7 +121,6 @@ reset_basic_governor() {
   echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
   echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
   echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-  set_gpu_offset 0
   set_input_boost_freq 0 0 0 0
 }
 
@@ -269,12 +268,6 @@ set_gpu_min_freq() {
   # gpu_max_freq=`cat /sys/class/kgsl/kgsl-3d0/devfreq/max_freq`
   # gpu_min_freq=`cat /sys/class/kgsl/kgsl-3d0/devfreq/min_freq`
   # echo "Frequency: ${gpu_min_freq} ~ ${gpu_max_freq}"
-}
-
-set_gpu_offset() {
-  if [[ -f /sys/class/kgsl/kgsl-3d0/devfreq/mod_percent ]]; then
-    echo $((100 + $1)) > /sys/class/kgsl/kgsl-3d0/devfreq/mod_percent
-  fi
 }
 
 ctl_on() {
@@ -743,7 +736,6 @@ adjustment_by_top_app() {
           sched_config "60 60" "78 70" "300" "400"
           set_cpu_freq 1036800 1804800 710400 1670400 844800 1670400
           set_gpu_max_freq 491000000
-          set_gpu_offset -7
         elif [[ "$action" = "balance" ]]; then
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             conservative_mode 42 57 68 84 69 83
@@ -757,7 +749,6 @@ adjustment_by_top_app() {
           sched_config "55 60" "72 70" "300" "400"
           set_cpu_freq 1036800 1804800 960000 1766400 844800 2035200
           set_gpu_max_freq 676000000
-          set_gpu_offset -5
         elif [[ "$action" = "performance" ]]; then
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -772,7 +763,6 @@ adjustment_by_top_app() {
           sched_limit 5000 0 0 2000 0 500
           sched_config "65 55" "75 68" "200" "400"
           set_gpu_max_freq 738000000
-          set_gpu_offset 0
         elif [[ "$action" = "fast" ]]; then
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
@@ -783,7 +773,6 @@ adjustment_by_top_app() {
           stune_top_app 1 55
           sched_config "62 40" "70 52" "300" "400"
           set_gpu_max_freq 778000000
-          set_gpu_offset 2
         fi
         cpuset '0' '0' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
