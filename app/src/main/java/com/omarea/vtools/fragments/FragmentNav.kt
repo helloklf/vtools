@@ -294,6 +294,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 }
                 R.id.nav_processes -> {
                     val intent = Intent(context, ActivityProcess::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     return
                 }

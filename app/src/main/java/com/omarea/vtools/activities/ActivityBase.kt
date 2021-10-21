@@ -1,5 +1,6 @@
 package com.omarea.vtools.activities
 
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -45,6 +46,18 @@ open class ActivityBase : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
+    }
+
+    protected fun excludeFromRecent() {
+        try {
+            val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (task in service.appTasks) {
+                if (task.taskInfo.id == this.taskId) {
+                    task.setExcludeFromRecents(true)
+                }
+            }
+        } catch (ex: Exception) {
+        }
     }
 
     override fun onDestroy() {

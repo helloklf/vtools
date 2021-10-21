@@ -41,19 +41,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class ActivityMain : ActivityBase() {
     private lateinit var globalSPF: SharedPreferences
 
-    private fun setExcludeFromRecent(exclude: Boolean? = null) {
-        try {
-            val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            for (task in service.appTasks) {
-                if (task.taskInfo.id == this.taskId) {
-                    val b = exclude ?: true
-                    task.setExcludeFromRecents(b)
-                }
-            }
-        } catch (ex: Exception) {
-        }
-    }
-
     private class ThermalCheckThread(private var context: Activity) : Thread() {
         private fun deleteThermalCopyWarn(onYes: Runnable) {
             Scene.post {
@@ -212,7 +199,7 @@ class ActivityMain : ActivityBase() {
                     supportFragmentManager.popBackStack()
                 }
                 else -> {
-                    setExcludeFromRecent(true)
+                    excludeFromRecent()
                     super.onBackPressed()
                     this.finishActivity(0)
                 }

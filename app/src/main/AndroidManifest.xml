@@ -240,7 +240,7 @@
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:enabled="false"
             android:noHistory="true"
-            android:multiprocess="true"
+            android:multiprocess="false"
             android:excludeFromRecents="true"
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
@@ -259,7 +259,6 @@
         <activity-alias
             android:name=".activities.ActivityFreezeApps2"
             android:enabled="true"
-            android:multiprocess="false"
             android:launchMode="singleTop"
             android:noHistory="false"
             android:excludeFromRecents="false"
@@ -290,7 +289,7 @@
         <activity android:name=".activities.ActivityImg" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityBattery" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCharge" android:configChanges="orientation|screenSize" />
-        <activity android:name=".activities.ActivityProcess" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|screenSize" />
+        <activity android:name=".activities.ActivityProcess" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|screenSize" android:taskAffinity="activities.ActivityProcess" />
         <activity android:name=".activities.ActivityMagisk" android:windowSoftInputMode="adjustResize" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuControl" android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.ActivityCpuModes" android:configChanges="orientation|screenSize" />

@@ -130,6 +130,11 @@ class ActivityProcess : ActivityBase() {
         super.onPause()
     }
 
+    //返回键事件
+    override fun onBackPressed() {
+        excludeFromRecent()
+        this.finish()
+    }
 
     private val regexUser = Regex("u[0-9]+_.*")
     private val regexPackageName = Regex(".*\\..*")
