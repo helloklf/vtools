@@ -101,11 +101,6 @@
             <get>run thermal_conf2/current.sh</get>
             <set>run thermal_conf2/config.sh</set>
         </picker>
-        <action confirm="true">
-            <title>开启MIUI9、MIUI10隐藏的温控选项</title>
-            <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
-            <set>run miui_thermal_set.sh</set>
-        </action>
     </group>
 
     <group title="功能">
