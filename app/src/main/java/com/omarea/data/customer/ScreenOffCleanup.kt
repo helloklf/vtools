@@ -55,4 +55,12 @@ class ScreenOffCleanup(private val context: Context) : IEventReceiver {
 
     override val isAsync: Boolean
         get() = false
+
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
+    }
 }

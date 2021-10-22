@@ -52,6 +52,14 @@ class ChargeCurve(context: Context) : IEventReceiver {
     override val isAsync: Boolean
         get() = true
 
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
+    }
+
     private fun startUpdate() {
         if (timer == null) {
             timer = Timer().apply {

@@ -35,6 +35,14 @@ internal class AlwaysNotification(
         notify(false)
     }
 
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
+    }
+
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null

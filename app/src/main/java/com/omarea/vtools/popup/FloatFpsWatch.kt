@@ -136,6 +136,14 @@ public class FloatFpsWatch(private val mContext: Context) {
 
         override val isAsync: Boolean
             get() = false
+
+        override fun onSubscribe() {
+
+        }
+
+        override fun onUnsubscribe() {
+
+        }
     }
 
     private fun stopTimer() {

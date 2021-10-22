@@ -57,6 +57,14 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
             this.context.startService(taskIntent)
         }
 
+        override fun onSubscribe() {
+
+        }
+
+        override fun onUnsubscribe() {
+
+        }
+
         override fun eventFilter(eventType: EventType): Boolean {
             return eventType == EventType.SCREEN_OFF
         }

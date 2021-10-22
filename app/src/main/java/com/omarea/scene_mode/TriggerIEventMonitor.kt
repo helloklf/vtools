@@ -45,6 +45,14 @@ class TriggerIEventMonitor(private val context: Context, override val isAsync: B
         }
     }
 
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
+    }
+
     private fun startExecutor(triggers: ArrayList<String>) {
         val taskIntent = Intent(context, TriggerExecutorService::class.java)
         taskIntent.putExtra("triggers", triggers)
