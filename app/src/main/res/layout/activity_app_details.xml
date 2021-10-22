@@ -280,15 +280,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="屏蔽通知" />
-
-                        <Switch
-                            android:id="@+id/app_details_hidebtn"
-                            style="@style/scene_config_item"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="50dp"
-                            android:layout_weight="1"
-                            android:text="屏蔽按键" />
                     </LinearLayout>
 
                     <TextView

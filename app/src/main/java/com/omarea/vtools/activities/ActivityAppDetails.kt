@@ -42,7 +42,6 @@ class ActivityAppDetails : ActivityBase() {
     private var _result = RESULT_CANCELED
     private lateinit var sceneBlackList: SharedPreferences
     private lateinit var spfGlobal: SharedPreferences
-    private var needKeyCapture = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +75,6 @@ class ActivityAppDetails : ActivityBase() {
         }
 
         app = extras.getString("app")!!
-        needKeyCapture = SceneConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_perf.visibility = View.GONE
@@ -216,14 +214,6 @@ class ActivityAppDetails : ActivityBase() {
 
         sceneConfigInfo = SceneConfigStore(this).getAppConfig(app)
 
-        app_details_hidebtn.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
-            sceneConfigInfo.disButton = isChecked
-            if (isChecked && !needKeyCapture) {
-                saveConfig()
-                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
-            }
-        }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             app_details_hidenotice.isEnabled = false
         } else {
@@ -332,7 +322,6 @@ class ActivityAppDetails : ActivityBase() {
             app_details_hidestatus.isChecked = immersivePolicyControl.isHideStatusOnly(app)
         }
 
-        app_details_hidebtn.isChecked = sceneConfigInfo.disButton
         app_details_hidenotice.isChecked = sceneConfigInfo.disNotice
         app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
         app_details_gps.isChecked = sceneConfigInfo.gpsOn

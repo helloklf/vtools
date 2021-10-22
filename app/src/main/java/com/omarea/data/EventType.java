@@ -16,4 +16,5 @@ public enum EventType {
     TIMER,                      // 定时器
 
     SERVICE_UPDATE,             // 服务配置更新
+    STATE_RESUME,               // 状态恢复（一般指屏幕点亮后应用场景模式配置）
 }

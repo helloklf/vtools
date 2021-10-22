@@ -43,9 +43,14 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     override val isAsync: Boolean
         get() = false
 
-    private var flagRequestKeyEvent = true
+    override fun onSubscribe() {
+    }
+
+    override fun onUnsubscribe() {
+    }
+
     private var sceneConfigChanged: BroadcastReceiver? = null
-    private var isLandscap = false
+    private var isLandscape = false
     private var inputMethods = ArrayList<String>()
 
     private var displayWidth = 1080
@@ -78,9 +83,9 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
 
     private fun onScreenConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            isLandscap = false
+            isLandscape = false
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscap = true
+            isLandscape = true
         }
         getDisplaySize()
     }
@@ -99,8 +104,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     }
 
     private fun updateConfig() {
-        flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
-
         val info = serviceInfo // AccessibilityServiceInfo()
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
 
@@ -119,9 +122,9 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
         info.packageNames = null
 
         info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
-        if (flagRequestKeyEvent) {
-            info.flags = Flags(info.flags).addFlag(AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS)
-        }
+
+        // 捕获实体按键实践
+        // info.flags = Flags(info.flags).addFlag(AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS)
 
         serviceInfo = info
     }
@@ -132,7 +135,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     }
 
     override fun eventFilter(eventType: EventType): Boolean {
-        return eventType == EventType.SERVICE_UPDATE || eventType == EventType.SCREEN_ON
+        return eventType == EventType.SERVICE_UPDATE || eventType == EventType.SCREEN_ON || eventType == EventType.STATE_RESUME
     }
 
     override fun onReceive(eventType: EventType) {
@@ -144,6 +147,8 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
             if (!serviceIsConnected) {
                 Scene.toast("辅助服务已失效，请重新激活辅助服务！")
             }
+        } else if (eventType == EventType.STATE_RESUME) {
+            modernModeEvent(null)
         }
     }
 
@@ -329,10 +334,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
         }.filter { it != null && it != "com.android.systemui" }.map { it.toString() }.toTypedArray()
     }
 
-    public fun notifyScreenOn() {
-        this.modernModeEvent(null);
-    }
-
     // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
         val effectiveWindows = this.getEffectiveWindows()
@@ -341,7 +342,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
             try {
                 var lastWindow: AccessibilityWindowInfo? = null
                 // 最小窗口分辨率要求
-                val minWindowSize = if (isLandscap && !isTablet) {
+                val minWindowSize = if (isLandscape && !isTablet) {
                     // 横屏时关注窗口大小，以显示区域大的主应用（平板设备不过滤窗口大小）
                     // 屏幕一半大小，用于判断窗口是否是小窗（比屏幕一半大小小的的应用认为是窗口化运行）
                     displayHeight * displayWidth / 2
@@ -353,7 +354,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
                 val logs = if (floatLogView == null) null else StringBuilder()
                 logs?.run {
                     append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}")
-                    if (isLandscap) {
+                    if (isLandscape) {
                         append(" 横向")
                     } else {
                         append(" 竖向")
@@ -390,7 +391,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
                         continue
                     }
                     */
-                    if (isLandscap) {
+                    if (isLandscape) {
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
 
@@ -447,7 +448,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
                     if (logs == null) {
                         if (eventWindowId == lastWindowId && event.packageName != null) {
                             val pa = event.packageName
-                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                            if (!(isLandscape  && inputMethods.contains(pa))) {
                                 GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             }
@@ -483,7 +484,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
                         if (wp != null) {
                             logs.append("\n此前: ${GlobalStatus.lastPackageName}")
                             val pa = wp.toString()
-                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                            if (!(isLandscape  && inputMethods.contains(pa))) {
                                 GlobalStatus.lastPackageName = pa
                                 EventBus.publish(EventType.APP_SWITCH)
                             }
@@ -553,7 +554,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
 
             if (lastAnalyseThread == tid && wp != null) {
                 val pa = wp.toString()
-                if (!(isLandscap && inputMethods.contains(pa))) {
+                if (!(isLandscape && inputMethods.contains(pa))) {
                     GlobalStatus.lastPackageName = pa
                     EventBus.publish(EventType.APP_SWITCH)
                 }
@@ -600,7 +601,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
         EventBus.unsubscribe(this)
         if (appSwitchHandler != null) {
             Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
-            appSwitchHandler?.onInterrupt()
             appSwitchHandler = null
             // disableSelf()
             stopSelf()
@@ -611,48 +611,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     private var downTime: Long = -1
     private var longClickTime: Long = 500
     private var serviceIsConnected = false
-    override fun onKeyEvent(event: KeyEvent): Boolean {
-        // Log.d("onKeyEvent", "keyCode " + event.keyCode);
-        if (!serviceIsConnected) {
-            return false
-        }
-        if (appSwitchHandler == null)
-            return false
-
-        val keyCode = event.keyCode
-        // 只阻止四大金刚键
-        if (!(keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_SEARCH)) {
-            return super.onKeyEvent(event)
-        }
-        when (event.action) {
-            KeyEvent.ACTION_DOWN -> {
-                downTime = event.eventTime
-                val currentDownTime = downTime
-                val stopEvent = appSwitchHandler!!.onKeyDown()
-                if (stopEvent) {
-                    handler.postDelayed({
-                        if (downTime == currentDownTime) {
-                            if (keyCode == KeyEvent.KEYCODE_HOME) {
-                                performGlobalAction(GLOBAL_ACTION_HOME)
-                            } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                                performGlobalAction(GLOBAL_ACTION_BACK)
-                            } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
-                                performGlobalAction(GLOBAL_ACTION_RECENTS)
-                            }
-                        }
-                    }, longClickTime)
-                }
-                return stopEvent
-            }
-            KeyEvent.ACTION_UP -> {
-                downTime = -1
-                return appSwitchHandler!!.onKeyDown()
-            }
-            else -> {
-                return super.onKeyEvent(event)
-            }
-        }
-    }
 
     override fun onUnbind(intent: Intent?): Boolean {
         if (sceneConfigChanged != null) {

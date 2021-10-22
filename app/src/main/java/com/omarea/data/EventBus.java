@@ -40,6 +40,7 @@ public class EventBus {
     public static void subscribe(IEventReceiver eventReceiver) {
         if (!eventReceivers.contains(eventReceiver)) {
             eventReceivers.add(eventReceiver);
+            eventReceiver.onSubscribe();
         }
     }
 
@@ -51,6 +52,7 @@ public class EventBus {
     public static void unsubscribe(IEventReceiver eventReceiver) {
         if (eventReceivers.contains(eventReceiver)) {
             eventReceivers.remove(eventReceiver);
+            eventReceiver.onUnsubscribe();
         }
     }
 

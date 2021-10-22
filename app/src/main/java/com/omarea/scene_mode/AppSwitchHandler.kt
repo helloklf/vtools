@@ -158,7 +158,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (dynamicCore && lastMode.isNotEmpty()) {
                 lastPackage = null
                 lastModePackage = null
-                context.notifyScreenOn()
+                EventBus.publish(EventType.STATE_RESUME)
                 // toggleConfig(lastMode, context.packageName)
                 sceneMode.cancelFreezeAppThread()
             }
@@ -245,6 +245,26 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         }
     }
 
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+        sceneMode.clearState()
+        notifyHelper.hideNotify()
+        stopTimer()
+        if (sceneConfigChanged != null) {
+            context.unregisterReceiver(sceneConfigChanged)
+            sceneConfigChanged = null
+        }
+        if (sceneAppChanged != null) {
+            context.unregisterReceiver(sceneAppChanged)
+            sceneAppChanged = null
+        }
+        EventBus.unsubscribe(notifyHelper)
+        EventBus.unsubscribe(this)
+    }
+
     /**
      * 焦点应用改变
      */
@@ -263,22 +283,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
 
     fun onKeyDown(): Boolean {
         return sceneMode.onKeyDown()
-    }
-
-    fun onInterrupt() {
-        sceneMode.clearState()
-        notifyHelper.hideNotify()
-        stopTimer()
-        if (sceneConfigChanged != null) {
-            context.unregisterReceiver(sceneConfigChanged)
-            sceneConfigChanged = null
-        }
-        if (sceneAppChanged != null) {
-            context.unregisterReceiver(sceneAppChanged)
-            sceneAppChanged = null
-        }
-        EventBus.unsubscribe(notifyHelper)
-        EventBus.unsubscribe(this)
     }
 
     @SuppressLint("ApplySharedPref")

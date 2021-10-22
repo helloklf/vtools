@@ -161,6 +161,7 @@
                         android:id="@+id/fw_app_light"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="独立亮度"
                         android:textColor="#888"
                         android:textSize="12dp" />
@@ -169,6 +170,7 @@
                         android:id="@+id/fw_app_gps"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="GPS定位"
                         android:textColor="#888"
                         android:textSize="12dp" />
@@ -178,14 +180,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="屏蔽通知"
-                        android:textColor="#888"
-                        android:textSize="12dp" />
-
-                    <CheckBox
-                        android:id="@+id/fw_app_dis_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="屏蔽按键"
                         android:textColor="#888"
                         android:textSize="12dp" />
                 </LinearLayout>
