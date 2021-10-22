@@ -1,6 +1,15 @@
+if [[ "$mac" != "" ]]; then
+  i=1
+  while [[ $(ifconfig  | grep "$mac") == "" && $i -lt 5 ]]
+  do
+    echo $i
+    ifconfig wlan0 down
+    stop wifi
+    ifconfig wlan0 hw ether "$mac"
+    ifconfig wlan0 up
+    start wifi
 
-ifconfig wlan0 down
-stop wifi
-ifconfig wlan0 hw ether "$mac"
-ifconfig wlan0 up
-start wifi
+    i=$((i+1))
+    sleep 2
+  done
+fi
