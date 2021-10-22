@@ -13,16 +13,6 @@
 
     <group>
         <action>
-            <title>查看已挂载分区</title>
-            <desc>通过简单的命令，查看当前已挂载的分区</desc>
-            <set>df -h</set>
-        </action>
-        <action confirm="true">
-            <title>磁盘测速</title>
-            <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
-            <set>run disk_test.sh</set>
-        </action>
-        <action>
             <title>UFS存储寿命</title>
             <summary sh="run ufs/ufs_summary.sh" />
             <set>run ufs/ufs_detail.sh</set>
@@ -31,11 +21,6 @@
     </group>
 
     <group>
-        <action confirm="false">
-            <title>硬件参数</title>
-            <desc>查看系统提供的硬件参数信息</desc>
-            <set>run hw_properties.sh</set>
-        </action>
         <action confirm="false">
             <title>温度传感器</title>
             <desc>查看温度传感器当前数值</desc>
@@ -97,6 +82,4 @@
             </set>
         </action>
     </group>
-
-
 </group>

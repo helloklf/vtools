@@ -67,42 +67,9 @@
                 echo '命令已执行';
             </set>
         </action>
-        <action>
-            <title>写入缓冲</title>
-            <desc>调整写入缓冲区容量</desc>
-            <params>
-                <param name="dirty_background_ratio" title="写入 - 最小缓冲容量"
-                    options-sh="run io/cache_ratio_options.sh"
-                    value-sh="cat /proc/sys/vm/dirty_background_ratio" />
-                <param name="dirty_ratio" title="写入 - 最大缓冲容量"
-                    options-sh="run io/cache_ratio_options.sh"
-                    value-sh="cat /proc/sys/vm/dirty_ratio" />
-                <param name="dirty_writeback_centisecs" title="写入 - 缓存刷写频率(小于失效时间)"
-                    options-sh="run io/write_time_options.sh"
-                    value-sh="cat /proc/sys/vm/dirty_writeback_centisecs" />
-                <param name="dirty_expire_centisecs" title="写入 - 缓存失效时间"
-                    options-sh="run io/write_time_options.sh"
-                    value-sh="cat /proc/sys/vm/dirty_expire_centisecs" />
-
-                <param name="read_ahead_kb" title="读取 - 缓冲大小"
-                    options-sh="run io/read_cache_options.sh"
-                    value-sh="cat /sys/block/sda/queue/read_ahead_kb" />
-            </params>
-            <set>run io/write_cache.sh</set>
-        </action>
     </group>
 
     <group title="其它">
-        <action
-            id="performance_mem_clear"
-            logo="file:///android_asset/kr-script/icons/shortcut_mem_clear.png"
-            auto-off="true"
-            auto-finish="true">
-            <title>清理RAM</title>
-            <desc>清理RAM中缓存的内容，如：缓存的进程、销毁的进程、读写预读</desc>
-            <set>run drop_cache.sh</set>
-        </action>
-
         <action confirm="true">
             <title>清空dalvik-cache</title>
             <desc>清空dalvik缓存，会立刻重启手机，并在下次启动时耗费大量时间重建缓存！此操作并不会提升性能，如果你不知道是什么，请不要乱点！</desc>
