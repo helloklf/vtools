@@ -600,16 +600,14 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     private fun destroy() {
         EventBus.unsubscribe(this)
         if (appSwitchHandler != null) {
-            Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
+            EventBus.unsubscribe(appSwitchHandler)
             appSwitchHandler = null
+            Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
             // disableSelf()
             stopSelf()
         }
     }
 
-    private var handler = Handler(Looper.getMainLooper())
-    private var downTime: Long = -1
-    private var longClickTime: Long = 500
     private var serviceIsConnected = false
 
     override fun onUnbind(intent: Intent?): Boolean {

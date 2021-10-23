@@ -308,17 +308,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
         return false
     }
 
-    /**
-     * 按键按下
-     * @return 是否阻拦按键事件
-     */
-    fun onKeyDown(): Boolean {
-        if (currentSceneConfig != null) {
-            return currentSceneConfig!!.disButton
-        }
-        return false
-    }
-
     private var locationMode = "none"
     // 是否需要在离开应用时隐藏迷你性能监视器
     private var hideMonitorOnLeave = false

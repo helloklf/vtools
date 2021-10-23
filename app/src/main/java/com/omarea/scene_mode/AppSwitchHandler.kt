@@ -281,10 +281,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         lastPackage = packageName
     }
 
-    fun onKeyDown(): Boolean {
-        return sceneMode.onKeyDown()
-    }
-
     @SuppressLint("ApplySharedPref")
     private fun initConfig() {
         ignoredList.clear()
