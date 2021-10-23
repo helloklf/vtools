@@ -41,7 +41,7 @@ import kotlin.collections.ArrayList
 public class AccessibilityScenceMode : AccessibilityService() {
     private var flagRequestKeyEvent = true
     private var sceneConfigChanged: BroadcastReceiver? = null
-    private var isLandscap = false
+    private var isLandscape = false
     private var inputMethods = ArrayList<String>()
 
     private var displayWidth = 1080
@@ -74,9 +74,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private fun onScreenConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            isLandscap = false
+            isLandscape = false
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscap = true
+            isLandscape = true
         }
         getDisplaySize()
     }
@@ -307,7 +307,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             try {
                 var lastWindow: AccessibilityWindowInfo? = null
                 // 最小窗口分辨率要求
-                val minWindowSize = if (isLandscap && !isTablet) {
+                val minWindowSize = if (isLandscape && !isTablet) {
                     // 横屏时关注窗口大小，以显示区域大的主应用（平板设备不过滤窗口大小）
                     // 屏幕一半大小，用于判断窗口是否是小窗（比屏幕一半大小小的的应用认为是窗口化运行）
                     displayHeight * displayWidth / 2
@@ -319,7 +319,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 val logs = if (floatLogView == null) null else StringBuilder()
                 logs?.run {
                     append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}")
-                    if (isLandscap) {
+                    if (isLandscape) {
                         append(" 横向")
                     } else {
                         append(" 竖向")
@@ -356,7 +356,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         continue
                     }
                     */
-                    if (isLandscap) {
+                    if (isLandscape) {
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
 
@@ -413,7 +413,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     if (logs == null) {
                         if (eventWindowId == lastWindowId && event.packageName != null) {
                             val pa = event.packageName
-                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                            if (!(isLandscape  && inputMethods.contains(pa))) {
                                 GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             }
@@ -449,7 +449,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         if (wp != null) {
                             logs.append("\n此前: ${GlobalStatus.lastPackageName}")
                             val pa = wp.toString()
-                            if (!(isLandscap  && inputMethods.contains(pa))) {
+                            if (!(isLandscape  && inputMethods.contains(pa))) {
                                 GlobalStatus.lastPackageName = pa
                                 EventBus.publish(EventType.APP_SWITCH)
                             }
@@ -519,7 +519,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
             if (lastAnalyseThread == tid && wp != null) {
                 val pa = wp.toString()
-                if (!(isLandscap && inputMethods.contains(pa))) {
+                if (!(isLandscape && inputMethods.contains(pa))) {
                     GlobalStatus.lastPackageName = pa
                     EventBus.publish(EventType.APP_SWITCH)
                 }
