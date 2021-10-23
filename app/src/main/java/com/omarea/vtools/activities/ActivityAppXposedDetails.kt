@@ -16,7 +16,6 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.DialogHelper
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.store.XposedExtension
 import com.omarea.ui.IntInputFilter

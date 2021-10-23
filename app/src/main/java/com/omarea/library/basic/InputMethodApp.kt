@@ -3,9 +3,6 @@ package com.omarea.library.basic
 import android.content.Context
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
-import java.lang.Exception
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * 获取系统的输入法

@@ -7,15 +7,12 @@ import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import com.omarea.data.GlobalStatus
 import com.omarea.library.shell.ProcessUtils2
-import com.omarea.model.ThreadInfo
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import java.util.*
 

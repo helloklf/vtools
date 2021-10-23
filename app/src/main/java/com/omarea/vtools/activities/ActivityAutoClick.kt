@@ -1,7 +1,6 @@
 package com.omarea.vtools.activities
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -10,8 +9,9 @@ import android.widget.CompoundButton
 import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.DialogAppChooser
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.store.SpfConfig
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vtools.R
@@ -64,9 +64,7 @@ class ActivityAutoClick : ActivityBase() {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
         checkBox.setOnClickListener { view ->
             spf.edit().putBoolean(prop, (view as CompoundButton).isChecked).apply()
-            if (AccessibleServiceHelper().serviceRunning(context)) {
-                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
-            }
+            EventBus.publish(EventType.SERVICE_UPDATE)
         }
     }
 

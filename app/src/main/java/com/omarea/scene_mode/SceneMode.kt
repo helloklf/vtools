@@ -16,7 +16,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.AccessibilityScenceMode
 import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatScreenRotation
-import java.lang.StringBuilder
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList

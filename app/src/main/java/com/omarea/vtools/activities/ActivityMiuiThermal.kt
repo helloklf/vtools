@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile

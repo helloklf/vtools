@@ -6,10 +6,7 @@ import android.content.*
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Handler
-import android.os.Looper
 import android.util.LruCache
-import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -26,7 +23,6 @@ import com.omarea.library.calculator.Flags
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.scene_mode.AutoClickInstall
 import com.omarea.scene_mode.AutoSkipAd
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AutoSkipCloudData
 import com.omarea.vtools.popup.FloatLogView
@@ -49,7 +45,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     override fun onUnsubscribe() {
     }
 
-    private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscape = false
     private var inputMethods = ArrayList<String>()
 
@@ -146,11 +141,11 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     }
 
     override fun eventFilter(eventType: EventType): Boolean {
-        return eventType == EventType.SERVICE_UPDATE || eventType == EventType.SCREEN_ON || eventType == EventType.STATE_RESUME
+        return eventType == EventType.SERVICE_DEBUG || eventType == EventType.SERVICE_UPDATE || eventType == EventType.SCREEN_ON || eventType == EventType.STATE_RESUME
     }
 
-    override fun onReceive(eventType: EventType) {
-        if (eventType == EventType.SERVICE_UPDATE) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
+        if (eventType == EventType.SERVICE_DEBUG) {
             if (setLogView()) {
                 modernModeEvent()
             }
@@ -160,6 +155,9 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
             }
         } else if (eventType == EventType.STATE_RESUME) {
             modernModeEvent(null)
+        } else if (eventType == EventType.SERVICE_UPDATE) {
+            updateConfig()
+            Scene.toast("辅助服务配置已更新~", Toast.LENGTH_SHORT)
         }
     }
 
@@ -176,6 +174,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     }
 
     public override fun onServiceConnected() {
+        super.onServiceConnected()
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         // 获取屏幕方向
@@ -184,16 +183,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
         serviceIsConnected = true
 
         updateConfig()
-        if (sceneConfigChanged == null) {
-            sceneConfigChanged = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    updateConfig()
-                    Scene.toast("辅助服务配置已更新~", Toast.LENGTH_SHORT)
-                }
-            }
-            registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_service_config_change_action)))
-        }
-        super.onServiceConnected()
 
         if (appSwitchHandler == null) {
             appSwitchHandler = AppSwitchHandler(this)
@@ -611,7 +600,9 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     private fun destroy() {
         EventBus.unsubscribe(this)
         if (appSwitchHandler != null) {
-            EventBus.unsubscribe(appSwitchHandler)
+            appSwitchHandler?.run {
+                EventBus.unsubscribe(this)
+            }
             appSwitchHandler = null
             Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
             // disableSelf()
@@ -622,10 +613,6 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
     private var serviceIsConnected = false
 
     override fun onUnbind(intent: Intent?): Boolean {
-        if (sceneConfigChanged != null) {
-            unregisterReceiver(sceneConfigChanged)
-            sceneConfigChanged = null
-        }
         serviceIsConnected = false
         destroy()
         stopSelf()

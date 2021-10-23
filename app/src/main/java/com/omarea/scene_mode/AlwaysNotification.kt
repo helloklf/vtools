@@ -31,7 +31,7 @@ internal class AlwaysNotification(
         return eventType == EventType.SCENE_MODE_ACTION
     }
 
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         notify(false)
     }
 

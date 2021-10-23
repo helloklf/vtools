@@ -12,18 +12,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
-import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.model.AppInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOrientation
@@ -193,22 +193,10 @@ class ActivityAppConfig2 : ActivityBase() {
 
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().serviceRunning(this)) {
-            val intent = Intent(getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
-            sendBroadcast(intent)
-        }
-    }
-
-    private fun bindSPF(checkBox: CompoundButton, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
-        checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnClickListener { view ->
-            spf.edit().putBoolean(prop, (view as CompoundButton).isChecked).apply()
-            if (AccessibleServiceHelper().serviceRunning(this)) {
-                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
-            }
-        }
+        EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+            put("app", app)
+            put("mode", mode)
+        })
     }
 
     private fun initDefaultConfig() {

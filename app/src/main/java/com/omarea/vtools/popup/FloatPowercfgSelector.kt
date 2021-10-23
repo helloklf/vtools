@@ -1,7 +1,6 @@
 package com.omarea.vtools.popup
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -104,10 +103,10 @@ class FloatPowercfgSelector(context: Context) {
      */
     private fun reStartService(app: String, mode: String) {
         if (AccessibleServiceHelper().serviceRunning(mContext)) {
-            val intent = Intent(mContext.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
-            mContext.sendBroadcast(intent)
+            EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+                put("app", app)
+                put("mode", mode)
+            })
         }
     }
 
@@ -182,7 +181,7 @@ class FloatPowercfgSelector(context: Context) {
             isEnabled = serviceRunning && modeConfigCompleted
             setOnClickListener {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
-                reStartService()
+                EventBus.publish(EventType.SCENE_CONFIG)
                 dynamic = isChecked
 
                 btn_ignore.visibility = if (dynamic) View.VISIBLE else View.GONE
@@ -255,7 +254,7 @@ class FloatPowercfgSelector(context: Context) {
                 appConfig.aloneLight = isChecked
                 store.setAppConfig(appConfig)
 
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
         // 禁止通知
@@ -275,7 +274,7 @@ class FloatPowercfgSelector(context: Context) {
                 appConfig.disNotice = isChecked
                 store.setAppConfig(appConfig)
 
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
 
@@ -291,7 +290,7 @@ class FloatPowercfgSelector(context: Context) {
                 } else {
                     LocationHelper().disableGPS()
                 }
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
 
@@ -396,19 +395,10 @@ class FloatPowercfgSelector(context: Context) {
         }
     }
 
-    private fun notifyAppConfigChanged(context: Context, packageName: String) {
-        val intent = Intent(context.getString(R.string.scene_appchange_action))
-        intent.putExtra("app", packageName)
-        context.sendBroadcast(intent)
-    }
-
-    /**
-     * 重启辅助服务
-     */
-    private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(mContext)) {
-            mContext.sendBroadcast(Intent(mContext.getString(R.string.scene_change_action)))
-        }
+    private fun notifyAppConfigChanged(app: String) {
+        EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+            put("app", app)
+        })
     }
 
     companion object {

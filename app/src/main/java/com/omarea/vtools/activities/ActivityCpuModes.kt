@@ -19,11 +19,12 @@ import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.library.shell.ThermalDisguise
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import java.io.File
@@ -527,8 +528,6 @@ class ActivityCpuModes : ActivityBase() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(context)) {
-            context.sendBroadcast(Intent(context.getString(R.string.scene_change_action)))
-        }
+        EventBus.publish(EventType.SCENE_CONFIG)
     }
 }

@@ -115,7 +115,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             return (eventType == EventType.APP_SWITCH || eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON)
         }
 
-        override fun onReceive(eventType: EventType) {
+        override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
             if (sessionId > 0) {
                 if ((eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON) || (GlobalStatus.lastPackageName != sessionApp)) {
                     sessionId = -1

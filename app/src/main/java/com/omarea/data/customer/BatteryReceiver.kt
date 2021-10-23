@@ -55,7 +55,7 @@ class BatteryReceiver(private var service: Context, override val isAsync: Boolea
             return bpAllowed && (GlobalStatus.batteryCapacity >= bpLevel || (chargeDisabled && GlobalStatus.batteryCapacity > bpLevel - 20))
         }
 
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         if (GlobalStatus.batteryCapacity < 0) {
             return
         }

@@ -2,7 +2,6 @@ package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -17,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.model.SceneConfigInfo
@@ -263,12 +264,12 @@ class ActivityAppDetails : ActivityBase() {
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String? = null) {
         if (AccessibleServiceHelper().serviceRunning(this)) {
-            val intent = Intent(this.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            if (mode != null) {
-                intent.putExtra("mode", mode)
-            }
-            sendBroadcast(intent)
+            EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+                put("app", app)
+                if (mode != null) {
+                    put("mode", mode)
+                }
+            })
         }
     }
 

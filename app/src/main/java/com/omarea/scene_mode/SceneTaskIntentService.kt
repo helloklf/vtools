@@ -48,7 +48,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
 
     // 屏幕关闭后才执行的任务
     class ScreenDelayTaskReceiver(private val taskId: String, private val context: Context, override val isAsync: Boolean = false) : IEventReceiver {
-        override fun onReceive(eventType: EventType) {
+        override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
             EventBus.unsubscribe(this)
             val taskIntent = Intent(context, SceneTaskIntentService::class.java)
             taskIntent.putExtra("taskId", taskId)

@@ -13,7 +13,6 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.library.shell.ProcessUtils2
-import com.omarea.model.ProcessInfo
 import com.omarea.ui.FloatProcessAdapter
 import com.omarea.vtools.R
 import java.util.*

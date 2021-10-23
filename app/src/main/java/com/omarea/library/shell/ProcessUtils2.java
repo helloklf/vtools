@@ -1,16 +1,13 @@
 package com.omarea.library.shell;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
-import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.ProcessInfo;
 import com.omarea.model.ThreadInfo;
 import com.omarea.shell_utils.ToyboxIntaller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

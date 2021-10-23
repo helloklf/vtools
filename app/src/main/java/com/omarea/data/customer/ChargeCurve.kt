@@ -26,7 +26,7 @@ class ChargeCurve(context: Context) : IEventReceiver {
         }
     }
 
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         when (eventType) {
             EventType.POWER_CONNECTED -> {
                 val last = storage.lastCapacity()

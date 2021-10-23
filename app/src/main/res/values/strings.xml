@@ -390,9 +390,6 @@
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
 
-    <string name="scene_service_config_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
-    <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
-    <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
     <string name="scene_create_shortcut_action">com.omarea.vtools.CreateShortcut</string>
     <string name="scene_speed_compile">com.omarea.vtools.SpeedCompile</string>
     <string name="scene_speed_profile_compile">com.omarea.vtools.SpeedProfileCompile</string>

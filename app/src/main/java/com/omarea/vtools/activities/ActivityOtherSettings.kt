@@ -60,7 +60,7 @@ class ActivityOtherSettings : ActivityBase() {
         settings_debug_layer.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, (it as Switch).isChecked).apply()
 
-            EventBus.publish(EventType.SERVICE_UPDATE)
+            EventBus.publish(EventType.SERVICE_DEBUG)
         }
 
         settings_help_icon.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_HELP_ICON, true)
