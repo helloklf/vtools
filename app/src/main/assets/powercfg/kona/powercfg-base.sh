@@ -121,3 +121,13 @@ process_opt(){
 }
 
 process_opt &
+disable_migt
+
+# Disable MIUI's daemon\joyose
+# disable_mi_opt &
+
+# Uninstall MIUI's daemon\joyose
+uninstall_mi_opt &
+
+# Reinstall MIUI's daemon\joyose
+# reinstall_mi_opt &

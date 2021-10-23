@@ -333,6 +333,69 @@ gpu_pl_down() {
   fi
 }
 
+lock_value () {
+  chmod 644 $2
+  echo $1 > $2
+  chmod 444 $2
+}
+
+disable_migt() {
+  migt=/sys/module/migt/parameters
+  if [[ -d $migt ]]; then
+    lock_value '0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0' $migt/migt_freq
+    lock_value 0 $migt/glk_freq_limit_start
+    lock_value 0 $migt/glk_freq_limit_walt
+    lock_value '0 0 0' $migt/glk_maxfreq
+    lock_value '300000 710400 844800' $migt/glk_minfreq
+    lock_value '0 0 0' $migt/migt_ceiling_freq
+  fi
+}
+
+uninstall_mi_opt() {
+  # pm uninstall --user 0 -k com.miui.daemon >/dev/null 2>&1
+  # pm uninstall --user 0 -k com.xiaomi.joyose >/dev/null 2>&1
+  pm uninstall --user 0 com.miui.daemon >/dev/null 2>&1
+  pm uninstall --user 0 com.xiaomi.joyose >/dev/null 2>&1
+}
+
+reinstall_mi_opt() {
+  uninstall_mi_opt
+  pm install-existing --user 0 com.miui.daemon >/dev/null 2>&1
+  pm install-existing --user 0 com.xiaomi.joyose >/dev/null 2>&1
+}
+
+disable_mi_opt() {
+  if [[ "$manufacturer" == "Xiaomi" ]]; then
+    # pm disable com.xiaomi.gamecenter.sdk.service/.PidService 2>/dev/null
+    pm disable com.xiaomi.joyose/.smartop.gamebooster.receiver.BoostRequestReceiver >/dev/null 2>&1
+    pm disable com.xiaomi.joyose/.smartop.SmartOpService >/dev/null 2>&1
+    # pm disable com.xiaomi.joyose.smartop.smartp.SmartPAlarmReceiver >/dev/null 2>&1
+    pm disable com.xiaomi.joyose.sysbase.MetokClService >/dev/null 2>&1
+
+    pm disable com.miui.daemon/.performance.cloudcontrol.CloudControlSyncService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.GraphicDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.AtraceDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.SysoptService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.server.ExecutorService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.EventUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.FileUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.jobs.HeartBeatUploadService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.providers.MQSProvider >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.provider.PerfTurboProvider >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.system.am.SysoptjobService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.system.am.MemCompactService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.FreeFragDumpService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.DefragService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.MeminfoService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.IonService >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.statistics.services.GcBoosterService >/dev/null 2>&1
+    pm disable com.miui.daemon/.mqsas.OmniTestReceiver >/dev/null 2>&1
+    pm disable com.miui.daemon/.performance.MiuiPerfService >/dev/null 2>&1
+    killall -9 com.miui.daemon >/dev/null 2>&1
+  fi
+}
+
 # set_task_affinity $pid $use_cores[cpu7~cpu0]
 set_task_affinity() {
   pid=$1

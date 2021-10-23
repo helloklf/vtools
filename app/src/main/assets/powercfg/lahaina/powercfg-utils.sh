@@ -753,7 +753,6 @@ adjustment_by_top_app() {
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             # conservative_mode 45 60 70 89 71 89
-            disable_migt
             bw_max
           fi
           sched_boost 1 0
@@ -767,7 +766,7 @@ adjustment_by_top_app() {
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             # conservative_mode 45 55 54 70 59 72
-            disable_migt
+            bw_max
           fi
           sched_boost 1 0
           stune_top_app 1 55

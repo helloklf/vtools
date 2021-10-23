@@ -81,6 +81,17 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
         onScreenConfigurationChanged(newConfig)
     }
 
+    private fun getIsLandscape(): Boolean {
+        val config = resources.configuration
+        val orientation = config.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return true
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            return false
+        }
+        return false
+    }
+
     private fun onScreenConfigurationChanged(newConfig: Configuration) {
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             isLandscape = false
