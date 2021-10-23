@@ -144,11 +144,16 @@ class ActivityFpsChart : ActivityBase() {
             @JavascriptInterface
             public fun toggleFpsToolbar(show: Boolean) {
                 Scene.post {
-                    val serviceState = AccessibleServiceHelper().serviceRunning(context)
-                    if (show && !serviceState) {
-                        Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
-                    } else if (show) {
+                    if (show) {
                         FloatFpsWatch(context).showPopupWindow()
+                        /*
+                        val serviceState = AccessibleServiceHelper().serviceRunning(context)
+                        if (serviceState) {
+                            FloatFpsWatch(context).showPopupWindow()
+                        } else {
+                            Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
+                        }
+                        */
                     } else {
                         FloatFpsWatch(context).hidePopupWindow()
                     }

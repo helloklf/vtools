@@ -48,7 +48,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
     public static String GLOBAL_SPF_HELP_ICON = "show_help_icon";
     public static String GLOBAL_SPF_SKIP_AD = "is_skip_ad";
-    public static String GLOBAL_SPF_SKIP_AD_PRECISE = "is_skip_ad_precise";
+    public static String GLOBAL_SPF_SKIP_AD_PRECISE = "is_skip_ad_precise2";
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_SCENE_LOG = "scene_logview";

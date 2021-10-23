@@ -380,7 +380,7 @@
     <string name="scene_install_autoclick">安装点击</string>
     <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
     <string name="scene_install_skip_ad">跳过广告</string>
-    <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但会降低系统性能且存在误点现象</string>
+    <string name="scene_install_skip_ad_desc">自动点击“跳过”按钮，可帮你自动跳过一些开屏广告，但会降低系统性能且存在误点现象\n* 只在简体中文下使用才有较好的效果</string>
     <string name="scene_install_skip_ad_precise">跳过广告+</string>
     <string name="scene_install_skip_ad_precise_desc">使用云端记录的一些按钮数据，来点击特殊的跳过按钮</string>
     <string name="scene_install_skip_ad_warn">广告流量是一些软件开发者/商的重要收入来源，如果你的时间不是非常紧迫，那么建议您浏览并点击你喜欢的广告内容^_^</string>

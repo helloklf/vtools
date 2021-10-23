@@ -71,6 +71,8 @@ class DialogMonitor(var context: Activity) {
             isChecked = FloatFpsWatch.show == true
             setOnClickListener {
                 if (isChecked) {
+                    FloatFpsWatch(context).showPopupWindow()
+                    /*
                     val serviceState = AccessibleServiceHelper().serviceRunning(context)
                     if (serviceState) {
                         FloatFpsWatch(context).showPopupWindow()
@@ -78,6 +80,7 @@ class DialogMonitor(var context: Activity) {
                         isChecked = false
                         Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
                     }
+                    */
                 } else {
                     FloatFpsWatch(context).hidePopupWindow()
                 }

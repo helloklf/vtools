@@ -84,6 +84,8 @@ class ActivityAppDetails : ActivityBase() {
             app_details_freeze.isEnabled = false
             scene_mode_config.visibility = View.GONE
             scene_mode_allow.visibility = View.GONE
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            app_details_assist.visibility = View.GONE
         }
 
         // 场景模式白名单开关

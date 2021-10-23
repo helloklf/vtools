@@ -21,10 +21,11 @@ import java.util.*
 
 
 class ActivityImg : ActivityBase() {
-    fun createItem(title: String, desc: String): HashMap<String, Any> {
+    private fun createItem(title: String, desc: String, key: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)
         item.put("Desc", desc)
+        item.put("Key", key)
         return item
     }
 
@@ -51,17 +52,17 @@ class ActivityImg : ActivityBase() {
     fun onViewCreated() {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
 
-        listItem.add(createItem(getString(R.string.backup_action_title_boot), getString(R.string.backup_action_desc_boot)))
-        listItem.add(createItem(getString(R.string.restore_action_title_boot), getString(R.string.restore_action_desc_boot)))
+        listItem.add(createItem(getString(R.string.backup_action_title_boot), getString(R.string.backup_action_desc_boot), "dump-boot"))
+        listItem.add(createItem(getString(R.string.restore_action_title_boot), getString(R.string.restore_action_desc_boot), "flash-boot"))
 
-        listItem.add(createItem(getString(R.string.backup_action_title_rec), getString(R.string.backup_action_desc_rec)))
-        listItem.add(createItem(getString(R.string.restore_action_title_rec), getString(R.string.restore_action_desc_rec)))
+        listItem.add(createItem(getString(R.string.backup_action_title_rec), getString(R.string.backup_action_desc_rec), "dump-rec"))
+        listItem.add(createItem(getString(R.string.restore_action_title_rec), getString(R.string.restore_action_desc_rec), "flash-rec"))
 
-        listItem.add(createItem(getString(R.string.backup_action_title_dtbo), getString(R.string.backup_action_desc_dtbo)))
-        listItem.add(createItem(getString(R.string.restore_action_title_dtbo), getString(R.string.restore_action_desc_dtbo)))
+        listItem.add(createItem(getString(R.string.backup_action_title_dtbo), getString(R.string.backup_action_desc_dtbo), "dump-dtbo"))
+        listItem.add(createItem(getString(R.string.restore_action_title_dtbo), getString(R.string.restore_action_desc_dtbo), "flash-dtbo"))
 
-        listItem.add(createItem(getString(R.string.backup_action_title_persist), getString(R.string.backup_action_desc_persist)))
-        listItem.add(createItem(getString(R.string.restore_action_title_persist), getString(R.string.restore_action_desc_persist)))
+        listItem.add(createItem(getString(R.string.backup_action_title_persist), getString(R.string.backup_action_desc_persist), "dump-persist"))
+        listItem.add(createItem(getString(R.string.restore_action_title_persist), getString(R.string.restore_action_desc_persist), "flash-persist"))
 
         val mSimpleAdapter = SimpleAdapter(
                 this,
@@ -74,18 +75,19 @@ class ActivityImg : ActivityBase() {
 
 
         img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            when (position) {
-                0 -> backupImg(BOOT_IMG)
-                1 -> chooseImgToFlash(BOOT_IMG)
+            val key = listItem.get(position).get("Key")
+            when (key) {
+                "dump-boot" -> backupImg(BOOT_IMG)
+                "flash-boot" -> chooseImgToFlash(BOOT_IMG)
 
-                2 -> backupImg(RECOVERY_IMG)
-                3 -> chooseImgToFlash(RECOVERY_IMG)
+                "dump-rec" -> backupImg(RECOVERY_IMG)
+                "flash-rec" -> chooseImgToFlash(RECOVERY_IMG)
 
-                4 -> backupImg(DTBO_IMG)
-                5 -> chooseImgToFlash(DTBO_IMG)
+                "dump-dtbo" -> backupImg(DTBO_IMG)
+                "flash-dtbo" -> chooseImgToFlash(DTBO_IMG)
 
-                6 -> backupImg(PERSIST_IMG)
-                7 -> chooseImgToFlash(PERSIST_IMG)
+                "dump-persist" -> backupImg(PERSIST_IMG)
+                "flash-persist" -> chooseImgToFlash(PERSIST_IMG)
             }
         }
     }

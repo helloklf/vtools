@@ -44,18 +44,24 @@
                 android:layout_height="match_parent"
                 android:text="@string/scene_install_skip_ad_desc" />
 
-            <Switch
-                android:id="@+id/settings_skip_ad_precise"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+            <LinearLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/scene_install_skip_ad_precise" />
+                android:orientation="vertical">
+                <Switch
+                    android:id="@+id/settings_skip_ad_precise"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scene_install_skip_ad_precise" />
 
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/scene_install_skip_ad_precise_desc" />
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/scene_install_skip_ad_precise_desc" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ad_skip_blacklist"
