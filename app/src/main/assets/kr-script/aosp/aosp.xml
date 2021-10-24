@@ -103,17 +103,20 @@
     </group>
 
     <group title="功能">
-        <action>
+        <picker>
             <title>去除！和×</title>
-            <desc>通过修改网络检测服务器为国内地址，修复状态栏的WIFI、LTE图标一直显示！或×</desc>
-            <params>
-                <param name="state" title="操作类型">
-                    <option value="1">去除！和×</option>
-                    <option value="0">还原</option>
-                </param>
-            </params>
+            <desc>通过更改网络检测服务器，解决状态栏的WIFI、LTE图标一直显示!或X</desc>
+            <summary sh="run network_checker_summary.sh" />
+            <options>
+                <option value="miui">MIUI服务器</option>
+                <option value="google">Google服务器</option>
+                <option value="v2ex">V2EX服务器</option>
+                <option value="disable">禁用网络验证</option>
+                <option value="default">还原默认</option>
+            </options>
+            <get>run network_checker_get.sh</get>
             <set>run network_checker_set.sh</set>
-        </action>
+        </picker>
         <picker>
             <title>切换NTP服务器</title>
             <desc>如果你的系统能正常同步时间，就没必要更换NTP服务器</desc>

@@ -448,7 +448,7 @@ public class AccessibilityScenceMode : AccessibilityService(), IEventReceiver {
                     if (logs == null) {
                         if (eventWindowId == lastWindowId && event.packageName != null) {
                             val pa = event.packageName
-                            if (!(isLandscape  && inputMethods.contains(pa))) {
+                            if (!(isLandscape && inputMethods.contains(pa))) {
                                 GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             }

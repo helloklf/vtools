@@ -104,9 +104,9 @@ process_opt() {
   # set_task_affinity `pgrep com.miui.home` 11110000
 }
 
-cpuctl top-app 0 0 0 max
-cpuctl foreground 0 0 0 1
-cpuctl background 0 0 0 0
+# cpuctl top-app 0 0 0 max
+# cpuctl foreground 0 0 0 max
+# cpuctl background 0 0 0 max
 # mk_cpuctl 'top-app/heavy' 1 1 max max
 
 # echo 0 > /dev/stune/nnapi-hal/schedtune.boost

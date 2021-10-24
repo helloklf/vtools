@@ -125,5 +125,8 @@ process_opt(){
   set_task_affinity `pgrep com.miui.home` 11110000
 }
 
+set_value 40000000 /proc/sys/kernel/sched_latency_ns
+set_value 1000000 /proc/sys/kernel/sched_min_granularity_ns
+
 process_opt &
 
