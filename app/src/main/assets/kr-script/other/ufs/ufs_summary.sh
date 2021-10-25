@@ -1,4 +1,8 @@
-bDeviceLifeTimeEstA=$(cat /sys/kernel/debug/*.ufshc/dump_health_desc | grep bDeviceLifeTimeEstA | cut -f2 -d '=' | cut -f2 -d ' ')
+if [[ -f /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a ]]; then
+  bDeviceLifeTimeEstA=$(cat /sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a)
+else
+  bDeviceLifeTimeEstA=$(cat /sys/kernel/debug/*.ufshc/dump_health_desc 2>/dev/null | grep bDeviceLifeTimeEstA | cut -f2 -d '=' | cut -f2 -d ' ')
+fi
 
 # 0x00	未找到有关设备使用寿命的信息。
 # 0x01	设备估计使用寿命的 0% 到 10%。
