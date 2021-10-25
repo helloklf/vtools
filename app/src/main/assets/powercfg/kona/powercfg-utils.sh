@@ -454,6 +454,7 @@ yuan_shen_opt_run() {
   # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+  # mask=`echo "obase=16;$((num=2#00001111))" | bc` # F (cpu 3-0)
 
   if [[ "$pid" != "" ]]; then
     if [[ "$taskset_effective" == "" ]]; then
@@ -618,7 +619,7 @@ adjustment_by_top_app() {
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 0
-          set_cpu_freq 1075200 1420800 1056000 2419200 1075200 3200000
+          set_cpu_freq 1075200 1804800 1056000 2419200 1075200 3200000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then
