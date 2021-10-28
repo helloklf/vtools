@@ -24,6 +24,7 @@ open class ModeSwitcher {
         const val SOURCE_SCENE_IMPORT = "SOURCE_SCENE_IMPORT"
         const val SOURCE_SCENE_ONLINE = "SOURCE_SCENE_ONLINE"
         const val SOURCE_OUTSIDE = "SOURCE_OUTSIDE"
+        const val SOURCE_OUTSIDE_UPERF = "SOURCE_OUTSIDE_UPERF"
         const val SOURCE_NONE = "SOURCE_NONE"
         // 安装在 数据目录的配置文件
         const val PROVIDER_INSIDE = "PROVIDER_INSIDE"

@@ -4,21 +4,66 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
     android:keepScreenOn="false">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_list"
+            style="@style/SceneTabLayout"
+            android:layout_width="wrap_content"
+            android:background="@null"
+            android:minWidth="140dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/action_graph"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/graph"
+            android:tint="?android:textColorPrimary" />
+
+        <ImageButton
+            android:id="@+id/action_power"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_power"
+            android:tint="?android:textColorPrimary" />
+
+        <ImageButton
+            android:id="@+id/action_settings"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/settings"
+            android:tint="?android:textColorPrimary" />
+    </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/tab_content"
-        android:layout_above="@id/tab_list"
-        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_list"
-        style="@style/SceneTabLayout" />
-
-    <include
-        layout="@layout/layout_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="?actionBarSize" />
 
 </RelativeLayout>

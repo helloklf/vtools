@@ -60,36 +60,11 @@
             android:columnCount="2">
 
             <com.omarea.ui.NavItem
-                android:id="@+id/nav_app_scene"
-                style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_profile"
-                app:text="@string/menu_app_scene" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_cpu_modes"
-                style="@style/nav_item_wrap_right"
-                android:tag="root"
-                app:drawable="@drawable/ic_menu_digital"
-                app:text="@string/menu_cpu_modes" />
-
-            <com.omarea.ui.NavItem
                 android:id="@+id/nav_freeze"
                 style="@style/nav_item_wrap"
                 android:tag="root"
                 app:drawable="@drawable/ic_menu_freeze"
                 app:text="@string/menu_freeze" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_battery_stats"
-                style="@style/nav_item_wrap_right"
-                app:drawable="@drawable/ic_bat_stats"
-                app:text="@string/menu_battery_stats" />
-
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_auto_click"
-                style="@style/nav_item_wrap"
-                app:drawable="@drawable/ic_menu_click"
-                app:text="@string/menu_auto_click" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_system_scene"

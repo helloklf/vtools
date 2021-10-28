@@ -23,6 +23,7 @@
     <string name="btn_apply">应用</string>
     <string name="btn_reboot">重启</string>
     <string name="btn_resume_selected">恢复选中</string>
+    <string name="make_choice">请确认</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
     <string name="error_root">抱歉，没有获取到ROOT权限</string>
@@ -36,8 +37,6 @@
     <string name="app_name">Scene4</string>
     <string name="app_name_short">Scene4</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
-
-    <string name="accessibility_service_description">Scene增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
 
     <string name="backup_action_title_boot">导出Boot</string>
     <string name="backup_action_desc_boot">备份当前使用中的Boot为img，复制到/sdcard/boot.img</string>
@@ -93,6 +92,7 @@
     <string name="menu_cpu_modes">性能配置</string>
     <string name="menu_freeze">应用偏见</string>
     <string name="menu_battery_stats">耗电统计</string>
+    <string name="menu_battery_stats_desc">查看应用使用过程中记录的功耗(电流)数据</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_sundry">杂项设置</string>
     <string name="menu_additional">附加功能</string>
@@ -118,6 +118,10 @@
 
     <string name="accessibility_running">辅助服务已激活</string>
     <string name="accessibility_stoped">点击此处去激活辅助服务</string>
+    <string name="accessibility_service_description">Scene增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
+    <string name="accessibility_please_activate">请在系统设置里激活[Scene 辅助服务]选项</string>
+    <string name="accessibility_activate">未激活辅助服务，点此去激活</string>
+    <string name="accessibility_activate_desc">按应用调节性能、自动开关GPS、记录耗电速度，均需要激活此服务</string>
 
     <string name="battery_title">电池：</string>
     <string name="battery_title_desc1">如需使用“充电调速”、“充电保护”功能，请务必保持Scene后台运行！</string>
@@ -174,6 +178,34 @@
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>
     <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
+
+    <!--调度配置源选择-->
+    <string name="schedule_source">选择配置源</string>
+    <string name="schedule_classics">经典配置</string>
+    <string name="schedule_classics_desc">Scene提供的预设，各个模式泾渭分明</string>
+    <string name="schedule_positive">偏重性能</string>
+    <string name="schedule_positive_desc">Scene提供的预设，整体上更关注性能释放</string>
+    <string name="schedule_scene_desc">根据前台应用变化，自动切换模式</string>
+    <string name="schedule_scene">动态响应</string>
+    <string name="schedule_excellent">卓越性能</string>
+    <string name="schedule_excellent_desc">解除游戏限频/锁帧及高温提示，请注意保护您的设备！</string>
+
+    <string name="schedule_screen_on">全局默认（亮屏状态）</string>
+    <string name="schedule_screen_on_desc">未单独设置调度模式的应用，将默认使用此模式。\n\n如需为某个应用单独设置模式，请点击当前界面下方的 [应用策略]</string>
+    <string name="schedule_screen_off">待机时切换</string>
+    <string name="schedule_screen_off_desc">手机进入待机状态后，将切换至选定的模式</string>
+    <string name="schedule_delay_desc">前台应用发生变化后，延迟5s再执行调度模式切换</string>
+    <string name="schedule_delay">延迟切换</string>
+    <string name="schedule_enhanced">严格模式</string>
+    <string name="schedule_enhanced_desc">若未开启此选项，Scene只会在需要变换档位时执行调度配置文件，例如：在多个设为[省电模式]的应用之间切换，调度配置文件只会被执行一次。\n\n严格模式下，Scene会在每次前台应用发生变化时都执行调度配置文件，并告知被切换到前台运行的应用(包名)。调度配置作者可利用此特性，为不同的应用单独设计调度参数，而不再受限于只有四个档位的限制。\n\n骁龙855、865、888机型使用[经典配置][偏重性能]配置源时，可开启严格模式，在以下应用中体验专属优化:\n原神(官服、B服、小米服)\n闲鱼、淘宝、京东、天猫、百度贴吧\n双生视界\n哔哩哔哩、抖音\n\n其它处理器机型，除非正在使用外部配置源头(且配置作者已注明支持此特性)，否则无需开启此选项！</string>
+    <string name="schedule_app">应用策略</string>
+    <string name="schedule_app_desc">为每个应用单独设置调度策略</string>
+    <string name="schedule_unfinished">在安装有效的调度配置之前，你不能开启本功能~</string>
+    <string name="schedule_remove_outside">你正在使用其它作者提供的调度配置(位于/data/powercfg.sh)，切换到Scene自带的调度配置需将其删除。现在要删除它吗？\n\n* 删除后建议重启手机一次</string>
+    <string name="schedule_unofficial">你正在使用其它作者提供的调度配置~</string>
+    <string name="schedule_unsupported">Scene自带的调度配置尚未适配当前SOC~</string>
+    <string name="schedule_dynamic_off">你未开启[动态响应]，Scene无法根据前台应用变化调节设备性能！</string>
+    <string name="schedule_uperf_fast">Uperf调度仅提供了[卡顿/均衡/费电]三种模式，分别于Scene的[省电/均衡/性能]对应。\n而在Scene里选择[极速]模式时，实际生效为[费电]，即与选择 [性能]模式相同</string>
 
     <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps（Android 11+系统不支持备份功能）</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容【应用变量】模块的机型代码，复制后重新打开此窗口即可使用！</string>
@@ -268,6 +300,7 @@
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>
+    <string name="please_notice">请注意</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
     <string name="zram_resizing">正在调整，请耐心等候…</string>
@@ -291,6 +324,13 @@
     <string name="help">帮助</string>
     <string name="warn">警告</string>
     <string name="more">了解更多</string>
+    <string name="kepp_state">保持状态</string>
+    <string name="global_default">全局默认</string>
+    <string name="unknown_mode">未知模式</string>
+    <string name="powersave_desc">老年人直呼内行</string>
+    <string name="balance_desc">慢点 世界赏心悦目</string>
+    <string name="performance_desc">玩把游戏压压惊</string>
+    <string name="fast_desc">快乐总是短暂的</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
     <string name="not_support_config_desc">应用没有自带适用于你手机的性能配置脚本。你可以选择“在线获取脚本”看看是否有适于你手机的配置可供下载，或选择“了解更多”查看自定义配置教程！</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
@@ -375,7 +415,7 @@
     <string name="flash_confirm">确认刷入？</string>
 
     <string name="scene_addin_miss">高级设定 组件缺失</string>
-    <string name="scene_addin_miss_desc">请从Scene下载安装“Scene-高级设定”，并将其设为允许后台自启动！</string>
+    <string name="scene_addin_miss_desc">请从Scene官网下载安装“Scene-高级设定”，并将其设为允许后台自启动！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”组件同步Xposed设定失败！</string>
     <string name="scene_install_autoclick">安装点击</string>
     <string name="scene_install_autoclick_desc">安装第三方应用时，自动帮你点“下一步”和“安装”</string>
@@ -403,6 +443,7 @@
     <string name="lmk_optimize">低内存优化</string>
     <string name="low_memory_killer">Low Memory Killer</string>
     <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
+    <string name="not_root_disabled">没有获得ROOT权限，不能使用本功能</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
     <string name="dex2oat_compiling">dex2oat编译中</string>
     <string name="dex2oat_reset_running">dex2oat重置中</string>
@@ -481,6 +522,15 @@
         <item>/vendor/etc</item>
     </string-array>
 
+    <!--配置源-->
+    <string name="source_uperf">外部来源(Uperf)</string>
+    <string name="source_outside">外部来源</string>
+    <string name="source_classics">Scene-经典</string>
+    <string name="source_perf">Scene-性能</string>
+    <string name="source_undefined">未定义</string>
+    <string name="source_unknown">未知</string>
+    <string name="source_author">配置源/作者：</string>
+    <string name="notification_filter">通知过滤服务</string>
 
     <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>

@@ -7,7 +7,6 @@ package com.omarea.store;
 
 public class SpfConfig {
     public static String POWER_CONFIG_SPF = "powercfg";
-    public static String HOME_QUICK_SWITCH = "home_quick_switch";
 
     public static String CHARGE_SPF = "charge"; //spf
     public static String CHARGE_SPF_QC_BOOSTER = "qc_booster"; //bool

@@ -257,18 +257,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
-                R.id.nav_cpu_modes -> {
-                    val intent = Intent(context, ActivityCpuModes::class.java)
-                    startActivity(intent)
-                    return
-                }
                 R.id.nav_system_scene -> {
                     val intent = Intent(context, ActivitySystemScene::class.java)
-                    startActivity(intent)
-                    return
-                }
-                R.id.nav_auto_click -> {
-                    val intent = Intent(context, ActivityAutoClick::class.java)
                     startActivity(intent)
                     return
                 }

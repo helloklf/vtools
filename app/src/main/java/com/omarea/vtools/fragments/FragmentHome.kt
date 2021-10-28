@@ -72,19 +72,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        btn_powersave.setOnClickListener {
-            installConfig(ModeSwitcher.POWERSAVE)
-        }
-        btn_defaultmode.setOnClickListener {
-            installConfig(ModeSwitcher.BALANCE)
-        }
-        btn_gamemode.setOnClickListener {
-            installConfig(ModeSwitcher.PERFORMANCE)
-        }
-        btn_fastmode.setOnClickListener {
-            installConfig(ModeSwitcher.FAST)
-        }
-
         if (!GlobalStatus.homeMessage.isNullOrEmpty()) {
             home_message.visibility = View.VISIBLE
             home_message.text = GlobalStatus.homeMessage
@@ -171,13 +158,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        if (globalSPF.getBoolean(SpfConfig.HOME_QUICK_SWITCH, true) && (CpuConfigInstaller().dynamicSupport(Scene.context) || modeSwitcher.modeConfigCompleted())) {
-            powermode_toggles.visibility = View.VISIBLE
-        } else {
-            powermode_toggles.visibility = View.GONE
-        }
-
-        setModeState()
         maxFreqs.clear()
         minFreqs.clear()
         stopTimer()
@@ -359,27 +339,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
     }
 
-    private fun setModeState() {
-        btn_powersave.alpha = 0.4f
-        btn_defaultmode.alpha = 0.4f
-        btn_gamemode.alpha = 0.4f
-        btn_fastmode.alpha = 0.4f
-        when (ModeSwitcher.getCurrentPowerMode()) {
-            ModeSwitcher.BALANCE -> {
-                btn_defaultmode.alpha = 1f
-            }
-            ModeSwitcher.PERFORMANCE -> {
-                btn_gamemode.alpha = 1f
-            }
-            ModeSwitcher.POWERSAVE -> {
-                btn_powersave.alpha = 1f
-            }
-            ModeSwitcher.FAST -> {
-                btn_fastmode.alpha = 1f
-            }
-        }
-    }
-
     private fun stopTimer() {
         if (this.timer != null) {
             timer!!.cancel()
@@ -418,7 +377,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                             KeepShellPublic.doCmdSync("sync\nsleep 1\nsvc power reboot || reboot")
                         },
                         null)
-                setModeState()
             }
             return
         }
@@ -428,8 +386,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
             toggleMode(modeSwitcher, toMode).await()
-
-            setModeState()
             maxFreqs.clear()
             minFreqs.clear()
             updateInfo()

@@ -311,10 +311,10 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
         val appDir = File(app.path.toString()).parent
         val result = if (appDir == "/data/app") { // /data/app/xxx.apk
             val outPutPath = "/system/app/"
-            MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString())
+            MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName, app.appName)
         } else { // /data/app/xxx.xxx.xxx/xxx.apk
             val outPutPath = "/system/app/" + app.packageName
-            MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString())
+            MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName, app.appName)
         }
         if (result) {
             DialogHelper.helpInfo(context, "已通过Magisk完成操作，请重启手机~", "")

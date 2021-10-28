@@ -618,6 +618,8 @@ yuan_shen_opt_run() {
 board_sensor_temp=/sys/class/thermal/thermal_message/board_sensor_temp
 thermal_disguise() {
   if [[ "$1" == "1" ]] || [[ "$1" == "true" ]]; then
+    disable_migt
+
     chmod 644 $board_sensor_temp
     echo 36500 > $board_sensor_temp
     # disguise_timeout=10

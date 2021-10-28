@@ -273,7 +273,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="将应用复制到系统目录\n如果有Magisk则会自动创建模块，免于直接修改系统" />
+                            android:text="将应用复制到系统目录" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
