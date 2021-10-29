@@ -471,7 +471,7 @@ sgame_opt_run() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  local current_app=$top_app
+  local current_app=$(getprop vtools.powercfg_app)
   if [[ "$current_app" != 'com.tencent.tmgp.pubgmhd' ]] && [[ "$current_app" != 'com.tencent.ig' ]]; then
     return
   fi
@@ -499,6 +499,37 @@ pubgmhd_opt_run () {
          *)
            taskset -p "7F" "$tid" > /dev/null 2>&1
          ;;
+        esac
+      fi
+    done
+  done
+}
+
+# Unity'Games
+unity_opt_run () {
+  local current_app=$top_app
+
+  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
+  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
+  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+          "RenderThread"*|"UnityMain")
+            taskset -p "80" "$tid" > /dev/null 2>&1
+          ;;
+          "UnityGfxDevice"*|"UnityMultiRende"*)
+            taskset -p "F0" "$tid" > /dev/null 2>&1
+          ;;
         esac
       fi
     done
@@ -785,6 +816,28 @@ adjustment_by_top_app() {
         fi
         cpuset '0' '0' '0-7' '0-7'
         watch_app yuan_shen_opt_run &
+    ;;
+
+    # Project SEKAI
+    "com.hermes.mk.asia"|"com.sega.pjsekai")
+      # watch_app unity_opt_run &
+      if [[ "$action" == "powersave" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "50 55" "70 70" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "50 52" "65 68" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "45 52" "55 65" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 10
+        sched_config "45 48" "55 60" "85" "100"
+      fi
     ;;
 
     # Wang Zhe Rong Yao\LOL
