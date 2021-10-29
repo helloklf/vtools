@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -47,55 +48,67 @@
                 android:textColor="?android:colorAccent" />
         </LinearLayout>
 
-        <LinearLayout style="@style/ListCardItemClickable"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/textTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="免费捐赠（支付宝红包）"
-                android:textColor="?android:colorAccent" />
-
-            <TextView
-                android:id="@+id/pay_alipay_code"
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="支付宝首页搜索“511531087”领取红包并使用，我便能获得支付宝的少量奖赏。（点击复制红包码）" />
-
-            <TextView
-                android:id="@+id/pay_alipay_command"
-                style="@style/textSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="或点击此处复制吱口令，打开支付宝领取红包并使用，我便能获得支付宝的少量奖赏。"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout style="@style/ListCardItemClickableLast"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="捐赠说明：\n"
-                android:textColor="?android:colorAccent" />
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:id="@+id/nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 style="@style/textSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="如果你喜欢我的软件，可以通过以上支付方式向我捐赠，捐赠金额不限，￥0.01也是爱\n" />
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="推荐应用" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:columnCount="2">
+
+                <com.omarea.ui.NavItem
+                    android:id="@+id/nav_gesture"
+                    style="@style/nav_item_wrap"
+                    app:drawable="@drawable/ic_menu_addon"
+                    app:text="@string/menu_gesture" />
+
+                <com.omarea.ui.NavItem
+                    android:id="@+id/nav_filter"
+                    style="@style/nav_item_wrap_right"
+                    app:drawable="@drawable/app_filter"
+                    app:text="@string/menu_filter" />
+            </GridLayout>
+
 
             <TextView
                 style="@style/textSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="你知道的，你的捐赠是对开发者辛勤劳动的肯定。在我们凌晨熬夜修Bug或绞尽脑汁探索新功能时，会有你们的鼓励化为动力\n" />
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="讨论、分享" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:columnCount="2">
+
+                <com.omarea.ui.NavItem
+                    android:id="@+id/nav_qq"
+                    style="@style/nav_item_wrap"
+                    app:drawable="@drawable/ic_menu_qq"
+                    app:text="@string/menu_qq" />
+
+                <com.omarea.ui.NavItem
+                    android:id="@+id/nav_share"
+                    style="@style/nav_item_wrap_right"
+                    app:drawable="@drawable/ic_menu_share"
+                    app:text="@string/menu_share" />
+            </GridLayout>
         </LinearLayout>
     </LinearLayout>
 </com.omarea.common.ui.OverScrollView>

@@ -135,14 +135,14 @@ class ActivityMain : ActivityBase() {
         setSupportActionBar(toolbar)
 
         val tabIconHelper2 = TabIconHelper2(tab_list, tab_content, this, supportFragmentManager, R.layout.list_item_tab2)
-        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentNav.createPage(themeMode))
+        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_menu)!!, FragmentNav.createPage(themeMode))
         tabIconHelper2.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, (if (CheckRootStatus.lastCheckResult) {
             FragmentHome()
         } else {
             FragmentNotRoot()
         }))
-        tabIconHelper2.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, FragmentCpuModes())
-        tabIconHelper2.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, FragmentDonate())
+        tabIconHelper2.newTabSpec(getString(R.string.app_tuner), getDrawable(R.drawable.app_settings)!!, FragmentCpuModes())
+        tabIconHelper2.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_like)!!, FragmentDonate())
         tab_content.adapter = tabIconHelper2.adapter
         tab_list.getTabAt(1)?.select() // 默认选中第二页
 

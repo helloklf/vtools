@@ -20,15 +20,16 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.data.EventBus
 import com.omarea.data.EventType
+import com.omarea.krscript.model.PageNode
 import com.omarea.library.shell.ThermalDisguise
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityAppConfig2
-import com.omarea.vtools.activities.ActivityAutoClick
-import com.omarea.vtools.activities.ActivityBatteryStats
+import com.omarea.vtools.activities.*
+import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_cpu_modes.*
 
 class FragmentCpuModes : Fragment() {
@@ -182,6 +183,27 @@ class FragmentCpuModes : Fragment() {
                 startActivity(intent)
             } else {
                 startService()
+            }
+        }
+        if (CheckRootStatus.lastCheckResult) {
+            nav_more.visibility = View.VISIBLE
+            nav_thermal.setOnClickListener {
+                val pageNode = PageNode("").apply {
+                    title = "温控配置"
+                    pageConfigPath = "file:///android_asset/kr-script/miui/miui.xml"
+                }
+                OpenPageHelper(activity!!).openPage(pageNode)
+            }
+            nav_processes.setOnClickListener {
+                val intent = Intent(context, ActivityProcess::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            nav_freeze.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setClassName(
+                        "com.omarea.vtools", "com.omarea.vtools.activities.ActivityFreezeApps2")
+                startActivity(intent)
             }
         }
 

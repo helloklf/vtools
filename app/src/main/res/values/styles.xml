@@ -141,10 +141,10 @@
 
     <style name="AppThemeWhite" parent="AppThemeLight">
         <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/white</item>
-        <item name="colorAccent">@color/lightPink</item>
-        <item name="colorPrimary">@color/lightPinkLight</item>
-        <item name="colorPrimaryDark">@color/lightPinkDark</item>
+        <item name="android:statusBarColor">?android:windowBackground</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Light</item>
         <item name="cardBg">@color/cardBgLight</item>
     </style>

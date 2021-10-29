@@ -24,9 +24,9 @@
     <color name="color_load_hight">#fc8a1b</color>
     <color name="color_load_veryhight">#f9592f</color>
 
-    <color name="colorAccent">#BC8DE4</color>
-    <color name="colorPrimary">#E3D5F1</color>
-    <color name="colorPrimaryDark">#B177E3</color>
+    <color name="colorAccent">#1474e4</color>
+    <color name="colorPrimary">#87d3ff</color>
+    <color name="colorPrimaryDark">#1474e4</color>
 
     <color name="newYearAccent">#dc4b2f</color>
     <color name="newYearLight">#FFD2CA</color>

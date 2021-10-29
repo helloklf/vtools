@@ -487,6 +487,7 @@
     <string name="app_donate">打赏</string>
     <string name="app_nav">功能</string>
     <string name="app_home">概览</string>
+    <string name="app_tuner">调节</string>
 
     <string name="system_scene_next_task">下一个任务</string>
     <string name="system_scene_resume_charge">恢复充电</string>
