@@ -28,7 +28,6 @@ class ActivityOtherSettings : ActivityBase() {
         delegate.onPostResume()
 
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-        settings_theme_wallpaper.isChecked = spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

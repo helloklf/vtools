@@ -25,18 +25,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 object ThemeSwitch {
-    private val themeMap = arrayListOf(
-            // 彩色 + 白
-            R.style.AppThemeBlue,
-            R.style.AppThemeCyan,
-            R.style.AppThemeGreen,
-            R.style.AppThemeOrange,
-            R.style.AppThemeRed,
-            R.style.AppThemePink,
-            R.style.AppThemePretty,
-            R.style.AppThemeViolet
-    )
-
     private var globalSPF: SharedPreferences? = null
 
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
@@ -55,23 +43,11 @@ object ThemeSwitch {
             return switchTheme(activity)
         }
 
-        if (theme < themeMap.size) {
+        if (theme < 0) {
             val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
             themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
 
             val themeId = when (theme) {
-                -1 -> {
-                    // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    if (themeMode.isDarkMode) {
-                        themeMode.isLightStatusBar = false
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        R.style.AppThemeNoActionBarNight
-                    } else {
-                        themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        R.style.AppThemeWhite
-                    }
-                }
                 -2 -> {
                     themeMode.isDarkMode = true
                     themeMode.isLightStatusBar = false
@@ -85,9 +61,16 @@ object ThemeSwitch {
                     R.style.AppThemeWhite
                 }
                 else -> {
-                    themeMode.isLightStatusBar = false
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    themeMap[theme]
+                    // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    if (themeMode.isDarkMode) {
+                        themeMode.isLightStatusBar = false
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        R.style.AppThemeNoActionBarNight
+                    } else {
+                        themeMode.isLightStatusBar = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        R.style.AppThemeWhite
+                    }
                 }
             }
             if (activity is AppCompatActivity) {
