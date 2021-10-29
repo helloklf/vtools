@@ -646,6 +646,7 @@
 
             <LinearLayout
                 android:id="@+id/nav_more"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin"
                 android:layout_width="match_parent"
@@ -660,7 +661,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"

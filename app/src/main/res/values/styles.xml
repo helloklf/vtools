@@ -99,9 +99,6 @@
         <item name="cardBg">@color/cardBgLight</item>
     </style>
 
-    <style name="AppThemeDefault" parent="AppThemeWhite">
-    </style>
-
     <style name="AppThemeWallpaper" parent="AppThemeWhite">
         <item name="android:navigationBarColor">?android:windowBackground</item>
         <item name="android:statusBarColor">?android:windowBackground</item>
