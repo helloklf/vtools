@@ -460,7 +460,7 @@ class ActivityCpuControl : ActivityBase() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.alert(this, "调度器参数", msg.toString())
+                DialogHelper.helpInfo(this, "调度器参数", msg.toString())
             }
         }
     }
@@ -733,7 +733,7 @@ class ActivityCpuControl : ActivityBase() {
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         val dynamic = AccessibleServiceHelper().serviceRunning(context) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (dynamic && (cpuModeName == null)) {
-            DialogHelper.alert(this,
+            DialogHelper.helpInfo(this,
                     "请注意",
                     "检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！").setCancelable(false)
         }
