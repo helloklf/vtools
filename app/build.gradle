@@ -22,7 +22,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 202110241
-        versionName "4.7.1 PreRelease"
+        versionName "5.0.0 Alpha"
         externalNativeBuild {
             cmake {
                 cppFlags ""

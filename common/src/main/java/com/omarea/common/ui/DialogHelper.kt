@@ -87,14 +87,12 @@ class DialogHelper {
         }
 
         fun helpInfo(context: Context, message: String, onDismiss: Runnable? = null): DialogWrap {
-            return helpInfo(context, "", message, onDismiss)
+            return helpInfo(context, "说明提示", message, onDismiss)
         }
 
         fun helpInfo(context: Context, title: String, message: String, onDismiss: Runnable? = null): DialogWrap {
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
-            val alert = AlertDialog.Builder(context).setView(dialog)
-            alert.setCancelable(true)
 
             (dialog.findViewById(R.id.dialog_help_title) as TextView).run {
                 if (title.isNotEmpty()) {
@@ -113,17 +111,20 @@ class DialogHelper {
                     visibility = View.GONE
                 }
             }
-            if (onDismiss != null) {
-                alert.setPositiveButton(R.string.btn_confirm) { d, _ ->
+
+            val d = customDialog(context, dialog, onDismiss == null)
+            (dialog.findViewById(R.id.btn_confirm) as View).run {
+                if (onDismiss != null) {
+                    d.setOnDismissListener {
+                        onDismiss.run()
+                    }
+                }
+                setOnClickListener {
                     d.dismiss()
                 }
-                alert.setCancelable(false)
-            }
-            alert.setOnDismissListener {
-                onDismiss?.run()
             }
 
-            return animDialog(alert)
+            return d
         }
 
         fun confirm(context: Context,

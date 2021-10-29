@@ -140,7 +140,7 @@
     </style>
 
     <style name="AppThemeWhite" parent="AppThemeLight">
-        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">?android:windowBackground</item>
         <item name="android:statusBarColor">?android:windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -153,8 +153,8 @@
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeWhite">
-        <item name="android:navigationBarColor">#d0ffffff</item>
-        <item name="android:statusBarColor">#d0ffffff</item>
+        <item name="android:navigationBarColor">?android:windowBackground</item>
+        <item name="android:statusBarColor">?android:windowBackground</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="cardBg">#c0ffffff</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -162,11 +162,15 @@
 
     <style name="AppThemeNoActionBarNight" parent="AppThemeNight">
         <item name="android:textColor">#888888</item>
+        <item name="android:windowBackground">#ff0d4894</item>
+        <item name="android:statusBarColor">#ff0d4894</item>
+        <item name="android:navigationBarColor">#ff0d4894</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
+        <item name="cardBg">@color/cardBgDarkTransparent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">

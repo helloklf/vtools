@@ -11,8 +11,8 @@
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeDefault">
-        <item name="android:navigationBarColor">@color/cardBgDarkTransparent</item>
-        <item name="android:statusBarColor">@color/cardBgDarkTransparent</item>
+        <item name="android:navigationBarColor">?android:windowBackground</item>
+        <item name="android:statusBarColor">?android:windowBackground</item>
         <item name="cardBg">@color/cardBgDarkTransparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

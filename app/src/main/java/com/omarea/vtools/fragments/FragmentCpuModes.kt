@@ -52,6 +52,7 @@ class FragmentCpuModes : Fragment() {
             inflater.inflate(R.layout.fragment_cpu_modes, container, false)
 
     private fun startService() {
+        AccessibleServiceHelper().stopSceneModeService(activity!!.applicationContext)
         Scene.toast(getString(R.string.accessibility_please_activate), Toast.LENGTH_SHORT)
         try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
