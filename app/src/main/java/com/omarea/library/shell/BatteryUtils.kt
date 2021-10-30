@@ -53,7 +53,7 @@ class BatteryUtils {
                         } else if (info.startsWith("temperature")) {
                             if (!tempReaded) {
                                 tempReaded = true
-                                batteryStatus.temperature = (value.toFloat() / 10.0).toFloat()
+                                batteryStatus.temperature = (value.toFloat() / 10.0)
                             } else continue
                         }
                     } catch (ex: java.lang.Exception) {

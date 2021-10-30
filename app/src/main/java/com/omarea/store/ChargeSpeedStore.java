@@ -110,7 +110,7 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
         return histories;
     }
 
-    public boolean addHistory(long io, int capacity, float temperature) {
+    public boolean addHistory(long io, int capacity, double temperature) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {

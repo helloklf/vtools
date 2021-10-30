@@ -194,7 +194,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 添加记录
-    public boolean addHistory(long session, float fps, float temperature, String powerMode) {
+    public boolean addHistory(long session, float fps, double temperature, String powerMode) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {

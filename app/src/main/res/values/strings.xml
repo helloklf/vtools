@@ -34,8 +34,8 @@
     <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
     <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
-    <string name="app_name">Scene4</string>
-    <string name="app_name_short">Scene4</string>
+    <string name="app_name">Scene5 Alpha</string>
+    <string name="app_name_short">Scene5</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="backup_action_title_boot">导出Boot</string>
@@ -166,12 +166,14 @@
     </string-array>
     <string name="battery_exec_desc">Scene会根据你的选择在不同时机执行速度变更，具体差异如下\n\n降低速度：只在充电器连接和电量百分比变化时重新设置充电速度\n加速充电：电池状态发生变化、充电器连接时重新设置充电速度\n往死里充：在[充电加速]的逻辑基础上，每秒自动重新设置充电速度</string>
 
-    <string name="battery_status_discharging">【未充电】</string>
-    <string name="battery_status_charging">【充电中】</string>
-    <string name="battery_status_full">【已充满】</string>
-    <string name="battery_status_not_charging">【未充电】</string>
-    <string name="battery_status_unknown">【状态未知】</string>
-    <string name="battery_status_sum">（大约充入 %smAh）</string>
+    <string name="battery_voltage">当前电压：</string>
+    <string name="battery_temperature">当前温度：</string>
+    <string name="battery_status_discharging">未充电</string>
+    <string name="battery_status_charging">充电中</string>
+    <string name="battery_status_full">已充满</string>
+    <string name="battery_status_not_charging">未充电</string>
+    <string name="battery_status_unknown">状态未知</string>
+    <string name="battery_status_sum">\n约充入 %smAh</string>
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>
@@ -435,7 +437,7 @@
     <string name="scene_reset_compile">com.omarea.vtools.ResetCompile</string>
 
     <string name="scene_contract_title">风险声明</string>
-    <string name="scene_contract">Scene是一款面向玩机爱好者的应用，使用它需要拥有优秀的视力、阅读理解能力和良好的心态。\n\n使用过程中可能出现无法预料的错误，导致数据丢失，甚至无法正常开机。\n\n请务必不要在你[用于工作]或者存有[重要数据]的手机上使用，以免造成损失！\n\n使用过程中，务必仔细阅读提示信息谨慎操作，不要轻易拨动不理解的功能选项！\n\n此外，本应用作者不保证会提供使用帮助和故障恢复建议！</string>
+    <string name="scene_contract">Scene是一款面向玩机爱好者的应用，使用它需要拥有优秀的视力、阅读理解能力和良好的心态。\n\n使用过程中可能出现无法预料的错误，导致数据丢失，甚至无法正常开机。\n\n请务必不要在你[用于工作]或者存有[重要数据]的手机上使用，以免造成损失！\n根据用户以往反馈，在以下厂商的机型上使用本软件，很可能丢失数据甚至无法开机：\nMeizu、LG、Google Pixel\n\n使用过程中，务必仔细阅读提示信息谨慎操作，不要轻易拨动不理解的功能选项！\n\n此外，本应用作者不保证会提供使用帮助和故障恢复建议！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
     <string name="lmk_optimize_desc">让Scene根据你的RAM容量，自动调整LMK参数，从而增强后台能力（可能导致低内存时卡顿）。如需恢复，请关闭该选项重启手机，如需开机后自动设置，请允许工具箱自启动</string>
     <string name="lmk_optimize">低内存优化</string>

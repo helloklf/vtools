@@ -63,7 +63,13 @@ class ChargeCurveView : View {
         val innerPadding = dpSize * 24f
 
         val maxIO = samples.map { it.io }.max()
-        var maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
+        val maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
+        val yScale = when{
+            maxAmpere < 2 -> 5
+            maxAmpere < 3 -> 4
+            maxAmpere < 6 -> 2
+            else -> 1
+        }
 
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / 100 // 横向比率
         val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxAmpere).toFloat() // 纵向比率
@@ -107,11 +113,19 @@ class ChargeCurveView : View {
         }
 
         paint.textAlign = Paint.Align.RIGHT
-        for (point in 0..maxAmpere) {
+
+        val yPoints = yScale * maxAmpere
+        for (point in 0..yPoints) {
+            val valueY = (point / 1.0 / yScale)
             paint.color = Color.parseColor("#888888")
             if (point > 0) {
-                canvas.drawText(point.toString() + "A", innerPadding - dpSize * 4, innerPadding + ((maxAmpere - point) * ratioY).toInt() + textSize / 2.2f, paint)
-                canvas.drawCircle(innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(), potintRadius, paint)
+                canvas.drawText(
+                        valueY.toString() + "A",
+                        innerPadding - dpSize * 4,
+                        innerPadding + ((maxAmpere - valueY) * ratioY).toInt() + textSize / 2.2f,
+                        paint
+                )
+                canvas.drawCircle(innerPadding, innerPadding + ((maxAmpere - valueY) * ratioY).toInt(), potintRadius, paint)
             }
             paint.strokeWidth = if (point == 0L) potintRadius else 2f
             if (point == 0L) {
@@ -120,14 +134,14 @@ class ChargeCurveView : View {
                 paint.color = Color.parseColor("#aa888888")
             }
             canvas.drawLine(
-                    innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(),
-                    (this.width - innerPadding), innerPadding + ((maxAmpere - point) * ratioY).toInt(), paint)
+                    innerPadding, innerPadding + ((maxAmpere - valueY) * ratioY).toInt(),
+                    (this.width - innerPadding), innerPadding + ((maxAmpere - valueY) * ratioY).toInt(), paint)
         }
 
         paint.color = getColorAccent()
         for (sample in samples) {
             val pointX = (sample.capacity * ratioX).toFloat() + innerPadding
-            val io = sample.io / 1000F // mA -> A
+            val io = if (sample.io < 0) 0F else { sample.io / 1000F } // mA -> A
 
             if (isFirstPoint) {
                 pathFilterAlpha.moveTo(pointX, stratY - (io * ratioY))

@@ -105,9 +105,9 @@ class FloatMonitorBatteryView : View {
         drawCycle(canvas)
     }
 
-    private var temperature = 35F
-    fun setData(total: Float, fee: Float, temperature: Float) {
-        if (fee == total && total == 0F) {
+    private var temperature = 35.0
+    fun setData(total: Double, fee: Double, temperature: Double) {
+        if (fee == total && total == 0.0) {
             ratio = 0
         } else {
             val feeRatio = (fee * 100.0 / total).toInt()

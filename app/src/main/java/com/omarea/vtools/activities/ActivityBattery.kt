@@ -256,27 +256,7 @@ class ActivityBattery : ActivityBase() {
             else -> 0
         })
 
-        if (broadcast == null) {
-            broadcast = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) = try {
-                    temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0).toDouble()
-                    temp /= 10.0
-                    level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0).toDouble()
-                    if (voltage > 1000)
-                        voltage /= 1000.0
-                    if (voltage > 100)
-                        voltage /= 100.0
-                    else if (voltage > 10)
-                        voltage /= 10.0
-                    powerChonnected = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING) == BatteryManager.BATTERY_STATUS_CHARGING
-                } catch (ex: Exception) {
-                    print(ex.message)
-                }
-            }
-        }
-        registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-
+        powerChonnected = GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
         val battrystatus = findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
         temp = GlobalStatus.updateBatteryTemperature().toDouble()
@@ -405,24 +385,12 @@ class ActivityBattery : ActivityBase() {
             timer!!.cancel()
             timer = null
         }
-        try {
-            if (broadcast != null)
-                unregisterReceiver(broadcast)
-        } catch (ex: Exception) {
-        }
     }
 
     override fun onDestroy() {
-        try {
-            if (broadcast != null)
-                unregisterReceiver(broadcast)
-        } catch (ex: Exception) {
-        }
-        broadcast = null
         super.onDestroy()
     }
 
-    private var broadcast: BroadcastReceiver? = null
     private var qcSettingSuupport = false
     private var pdSettingSupport = false
     private var ResumeCharge = ""
