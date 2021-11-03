@@ -54,6 +54,17 @@ class ChargeTimeView : View {
         return (dpValue * scale + 0.5f).toInt()
     }
 
+    private fun minutes2Str(minutes: Int): String {
+        if (minutes >= 1140) {
+            return "" + (minutes / 1140) + "d" + ((minutes % 1140) / 60) + "h"
+        } else if (minutes > 60) {
+            return "" + (minutes / 60) + "h" + (minutes % 60) + "m"
+        } else if (minutes == 0) {
+            return "0"
+        }
+        return "" + minutes + "m"
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val samples = storage.chargeTime()
@@ -83,58 +94,53 @@ class ChargeTimeView : View {
         val stratY = height - innerPadding
 
         val pathFilterAlpha = Path()
-        var isFirstPoint = true
 
         val textSize = dpSize * 8.5f
         paint.textSize = textSize
 
         paint.textAlign = Paint.Align.CENTER
 
-        val columnSize = if (minutes <= 90) {
-            10
-        } else if (minutes <= 120) {
-            15
-        } else if (minutes <= 180) {
-            20
-        } else {
-            30
+        var scaleX = (minutes / 20.0)
+        if (scaleX < 1) {
+            scaleX = 1.0
         }
 
-        for (point in 0..minutes) {
-            if (point % 5 == 0) {
-                if (point % columnSize == 0) {
-                    paint.color = Color.parseColor("#888888")
-                    val text = (point).toString() + "分"
+        for (point in 0..20) {
+            val drawX = (point * scaleX * ratioX).toInt() + innerPadding
+            if (point % 2 == 0) {
+                paint.color = Color.parseColor("#888888")
+                if (point % 4 == 0) {
+                    val text = minutes2Str((point * scaleX).toInt())
                     canvas.drawText(
                             text,
-                            (point * ratioX).toInt() + innerPadding,
+                            drawX,
                             this.height - innerPadding + textSize + (dpSize * 2),
                             paint
                     )
-                    canvas.drawCircle(
-                            (point * ratioX).toInt() + innerPadding,
-                            this.height - innerPadding,
-                            potintRadius,
-                            paint
-                    )
-                    paint.strokeWidth = if (point == 0) potintRadius else 2f
-                    if (point == 0) {
-                        paint.color = Color.parseColor("#888888")
-                    } else {
-                        paint.color = Color.parseColor("#aa888888")
-                    }
-                    canvas.drawLine(
-                            (point * ratioX).toInt() + innerPadding, innerPadding,
-                            (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint
-                    )
-                } else {
-                    paint.strokeWidth = 2f
-                    paint.color = Color.parseColor("#aa888888")
-                    canvas.drawLine(
-                            (point * ratioX).toInt() + innerPadding, innerPadding,
-                            (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint
-                    )
                 }
+                canvas.drawCircle(
+                        drawX,
+                        this.height - innerPadding,
+                        potintRadius,
+                        paint
+                )
+                paint.strokeWidth = if (point == 0) potintRadius else 2f
+                if (point == 0) {
+                    paint.color = Color.parseColor("#888888")
+                } else {
+                    paint.color = Color.parseColor("#aa888888")
+                }
+                canvas.drawLine(
+                        drawX, innerPadding,
+                        drawX, this.height - innerPadding, paint
+                )
+            } else {
+                paint.strokeWidth = 2f
+                paint.color = Color.parseColor("#aa888888")
+                canvas.drawLine(
+                        drawX, innerPadding,
+                        drawX, this.height - innerPadding, paint
+                )
             }
         }
 

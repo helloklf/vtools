@@ -228,11 +228,6 @@ class ActivityBattery : ActivityBase() {
     private var myHandler: Handler = Handler(Looper.getMainLooper())
     private var timer: Timer? = null
     private lateinit var batteryMAH: String
-    private var temp = 0.0
-    private var level = 0
-    private var kernelCapacity = -1f
-    private var powerChonnected = false
-    private var voltage: Double = 0.toDouble()
     private var batteryUtils = BatteryUtils()
     private lateinit var spf: SharedPreferences
 
@@ -256,10 +251,9 @@ class ActivityBattery : ActivityBase() {
             else -> 0
         })
 
-        powerChonnected = GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
+        val powerChonnected = GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
         val battrystatus = findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
-        temp = GlobalStatus.updateBatteryTemperature().toDouble()
 
         timer = Timer()
 
@@ -279,7 +273,11 @@ class ActivityBattery : ActivityBase() {
                 }
                 batteryInfo = batteryUtils.batteryInfo
                 usbInfo = batteryUtils.usbInfo
-                kernelCapacity = batteryUtils.getKernelCapacity(level)
+                val level = GlobalStatus.batteryCapacity
+                val temp = GlobalStatus.updateBatteryTemperature()
+                val kernelCapacity = batteryUtils.getKernelCapacity(level)
+                val batteryMAH = BatteryCapacity().getBatteryCapacity(context).toInt().toString() + "mAh" + "   "
+                val voltage = GlobalStatus.batteryVoltage
 
                 myHandler.post {
                     try {

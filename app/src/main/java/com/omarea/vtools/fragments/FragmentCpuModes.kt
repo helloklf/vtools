@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ import com.omarea.vtools.R
 import com.omarea.vtools.activities.*
 import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_cpu_modes.*
+import java.util.*
 
 class FragmentCpuModes : Fragment() {
     private var author: String = ""
@@ -188,12 +190,16 @@ class FragmentCpuModes : Fragment() {
         }
         if (CheckRootStatus.lastCheckResult) {
             nav_more.visibility = View.VISIBLE
-            nav_thermal.setOnClickListener {
-                val pageNode = PageNode("").apply {
-                    title = "温控配置"
-                    pageConfigPath = "file:///android_asset/kr-script/miui/miui.xml"
+            if (Build.MANUFACTURER.toLowerCase(Locale.getDefault()) == "xiaomi") {
+                nav_thermal.setOnClickListener {
+                    val pageNode = PageNode("").apply {
+                        title = "MUI专属"
+                        pageConfigPath = "file:///android_asset/kr-script/miui/miui.xml"
+                    }
+                    OpenPageHelper(activity!!).openPage(pageNode)
                 }
-                OpenPageHelper(activity!!).openPage(pageNode)
+            } else {
+                nav_thermal.visibility = View.GONE
             }
             nav_processes.setOnClickListener {
                 val intent = Intent(context, ActivityProcess::class.java)

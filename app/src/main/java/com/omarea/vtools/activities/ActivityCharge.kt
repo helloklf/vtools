@@ -1,5 +1,6 @@
 package com.omarea.vtools.activities
 
+import android.content.Intent
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
@@ -29,6 +30,10 @@ class ActivityCharge : ActivityBase() {
         electricity_adj_unit.setOnClickListener {
             DialogElectricityUnit().showDialog(this)
         }
+        more_battery_stats.setOnClickListener {
+            val intent = Intent(context, ActivityBatteryStats::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {
@@ -56,12 +61,11 @@ class ActivityCharge : ActivityBase() {
         }
 
     private var batteryUtils = BatteryUtils()
-    private var kernelCapacity = -1f
     private val hander = Handler(Looper.getMainLooper())
     private fun updateUI() {
         val level = GlobalStatus.batteryCapacity
-        val temp = GlobalStatus.updateBatteryTemperature().toDouble()
-        kernelCapacity = batteryUtils.getKernelCapacity(level)
+        val temp = GlobalStatus.updateBatteryTemperature()
+        val kernelCapacity = batteryUtils.getKernelCapacity(level)
         val batteryMAH = BatteryCapacity().getBatteryCapacity(this).toInt().toString() + "mAh" + "   "
         val voltage = GlobalStatus.batteryVoltage
         hander.post {

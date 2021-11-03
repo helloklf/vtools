@@ -1,9 +1,12 @@
+import com.sun.istack.internal.Nullable;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
 public class Main {
     private static final double criticalKill = 0.12;
+    private static final double highKill = 0.12;
     private static double critical = 0.17;
     private static double high = 0.23;
     private static double middle = 0.25;
@@ -11,6 +14,35 @@ public class Main {
     private static final File fTopProcs = new File("/dev/cpuset/top-app/cgroup.procs");
     private static final File fBgProcs = new File("/dev/cpuset/background/cgroup.procs");
     private static final File fFgProcs = new File("/dev/cpuset/foreground/cgroup.procs");
+
+    private static final byte[] dumpDisplay = "dumpsys display | grep mScreenState | cut -f2 -d '='\n\nexit\n".getBytes();
+    private static int getScreenState() {
+        int state = -1;
+        try {
+            // dumpsys display | grep mScreenState | cut -f2 -d '='
+            // dumpsys power| grep 'Display Power' | cut -f2 -d '='
+            Process process = Runtime.getRuntime().exec("sh");
+            OutputStream outputStream = process.getOutputStream();
+            outputStream.write(dumpDisplay);
+            outputStream.flush();
+            outputStream.close();
+
+            InputStream inputStream = process.getInputStream();
+            byte[] bytes = new byte[20];
+            int count = inputStream.read(bytes);
+
+            String result = new String(bytes, 0, count).trim().toUpperCase();
+            if (result.equals("ON")) {
+                state = 1;
+            } else if (result.equals("OFF")) {
+                state = 0;
+            }
+
+            inputStream.close();
+            process.destroy();
+        } catch (Exception ignored) {}
+        return state;
+    }
 
     private static String readAllText(File file) {
         try {
@@ -221,24 +253,53 @@ public class Main {
             long lastReclaim = 0L;
             while (true) {
                 double memFreeRatio = getMemFreeRatio();
-
-                synchronized (reclaimReason) {
-                    reclaimReason.reason = ReclaimReason.REASON_MEMORY_WATCH;
-                    try {
-                        if (memFreeRatio >= 0.6) {
-                            reclaimReason.wait(180000);
-                        } else if (memFreeRatio >= 0.5) {
-                            reclaimReason.wait(120000);
-                        } else if (memFreeRatio > 0.4) {
-                            reclaimReason.wait(60000);
-                        } else if (memFreeRatio > 0.25) {
-                            reclaimReason.wait(30000);
-                        } else if (memFreeRatio > 0.1) {
-                            reclaimReason.wait(20000);
-                        } else {
-                            reclaimReason.wait(10000);
+                int screenState = getScreenState();
+                // System.out.println("getScreenState " + screenState);
+                if (screenState == 1) {
+                    synchronized (reclaimReason) {
+                        reclaimReason.reason = ReclaimReason.REASON_MEMORY_WATCH;
+                        try {
+                            if (memFreeRatio >= 0.5) {
+                                reclaimReason.wait(30000);
+                            } else if (memFreeRatio >= 0.3) {
+                                reclaimReason.wait(20000);
+                            } else {
+                                reclaimReason.wait(10000);
+                            }
+                        } catch (InterruptedException ignored) {
                         }
-                    } catch (InterruptedException ignored) {
+                    }
+                } else if (screenState == 0) {
+                    synchronized (reclaimReason) {
+                        reclaimReason.reason = ReclaimReason.REASON_MEMORY_WATCH;
+                        try {
+                            if (memFreeRatio >= 0.3) {
+                                reclaimReason.wait(180000);
+                            } else {
+                                reclaimReason.wait(30000);
+                            }
+                        } catch (InterruptedException ignored) {
+                        }
+                    }
+                } else {
+                    synchronized (reclaimReason) {
+                        reclaimReason.reason = ReclaimReason.REASON_MEMORY_WATCH;
+                        try {
+                            if (memFreeRatio >= 0.6) {
+                                reclaimReason.wait(180000);
+                            } else if (memFreeRatio >= 0.5) {
+                                reclaimReason.wait(120000);
+                            } else if (memFreeRatio > 0.4) {
+                                reclaimReason.wait(60000);
+                            } else if (memFreeRatio > 0.25) {
+                                reclaimReason.wait(30000);
+                            } else if (memFreeRatio > 0.1) {
+                                reclaimReason.wait(20000);
+                            } else {
+                                reclaimReason.wait(10000);
+                            }
+                        } catch (InterruptedException ignored) {
+                        }
                     }
                 }
 
@@ -297,7 +358,7 @@ public class Main {
 
             // 内存负载是否已经很危险：可活动内存不足且Swap剩余空间很低，或空闲内存是否已经到临界值
             boolean danger = (
-                (memInfo.getMemFreeRatio() <= criticalKill && memInfo.SwapFree < 204800) || memInfo.getMemAbsFreeRatio() < 0.055
+                (memInfo.getMemFreeRatio() <= highKill && memInfo.SwapFree < 204800) || memInfo.getMemAbsFreeRatio() < 0.055
             );
 
             if (danger) {
@@ -333,7 +394,7 @@ public class Main {
             } catch (Exception ignored){}
 
             MemInfo memInfo = getMemInfo();
-            return memInfo.getMemFreeRatio() >= high || (memInfo.getMemAbsFreeRatio() >= criticalKill && memInfo.SwapFree >= 409600);
+            return memInfo.getMemFreeRatio() >= high || (memInfo.getMemAbsFreeRatio() >= highKill && memInfo.SwapFree >= 409600);
         }
 
         // 获取根据oomAdj大小倒叙排列的进程列表
@@ -410,7 +471,7 @@ public class Main {
 
             // 内存负载是否已经很危险：可活动内存不足且Swap剩余空间很低，或空闲内存是否已经到临界值
             boolean danger = (
-                    (memInfo.getMemFreeRatio() <= criticalKill && memInfo.SwapFree < 204800) || memInfo.getMemAbsFreeRatio() < 0.055
+                    (memInfo.getMemFreeRatio() <= highKill && memInfo.SwapFree < 204800) || memInfo.getMemAbsFreeRatio() < 0.055
             );
 
             if (danger) {
@@ -446,7 +507,7 @@ public class Main {
             } catch (Exception ignored){}
 
             MemInfo memInfo = getMemInfo();
-            return memInfo.getMemFreeRatio() >= high || (memInfo.getMemAbsFreeRatio() >= criticalKill && memInfo.SwapFree >= 409600);
+            return memInfo.getMemFreeRatio() >= high || (memInfo.getMemAbsFreeRatio() >= highKill && memInfo.SwapFree >= 409600);
         }
 
         // 获取空闲(后台)进程
