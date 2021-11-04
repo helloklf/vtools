@@ -16,31 +16,36 @@ public class Main {
     private static final File fFgProcs = new File("/dev/cpuset/foreground/cgroup.procs");
 
     private static final byte[] dumpDisplay = "dumpsys display | grep mScreenState | cut -f2 -d '='\n\nexit\n".getBytes();
+    private static boolean screenStateSupported = true;
     private static int getScreenState() {
         int state = -1;
-        try {
-            // dumpsys display | grep mScreenState | cut -f2 -d '='
-            // dumpsys power| grep 'Display Power' | cut -f2 -d '='
-            Process process = Runtime.getRuntime().exec("sh");
-            OutputStream outputStream = process.getOutputStream();
-            outputStream.write(dumpDisplay);
-            outputStream.flush();
-            outputStream.close();
+        if (screenStateSupported) {
+            try {
+                // dumpsys display | grep mScreenState | cut -f2 -d '='
+                // dumpsys power| grep 'Display Power' | cut -f2 -d '='
+                Process process = Runtime.getRuntime().exec("sh");
+                OutputStream outputStream = process.getOutputStream();
+                outputStream.write(dumpDisplay);
+                outputStream.flush();
+                outputStream.close();
 
-            InputStream inputStream = process.getInputStream();
-            byte[] bytes = new byte[20];
-            int count = inputStream.read(bytes);
+                InputStream inputStream = process.getInputStream();
+                byte[] bytes = new byte[20];
+                int count = inputStream.read(bytes);
 
-            String result = new String(bytes, 0, count).trim().toUpperCase();
-            if (result.equals("ON")) {
-                state = 1;
-            } else if (result.equals("OFF")) {
-                state = 0;
-            }
+                String result = new String(bytes, 0, count).trim().toUpperCase();
+                if (result.equals("ON")) {
+                    state = 1;
+                } else if (result.equals("OFF")) {
+                    state = 0;
+                } else {
+                    screenStateSupported = false;
+                }
 
-            inputStream.close();
-            process.destroy();
-        } catch (Exception ignored) {}
+                inputStream.close();
+                process.destroy();
+            } catch (Exception ignored) {}
+        }
         return state;
     }
 
@@ -325,10 +330,18 @@ public class Main {
                             }
 
                             String method = "";
+                            int interval = 0;
                             if (memFreeRatio < critical && swapFree > 500) {
                                 // method = "all"; // 实际性能表现不好
                                 method = "file";
                             } else {
+                                if (memFreeRatio > middle) {
+                                    interval = 20;
+                                } else if (memFreeRatio > high) {
+                                    interval = 10;
+                                } else if (memFreeRatio > critical) {
+                                    interval = 5;
+                                }
                                 method = "file";
                                 // 间隔120秒执行过Reclaim，且回收需求不是发生在前台应用切换 跳过
                                 if (reclaimReason.reason != ReclaimReason.REASON_APP_WATCH &&
@@ -341,6 +354,12 @@ public class Main {
                             for (LinuxProcess process : processArr) {
                                 // System.out.println(">>" + process.pid + "|" + process.oomAdj + "|" + method);
                                 if (reclaimProcess(process.pid, method)) {
+                                    if (interval > 0) {
+                                        try {
+                                            Thread.sleep(interval);
+                                        } catch (Exception ignored) {
+                                        }
+                                    }
                                     break;
                                 }
                             }
@@ -362,9 +381,9 @@ public class Main {
             );
 
             if (danger) {
-                System.out.println("#KillProcess Killing Start");
-                System.out.println(" memInfo.getMemFreeRatio(): " + memInfo.getMemFreeRatio());
-                System.out.println(" memInfo.getMemAbsFreeRatio(): " + memInfo.getMemAbsFreeRatio());
+                // System.out.println("#KillProcess Killing Start");
+                // System.out.println(" memInfo.getMemFreeRatio(): " + memInfo.getMemFreeRatio());
+                // System.out.println(" memInfo.getMemAbsFreeRatio(): " + memInfo.getMemAbsFreeRatio());
 
                 List<LinuxProcess> processes = this.getSortedProcess();
                 for (LinuxProcess process : processes) {
@@ -378,9 +397,9 @@ public class Main {
                     }
                 }
             } else {
-                System.out.println("#KillProcess PreCheck");
-                System.out.println(" memInfo.getMemFreeRatio(): " + memInfo.getMemFreeRatio());
-                System.out.println(" memInfo.getMemAbsFreeRatio(): " + memInfo.getMemAbsFreeRatio());
+                // System.out.println("#KillProcess PreCheck");
+                // System.out.println(" memInfo.getMemFreeRatio(): " + memInfo.getMemFreeRatio());
+                // System.out.println(" memInfo.getMemAbsFreeRatio(): " + memInfo.getMemAbsFreeRatio());
             }
         }
 
