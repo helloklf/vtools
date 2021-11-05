@@ -45,7 +45,7 @@ public class ProcessUtils2 {
             String outsideCmd = outsideToybox + " " + insideCmd;
 
             for (String cmd : new String[]{ outsidePerfectCmd, perfectCmd, outsideCmd, insideCmd }) {
-                String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
+                String[] rows = KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync(cmd + " 2>&1").split("\n");
                 String result = rows[0];
                 if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {
                     PS_COMMAND = cmd;
@@ -110,7 +110,7 @@ public class ProcessUtils2 {
         ArrayList<ProcessInfo> processInfoList = new ArrayList<>();
         boolean isFristRow = true;
         if (PS_COMMAND != null) {
-            String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND).split("\n");
+            String[] rows = KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync(PS_COMMAND).split("\n");
             for (String row : rows) {
                 if (isFristRow) {
                     isFristRow = false;
@@ -130,7 +130,7 @@ public class ProcessUtils2 {
 
     // 强制结束进程
     public void killProcess(int pid) {
-        KeepShellPublic.INSTANCE.doCmdSync("kill -9 " + pid);
+        KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync("kill -9 " + pid);
     }
 
     private boolean isAndroidProcess(ProcessInfo processInfo) {
@@ -139,7 +139,7 @@ public class ProcessUtils2 {
 
     // 获取安卓应用主进程PID
     public int getAppMainProcess(String packageName) {
-        String pid = KeepShellPublic.INSTANCE.doCmdSync(
+        String pid = KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync(
             String.format("ps -ef -o PID,NAME | grep -e %s$ | egrep -o '[0-9]{1,}' | head -n 1", packageName)
         );
         if (pid.isEmpty() || pid.equals("error")) {
@@ -152,7 +152,7 @@ public class ProcessUtils2 {
     public void killProcess(ProcessInfo processInfo) {
         if (isAndroidProcess(processInfo)) {
             String packageName = processInfo.name.contains(":") ? processInfo.name.substring(0, processInfo.name.indexOf(":")) : processInfo.name;
-            KeepShellPublic.INSTANCE.doCmdSync(String.format("killall -9 %s;am force-stop %s;am kill %s", packageName, packageName, packageName));
+            KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync(String.format("killall -9 %s;am force-stop %s;am kill %s", packageName, packageName, packageName));
         } else {
             killProcess(processInfo.pid);
         }
@@ -160,7 +160,7 @@ public class ProcessUtils2 {
 
     // 获取某个进程的所有线程
     private String getThreads(final int pid) {
-        return KeepShellPublic.INSTANCE.doCmdSync(
+        return KeepShellPublic.INSTANCE.getSecondaryKeepShell().doCmdSync(
             String.format("top -H -b -q -n 1 -p %d -o TID,%%CPU,CMD", pid)
         );
     }

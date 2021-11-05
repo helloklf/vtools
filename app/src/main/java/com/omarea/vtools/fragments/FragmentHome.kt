@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.*
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -24,8 +25,10 @@ import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
+import com.omarea.ui.FloatProcessAdapter
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.ActivityProcess
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.*
@@ -67,6 +70,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
@@ -142,6 +146,24 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             mGpuInfo = gpuInfo
         }
 
+        // 进程列表
+        home_process_list.adapter = FloatProcessAdapter(context!!).apply {
+            updateFilterMode(FloatProcessAdapter.FILTER_ALL)
+        }
+        home_process_list.setOnTouchListener { v, event ->
+            if(event.getAction() == MotionEvent.ACTION_UP){
+                home_root.requestDisallowInterceptTouchEvent(false)
+            } else {
+                home_root.requestDisallowInterceptTouchEvent(true) //屏蔽父控件的拦截事件
+            }
+            false
+        }
+        home_process_list.setOnItemClickListener { _, _, _, _ ->
+            val intent = Intent(context, ActivityProcess::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
         home_device_name.text = when (Build.VERSION.SDK_INT) {
             31 -> "Android 12"
             30 -> "Android 11"
@@ -181,6 +203,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private var coreCount = -1
     private lateinit var batteryManager: BatteryManager
     private lateinit var activityManager: ActivityManager
+    private val platformUtils = PlatformUtils()
+    private val processUtils = ProcessUtils2()
 
     private var minFreqs = HashMap<Int, String>()
     private var maxFreqs = HashMap<Int, String>()
@@ -295,6 +319,16 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         updateRamInfo()
         val memInfo = memoryUtils.memoryInfo
+        val platform = platformUtils.getCPUName()
+        if (updateTick == 0 || updateTick == 3) {
+            GlobalScope.launch(Dispatchers.IO) {
+                processUtils.supported(context!!)
+                val processList = processUtils.allProcess
+                myHandler.post {
+                    (home_process_list?.adapter as FloatProcessAdapter?)?.setList(processList)
+                }
+            }
+        }
 
         myHandler.post {
             try {
@@ -323,14 +357,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 if (cpu_core_list.adapter == null) {
                     val layoutParams = cpu_core_list.layoutParams
                     if (cores.size < 6) {
-                        layoutParams.height = dp2px(105 * 2F)
+                        layoutParams.height = dp2px(95 * 2F)
                         cpu_core_list.numColumns = 2
                     } else if (cores.size > 12) {
-                        layoutParams.height = dp2px(105 * 4F)
+                        layoutParams.height = dp2px(95 * 4F)
                     } else if (cores.size > 8) {
-                        layoutParams.height = dp2px(105 * 3F)
+                        layoutParams.height = dp2px(95 * 3F)
                     } else {
-                        layoutParams.height = dp2px(105 * 2F)
+                        layoutParams.height = dp2px(95 * 2F)
                     }
                     cpu_core_list.layoutParams = layoutParams
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
@@ -340,6 +374,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 mGpuInfo?.run {
                     home_gpu_info_text.text = "$glVendor $glRender\n$glVersion"
                 }
+                cpu_soc_platform?.text = platform
             } catch (ex: Exception) {
 
             }

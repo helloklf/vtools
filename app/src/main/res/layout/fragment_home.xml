@@ -7,6 +7,7 @@
     android:padding="8dp">
 
     <com.omarea.common.ui.OverScrollView
+        android:id="@+id/home_root"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -233,6 +234,7 @@
                     <TextView
                         android:id="@+id/home_gpu_freq"
                         style="@style/textTitle"
+                        android:textSize="15dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -270,8 +272,23 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="10dp">
+                    <ListView
+                        android:id="@+id/home_process_list"
+                        android:listSelector="@null"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:divider="@null"
+                        android:fastScrollAlwaysVisible="false"
+                        android:fastScrollEnabled="false" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#44888888" />
 
                     <FrameLayout
+                        android:layout_marginStart="4dp"
                         android:layout_width="100dp"
                         android:layout_height="100dp">
 
@@ -289,18 +306,25 @@
                             android:text="CPU"
                             android:textSize="15dp" />
                     </FrameLayout>
-
                     <LinearLayout
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="4dp"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
                         android:orientation="vertical"
                         android:textAlignment="viewEnd">
 
                         <TextView
-                            android:id="@+id/cpu_core_count"
+                            android:id="@+id/cpu_soc_platform"
                             style="@style/textTitle"
+                            android:textSize="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="platform" />
+
+                        <TextView
+                            android:id="@+id/cpu_core_count"
+                            style="@style/textSmallTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -315,23 +339,11 @@
                             android:layout_marginTop="3dp"
                             android:text="- %" />
                     </LinearLayout>
-                    <View
-                        android:layout_marginTop="@dimen/activity_horizontal_margin"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#44888888" />
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent">
-
-                    </LinearLayout>
                 </LinearLayout>
                 <View
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#44888888" />
@@ -339,7 +351,7 @@
                 <com.omarea.common.ui.OverScrollGridView
                     android:id="@+id/cpu_core_list"
                     android:layout_width="match_parent"
-                    android:layout_height="210dp"
+                    android:layout_height="190dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
                     android:clickable="false"
