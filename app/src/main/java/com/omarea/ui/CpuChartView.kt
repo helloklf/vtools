@@ -12,8 +12,6 @@ import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
 class CpuChartView : View {
-    //-------------必须给的数据相关-------------
-    private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
 
@@ -29,12 +27,6 @@ class CpuChartView : View {
     //-------------画笔相关-------------
     //圆环的画笔
     private var cyclePaint: Paint? = null
-
-    //文字的画笔
-    private var textPaint: Paint? = null
-
-    //标注的画笔
-    private var labelPaint: Paint? = null
 
     //文字颜色
     private val textColor = -0x777778
@@ -121,9 +113,13 @@ class CpuChartView : View {
             val feeRatio = (fee * 100.0 / total).toInt()
             ratio = 100 - feeRatio
         }
-        cgangePer(ratio)
-        // ratioState = ratio
-        // invalidate()
+
+        if (Math.abs(ratio - ratioState) > 10) {
+            cgangePer(ratio) // animationTo
+        } else {
+            ratioState = ratio
+            invalidate()
+        }
     }
 
     /**
@@ -135,18 +131,6 @@ class CpuChartView : View {
         cyclePaint!!.isAntiAlias = true
         cyclePaint!!.style = Paint.Style.STROKE
         cyclePaint!!.strokeWidth = mStrokeWidth
-        //文字画笔
-        textPaint = Paint()
-        textPaint!!.isAntiAlias = true
-        textPaint!!.color = textColor
-        textPaint!!.style = Paint.Style.STROKE
-        textPaint!!.strokeWidth = 1f
-        textPaint!!.textSize = textSize.toFloat()
-        //标注画笔
-        labelPaint = Paint()
-        labelPaint!!.isAntiAlias = true
-        labelPaint!!.style = Paint.Style.FILL
-        labelPaint!!.strokeWidth = 2f
     }
 
     fun cgangePer(per: Int) {

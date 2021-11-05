@@ -148,10 +148,10 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         // 进程列表
         home_process_list.adapter = FloatProcessAdapter(context!!).apply {
-            updateFilterMode(FloatProcessAdapter.FILTER_ALL)
+            updateFilterMode(FloatProcessAdapter.FILTER_ANDROID)
         }
         home_process_list.setOnTouchListener { v, event ->
-            if(event.getAction() == MotionEvent.ACTION_UP){
+            if(event.action == MotionEvent.ACTION_UP){
                 home_root.requestDisallowInterceptTouchEvent(false)
             } else {
                 home_root.requestDisallowInterceptTouchEvent(true) //屏蔽父控件的拦截事件
@@ -208,7 +208,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private var minFreqs = HashMap<Int, String>()
     private var maxFreqs = HashMap<Int, String>()
-    fun format1(value: Double): String {
+    private fun formatNumber(value: Double): String {
         var bd = BigDecimal(value)
         bd = bd.setScale(1, RoundingMode.HALF_UP)
         return bd.toString()
@@ -246,7 +246,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 )
                 home_zramsize_text?.text = (
                     if (swapTotal > 99) {
-                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${format1(swapTotal / 1024.0)}GB)"
+                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${formatNumber(swapTotal / 1024.0)}GB)"
                     } else {
                         "${(swapUsed * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
                     }

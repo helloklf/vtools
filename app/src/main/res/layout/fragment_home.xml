@@ -287,58 +287,68 @@
                         android:layout_height="match_parent"
                         android:background="#44888888" />
 
-                    <FrameLayout
-                        android:layout_marginStart="4dp"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp">
-
-                        <com.omarea.ui.CpuChartView
-                            android:id="@+id/home_cpu_chat"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            app:free="0"
-                            app:total="100" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="CPU"
-                            android:textSize="15dp" />
-                    </FrameLayout>
-                    <LinearLayout
-                        android:layout_marginStart="4dp"
-                        android:layout_width="60dp"
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:textAlignment="viewEnd">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <FrameLayout
+                            android:id="@+id/home_cpu_basic"
+                            android:layout_marginStart="4dp"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp">
 
-                        <TextView
-                            android:id="@+id/cpu_soc_platform"
-                            style="@style/textTitle"
-                            android:textSize="15dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="platform" />
+                            <com.omarea.ui.CpuChartView
+                                android:id="@+id/home_cpu_chat"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                app:free="0"
+                                app:total="100" />
 
-                        <TextView
-                            android:id="@+id/cpu_core_count"
-                            style="@style/textSmallTitle"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="CPU"
+                                android:textSize="15dp" />
+                        </FrameLayout>
+                        <LinearLayout
+                            android:layout_toEndOf="@+id/home_cpu_basic"
+                            android:layout_marginStart="4dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="核心数" />
+                            android:layout_centerVertical="true"
+                            android:orientation="vertical"
+                            android:textAlignment="viewEnd">
 
-                        <TextView
-                            android:id="@+id/cpu_core_total_load"
-                            style="@style/textSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginTop="3dp"
-                            android:text="- %" />
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/cpu_soc_platform"
+                                style="@style/textTitle"
+                                android:textSize="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="platform" />
+
+                            <TextView
+                                android:id="@+id/cpu_core_count"
+                                style="@style/textSmallTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="核心数" />
+
+                            <TextView
+                                android:id="@+id/cpu_core_total_load"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="3dp"
+                                android:text="- %" />
+                        </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
                 <View
                     android:layout_marginStart="@dimen/activity_horizontal_margin"

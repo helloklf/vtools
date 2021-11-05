@@ -11,7 +11,6 @@ import com.omarea.vtools.R
 
 class RamBarView : View {
     private var ratio = 0
-    private var ratioState = 0
 
     //圆的直径
     private var mRadius = 300f
@@ -137,6 +136,11 @@ class RamBarView : View {
                 color = accentColor
             }
             canvas.drawRoundRect(
+                    0f, 0f, mWidth / 100F * ratio, mHeight.toFloat(),
+                    mHeight / 2f, mHeight / 2f,
+                    this)
+            /*
+            canvas.drawRoundRect(
                     0f, 0f, mWidth / 100F * ratioState, mHeight.toFloat(),
                     mHeight / 2f, mHeight / 2f,
                     this)
@@ -147,6 +151,7 @@ class RamBarView : View {
                 ratioState -= 1
                 invalidate()
             }
+            */
         }
     }
 }
