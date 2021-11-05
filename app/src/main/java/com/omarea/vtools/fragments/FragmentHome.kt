@@ -17,6 +17,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.data.GlobalStatus
+import com.omarea.library.device.GpuInfo
 import com.omarea.library.shell.*
 import com.omarea.model.CpuCoreInfo
 import com.omarea.scene_mode.CpuConfigInstaller
@@ -49,6 +50,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private var myHandler = Handler(Looper.getMainLooper())
     private var cpuLoadUtils = CpuLoadUtils()
     private val memoryUtils = MemoryUtils()
+    private var mGpuInfo: GpuInfo? = null
 
     private suspend fun forceKSWAPD(mode: Int): String {
         return withContext(Dispatchers.Default) {
@@ -79,7 +81,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        home_clear_ram.setOnClickListener {
+        home_memory_clear.setOnClickListener {
             home_raminfo_text.text = getString(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
                 dropCaches()
@@ -87,7 +89,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        home_clear_swap.setOnClickListener {
+        home_memory_compact.setOnClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
                 Scene.toast("开始回收少量内存(长按回收更多~)", Toast.LENGTH_SHORT)
@@ -96,7 +98,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        home_clear_swap.setOnLongClickListener {
+        home_memory_compact.setOnLongClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
                 val result = forceKSWAPD(2)
@@ -130,8 +132,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.alert(activity!!, "调度器参数", msg.toString())
+                DialogHelper.helpInfo(activity!!, "调度器参数", msg.toString())
             }
+        }
+
+        // 获取GPU信息
+        GpuInfo.getGpuInfo(home_gpu_info) { gpuInfo ->
+            home_gpu.removeView(home_gpu_info)
+            mGpuInfo = gpuInfo
         }
 
         home_device_name.text = when (Build.VERSION.SDK_INT) {
@@ -192,13 +200,13 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
             val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
             var swapTotal = 0
-            var swaoUse = 0
+            var swapUsed = 0
             if (swapInfo.contains("Swap")) {
                 try {
                     val swapInfos = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
                     if (Regex("[\\d]+[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
                         swapTotal = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
-                        swaoUse = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
+                        swapUsed = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                     }
                 } catch (ex: java.lang.Exception) {
                 }
@@ -207,15 +215,18 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
             myHandler.post {
                 home_raminfo_text?.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
-                home_raminfo?.setData(totalMem.toFloat(), availMem.toFloat())
-                home_swapstate_chat?.setData(swapTotal.toFloat(), (swapTotal - swaoUse).toFloat())
+                home_ramstat?.setData(totalMem.toFloat(), availMem.toFloat())
+                home_swapstat?.setData(swapTotal.toFloat(), (swapTotal - swapUsed).toFloat())
+                home_memory_total?.setData(
+                    (totalMem + swapTotal).toFloat(), availMem + (swapTotal - swapUsed).toFloat(), totalMem.toFloat()
+                )
                 home_zramsize_text?.text = (
-                        if (swapTotal > 99) {
-                            "${(swaoUse * 100.0 / swapTotal).toInt()}% (${format1(swapTotal / 1024.0)}GB)"
-                        } else {
-                            "${(swaoUse * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
-                        }
-                        )
+                    if (swapTotal > 99) {
+                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${format1(swapTotal / 1024.0)}GB)"
+                    } else {
+                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
+                    }
+                )
             }
         } catch (ex: Exception) {
         }
@@ -326,7 +337,9 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 } else {
                     (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
                 }
-
+                mGpuInfo?.run {
+                    home_gpu_info_text.text = "$glVendor $glRender\n$glVersion"
+                }
             } catch (ex: Exception) {
 
             }

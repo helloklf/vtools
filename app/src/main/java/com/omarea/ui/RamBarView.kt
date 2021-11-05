@@ -1,19 +1,15 @@
 package com.omarea.ui
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
-class CpuChartView : View {
-    //-------------必须给的数据相关-------------
-    private val str = arrayOf("已用", "可用")
+
+class RamBarView : View {
     private var ratio = 0
     private var ratioState = 0
 
@@ -30,20 +26,12 @@ class CpuChartView : View {
     //圆环的画笔
     private var cyclePaint: Paint? = null
 
-    //文字的画笔
-    private var textPaint: Paint? = null
-
-    //标注的画笔
-    private var labelPaint: Paint? = null
-
-    //文字颜色
-    private val textColor = -0x777778
+    // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
 
     //-------------View相关-------------
     //View自身的宽和高
     private var mHeight: Int = 0
     private var mWidth: Int = 0
-
     private var accentColor = 0x22888888
 
     private fun getColorAccent() {
@@ -54,14 +42,12 @@ class CpuChartView : View {
         typedArray.recycle()
     }
 
-
     constructor(context: Context) : super(context) {
         getColorAccent()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        @SuppressLint("CustomViewStyleable")
-        val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
+        @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
         val total = array.getInteger(R.styleable.RamInfo_total, 1)
         val fee = array.getInteger(R.styleable.RamInfo_free, 1)
         val feeRatio = (fee * 100.0 / total).toInt()
@@ -94,7 +80,7 @@ class CpuChartView : View {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w
         mHeight = h
-        val mStrokeWidth = w / 6
+        val mStrokeWidth = dp2px(context, 8f)
         this.mStrokeWidth = mStrokeWidth.toFloat()
         this.textSize = dp2px(context, 18f)
         if (w > h) {
@@ -107,11 +93,11 @@ class CpuChartView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         //移动画布到圆环的左上角
-        canvas.translate(mWidth / 2 - mRadius / 2, mHeight / 2 - mRadius / 2)
+        canvas.translate(0f, 0f)
         //初始化画笔
         initPaint()
-        //画圆环
-        drawCycle(canvas)
+        //画横线
+        drawLine(canvas)
     }
 
     fun setData(total: Float, fee: Float) {
@@ -121,74 +107,46 @@ class CpuChartView : View {
             val feeRatio = (fee * 100.0 / total).toInt()
             ratio = 100 - feeRatio
         }
-        cgangePer(ratio)
-        // ratioState = ratio
-        // invalidate()
+        invalidate()
     }
 
     /**
      * 初始化画笔
      */
     private fun initPaint() {
-        //边框画笔
-        cyclePaint = Paint()
-        cyclePaint!!.isAntiAlias = true
-        cyclePaint!!.style = Paint.Style.STROKE
-        cyclePaint!!.strokeWidth = mStrokeWidth
-        //文字画笔
-        textPaint = Paint()
-        textPaint!!.isAntiAlias = true
-        textPaint!!.color = textColor
-        textPaint!!.style = Paint.Style.STROKE
-        textPaint!!.strokeWidth = 1f
-        textPaint!!.textSize = textSize.toFloat()
-        //标注画笔
-        labelPaint = Paint()
-        labelPaint!!.isAntiAlias = true
-        labelPaint!!.style = Paint.Style.FILL
-        labelPaint!!.strokeWidth = 2f
+        cyclePaint = Paint().apply {
+            isAntiAlias = true
+            style = Paint.Style.FILL
+
+            strokeWidth = mHeight.toFloat()
+        }
     }
 
-    fun cgangePer(per: Int) {
-        val perOld = this.ratioState
-        val va = ValueAnimator.ofInt(perOld, per)
-        va.duration = 200
-        va.interpolator = DecelerateInterpolator()
-        va.addUpdateListener { animation ->
-            ratioState = animation.animatedValue as Int
-            invalidate()
-        }
-        va.start()
-
-    }
-
-    /**
-     * 画圆环
-     * @param canvas
-     */
-    private fun drawCycle(canvas: Canvas) {
-        cyclePaint!!.color = 0x22888888
-        canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint!!)
-        if (ratio > 85) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratio > 65) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else {
-            cyclePaint!!.color = accentColor
-        }
-        if (ratio > 50) {
-            cyclePaint?.alpha = 255
-        } else {
-            cyclePaint?.alpha = 127 + ((ratio / 100.0f) * 255).toInt()
-        }
-
-        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
-        if (ratio < 1 && (ratioState <= 2)) {
-            return
-        } else if (ratioState >= 98) {
-            canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, 360f, false, cyclePaint!!)
-        } else {
-            canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f), false, cyclePaint!!)
+    private fun drawLine(canvas: Canvas) {
+        cyclePaint?.run {
+            color = 0x44888888 //Color.parseColor("#888888")
+            canvas.drawRoundRect(
+                    0f, 0f, mWidth.toFloat(), mHeight.toFloat(),
+                    mHeight / 2f, mHeight / 2f,
+                    this)
+            if (ratio > 89) {
+                color = resources.getColor(R.color.color_load_veryhight)
+            } else if (ratio > 80) {
+                color = resources.getColor(R.color.color_load_hight)
+            } else {
+                color = accentColor
+            }
+            canvas.drawRoundRect(
+                    0f, 0f, mWidth / 100F * ratioState, mHeight.toFloat(),
+                    mHeight / 2f, mHeight / 2f,
+                    this)
+            if (ratioState < ratio) {
+                ratioState += 1
+                invalidate()
+            } else if (ratioState > ratio) {
+                ratioState -= 1
+                invalidate()
+            }
         }
     }
 }

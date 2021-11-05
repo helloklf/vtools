@@ -11,8 +11,6 @@ import com.omarea.vtools.R
 
 
 class RamChartView : View {
-    //-------------必须给的数据相关-------------
-    private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
 
@@ -28,12 +26,6 @@ class RamChartView : View {
     //-------------画笔相关-------------
     //圆环的画笔
     private var cyclePaint: Paint? = null
-
-    //文字的画笔
-    private var textPaint: Paint? = null
-
-    //标注的画笔
-    private var labelPaint: Paint? = null
 
     // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     //文字颜色
@@ -130,18 +122,6 @@ class RamChartView : View {
         cyclePaint!!.isAntiAlias = true
         cyclePaint!!.style = Paint.Style.STROKE
         cyclePaint!!.strokeWidth = mStrokeWidth
-        //文字画笔
-        textPaint = Paint()
-        textPaint!!.isAntiAlias = true
-        textPaint!!.color = textColor
-        textPaint!!.style = Paint.Style.STROKE
-        textPaint!!.strokeWidth = 1f
-        textPaint!!.textSize = textSize.toFloat()
-        //标注画笔
-        labelPaint = Paint()
-        labelPaint!!.isAntiAlias = true
-        labelPaint!!.style = Paint.Style.FILL
-        labelPaint!!.strokeWidth = 2f
     }
 
     /**
