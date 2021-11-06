@@ -277,12 +277,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     private fun updateInfo() {
         if (coreCount < 1) {
             coreCount = CpuFrequencyUtil.getCoreCount()
-            myHandler.post {
-                try {
-                    cpu_core_count.text = "$coreCount 核心"
-                } catch (ex: Exception) {
-                }
-            }
         }
         val cores = ArrayList<CpuCoreInfo>()
         for (coreIndex in 0 until coreCount) {
@@ -357,14 +351,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 if (cpu_core_list.adapter == null) {
                     val layoutParams = cpu_core_list.layoutParams
                     if (cores.size < 6) {
-                        layoutParams.height = dp2px(95 * 2F)
+                        layoutParams.height = dp2px(85 * 2F)
                         cpu_core_list.numColumns = 2
                     } else if (cores.size > 12) {
-                        layoutParams.height = dp2px(95 * 4F)
+                        layoutParams.height = dp2px(85 * 4F)
                     } else if (cores.size > 8) {
-                        layoutParams.height = dp2px(95 * 3F)
+                        layoutParams.height = dp2px(85 * 3F)
                     } else {
-                        layoutParams.height = dp2px(95 * 2F)
+                        layoutParams.height = dp2px(85 * 2F)
                     }
                     cpu_core_list.layoutParams = layoutParams
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
@@ -374,7 +368,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 mGpuInfo?.run {
                     home_gpu_info_text.text = "$glVendor $glRender\n$glVersion"
                 }
-                cpu_soc_platform?.text = platform
+                cpu_soc_platform?.text = platform.toUpperCase(Locale.getDefault()) + " (" + coreCount + " Cores)"
             } catch (ex: Exception) {
 
             }

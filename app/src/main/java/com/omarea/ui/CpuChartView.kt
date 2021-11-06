@@ -86,7 +86,7 @@ class CpuChartView : View {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w
         mHeight = h
-        val mStrokeWidth = w / 6
+        val mStrokeWidth = w / 7
         this.mStrokeWidth = mStrokeWidth.toFloat()
         this.textSize = dp2px(context, 18f)
         if (w > h) {

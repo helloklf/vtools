@@ -292,17 +292,18 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
                         <FrameLayout
                             android:id="@+id/home_cpu_basic"
-                            android:layout_marginStart="4dp"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp">
+                            android:layout_centerHorizontal="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="85dp">
 
                             <com.omarea.ui.CpuChartView
+                                android:layout_gravity="center_vertical"
                                 android:id="@+id/home_cpu_chat"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
+                                android:layout_width="85dp"
+                                android:layout_height="85dp"
                                 app:free="0"
                                 app:total="100" />
 
@@ -314,8 +315,7 @@
                                 android:textSize="15dp" />
                         </FrameLayout>
                         <LinearLayout
-                            android:layout_toEndOf="@+id/home_cpu_basic"
-                            android:layout_marginStart="4dp"
+                            android:layout_below="@+id/home_cpu_basic"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -328,24 +328,16 @@
                                 android:textSize="15dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
+                                android:layout_gravity="center_horizontal"
                                 android:text="platform" />
-
-                            <TextView
-                                android:id="@+id/cpu_core_count"
-                                style="@style/textSmallTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:text="核心数" />
 
                             <TextView
                                 android:id="@+id/cpu_core_total_load"
                                 style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginTop="3dp"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="1dp"
                                 android:text="- %" />
                         </LinearLayout>
                     </RelativeLayout>
