@@ -60,4 +60,25 @@
         <page activity="com.android.settings/.RunningServices" title="运行中的服务" />
         <page activity="com.android.settings/.Settings$MemorySettingsActivity" title="内存使用情况" />
     </group>
+
+    <group title="系统更新">
+        <action
+            interruptible="false"
+            warn="不支持增量包更新。全量更新完之后，ROOT会丢失，需要自行重新获取ROOT权限。由于不正确操作或【意外】导致的损失，需自行承担！！！">
+            <title>安装OTA更新</title>
+            <desc>适用于A/B(含VAB)分区设备的手动安装更新</desc>
+            <summary>注意：这是试验性功能，可能导致系统/设备损坏！</summary>
+            <params>
+                <param title="ROM文件路径"
+                    name="rom"
+                    editable="false"
+                    type="file"
+                    suffix="zip"
+                    required="true" />
+            </params>
+            <set>
+                run ab_updater.sh
+            </set>
+        </action>
+    </group>
 </root>
