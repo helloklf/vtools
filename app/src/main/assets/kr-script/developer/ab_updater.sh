@@ -40,9 +40,7 @@ fi
 echo '\n\n'
 echo '即将开始更新系统，根据设备性能，可能需要5~10分钟甚至更久'
 echo '你可以触摸日志输出区域，使屏幕保持点亮，但不要随意点击其它按钮。'
-echo '在此期间(输出onPayloadApplicationComplete……之前)请勿操作手机'
-echo '当界面显示onPayloadApplicationComplete(ErrorCode::kSuccess (0))，表示更新已完成，就可以重启手机了'
-echo '又或者显示onPayloadApplicationComplete，但ErrorCode不是kSuccess (0)的话，表示更新失败'
+echo '在此期间(输出onPayloadApplicationComplete(ErrorCode::……之前)请勿操作手机'
 echo '出现[INFO:……UPDATE_STATUS_DOWNLOADING (x), x.xxxxxx……]红色文字时，不要惊慌，这只是正常的进度显示！' 1>&2
 echo '更新完成后，不建议在重启前安装Magisk，因为时常会导致数据异常需要恢复出厂设置'
 
@@ -60,3 +58,7 @@ sleep 15
 
 headers=$(cat "$out_dir/payload_properties.txt")
 update_engine_client --follow --update --payload="file://$out_dir/payload.bin" --headers="$headers" # --verify=false
+
+echo '请自行参照错误码(ErrorCode)，判断更新是否成功'
+echo 'kSuccess(0) 表示更新成功 ^_^'
+echo '其它错误码均表示更新失败！'
