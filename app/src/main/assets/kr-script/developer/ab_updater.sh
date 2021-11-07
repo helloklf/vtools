@@ -44,6 +44,7 @@ echo '在此期间(输出onPayloadApplicationComplete……之前)请勿操作�
 echo '当界面显示onPayloadApplicationComplete(ErrorCode::kSuccess (0))，表示更新已完成，就可以重启手机了'
 echo '又或者显示onPayloadApplicationComplete，但ErrorCode不是kSuccess (0)的话，表示更新失败'
 echo '出现[INFO:……UPDATE_STATUS_DOWNLOADING (x), x.xxxxxx……]红色文字时，不要惊慌，这只是正常的进度显示！' 1>&2
+echo '更新完成后，不建议在重启前安装Magisk，因为时常会导致数据异常需要恢复出厂设置'
 
 # slot=$(getprop ro.boot.slot_suffix)
 # echo -n '当前插槽：' $slot
