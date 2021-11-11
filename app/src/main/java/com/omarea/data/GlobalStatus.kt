@@ -33,5 +33,4 @@ object GlobalStatus {
     var batteryCurrentNow: Long = -1
     var batteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN
     var lastPackageName = ""
-    var homeMessage: String? = null
 }

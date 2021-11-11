@@ -48,15 +48,11 @@ class FragmentDonate : androidx.fragment.app.Fragment(), View.OnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://vtools.omarea.com/")))
             Toast.makeText(context!!, "暂不支持直接调起，请保存收款码然后使用微信扫码（在扫一扫界面从相册选择图片）！", Toast.LENGTH_SHORT).show()
         }
-        val nav = view.findViewById<LinearLayout>(R.id.nav)
-        for (index in 1..nav.childCount) {
-            val ele = nav.getChildAt(index)
-            if (ele is GridLayout) {
-                for (index2 in 0 until ele.childCount) {
-                    bindClickEvent(ele.getChildAt(index2))
-                }
-            }
-        }
+
+        bindClickEvent(nav_gesture)
+        bindClickEvent(nav_filter)
+        bindClickEvent(nav_share)
+        bindClickEvent(nav_qq)
     }
 
     private fun bindClickEvent(view: View) {

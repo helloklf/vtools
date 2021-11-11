@@ -67,16 +67,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:columnCount="2">
-            <com.omarea.ui.NavItem
-                android:id="@+id/nav_battery"
-                style="@style/nav_item_wrap"
-                android:tag="root"
-                app:drawable="@drawable/battery"
-                app:text="@string/menu_battery" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_charge"
-                style="@style/nav_item_wrap_right"
+                style="@style/nav_item_wrap"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_charge" />
         </GridLayout>

@@ -50,6 +50,7 @@
 
         <LinearLayout
             android:layout_marginTop="20dp"
+            android:paddingHorizontal="@dimen/activity_horizontal_margin"
             android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:id="@+id/nav"
@@ -64,51 +65,100 @@
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:text="推荐应用" />
 
-            <GridLayout
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:id="@+id/nav_gesture"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:columnCount="2">
+                android:layout_height="wrap_content">
 
-                <com.omarea.ui.NavItem
-                    android:id="@+id/nav_gesture"
-                    style="@style/nav_item_wrap"
-                    app:drawable="@drawable/ic_menu_addon"
-                    app:text="@string/menu_gesture" />
+                <ImageView
+                    android:src="@drawable/filter_logo"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
 
-                <com.omarea.ui.NavItem
-                    android:id="@+id/nav_filter"
-                    style="@style/nav_item_wrap_right"
-                    app:drawable="@drawable/app_filter"
-                    app:text="@string/menu_filter" />
-            </GridLayout>
+                <TextView
+                    android:text="@string/menu_gesture"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_filter"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/gesture_logo"
+                    android:layout_margin="1dp"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp" />
+
+                <TextView
+                    android:text="@string/menu_filter"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
 
             <TextView
                 style="@style/textSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginTop="25dp"
                 android:text="讨论、分享" />
 
-            <GridLayout
+
+            <LinearLayout
+                android:id="@+id/nav_share"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:columnCount="2">
+                android:layout_height="wrap_content">
 
-                <com.omarea.ui.NavItem
-                    android:id="@+id/nav_qq"
-                    style="@style/nav_item_wrap"
-                    app:drawable="@drawable/ic_menu_qq"
-                    app:text="@string/menu_qq" />
+                <ImageView
+                    android:src="@drawable/share_logo"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
 
-                <com.omarea.ui.NavItem
-                    android:id="@+id/nav_share"
-                    style="@style/nav_item_wrap_right"
-                    app:drawable="@drawable/ic_menu_share"
-                    app:text="@string/menu_share" />
-            </GridLayout>
+                <TextView
+                    android:text="@string/menu_share"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_qq"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/qq_logo"
+                    android:layout_margin="1dp"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp" />
+
+                <TextView
+                    android:text="@string/menu_qq"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </com.omarea.common.ui.OverScrollView>

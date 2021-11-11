@@ -8,6 +8,8 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
+import android.view.View
+import android.widget.Toast
 import com.omarea.data.GlobalStatus
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
@@ -15,6 +17,9 @@ import com.omarea.store.ChargeSpeedStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.activity_charge.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 class ActivityCharge : ActivityBase() {
@@ -33,6 +38,15 @@ class ActivityCharge : ActivityBase() {
         more_battery_stats.setOnClickListener {
             val intent = Intent(context, ActivityBatteryStats::class.java)
             startActivity(intent)
+        }
+        GlobalScope.launch(Dispatchers.Main) {
+            if (BatteryUtils().qcSettingSupport() || batteryUtils.bpSettingSupport()) {
+                charge_controller.visibility = View.VISIBLE
+                charge_controller.setOnClickListener {
+                    val intent = Intent(context, ActivityBattery::class.java)
+                    startActivity(intent)
+                }
+            }
         }
     }
 
