@@ -14,7 +14,7 @@ import java.util.*
 /**
  * Created by helloklf on 2017/12/01.
  */
-class AppListHelper(context: Context, private val getTags: Boolean = true) {
+class AppListHelper(private val context: Context, private val getTags: Boolean = true) {
     var packageManager: PackageManager
 
     private fun exclude(packageName: String): Boolean {
@@ -87,11 +87,11 @@ class AppListHelper(context: Context, private val getTags: Boolean = true) {
     }
 
     fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<AppInfo> {
-        val packageInfos = packageManager.getInstalledApplications(0)
+        val packageInfoList = packageManager.getInstalledApplications(0)
 
         val list = ArrayList<AppInfo>()/*在数组中存放数据*/
-        for (i in packageInfos.indices) {
-            val applicationInfo = packageInfos[i]
+        for (i in packageInfoList.indices) {
+            val applicationInfo = packageInfoList[i]
 
             val appInfo = getApplicationInfo(applicationInfo, systemApp, removeIgnore)
             if (appInfo != null) {

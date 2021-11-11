@@ -26,7 +26,6 @@ import java.io.File
  */
 
 class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handler) : DialogAppOptions(context, arrayListOf<AppInfo>(app), handler) {
-
     fun showSingleAppOptions() {
         when (app.appType) {
             AppInfo.AppType.USER -> showUserAppOptions()

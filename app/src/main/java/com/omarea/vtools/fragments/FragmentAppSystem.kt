@@ -69,9 +69,9 @@ class FragmentAppSystem(private val myHandler: Handler) : androidx.fragment.app.
         }
 
         if (selectedItems.size == 1) {
-            DialogSingleAppOptions(activity, selectedItems.first(), myHandler!!).showSingleAppOptions()
+            DialogSingleAppOptions(activity, selectedItems.first(), myHandler).showSingleAppOptions()
         } else {
-            DialogAppOptions(activity, selectedItems, myHandler!!).selectSystemAppOptions()
+            DialogAppOptions(activity, selectedItems, myHandler).selectSystemAppOptions()
         }
     }
 

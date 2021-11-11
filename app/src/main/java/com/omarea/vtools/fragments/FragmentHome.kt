@@ -21,6 +21,7 @@ import com.omarea.data.GlobalStatus
 import com.omarea.library.device.GpuInfo
 import com.omarea.library.shell.*
 import com.omarea.model.CpuCoreInfo
+import com.omarea.model.ProcessInfo
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
@@ -158,9 +159,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
             false
         }
-        home_process_list.setOnItemClickListener { _, _, _, _ ->
+        home_process_list.setOnItemClickListener { parent, _, index, _ ->
+            val item = parent.getItemAtPosition(index) as ProcessInfo?
             val intent = Intent(context, ActivityProcess::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("name", item?.name)
             startActivity(intent)
         }
 

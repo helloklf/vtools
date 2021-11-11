@@ -288,15 +288,21 @@
                     android:layout_weight="1" />
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="end"
-                android:orientation="horizontal">
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/ProcessAppOptions"
+                    style="@style/SceneButton"
+                    android:layout_marginEnd="10dp"
+                    android:text="管理"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/ProcessStopApp"
+                    android:layout_toLeftOf="@+id/ProcessKill"
                     style="@style/SceneButton"
                     android:layout_width="wrap_content"
                     android:layout_marginEnd="10dp"
@@ -306,10 +312,11 @@
                     android:visibility="gone" />
 
                 <Button
+                    android:layout_alignParentEnd="true"
                     android:id="@+id/ProcessKill"
                     style="@style/SceneButton"
                     android:text="停止" />
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
