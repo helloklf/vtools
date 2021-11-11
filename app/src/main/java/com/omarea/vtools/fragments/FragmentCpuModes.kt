@@ -11,10 +11,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.CompoundButton
-import android.widget.Switch
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
@@ -85,10 +82,18 @@ class FragmentCpuModes : Fragment() {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
             }
-
         }
         dynamic_control.setOnCheckedChangeListener { _, isChecked ->
             dynamic_control_opts.visibility = if (isChecked) View.VISIBLE else View.GONE
+            dynamic_control_opts.initExpand(false)
+        }
+        dynamic_control_toggle.setOnClickListener {
+            dynamic_control_opts.toggleExpand()
+            if (dynamic_control_opts.isExpand) {
+                (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_up))
+            } else {
+                (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_down))
+            }
         }
 
         strict_mode.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_STRICT, false)

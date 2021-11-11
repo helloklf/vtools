@@ -280,6 +280,7 @@
 
             <LinearLayout
                 style="@style/ListCardItem"
+                android:paddingBottom="6dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="0dp">
 
@@ -321,125 +322,141 @@
                             android:text="@string/schedule_scene_desc" />
                     </LinearLayout>
                 </LinearLayout>
-
-                <LinearLayout
+                <com.omarea.ui.UMExpandLayout
                     android:id="@+id/dynamic_control_opts"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:background="@drawable/in_card_item"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.omarea.ui.HelpIcon
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:text="@string/schedule_screen_on_desc" />
-
-                        <TextView
-                            style="@style/textTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="@string/schedule_screen_on" />
-
-                        <Spinner
-                            android:id="@+id/first_mode"
-                            style="@style/SceneSpinner"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:entries="@array/default_powercfg_mode_options"
-                            android:paddingRight="0dp" />
-                    </LinearLayout>
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:orientation="horizontal">
+                        android:background="@drawable/in_card_item"
+                        android:orientation="vertical"
+                        android:padding="10dp">
 
-                        <com.omarea.ui.HelpIcon
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:text="@string/schedule_screen_off_desc" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            style="@style/textTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="@string/schedule_screen_off" />
+                            <com.omarea.ui.HelpIcon
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:text="@string/schedule_screen_on_desc" />
 
-                        <Spinner
-                            android:id="@+id/sleep_mode"
-                            style="@style/SceneSpinner"
-                            android:layout_width="110dp"
+                            <TextView
+                                style="@style/textTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="@string/schedule_screen_on" />
+
+                            <Spinner
+                                android:id="@+id/first_mode"
+                                style="@style/SceneSpinner"
+                                android:layout_width="110dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:entries="@array/default_powercfg_mode_options"
+                                android:paddingRight="0dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:entries="@array/sleep_powercfg_mode_options"
-                            android:paddingRight="0dp" />
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:orientation="horizontal">
+
+                            <com.omarea.ui.HelpIcon
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:text="@string/schedule_screen_off_desc" />
+
+                            <TextView
+                                style="@style/textTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="@string/schedule_screen_off" />
+
+                            <Spinner
+                                android:id="@+id/sleep_mode"
+                                style="@style/SceneSpinner"
+                                android:layout_width="110dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:entries="@array/sleep_powercfg_mode_options"
+                                android:paddingRight="0dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingEnd="8dp">
+
+                            <com.omarea.ui.HelpIcon
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:text="@string/schedule_enhanced_desc" />
+
+                            <Switch
+                                android:id="@+id/strict_mode"
+                                style="@style/textTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="@string/schedule_enhanced" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingEnd="8dp">
+
+                            <com.omarea.ui.HelpIcon
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:text="@string/schedule_delay_desc" />
+
+                            <Switch
+                                android:id="@+id/delay_switch"
+                                style="@style/textTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="@string/schedule_delay" />
+
+                        </LinearLayout>
                     </LinearLayout>
+                </com.omarea.ui.UMExpandLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingEnd="8dp">
-
-                        <com.omarea.ui.HelpIcon
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:text="@string/schedule_enhanced_desc" />
-
-                        <Switch
-                            android:id="@+id/strict_mode"
-                            style="@style/textTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="@string/schedule_enhanced" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingEnd="8dp">
-
-                        <com.omarea.ui.HelpIcon
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:text="@string/schedule_delay_desc" />
-
-                        <Switch
-                            android:id="@+id/delay_switch"
-                            style="@style/textTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="@string/schedule_delay" />
-
-                    </LinearLayout>
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/dynamic_control_toggle"
+                    android:layout_marginTop="6dp"
+                    android:src="@drawable/arrow_down"
+                    android:padding="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp" />
 
                 <LinearLayout
                     android:id="@+id/extreme_performance"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
