@@ -9,11 +9,11 @@ import com.omarea.vtools.R
 import java.util.concurrent.LinkedBlockingQueue
 
 
-class CpuChartBarView : View {
+class CpuBigBarView : View {
     private var mainPaint: Paint? = null
     private var mHeight: Float = 0f
     private var mWidth: Float = 0f
-    private val maxHistory = 5
+    private val maxHistory = 10
     private var loadHisotry = LinkedBlockingQueue<Int>().apply {
         for (i in 0 until maxHistory) {
             add(0)

@@ -2,8 +2,9 @@ package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
-import android.content.*
-import android.os.BatteryManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,14 +25,17 @@ import com.omarea.library.shell.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogNumberInput
-import kotlinx.android.synthetic.main.activity_battery.*
+import kotlinx.android.synthetic.main.activity_charge_controller.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 
-class ActivityBattery : ActivityBase() {
+class ActivityChargeController : ActivityBase() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_battery)
+        setContentView(R.layout.activity_charge_controller)
 
         setBackArrow()
 
@@ -94,10 +98,10 @@ class ActivityBattery : ActivityBase() {
             }
         }
 
-        settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener({
             notifyConfigChanged()
         }, spf, battery_bp_level_desc))
-        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
+        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2({
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 batteryUtils.setChargeInputLimit(level, this)
@@ -192,7 +196,7 @@ class ActivityBattery : ActivityBase() {
         battery_get_up.setText(minutes2Str(spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)))
         battery_get_up.setOnClickListener {
             val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
-            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            TimePickerDialog(this.context, { view, hourOfDay, minute ->
                 spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, hourOfDay * 60 + minute).apply()
                 battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
                 notifyConfigChanged()
@@ -202,9 +206,9 @@ class ActivityBattery : ActivityBase() {
         battery_sleep.setText(minutes2Str(spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)))
         battery_sleep.setOnClickListener {
             val nightModeSleep = spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
-            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            TimePickerDialog(this.context, { _, hourOfDay, minute ->
                 spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, hourOfDay * 60 + minute).apply()
-                battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
+                battery_sleep.text = String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute)
                 notifyConfigChanged()
             }, nightModeSleep / 60, nightModeSleep % 60, true).show()
         }
@@ -251,8 +255,7 @@ class ActivityBattery : ActivityBase() {
             else -> 0
         })
 
-        val powerChonnected = GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
-        val battrystatus = findViewById(R.id.battrystatus) as TextView
+        val battryStatus = findViewById<TextView>(R.id.battrystatus)
         batteryMAH = BatteryCapacity().getBatteryCapacity(this).toString() + "mAh" + "   "
 
         timer = Timer()
@@ -284,7 +287,7 @@ class ActivityBattery : ActivityBase() {
                         if (qcSettingSuupport) {
                             settings_qc_limit_current.text = getString(R.string.battery_reality_limit) + limit
                         }
-                        battrystatus.text = getString(R.string.battery_title) +
+                        battryStatus.text = getString(R.string.battery_title) +
                                 batteryMAH +
                                 temp + "°C   " +
                                 voltage + "v"
@@ -324,7 +327,7 @@ class ActivityBattery : ActivityBase() {
         DialogNumberInput(this).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
             override var min = -1
             override var max = 100
-            override var default = batteryUtils.getCpacity()
+            override var default = batteryUtils.getCapacity()
 
             override fun onApply(value: Int) {
                 batteryUtils.setCapacity(value)
@@ -347,10 +350,10 @@ class ActivityBattery : ActivityBase() {
     }
 
     private fun updateBatteryForgery() {
-        val cpacity = batteryUtils.getCpacity()
+        val cpacity = batteryUtils.getCapacity()
         val chargeFull = batteryUtils.getChargeFull()
         if (cpacity > 0) {
-            battery_forgery_ratio.text = cpacity.toString() + "%"
+            battery_forgery_ratio.text = "$cpacity%"
             battery_forgery_ratio.setOnClickListener {
                 batteryForgeryRatio()
             }
@@ -394,9 +397,9 @@ class ActivityBattery : ActivityBase() {
     private var ResumeCharge = ""
 
     private fun notifyConfigChanged() {
-        Thread(Runnable {
+        GlobalScope.launch(Dispatchers.IO) {
             EventBus.publish(EventType.CHARGE_CONFIG_CHANGED)
-        }).start()
+        }.start()
     }
 
     class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var battery_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {

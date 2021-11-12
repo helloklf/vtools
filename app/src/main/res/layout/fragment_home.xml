@@ -150,23 +150,8 @@
                             style="@style/textSmallTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
-
                         <TextView
                             android:id="@+id/home_swap_cached"
-                            style="@style/textSmall"
-                            android:textSize="10dp"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:text="Buffers "
-                            style="@style/textSmallTitle"
-                            android:textSize="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/home_buffers"
                             style="@style/textSmall"
                             android:textSize="10dp"
                             android:layout_width="0dp"
@@ -178,7 +163,6 @@
                             android:textSize="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
-
                         <TextView
                             android:id="@+id/home_dirty"
                             style="@style/textSmall"
@@ -299,10 +283,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="85dp">
 
-                            <com.omarea.ui.CpuChartView
+                            <com.omarea.ui.CpuBigBarView
                                 android:layout_gravity="center_vertical"
                                 android:id="@+id/home_cpu_chat"
-                                android:layout_width="85dp"
+                                android:layout_width="125dp"
                                 android:layout_height="85dp"
                                 app:free="0"
                                 app:total="100" />

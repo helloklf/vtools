@@ -46,11 +46,13 @@ class AdapterProcess(private val context: Context,
 
     private val pm = context.packageManager
     private lateinit var list: ArrayList<ProcessInfo>
-    private val nameCache = HashMap<String, String>()
+    private val nameCache = context.getSharedPreferences("ProcessNameCache", Context.MODE_PRIVATE)
 
     init {
-        loadLabel()
         setList()
+        if (processes.size > 0) {
+            loadLabel()
+        }
     }
 
     override fun getCount(): Int {
@@ -140,12 +142,17 @@ class AdapterProcess(private val context: Context,
             }
         }
     }
+    private fun loadLabel(clearAll: Boolean = false) {
+        val count = nameCache.all.size
+        val editor = nameCache.edit()
+        if (clearAll) {
+            editor.clear()
+        }
 
-    private fun loadLabel() {
         for (item in processes) {
             if (isAndroidProcess(item)) {
-                if (nameCache.containsKey(item.name)) {
-                    item.friendlyName = nameCache.get(item.name)
+                if (nameCache.contains(item.name)) {
+                    item.friendlyName = nameCache.getString(item.name, item.name)
                 } else {
                     val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
                     try {
@@ -154,12 +161,17 @@ class AdapterProcess(private val context: Context,
                     } catch (ex: java.lang.Exception) {
                         item.friendlyName = name
                     } finally {
-                        nameCache[item.name] = item.friendlyName
+                        editor.putString(item.name, item.friendlyName)
                     }
                 }
             } else {
                 item.friendlyName = item.name
             }
+        }
+
+        editor.apply()
+        if (nameCache.all.size != count) {
+            notifyDataSetChanged()
         }
     }
 

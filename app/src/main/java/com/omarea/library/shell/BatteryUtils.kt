@@ -81,14 +81,19 @@ class BatteryUtils {
     private fun str2voltage(str: String): String {
         val value = str.substring(0, if (str.length > 4) 4 else str.length).toDouble()
 
-        return (if (value > 3000) {
-            value / 1000
-        } else if (value > 300) {
-            value / 100
-        } else if (value > 30) {
-            value / 10
-        } else {
-            value
+        return (when {
+            value > 3000 -> {
+                value / 1000
+            }
+            value > 300 -> {
+                value / 100
+            }
+            value > 30 -> {
+                value / 10
+            }
+            else -> {
+                value
+            }
         }).toString() + "v"
     }
 
@@ -96,12 +101,16 @@ class BatteryUtils {
         get() {
             val bms = "/sys/class/power_supply/bms/uevent"
             val battery = "/sys/class/power_supply/battery/uevent"
-            val path = (if (RootFile.fileExists(bms)) {
-                bms
-            } else if (RootFile.fileExists(battery)) {
-                battery
-            } else {
-                ""
+            val path = (when {
+                RootFile.fileExists(bms) -> {
+                    bms
+                }
+                RootFile.fileExists(battery) -> {
+                    battery
+                }
+                else -> {
+                    ""
+                }
             })
             if (path.isNotEmpty()) {
                 val batteryInfos = KernelProrp.getProp(path)
@@ -324,7 +333,7 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_PD_AUTHENTICATION=")) {
                             val keyword = "POWER_SUPPLY_PD_AUTHENTICATION="
                             stringBuilder.append("PD认证 = ")
-                            pdAuth = info.substring(keyword.length, info.length).equals("1")
+                            pdAuth = info.substring(keyword.length, info.length) == "1"
                             stringBuilder.append(if (pdAuth) "已认证" else "未认证")
                         } else {
                             continue
@@ -475,7 +484,7 @@ class BatteryUtils {
         KernelProrp.setProp("/sys/class/power_supply/bms/charge_full", (mAh * 1000).toString())
     }
 
-    public fun getCpacity(): Int {
+    public fun getCapacity(): Int {
         val value = KernelProrp.getProp("/sys/class/power_supply/battery/capacity")
         return if (Regex("^[0-9]+").matches(value)) value.toInt() else 0
     }
@@ -502,14 +511,14 @@ class BatteryUtils {
                     raw.toFloat()
                 }
                 // 如果和系统反馈的电量差距超过5%，则认为数值无效，不再读取
-                if (Math.abs(valueMA - approximate) > 5) {
-                    kernelCapacitySupported = false;
-                    return -1f
+                return if (Math.abs(valueMA - approximate) > 5) {
+                    kernelCapacitySupported = false
+                    -1f
                 } else {
-                    return valueMA
+                    valueMA
                 }
             } catch (ex: java.lang.Exception) {
-                kernelCapacitySupported = false;
+                kernelCapacitySupported = false
             }
         }
         return -1f

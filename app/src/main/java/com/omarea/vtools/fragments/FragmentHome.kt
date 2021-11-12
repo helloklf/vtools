@@ -16,31 +16,28 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.data.GlobalStatus
 import com.omarea.library.device.GpuInfo
 import com.omarea.library.shell.*
 import com.omarea.model.CpuCoreInfo
 import com.omarea.model.ProcessInfo
-import com.omarea.scene_mode.CpuConfigInstaller
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
-import com.omarea.ui.FloatProcessAdapter
-import com.omarea.utils.AccessibleServiceHelper
+import com.omarea.ui.AdapterProcessMini
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityProcess
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashMap
 
 class FragmentHome : androidx.fragment.app.Fragment() {
-    private val modeSwitcher = ModeSwitcher()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
@@ -109,9 +106,9 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         home_help.setOnClickListener {
             try {
-                val uri = Uri.parse("http://vtools.omarea.com/")
-                val intent = Intent(Intent.ACTION_VIEW, uri)
-                startActivity(intent)
+                startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse("http://vtools.omarea.com/"))
+                )
             } catch (ex: Exception) {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
@@ -136,30 +133,35 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        // 获取GPU信息
-        GpuInfo.getGpuInfo(home_gpu_info) { gpuInfo ->
-            home_gpu.removeView(home_gpu_info)
-            mGpuInfo = gpuInfo
+        GlobalScope.launch(Dispatchers.Main) {
+            // 获取GPU信息
+            GpuInfo.getGpuInfo(home_gpu_info) { gpuInfo ->
+                home_gpu.removeView(home_gpu_info)
+                mGpuInfo = gpuInfo
+            }
         }
 
         // 进程列表
-        home_process_list.adapter = FloatProcessAdapter(context!!).apply {
-            updateFilterMode(FloatProcessAdapter.FILTER_ANDROID)
-        }
-        home_process_list.setOnTouchListener { v, event ->
-            if(event.action == MotionEvent.ACTION_UP){
-                home_root.requestDisallowInterceptTouchEvent(false)
-            } else {
-                home_root.requestDisallowInterceptTouchEvent(true) //屏蔽父控件的拦截事件
+        home_process_list.run {
+            adapter = AdapterProcessMini(context!!).apply {
+                updateFilterMode(AdapterProcessMini.FILTER_ANDROID)
             }
-            false
-        }
-        home_process_list.setOnItemClickListener { parent, _, index, _ ->
-            val item = parent.getItemAtPosition(index) as ProcessInfo?
-            val intent = Intent(context, ActivityProcess::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("name", item?.name)
-            startActivity(intent)
+            setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    home_root.requestDisallowInterceptTouchEvent(false)
+                } else {
+                    home_root.requestDisallowInterceptTouchEvent(true) //屏蔽父控件的拦截事件
+                }
+                false
+            }
+            setOnItemClickListener { parent, _, index, _ ->
+                val item = parent.getItemAtPosition(index) as ProcessInfo?
+                val intent = Intent(context, ActivityProcess::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    putExtra("name", item?.name)
+                }
+                startActivity(intent)
+            }
         }
 
         home_device_name.text = when (Build.VERSION.SDK_INT) {
@@ -186,9 +188,10 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         activity!!.title = getString(R.string.app_name)
 
-        maxFreqs.clear()
-        minFreqs.clear()
+        maxFreqList.clear()
+        minFreqList.clear()
         stopTimer()
+        updateTick = 0
         timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {
@@ -198,14 +201,19 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
     }
 
-    private var coreCount = -1
+    private val coreCount = object : TripleCacheValue(Scene.context, "CoreCount") {
+        override fun initValue(): String {
+            return "" + CpuFrequencyUtil.coreCount
+        }
+    }.toInt()
+
     private lateinit var batteryManager: BatteryManager
     private lateinit var activityManager: ActivityManager
     private val platformUtils = PlatformUtils()
-    private val processUtils = ProcessUtils2()
+    private val processUtils = ProcessUtilsSimple(Scene.context)
 
-    private var minFreqs = HashMap<Int, String>()
-    private var maxFreqs = HashMap<Int, String>()
+    private var minFreqList = HashMap<Int, String>()
+    private var maxFreqList = HashMap<Int, String>()
     private fun formatNumber(value: Double): String {
         var bd = BigDecimal(value)
         bd = bd.setScale(1, RoundingMode.HALF_UP)
@@ -215,8 +223,9 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     @SuppressLint("SetTextI18n")
     private fun updateRamInfo() {
         try {
-            val info = ActivityManager.MemoryInfo()
-            activityManager.getMemoryInfo(info)
+            val info = ActivityManager.MemoryInfo().apply {
+                activityManager.getMemoryInfo(this)
+            }
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
 
@@ -232,7 +241,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     }
                 } catch (ex: java.lang.Exception) {
                 }
-                // home_swapstate.text = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
             }
 
             myHandler.post {
@@ -240,15 +248,15 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 home_ramstat?.setData(totalMem.toFloat(), availMem.toFloat())
                 home_swapstat?.setData(swapTotal.toFloat(), (swapTotal - swapUsed).toFloat())
                 home_memory_total?.setData(
-                    (totalMem + swapTotal).toFloat(), availMem + (swapTotal - swapUsed).toFloat(), totalMem.toFloat()
+                        (totalMem + swapTotal).toFloat(), availMem + (swapTotal - swapUsed).toFloat(), totalMem.toFloat()
                 )
                 home_zramsize_text?.text = (
-                    if (swapTotal > 99) {
-                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${formatNumber(swapTotal / 1024.0)}GB)"
-                    } else {
-                        "${(swapUsed * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
-                    }
-                )
+                        if (swapTotal > 99) {
+                            "${(swapUsed * 100.0 / swapTotal).toInt()}% (${formatNumber(swapTotal / 1024.0)}GB)"
+                        } else {
+                            "${(swapUsed * 100.0 / swapTotal).toInt()}% (${swapTotal}MB)"
+                        }
+                        )
             }
         } catch (ex: Exception) {
         }
@@ -273,23 +281,20 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
-        if (coreCount < 1) {
-            coreCount = CpuFrequencyUtil.getCoreCount()
-        }
         val cores = ArrayList<CpuCoreInfo>()
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo(coreIndex)
 
             core.currentFreq = CpuFrequencyUtil.getCurrentFrequency("cpu$coreIndex")
-            if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs[coreIndex].isNullOrEmpty())) {
-                maxFreqs[coreIndex] = CpuFrequencyUtil.getCurrentMaxFrequency("cpu$coreIndex")
+            if (!maxFreqList.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqList[coreIndex].isNullOrEmpty())) {
+                maxFreqList[coreIndex] = CpuFrequencyUtil.getCurrentMaxFrequency("cpu$coreIndex")
             }
-            core.maxFreq = maxFreqs[coreIndex]
+            core.maxFreq = maxFreqList[coreIndex]
 
-            if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs[coreIndex].isNullOrEmpty())) {
-                minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu$coreIndex"))
+            if (!minFreqList.containsKey(coreIndex) || (core.currentFreq != "" && minFreqList[coreIndex].isNullOrEmpty())) {
+                minFreqList.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu$coreIndex"))
             }
-            core.minFreq = minFreqs[coreIndex]
+            core.minFreq = minFreqList[coreIndex]
             cores.add(core)
         }
         val loads = cpuLoadUtils.cpuLoad
@@ -314,10 +319,9 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         val platform = platformUtils.getCPUName()
         if (updateTick == 0 || updateTick == 3) {
             GlobalScope.launch(Dispatchers.IO) {
-                processUtils.supported(context!!)
                 val processList = processUtils.allProcess
                 myHandler.post {
-                    (home_process_list?.adapter as FloatProcessAdapter?)?.setList(processList)
+                    (home_process_list?.adapter as AdapterProcessMini?)?.setList(processList)
                 }
             }
         }
@@ -325,7 +329,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         myHandler.post {
             try {
                 home_swap_cached.text = "" + (memInfo.swapCached / 1024) + "MB"
-                home_buffers.text = "" + (memInfo.buffers / 1024) + "MB"
                 home_dirty.text = "" + (memInfo.dirty / 1024) + "MB"
 
                 home_running_time.text = elapsedRealtimeStr()
@@ -374,8 +377,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         updateTick++
         if (updateTick > 5) {
             updateTick = 0
-            minFreqs.clear()
-            maxFreqs.clear()
+            minFreqList.clear()
+            maxFreqList.clear()
         }
     }
 
@@ -390,65 +393,5 @@ class FragmentHome : androidx.fragment.app.Fragment() {
     override fun onPause() {
         stopTimer()
         super.onPause()
-    }
-
-    private fun toggleMode(modeSwitcher: ModeSwitcher, mode: String): Deferred<Unit> {
-        return GlobalScope.async {
-            context?.run {
-                if (modeSwitcher.modeConfigCompleted()) {
-                    modeSwitcher.executePowercfgMode(mode, packageName)
-                } else {
-                    CpuConfigInstaller().installOfficialConfig(context!!)
-                    modeSwitcher.executePowercfgMode(mode, packageName)
-                }
-            }
-        }
-    }
-
-    private fun installConfig(toMode: String) {
-        val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
-        if (!dynamic && ModeSwitcher.getCurrentPowerMode() == toMode) {
-            modeSwitcher.setCurrent("", "")
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-            myHandler.post {
-                DialogHelper.confirmBlur(this.activity!!,
-                        "提示",
-                        "需要重启手机才能恢复默认调度，是否立即重启？",
-                        {
-                            KeepShellPublic.doCmdSync("sync\nsleep 1\nsvc power reboot || reboot")
-                        },
-                        null)
-            }
-            return
-        }
-
-        val progressBarDialog = ProgressBarDialog(this.activity!!, "home-mode-switch")
-        progressBarDialog.showDialog(getString(R.string.please_wait))
-
-        GlobalScope.launch(Dispatchers.Main) {
-            toggleMode(modeSwitcher, toMode).await()
-            maxFreqs.clear()
-            minFreqs.clear()
-            updateInfo()
-            if (dynamic) {
-                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-                DialogHelper.alert(activity!!,
-                        "提示",
-                        "“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“功能”菜单-“性能界面”界面关闭“动态响应”！")
-            } else {
-                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, toMode).apply()
-                if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
-                    DialogHelper.confirm(activity!!,
-                            "提示",
-                            "如果你已允许Scene自启动，手机重启后，Scene还会自动激活刚刚选择的模式。\n\n如果需要恢复系统默认调度，请再次点击，然后重启手机！",
-                            DialogHelper.DialogButton(getString(R.string.btn_confirm)),
-                            DialogHelper.DialogButton(getString(R.string.btn_dontshow), {
-                                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
-                            })).setCancelable(false)
-                }
-            }
-
-            progressBarDialog.hideDialog()
-        }
     }
 }

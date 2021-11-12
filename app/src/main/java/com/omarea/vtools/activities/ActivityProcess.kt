@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.shell.ProcessUtils
-import com.omarea.model.AppInfo
 import com.omarea.model.ProcessInfo
 import com.omarea.ui.AdapterProcess
 import com.omarea.utils.AppListHelper
@@ -31,12 +31,12 @@ class ActivityProcess : ActivityBase() {
         onViewCreated(this)
     }
 
-    private val processUtils = ProcessUtils()
+    private val processUtils = ProcessUtils(Scene.context)
     private var supported: Boolean = false
     private val handle = Handler(Looper.getMainLooper())
 
     private fun onViewCreated(context: Context) {
-        supported = processUtils.supported(context)
+        supported = processUtils.supported()
 
         if (supported) {
             process_unsupported.visibility = View.GONE
