@@ -381,6 +381,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private fun stopTimer() {
         if (this.timer != null) {
+            updateTick = 0
             timer!!.cancel()
             timer = null
         }

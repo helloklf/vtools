@@ -54,86 +54,76 @@
                 </LinearLayout>
             </LinearLayout>
 
-
+            <!--复制应用包名-->
             <LinearLayout
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:id="@+id/app_options_copay_package"
+                android:layout_marginTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="70dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <!--复制应用包名-->
+                android:background="@drawable/krscript_item_ripple"
+                android:orientation="vertical"
+                android:padding="6dp">
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="应用包名" />
                 <LinearLayout
-                    android:id="@+id/app_options_copay_package"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        style="@style/textSmall"
+                        android:id="@+id/app_package_name"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="应用包名" />
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            style="@style/textSmall"
-                            android:id="@+id/app_package_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="" />
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:padding="5dp"
-                            android:alpha="0.5"
-                            android:src="@drawable/app_options_copy"
-                            app:tint="@android:color/darker_gray" />
-                    </LinearLayout>
+                        android:layout_weight="1"
+                        android:text="" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:alpha="0.5"
+                        android:src="@drawable/app_options_copy"
+                        app:tint="@android:color/darker_gray" />
                 </LinearLayout>
-                <!--复制应用包名-->
+            </LinearLayout>
+            <!--复制应用包名-->
+            <LinearLayout
+                android:id="@+id/app_options_copay_path"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/krscript_item_ripple"
+                android:orientation="vertical"
+                android:padding="6dp">
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="安装路径" />
                 <LinearLayout
-                    android:id="@+id/app_options_copay_path"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:orientation="vertical"
-                    android:padding="6dp">
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        style="@style/textSecondary"
-                        android:layout_width="match_parent"
+                        style="@style/textSmall"
+                        android:id="@+id/app_install_path"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="安装路径" />
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            style="@style/textSmall"
-                            android:id="@+id/app_install_path"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="" />
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:padding="5dp"
-                            android:alpha="0.5"
-                            android:src="@drawable/app_options_copy"
-                            app:tint="@android:color/darker_gray" />
-                    </LinearLayout>
+                        android:layout_weight="1"
+                        android:text="" />
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:padding="5dp"
+                        android:alpha="0.5"
+                        android:src="@drawable/app_options_copy"
+                        app:tint="@android:color/darker_gray" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -203,7 +193,7 @@
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:padding="4dp"
+                        android:padding="7dp"
                         android:src="@drawable/app_options_details"
                         app:tint="?android:colorAccent" />
                 </LinearLayout>
@@ -222,7 +212,7 @@
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:padding="6dp"
+                        android:padding="8dp"
                         android:src="@drawable/app_options_appstore"
                         app:tint="?android:colorAccent" />
 

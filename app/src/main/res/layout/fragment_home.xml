@@ -353,7 +353,7 @@
                 <com.omarea.common.ui.OverScrollGridView
                     android:id="@+id/cpu_core_list"
                     android:layout_width="match_parent"
-                    android:layout_height="190dp"
+                    android:layout_height="170dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
                     android:clickable="false"

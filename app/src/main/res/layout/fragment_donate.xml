@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:src="@drawable/filter_logo"
+                    android:src="@drawable/gesture_logo"
                     android:layout_width="40dp"
                     android:layout_height="40dp" />
 
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:src="@drawable/gesture_logo"
+                    android:src="@drawable/filter_logo"
                     android:layout_margin="1dp"
                     android:layout_width="38dp"
                     android:layout_height="38dp" />

@@ -3,12 +3,15 @@ package com.omarea.common.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.util.Log;
 import android.view.View;
 
 public class FastBlurUtility {
@@ -38,7 +41,7 @@ public class FastBlurUtility {
     }
 
 
-    // 实测性能反而更低...
+    // 实测RenderScript做模糊性能反而更低...
     private static Bitmap blur(Bitmap bitmap, Context context) {
         if (bitmap == null) {
             return bitmap;
@@ -88,17 +91,41 @@ public class FastBlurUtility {
         return null;
     }
 
+    // 使图片变暗
+    public static Bitmap getDimmedBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
+        }
+
+        int width, height;
+        height = bitmap.getHeight();
+        width = bitmap.getWidth();
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        ColorMatrix cm = new ColorMatrix();
+        // cm.setSaturation(0);
+        float contrast = 0.95f;
+        cm.set(new float[]{
+                contrast, 0, 0, 0, 0,
+                0, contrast, 0, 0, 0,
+                0, 0, contrast, 0, 0,
+                0, 0, 0, 1, 0});
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bitmap, 0, 0, paint);
+        return bmpGrayscale;
+    }
+
     private static Bitmap startBlurBackground(Bitmap bkg) {
         if (bkg == null) {
             return null;
         }
-        long startMs = System.currentTimeMillis();
-        float radius = 10; //模糊程度
+        float radius = 8; //模糊程度
 
         Bitmap overlay = fastBlur(small(bkg), (int) radius);
-
-        Log.i("FastBlurUtility", "=====blur time:" + (System.currentTimeMillis() - startMs));
-        return big(overlay);
+        return big(getDimmedBitmap(overlay));
     }
 
     /**

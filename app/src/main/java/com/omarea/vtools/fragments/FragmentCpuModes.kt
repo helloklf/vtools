@@ -85,11 +85,11 @@ class FragmentCpuModes : Fragment() {
         }
         dynamic_control.setOnCheckedChangeListener { _, isChecked ->
             dynamic_control_opts.visibility = if (isChecked) View.VISIBLE else View.GONE
-            dynamic_control_opts.initExpand(false)
+            dynamic_control_opts2.initExpand(false)
         }
         dynamic_control_toggle.setOnClickListener {
-            dynamic_control_opts.toggleExpand()
-            if (dynamic_control_opts.isExpand) {
+            dynamic_control_opts2.toggleExpand()
+            if (dynamic_control_opts2.isExpand) {
                 (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_up))
             } else {
                 (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_down))
