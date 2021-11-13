@@ -408,7 +408,7 @@ set_task_affinity() {
 
 # HePingJingYing
 pubgmhd_opt_run () {
-  local current_app=$top_app
+  local current_app=$(getprop vtools.powercfg_app)
   if [[ "$current_app" != 'com.tencent.tmgp.pubgmhd' ]] && [[ "$current_app" != 'com.tencent.ig' ]]; then
     return
   fi
@@ -441,6 +441,37 @@ pubgmhd_opt_run () {
   done
 }
 
+# Unity'Games
+unity_opt_run () {
+  local current_app=$top_app
+
+  # mask=`echo "obase=16;$((num=2#11110000))" | bc` # F0 (cpu 7-4)
+  # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
+  # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
+  # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+
+  ps -ef -o PID,NAME | grep -e "$current_app$" | egrep -o '[0-9]{1,}' | while read pid; do
+    for tid in $(ls "/proc/$pid/task/"); do
+      if [[ "$tid" == "$pid" ]]; then
+        taskset -p "FF" "$tid" > /dev/null 2>&1
+        continue
+      fi
+      if [[ -f "/proc/$pid/task/$tid/comm" ]]; then
+        comm=$(cat /proc/$pid/task/$tid/comm)
+
+        case "$comm" in
+          "RenderThread"*|"UnityMain")
+            taskset -p "80" "$tid" > /dev/null 2>&1
+          ;;
+          "UnityGfxDevice"*|"UnityMultiRende"*)
+            taskset -p "F0" "$tid" > /dev/null 2>&1
+          ;;
+        esac
+      fi
+    done
+  done
+}
+
 # YuanShen
 yuan_shen_opt_run() {
   if [[ $(getprop vtools.powercfg_app | grep miHoYo) == "" ]]; then
@@ -454,6 +485,7 @@ yuan_shen_opt_run() {
   # mask=`echo "obase=16;$((num=2#10000000))" | bc` # 80 (cpu 7)
   # mask=`echo "obase=16;$((num=2#01110000))" | bc` # 70 (cpu 6-4)
   # mask=`echo "obase=16;$((num=2#01111111))" | bc` # 7F (cpu 6-0)
+  # mask=`echo "obase=16;$((num=2#00001111))" | bc` # F (cpu 3-0)
 
   if [[ "$pid" != "" ]]; then
     if [[ "$taskset_effective" == "" ]]; then
@@ -564,7 +596,7 @@ watch_app() {
   fi
 
   if [[ $(getprop vtools.powercfg_app) == "$app" ]]; then
-      $on_tick
+    $on_tick
   fi
 
   ticks=0
@@ -618,7 +650,7 @@ adjustment_by_top_app() {
           sched_boost 1 0
           stune_top_app 1 10
           gpu_pl_down 0
-          set_cpu_freq 1075200 1420800 1056000 2419200 1075200 3200000
+          set_cpu_freq 1075200 1804800 1056000 2419200 1075200 3200000
           sched_limit 5000 0 5000 0 5000 0
           cpuset '0-1' '0-3' '0-7' '0-7'
         elif [[ "$action" = "fast" ]]; then
@@ -636,6 +668,28 @@ adjustment_by_top_app() {
       cpuset '0-1' '0-3' '0-7' '0-7'
       watch_app pubgmhd_opt_run &
       set_hispeed_freq 0 0 0
+    ;;
+
+    # Project SEKAI
+    "com.hermes.mk.asia"|"com.sega.pjsekai")
+      # watch_app unity_opt_run &
+      if [[ "$action" == "powersave" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "50 55" "70 70" "85" "100"
+      elif [[ "$action" == "balance" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "50 52" "65 68" "85" "100"
+      elif [[ "$action" == "performance" ]]; then
+        sched_boost 1 1
+        stune_top_app 1 0
+        sched_config "45 52" "55 65" "85" "100"
+      else
+        sched_boost 1 1
+        stune_top_app 1 10
+        sched_config "45 48" "55 60" "85" "100"
+      fi
     ;;
 
     # Wang Zhe Rong Yao
