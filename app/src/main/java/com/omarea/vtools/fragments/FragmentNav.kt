@@ -16,6 +16,7 @@ import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.kr.KrScriptConfig
+import com.omarea.library.shell.BatteryUtils
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.AccessibleServiceHelper
@@ -196,8 +197,13 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
                 R.id.nav_battery -> {
-                    val intent = Intent(context, ActivityBattery::class.java)
-                    startActivity(intent)
+                    val batteryUtils = BatteryUtils()
+                    if (batteryUtils.qcSettingSupport() || batteryUtils.bpSettingSupport()) {
+                        val intent = Intent(context, ActivityBattery::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()
+                    }
                     return
                 }
                 R.id.nav_charge -> {

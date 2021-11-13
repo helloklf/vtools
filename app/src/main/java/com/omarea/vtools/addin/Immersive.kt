@@ -1,6 +1,5 @@
 package com.omarea.vtools.addin
 
-import android.os.Build
 import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.DialogItemChooser
 import com.omarea.vtools.activities.ActivityBase

@@ -105,7 +105,7 @@ public class FloatFpsWatch(private val mContext: Context) {
         mWindowManager!!.addView(mView, params)
 
         startTimer()
-        EventBus.subscibe(appWatch)
+        EventBus.subscribe(appWatch)
 
         return true
     }
@@ -115,7 +115,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             return (eventType == EventType.APP_SWITCH || eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON)
         }
 
-        override fun onReceive(eventType: EventType) {
+        override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
             if (sessionId > 0) {
                 if ((eventType == EventType.SCREEN_OFF || eventType == EventType.SCREEN_ON) || (GlobalStatus.lastPackageName != sessionApp)) {
                     sessionId = -1
@@ -136,6 +136,14 @@ public class FloatFpsWatch(private val mContext: Context) {
 
         override val isAsync: Boolean
             get() = false
+
+        override fun onSubscribe() {
+
+        }
+
+        override fun onUnsubscribe() {
+
+        }
     }
 
     private fun stopTimer() {
@@ -191,7 +199,7 @@ public class FloatFpsWatch(private val mContext: Context) {
             show = false
         }
         sessionId = -1
-        EventBus.unsubscibe(appWatch)
+        EventBus.unsubscribe(appWatch)
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")

@@ -1,7 +1,9 @@
 package com.omarea.scene_mode
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
@@ -53,7 +55,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     private var notifyHelper = AlwaysNotification(context, true)
     private val sceneMode = SceneMode.getNewInstance(context, SceneConfigStore(context))!!
     private var timer: Timer? = null
-    private var sceneConfigChanged: BroadcastReceiver? = null
     private var sceneAppChanged: BroadcastReceiver? = null
     private var screenState = ScreenState(context)
 
@@ -158,7 +159,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             if (dynamicCore && lastMode.isNotEmpty()) {
                 lastPackage = null
                 lastModePackage = null
-                context.notifyScreenOn()
+                EventBus.publish(EventType.STATE_RESUME)
                 // toggleConfig(lastMode, context.packageName)
                 sceneMode.cancelFreezeAppThread()
             }
@@ -222,7 +223,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
     }
     //#endregion
 
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         when (eventType) {
             EventType.APP_SWITCH ->
                 onFocusedAppChanged(GlobalStatus.lastPackageName)
@@ -234,6 +235,24 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
                     onScreenOff()
                 }
             }
+            EventType.SCENE_CONFIG -> {
+                updateConfig()
+                Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
+            }
+            EventType.SCENE_APP_CONFIG -> {
+                data?.run {
+                    if (containsKey("app")) {
+                        if (dynamicCore && screenOn && containsKey("mode")) {
+                            val mode = get("mode")?.toString()
+                            val app = get("app")?.toString()
+                            if (mode != null && app != null && app == lastModePackage) {
+                                toggleConfig(mode, app)
+                            }
+                        }
+                        sceneMode.updateAppConfig()
+                    }
+                }
+            }
             else -> return
         }
     }
@@ -243,6 +262,22 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             EventType.APP_SWITCH, EventType.SCREEN_OFF, EventType.SCREEN_ON -> true
             else -> false
         }
+    }
+
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+        sceneMode.clearState()
+        notifyHelper.hideNotify()
+        stopTimer()
+        if (sceneAppChanged != null) {
+            context.unregisterReceiver(sceneAppChanged)
+            sceneAppChanged = null
+        }
+        EventBus.unsubscribe(notifyHelper)
+        EventBus.unsubscribe(this)
     }
 
     /**
@@ -259,26 +294,6 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
         autoToggleMode(packageName)
         sceneMode.onAppEnter(packageName)
         lastPackage = packageName
-    }
-
-    fun onKeyDown(): Boolean {
-        return sceneMode.onKeyDown()
-    }
-
-    fun onInterrupt() {
-        sceneMode.clearState()
-        notifyHelper.hideNotify()
-        stopTimer()
-        if (sceneConfigChanged != null) {
-            context.unregisterReceiver(sceneConfigChanged)
-            sceneConfigChanged = null
-        }
-        if (sceneAppChanged != null) {
-            context.unregisterReceiver(sceneAppChanged)
-            sceneAppChanged = null
-        }
-        EventBus.unsubscibe(notifyHelper)
-        EventBus.unsubscibe(this)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -333,41 +348,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
             initConfig()
         }
 
-        sceneConfigChanged = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val pendingResult = goAsync()
-
-                updateConfig()
-                Scene.toast("性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT)
-
-                pendingResult.finish()
-            }
-        }
-
-        sceneAppChanged = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val pendingResult = goAsync()
-
-                val extras = intent.extras
-                if (extras != null && extras.containsKey("app")) {
-                    if (extras.containsKey("mode")) {
-                        val mode = intent.getStringExtra("mode")!!
-                        val app = intent.getStringExtra("app")
-                        if (dynamicCore && screenOn && app != null && app == lastModePackage) {
-                            toggleConfig(mode, app)
-                        }
-                    }
-                    sceneMode.updateAppConfig()
-                }
-
-                pendingResult.finish()
-            }
-        }
-
-        context.registerReceiver(sceneConfigChanged, IntentFilter(context.getString(R.string.scene_change_action)))
-        context.registerReceiver(sceneAppChanged, IntentFilter(context.getString(R.string.scene_appchange_action)))
-
-        EventBus.subscibe(notifyHelper)
-        EventBus.subscibe(this)
+        EventBus.subscribe(notifyHelper)
+        EventBus.subscribe(this)
     }
 }

@@ -16,7 +16,6 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.AccessibilityScenceMode
 import com.omarea.vtools.popup.FloatMonitorMini
 import com.omarea.vtools.popup.FloatScreenRotation
-import java.lang.StringBuilder
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
@@ -304,17 +303,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
     fun onNotificationPosted(): Boolean {
         if (currentSceneConfig != null) {
             return currentSceneConfig!!.disNotice
-        }
-        return false
-    }
-
-    /**
-     * 按键按下
-     * @return 是否阻拦按键事件
-     */
-    fun onKeyDown(): Boolean {
-        if (currentSceneConfig != null) {
-            return currentSceneConfig!!.disButton
         }
         return false
     }

@@ -1,7 +1,6 @@
 package com.omarea.vtools.popup
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
@@ -104,17 +103,16 @@ class FloatPowercfgSelector(context: Context) {
      */
     private fun reStartService(app: String, mode: String) {
         if (AccessibleServiceHelper().serviceRunning(mContext)) {
-            val intent = Intent(mContext.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
-            mContext.sendBroadcast(intent)
+            EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+                put("app", app)
+                put("mode", mode)
+            })
         }
     }
 
     private fun setUpView(context: Context, packageName: String): View {
         val store = SceneConfigStore(context)
         val appConfig = store.getAppConfig(packageName)
-        var needKeyCapture = store.needKeyCapture()
 
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
         val titleView = view.findViewById<TextView>(R.id.fw_title)
@@ -183,7 +181,7 @@ class FloatPowercfgSelector(context: Context) {
             isEnabled = serviceRunning && modeConfigCompleted
             setOnClickListener {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
-                reStartService()
+                EventBus.publish(EventType.SCENE_CONFIG)
                 dynamic = isChecked
 
                 btn_ignore.visibility = if (dynamic) View.VISIBLE else View.GONE
@@ -256,7 +254,7 @@ class FloatPowercfgSelector(context: Context) {
                 appConfig.aloneLight = isChecked
                 store.setAppConfig(appConfig)
 
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
         // 禁止通知
@@ -276,23 +274,7 @@ class FloatPowercfgSelector(context: Context) {
                 appConfig.disNotice = isChecked
                 store.setAppConfig(appConfig)
 
-                notifyAppConfigChanged(context, packageName)
-            }
-        }
-
-        // 点击禁用按键
-        val fw_app_dis_button = view.findViewById<CheckBox>(R.id.fw_app_dis_button).apply {
-            isChecked = appConfig.disButton
-            setOnClickListener {
-                val isChecked = (it as CheckBox).isChecked
-                appConfig.disButton = isChecked
-                store.setAppConfig(appConfig)
-                if (isChecked && !needKeyCapture) {
-                    context.sendBroadcast(Intent(context.getString(R.string.scene_service_config_change_action)))
-                    needKeyCapture = true
-                }
-
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
 
@@ -308,7 +290,7 @@ class FloatPowercfgSelector(context: Context) {
                 } else {
                     LocationHelper().disableGPS()
                 }
-                notifyAppConfigChanged(context, packageName)
+                notifyAppConfigChanged(packageName)
             }
         }
 
@@ -320,7 +302,6 @@ class FloatPowercfgSelector(context: Context) {
 
         if (!serviceRunning || packageName.equals(context.packageName)) {
             fw_app_light.isEnabled = false
-            fw_app_dis_button.isEnabled = false
             fw_app_dis_notice.isEnabled = false
             fw_app_gps.isEnabled = false
         }
@@ -414,19 +395,10 @@ class FloatPowercfgSelector(context: Context) {
         }
     }
 
-    private fun notifyAppConfigChanged(context: Context, packageName: String) {
-        val intent = Intent(context.getString(R.string.scene_appchange_action))
-        intent.putExtra("app", packageName)
-        context.sendBroadcast(intent)
-    }
-
-    /**
-     * 重启辅助服务
-     */
-    private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(mContext)) {
-            mContext.sendBroadcast(Intent(mContext.getString(R.string.scene_change_action)))
-        }
+    private fun notifyAppConfigChanged(app: String) {
+        EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+            put("app", app)
+        })
     }
 
     companion object {

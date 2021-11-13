@@ -1,46 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <items>
     <resource dir="file:///android_asset/kr-script/miui" />
-    <group title="状态栏、导航栏" visible="getprop persist.vtools.ext_all">
+    <group title="界面" visible="getprop persist.vtools.ext_all">
         <switch>
-            <title>【MIUI10】状态栏缺口</title>
-            <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
-            <get>run mi8status_get.sh</get>
-            <set>run mi8status_set.sh</set>
-        </switch>
-        <switch>
-            <title>【MIUI9】通知中心搜索框</title>
-            <desc>关闭此项将通过替换主题资源的方式，隐藏下拉通知中心的搜索框</desc>
-            <get>run miui_notice_search_get.sh</get>
-            <set>run miui_notice_search_set.sh</set>
-        </switch>
-        <switch>
-            <title>【MIUI10】隐藏导航栏</title>
+            <title>【MIUI 10/11】隐藏导航栏</title>
             <desc>通过主题资源修改导航栏高度的方式隐藏掉导航栏，方便使用第三方手势</desc>
             <get>run miui_hide_nav_get.sh</get>
             <set>run miui_hide_nav_set.sh</set>
-        </switch>
-
-        <switch>
-            <title>真实模糊</title>
-            <desc>开关下拉控制中心的动态模糊（部分机型有效）</desc>
-            <get>run real_blur_get.sh</get>
-            <set>run real_blur_set.sh</set>
-        </switch>
-    </group>
-
-    <group title="界面" visible="getprop persist.vtools.ext_all">
-        <switch>
-            <title>【MIUI10】屏幕圆角</title>
-            <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
-            <get>run miui_round_get.sh</get>
-            <set>run miui_round_set.sh</set>
-        </switch>
-        <switch>
-            <title>【MIUI11】禁用USB弹窗</title>
-            <desc>连接数据线时，不要弹出选择传输模式的窗口</desc>
-            <get>run miui_usb_dialog_get.sh</get>
-            <set>run miui_usb_dialog_set.sh</set>
         </switch>
     </group>
 
@@ -135,11 +101,6 @@
             <get>run thermal_conf2/current.sh</get>
             <set>run thermal_conf2/config.sh</set>
         </picker>
-        <action confirm="true">
-            <title>开启MIUI9、MIUI10隐藏的温控选项</title>
-            <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
-            <set>run miui_thermal_set.sh</set>
-        </action>
     </group>
 
     <group title="功能">
@@ -148,12 +109,6 @@
             <desc>关闭此开关可以屏蔽在线更新检查</desc>
             <get>run miui_update_get.sh</get>
             <set>run miui_update_set.sh</set>
-        </switch>
-        <switch visible="getprop persist.vtools.ext_all">
-            <title>【MIUI10】安全键盘</title>
-            <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
-            <get>run miui_security_keyboard_get.sh</get>
-            <set>run miui_security_keyboard_set.sh</set>
         </switch>
         <switch shell="hidden">
             <title>【MIUI11】相机实验室功能</title>
@@ -173,13 +128,5 @@
                 killall -9 com.android.camera 2>/dev/null
             </set>
         </switch>
-    </group>
-
-    <group title="其它">
-        <action max-sdk="29">
-            <title>应用商店简化</title>
-            <desc>简化应用商店排版，并去除一些广告推荐</desc>
-            <set>$PAGE_WORK_DIR/app_store_simplify.sh</set>
-        </action>
     </group>
 </items>

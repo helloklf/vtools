@@ -10,7 +10,7 @@ import com.omarea.store.TriggerStorage
 class TriggerIEventMonitor(private val context: Context, override val isAsync: Boolean = false) : IEventReceiver {
     private val triggerListConfig = context.getSharedPreferences("scene_trigger_list", Context.MODE_PRIVATE)
 
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         val eventName = eventType.name
 
         // 根据事件筛选
@@ -43,6 +43,14 @@ class TriggerIEventMonitor(private val context: Context, override val isAsync: B
         if (triggers.size > 0) {
             startExecutor(triggers)
         }
+    }
+
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
     }
 
     private fun startExecutor(triggers: ArrayList<String>) {

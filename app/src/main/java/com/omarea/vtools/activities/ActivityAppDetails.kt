@@ -2,7 +2,6 @@ package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.os.Build
@@ -17,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data.EventBus
+import com.omarea.data.EventType
 import com.omarea.library.permissions.NotificationListener
 import com.omarea.library.shell.CGroupMemoryUtlis
 import com.omarea.model.SceneConfigInfo
@@ -42,7 +43,6 @@ class ActivityAppDetails : ActivityBase() {
     private var _result = RESULT_CANCELED
     private lateinit var sceneBlackList: SharedPreferences
     private lateinit var spfGlobal: SharedPreferences
-    private var needKeyCapture = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +76,6 @@ class ActivityAppDetails : ActivityBase() {
         }
 
         app = extras.getString("app")!!
-        needKeyCapture = SceneConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_perf.visibility = View.GONE
@@ -85,6 +84,8 @@ class ActivityAppDetails : ActivityBase() {
             app_details_freeze.isEnabled = false
             scene_mode_config.visibility = View.GONE
             scene_mode_allow.visibility = View.GONE
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            app_details_assist.visibility = View.GONE
         }
 
         // 场景模式白名单开关
@@ -216,14 +217,6 @@ class ActivityAppDetails : ActivityBase() {
 
         sceneConfigInfo = SceneConfigStore(this).getAppConfig(app)
 
-        app_details_hidebtn.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
-            sceneConfigInfo.disButton = isChecked
-            if (isChecked && !needKeyCapture) {
-                saveConfig()
-                sendBroadcast(Intent(getString(R.string.scene_service_config_change_action)))
-            }
-        }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             app_details_hidenotice.isEnabled = false
         } else {
@@ -273,12 +266,12 @@ class ActivityAppDetails : ActivityBase() {
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String? = null) {
         if (AccessibleServiceHelper().serviceRunning(this)) {
-            val intent = Intent(this.getString(R.string.scene_appchange_action))
-            intent.putExtra("app", app)
-            if (mode != null) {
-                intent.putExtra("mode", mode)
-            }
-            sendBroadcast(intent)
+            EventBus.publish(EventType.SCENE_APP_CONFIG, HashMap<String, Any>().apply {
+                put("app", app)
+                if (mode != null) {
+                    put("mode", mode)
+                }
+            })
         }
     }
 
@@ -332,7 +325,6 @@ class ActivityAppDetails : ActivityBase() {
             app_details_hidestatus.isChecked = immersivePolicyControl.isHideStatusOnly(app)
         }
 
-        app_details_hidebtn.isChecked = sceneConfigInfo.disButton
         app_details_hidenotice.isChecked = sceneConfigInfo.disNotice
         app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
         app_details_gps.isChecked = sceneConfigInfo.gpsOn

@@ -43,6 +43,13 @@ class FloatLogView(mContext: Context) {
     private var show: Boolean = false
     private val wm = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
+    public fun hide() {
+        if (show) {
+            wm.removeView(view)
+            show = false
+        }
+    }
+
     public fun update(logs: String) {
         if (!show) {
             wm.addView(view, params)

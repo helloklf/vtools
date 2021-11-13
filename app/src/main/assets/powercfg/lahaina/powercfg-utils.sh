@@ -645,6 +645,14 @@ thermal_disguise() {
   fi
 }
 
+move_to_cpuset() {
+  local pid="$1"
+  local cpuset="/dev/cpuset/$2/cgroup.procs"
+  if [[ "$pid" != "" ]] && [[ -e "$cpuset" ]]; then
+    echo $pid > "$cpuset"
+  fi
+}
+
 # Check whether the taskset command is useful
 taskset_test() {
   local pid="$1"
@@ -753,7 +761,6 @@ adjustment_by_top_app() {
           # bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             # conservative_mode 45 60 70 89 71 89
-            disable_migt
             bw_max
           fi
           sched_boost 1 0
@@ -767,7 +774,7 @@ adjustment_by_top_app() {
           bw_max_always
           if [[ "$manufacturer" == "Xiaomi" ]]; then
             # conservative_mode 45 55 54 70 59 72
-            disable_migt
+            bw_max
           fi
           sched_boost 1 0
           stune_top_app 1 55
@@ -778,8 +785,8 @@ adjustment_by_top_app() {
         watch_app yuan_shen_opt_run &
     ;;
 
-    # Wang Zhe Rong Yao
-    "com.tencent.tmgp.sgame")
+    # Wang Zhe Rong Yao\LOL
+    "com.tencent.lolm"|"com.tencent.tmgp.sgame")
         # ctl_off cpu4
         # ctl_off cpu7
         thermal_disguise 1
@@ -902,9 +909,21 @@ adjustment_by_top_app() {
       fi
     ;;
 
+    # QQ\WeChat
+    "com.tencent.mobileqq"|"com.tencent.mm")
+      cpuctl foreground 0 1 0 max
+      if [[ "$action" = "powersave" ]]; then
+        cpuctl background 0 1 0 1
+      else
+        cpuctl background 0 1 0 max
+      fi
+      move_to_cpuset $(pgrep -f com.tencent.mobileqq:peak) top-app
+    ;;
+
     # NeteaseCloudMusic, KuGou, KuGou Lite
     "com.netease.cloudmusic" | "com.kugou.android" | "com.kugou.android.lite")
       echo 0-6 > /dev/cpuset/foreground/cpus
+      cpuctl foreground 0 1 0 max
     ;;
 
     # BaiDuDiTu, TenXunDiTu, GaoDeDiTu

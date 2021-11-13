@@ -6,7 +6,6 @@ import com.omarea.common.shell.RootFile;
 import com.omarea.model.CpuStatus;
 
 import java.io.File;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 
 public class GpuUtils {

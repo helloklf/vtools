@@ -11,7 +11,6 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
@@ -27,7 +26,6 @@ import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
-import kotlinx.android.synthetic.main.dialog_danger_agreement.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.*
 import java.math.BigDecimal

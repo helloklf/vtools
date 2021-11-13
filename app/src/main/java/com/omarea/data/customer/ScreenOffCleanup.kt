@@ -12,7 +12,7 @@ class ScreenOffCleanup(private val context: Context) : IEventReceiver {
     }
 
     private val status = booleanArrayOf(false, false, false, false, false)
-    override fun onReceive(eventType: EventType) {
+    override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
         Scene.post {
             if (eventType == EventType.SCREEN_OFF) {
                 status[0] = FloatMonitorMini.show == true
@@ -55,4 +55,12 @@ class ScreenOffCleanup(private val context: Context) : IEventReceiver {
 
     override val isAsync: Boolean
         get() = false
+
+    override fun onSubscribe() {
+
+    }
+
+    override fun onUnsubscribe() {
+
+    }
 }

@@ -175,21 +175,4 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         }
         return list;
     }
-
-    public boolean needKeyCapture() {
-        boolean r = false;
-        try {
-            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where dis_button == 1", new String[]{});
-            cursor.moveToFirst();
-            if (cursor.moveToNext()) {
-                r = true;
-            }
-            cursor.close();
-            sqLiteDatabase.close();
-        } catch (Exception ignored) {
-
-        }
-        return r;
-    }
 }

@@ -16,7 +16,6 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.omarea.common.ui.DialogHelper
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.store.XposedExtension
 import com.omarea.ui.IntInputFilter
@@ -35,7 +34,6 @@ class ActivityAppXposedDetails : ActivityBase() {
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
     private lateinit var spfGlobal: SharedPreferences
-    private var needKeyCapture = false
 
     fun getAddinVersion(): Int {
         var code = 0
@@ -221,7 +219,6 @@ class ActivityAppXposedDetails : ActivityBase() {
         }
 
         app = extras.getString("app")!!
-        needKeyCapture = SceneConfigStore(this.applicationContext).needKeyCapture()
 
         dynamicCpu = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
 

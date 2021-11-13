@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
-import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.vtools.R

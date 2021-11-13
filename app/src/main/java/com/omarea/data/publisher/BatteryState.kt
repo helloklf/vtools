@@ -90,6 +90,6 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
             registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
         }
         // 充电控制模块
-        EventBus.subscibe(BatteryReceiver(applicationContext))
+        EventBus.subscribe(BatteryReceiver(applicationContext))
     }
 }
