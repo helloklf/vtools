@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/home_memory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -90,11 +91,11 @@
                             android:layout_marginStart="8dp"
                             android:layout_alignParentEnd="true"
                             style="@style/SceneButton"
-                            android:padding="4dp"
+                            android:padding="6dp"
                             android:src="@drawable/icon_clear"
                             android:scaleType="centerInside"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp" />
+                            android:layout_width="25dp"
+                            android:layout_height="25dp" />
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_marginTop="8dp"
@@ -130,11 +131,11 @@
                             android:layout_marginStart="8dp"
                             android:layout_alignParentEnd="true"
                             style="@style/SceneButton"
-                            android:padding="4dp"
+                            android:padding="6dp"
                             android:src="@drawable/icon_harddisk"
                             android:scaleType="centerInside"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp" />
+                            android:layout_width="25dp"
+                            android:layout_height="25dp" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -272,6 +273,7 @@
                         android:background="#44888888" />
 
                     <RelativeLayout
+                        android:id="@+id/home_cpu"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
@@ -356,10 +358,11 @@
                 android:padding="4dp">
 
                 <LinearLayout
+                    android:id="@+id/home_battery"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/krscript_item_ripple_inactive"
+                    android:background="@drawable/krscript_item_ripple"
                     android:orientation="vertical">
 
                     <LinearLayout

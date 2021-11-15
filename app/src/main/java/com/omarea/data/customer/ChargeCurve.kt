@@ -76,9 +76,9 @@ class ChargeCurve(context: Context) : IEventReceiver {
         if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
             // 电流
             GlobalStatus.batteryCurrentNow = (
-                    batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
-                            globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
-                    )
+                batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
+                globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
+            )
             batteryManager.getIntProperty(BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE)
 
             if (Math.abs(GlobalStatus.batteryCurrentNow) > 100) {

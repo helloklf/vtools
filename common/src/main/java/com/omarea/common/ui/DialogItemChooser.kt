@@ -10,11 +10,18 @@ import com.omarea.common.R
 import com.omarea.common.model.SelectItem
 
 class DialogItemChooser(
+        // 是否深色模式
         private val darkMode: Boolean,
+        // 选择项以及选中状态
         private var items: ArrayList<SelectItem>,
+        // 是否可多选
         private val multiple: Boolean = false,
-        private var callback: Callback? = null) : DialogFullScreen(
-        (if (items.size > 7) {
+        // 回调
+        private var callback: Callback? = null,
+        // 是否永远显示为小窗口（而不是全屏）
+        private val alwaysSmallDialog: Boolean? = null
+) : DialogFullScreen(
+        (if (items.size > 7 && alwaysSmallDialog != true) {
             R.layout.dialog_item_chooser
         } else {
             R.layout.dialog_item_chooser_small

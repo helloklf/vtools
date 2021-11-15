@@ -14,8 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.Scene
+import com.omarea.common.model.SelectItem
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.DialogItemChooser
 import com.omarea.data.GlobalStatus
 import com.omarea.library.device.GpuInfo
 import com.omarea.library.shell.*
@@ -25,7 +27,10 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.ui.AdapterProcessMini
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.ActivityBase
+import com.omarea.vtools.activities.ActivityCharge
 import com.omarea.vtools.activities.ActivityProcess
+import com.omarea.vtools.activities.ActivitySwap
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +40,7 @@ import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class FragmentHome : androidx.fragment.app.Fragment() {
@@ -178,6 +184,19 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             21 -> "Android 5.0"
             else -> "SDK(" + Build.VERSION.SDK_INT + ")"
         } // (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")").trim()
+
+        // 点击内存信息
+        home_memory.setOnClickListener {
+            startActivity(Intent(context, ActivitySwap::class.java))
+        }
+        // 点击电池信息
+        home_battery.setOnClickListener {
+            startActivity(Intent(context, ActivityCharge::class.java))
+        }
+        // 点击CPU
+        home_cpu.setOnClickListener {
+            setCpuOnline()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -389,6 +408,36 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             updateTick = 0
             timer!!.cancel()
             timer = null
+        }
+    }
+
+    // 选择开关核心
+    private fun setCpuOnline() {
+        val activity = (activity as ActivityBase?)
+        if (activity != null) {
+            val options = ArrayList<SelectItem>().apply {
+                for (i in 0 until coreCount) {
+                    add(SelectItem().apply {
+                        title = "CPU $i"
+                        value = "" + i
+                        selected = CpuFrequencyUtil.getCoreOnlineState(i)
+                    })
+                }
+            }
+            DialogItemChooser(activity.themeMode.isDarkMode, options, true, object : DialogItemChooser.Callback {
+                override fun onConfirm(selected: List<SelectItem>, status: BooleanArray) {
+                    if (status.isNotEmpty() && status.find { it } != null) {
+                        status.forEachIndexed { index, b ->
+                            CpuFrequencyUtil.setCoreOnlineState(index, b)
+                            updateInfo()
+                        }
+                    } else {
+                        Toast.makeText(activity, "至少应该开启一个核心", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }, true)
+            .setTitle("开关CPU核心")
+            .show(activity.supportFragmentManager, "home-cpu-control")
         }
     }
 

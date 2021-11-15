@@ -324,7 +324,7 @@ class ActivityCpuControl : ActivityBase() {
 
     private fun bindCpuSetConfig(currentState: String, callback: PickerCallback2) {
         if (currentState.isNotEmpty()) {
-            val coreState = parsetCpuset(currentState)
+            val coreState = parseCpuset(currentState)
             openMultiplePicker("选择要使用的核心",
                     getCoreList(coreState),
                     object: PickerCallback2 {
@@ -340,7 +340,7 @@ class ActivityCpuControl : ActivityBase() {
         cpuset_bg.setOnClickListener {
             bindCpuSetConfig(status.cpusetBackground, object: PickerCallback2 {
                 override fun onSelected(result: BooleanArray) {
-                    status.cpusetBackground = parsetCpuset(result)
+                    status.cpusetBackground = parseCpuset(result)
                     KernelProrp.setProp("/dev/cpuset/background/cpus", status.cpusetBackground)
                 }
             })
@@ -348,7 +348,7 @@ class ActivityCpuControl : ActivityBase() {
         cpuset_system_bg.setOnClickListener {
             bindCpuSetConfig(status.cpusetSysBackground, object: PickerCallback2 {
                 override fun onSelected(result: BooleanArray) {
-                    status.cpusetSysBackground = parsetCpuset(result)
+                    status.cpusetSysBackground = parseCpuset(result)
                     KernelProrp.setProp("/dev/cpuset/system-background/cpus", status.cpusetSysBackground)
                 }
             })
@@ -356,7 +356,7 @@ class ActivityCpuControl : ActivityBase() {
         cpuset_foreground.setOnClickListener {
             bindCpuSetConfig(status.cpusetForeground, object: PickerCallback2 {
                 override fun onSelected(result: BooleanArray) {
-                    status.cpusetForeground = parsetCpuset(result)
+                    status.cpusetForeground = parseCpuset(result)
                     KernelProrp.setProp("/dev/cpuset/foreground/cpus", status.cpusetForeground)
                 }
             })
@@ -364,7 +364,7 @@ class ActivityCpuControl : ActivityBase() {
         cpuset_top_app.setOnClickListener {
             bindCpuSetConfig(status.cpusetTopApp, object: PickerCallback2 {
                 override fun onSelected(result: BooleanArray) {
-                    status.cpusetTopApp = parsetCpuset(result)
+                    status.cpusetTopApp = parseCpuset(result)
                     KernelProrp.setProp("/dev/cpuset/top-app/cpus", status.cpusetTopApp)
                 }
             })
@@ -465,7 +465,7 @@ class ActivityCpuControl : ActivityBase() {
         }
     }
 
-    private fun parsetCpuset(booleanArray: BooleanArray): String {
+    private fun parseCpuset(booleanArray: BooleanArray): String {
         val stringBuilder = StringBuilder()
         for (index in booleanArray.indices) {
             if (booleanArray.get(index)) {
@@ -478,7 +478,7 @@ class ActivityCpuControl : ActivityBase() {
         return stringBuilder.toString()
     }
 
-    private fun parsetCpuset(value: String): BooleanArray {
+    private fun parseCpuset(value: String): BooleanArray {
         val cores = ArrayList<Boolean>()
         for (coreIndex in 0 until coreCount) {
             cores.add(false)
