@@ -25,6 +25,7 @@ import com.omarea.krscript.model.NodeInfoBase;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.ParamsFileChooserRender;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
@@ -96,8 +97,8 @@ public class WebViewInjector {
     }
 
     private class KrScriptEngine {
-        private Context context;
-        private NodeInfoBase vitualRootNode = new NodeInfoBase("");
+        private final Context context;
+        private final NodeInfoBase virtualRootNode = new NodeInfoBase("");
 
         private KrScriptEngine(Context context) {
             this.context = context;
@@ -122,7 +123,7 @@ public class WebViewInjector {
         @JavascriptInterface
         public String executeShell(String script) {
             if (script != null && !script.isEmpty()) {
-                return ScriptEnvironmen.executeResultRoot(context, script, vitualRootNode);
+                return ScriptEnvironmen.executeResultRoot(context, script, virtualRootNode);
             }
             return "";
         }
@@ -173,8 +174,7 @@ public class WebViewInjector {
          */
         @JavascriptInterface
         public String extractAssets(String assets) {
-            String output = new ExtractAssets(context).extractResource(assets);
-            return output;
+            return new ExtractAssets(context).extractResource(assets);
         }
 
         @JavascriptInterface
@@ -192,7 +192,7 @@ public class WebViewInjector {
                         return null; // TODO
                     }
 
-                    @Nullable
+                    @NotNull
                     @Override
                     public String mimeType() {
                         return "*/*"; // TODO

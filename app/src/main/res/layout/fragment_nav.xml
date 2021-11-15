@@ -121,7 +121,7 @@
                 android:id="@+id/nav_app_magisk"
                 style="@style/nav_item_wrap"
                 android:tag="root"
-                app:drawable="@drawable/ic_menu_magisk"
+                app:drawable="@drawable/ic_menu_addon"
                 app:text="@string/menu_app_magisk" />
 
             <com.omarea.ui.NavItem

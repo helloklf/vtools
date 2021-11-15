@@ -52,7 +52,8 @@ class AdapterModules(private val context: Context, private val list: ArrayList<S
     fun updateRow(position: Int, viewHolder: ViewHolder) {
         val item = getItem(position)
 
-        viewHolder.itemTitle?.text = keywordHighLight(item)
+        viewHolder.itemTitle?.text = keywordHighLight(item.substring(item.indexOf("/") + 1))
+        viewHolder.itemSource?.text = "@Magisk-Modules-Repo"
 
         if (viewHolder.itemDesc != null)
             viewHolder.itemDesc?.text = ""
@@ -61,6 +62,7 @@ class AdapterModules(private val context: Context, private val list: ArrayList<S
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal var itemTitle: TextView? = null
         internal var itemDesc: TextView? = null
+        internal var itemSource: TextView? = null
         internal var itemButton: Button? = null
     }
 
@@ -89,6 +91,7 @@ class AdapterModules(private val context: Context, private val list: ArrayList<S
         val viewHolder = ViewHolder(convertView)
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
+        viewHolder.itemSource = convertView.findViewById(R.id.ItemSource)
         viewHolder.itemButton = convertView.findViewById(R.id.download)
 
         return viewHolder
