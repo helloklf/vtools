@@ -18,6 +18,7 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="3"
         android:textColor="?android:textColorPrimary"
+        android:breakStrategy="simple"
         android:textSize="15dp" />
 
     <TextView

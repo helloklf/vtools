@@ -90,7 +90,7 @@
                         app:tint="@android:color/darker_gray" />
                 </LinearLayout>
             </LinearLayout>
-            <!--复制应用包名-->
+            <!--复制应用路径-->
             <LinearLayout
                 android:id="@+id/app_options_copay_path"
                 android:layout_marginTop="6dp"

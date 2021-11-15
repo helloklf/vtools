@@ -3,7 +3,7 @@
     <resource dir="file:///android_asset/kr-script/apps" />
 
     <group title="流氓杀手">
-        <action max-sdk="29">
+        <action warn="在卸载QQ、或以保留Media(SDCard)数据方式清除data数据之前，请务必先将QQ个性化恢复为启用！否则再次安装QQ将无法正常登陆">
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
             <params>
@@ -26,7 +26,7 @@
             </params>
             <set>run qq_style_set.sh</set>
         </action>
-        <action confirm="true" max-sdk="29">
+        <action confirm="true">
             <title>QQ个性化 问题修复</title>
             <desc>修复使用了禁用QQ个性化，手机双清后QQ登录不上的问题</desc>
             <summary>注意：此操作将删除QQ所有数据！</summary>

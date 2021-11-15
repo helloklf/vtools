@@ -27,7 +27,8 @@
             style="@style/TextAppearance.Compat.Notification.Title"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple" />
     </LinearLayout>
 
     <TextView
@@ -37,7 +38,8 @@
         style="@style/TextAppearance.Compat.Notification.Info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="always" />
+        android:overScrollMode="always"
+        android:breakStrategy="simple" />
 
     <ProgressBar
         android:layout_marginStart="6dp"

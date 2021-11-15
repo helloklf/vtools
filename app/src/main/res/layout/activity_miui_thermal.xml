@@ -20,5 +20,6 @@
         android:padding="5dp"
         android:textSize="12dp"
         android:typeface="monospace"
-        android:autofillHints="" />
+        android:autofillHints=""
+        android:breakStrategy="simple" />
 </RelativeLayout>

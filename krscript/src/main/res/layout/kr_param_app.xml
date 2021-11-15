@@ -19,7 +19,8 @@
         android:singleLine="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:textColor="?android:textColorPrimary"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:breakStrategy="simple" />
 
     <TextView
         android:id="@+id/kr_param_app_package"

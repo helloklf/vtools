@@ -8,7 +8,8 @@
     <TextView
         android:id="@+id/kr_param_value"
         android:layout_width="0dp"
-        android:layout_height="0dp" />
+        android:layout_height="0dp"
+        android:breakStrategy="simple" />
     <TextView
         android:id="@+id/kr_param_single_select"
         android:background="@drawable/abc_spinner_mtrl_am_alpha"
@@ -17,5 +18,6 @@
         android:hint="@string/kr_please_select"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:breakStrategy="simple" />
 </LinearLayout>

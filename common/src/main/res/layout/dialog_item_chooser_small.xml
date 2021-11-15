@@ -48,6 +48,7 @@
 
         <TextView
             style="@style/dialogTitle"
+            android:breakStrategy="simple"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:id="@+id/dialog_title"
@@ -57,6 +58,7 @@
 
         <TextView
             style="@style/dialogDesc"
+            android:breakStrategy="simple"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:id="@+id/dialog_desc"

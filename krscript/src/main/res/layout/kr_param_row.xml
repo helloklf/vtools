@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:textColor="?android:attr/textColorSecondary"
-        app:drawableStartCompat="@drawable/kr_param_title" />
+        app:drawableStartCompat="@drawable/kr_param_title"
+        android:breakStrategy="simple" />
 
     <LinearLayout
         android:paddingHorizontal="10dp"

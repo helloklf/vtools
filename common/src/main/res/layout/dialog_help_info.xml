@@ -21,10 +21,12 @@
 
             <TextView
                 android:id="@+id/dialog_help_title"
+                android:breakStrategy="simple"
                 style="@style/dialogTitle"
                 android:text="提示信息" />
             <TextView
                 android:id="@+id/dialog_help_info"
+                android:breakStrategy="simple"
                 style="@style/dialogDesc"
                 android:text="提示内容" />
 

@@ -19,8 +19,7 @@
             style="@style/dialogDesc" />
         <TextView
             android:id="@+id/warn"
-            style="@style/dialogWarn"
-            android:text="" />
+            style="@style/dialogWarn" />
 
         <FrameLayout
             android:id="@+id/kr_params_center"

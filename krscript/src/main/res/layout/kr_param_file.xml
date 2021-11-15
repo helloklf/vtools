@@ -16,6 +16,7 @@
         android:hint="@string/kr_please_choose_file"
         android:marqueeRepeatLimit="marquee_forever"
         android:textColor="?android:textColorPrimary"
+        android:breakStrategy="simple"
         android:textSize="15dp" />
 
     <EditText

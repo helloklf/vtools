@@ -35,4 +35,48 @@
         -->
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="textTitle" parent="@style/TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:alpha">0.8</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
+
+    <style name="textSmall">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
+
+    <style name="dialogTitle" parent="@style/textTitle">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
+
+    <style name="dialogDesc" parent="@style/textSmall">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
+
+    <style name="dialogWarn" parent="@style/textSmall">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@drawable/in_card_item_inactive</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
 </resources>
