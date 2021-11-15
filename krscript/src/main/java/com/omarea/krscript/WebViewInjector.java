@@ -81,7 +81,7 @@ public class WebViewInjector {
                                 .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        new Downloader(context, null).downloadBySystem(url, contentDisposition, mimetype, UUID.randomUUID().toString());
+                                    new Downloader(context, null).downloadBySystem(url, contentDisposition, mimetype, UUID.randomUUID().toString(), null);
                                     }
                                 })
                                 .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {

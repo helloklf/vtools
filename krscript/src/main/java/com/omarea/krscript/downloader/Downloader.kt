@@ -28,7 +28,12 @@ class Downloader(private var context: Context, private var activity: Activity? =
         activity?.startActivity(intent);
     }
 
-    fun downloadBySystem(url: String, contentDisposition: String?, mimeType: String?, taskAliasId: String): Long? {
+    fun downloadBySystem(
+            url: String,
+            contentDisposition: String?,
+            mimeType: String?,
+            taskAliasId: String,
+            fileName: String? = null): Long? {
         try {
             // 指定下载地址
             val request = DownloadManager.Request(Uri.parse(url))
@@ -50,15 +55,17 @@ class Downloader(private var context: Context, private var activity: Activity? =
             // request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
             // request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE);
             // 设置下载文件保存的路径和文件名
-            val fileName = URLUtil.guessFileName(url, contentDisposition, mimeType)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            val outName = if(fileName.isNullOrEmpty()) URLUtil.guessFileName(url, contentDisposition, mimeType) else fileName
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, outName)
             //        另外可选一下方法，自定义下载路径
             //        request.setDestinationUri()
             //        request.setDestinationInExternalFilesDir()
             val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             // 添加一个下载任务
             val downloadId = downloadManager.enqueue(request)
-            addTaskHisotry(downloadId, taskAliasId, url);
+            if (taskAliasId.isNotEmpty()) {
+                addTaskHisotry(downloadId, taskAliasId, url)
+            }
             Toast.makeText(context, context.getString(R.string.kr_download_create_success), Toast.LENGTH_SHORT).show()
             // 注册下载完成事件监听
             DownloaderReceiver.autoRegister(context.applicationContext)

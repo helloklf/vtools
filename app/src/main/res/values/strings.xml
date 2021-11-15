@@ -24,6 +24,7 @@
     <string name="btn_reboot">重启</string>
     <string name="btn_resume_selected">恢复选中</string>
     <string name="make_choice">请确认</string>
+    <string name="download">下载</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
     <string name="error_root">抱歉，没有获取到ROOT权限</string>
@@ -100,6 +101,7 @@
     <string name="menu_charge">充电统计</string>
     <string name="menu_custom_command">自定义命令</string>
     <string name="menu_processes">进程管理</string>
+    <string name="menu_modules">Magisk模块</string>
     <string name="menu_fps_chart">帧率记录</string>
     <string name="menu_app_magisk">Magisk助手</string>
     <string name="menu_gesture">手势导航</string>

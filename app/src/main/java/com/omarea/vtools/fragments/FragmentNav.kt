@@ -127,6 +127,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
+                R.id.nav_modules -> {
+                    val intent = Intent(context, ActivityModules::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_xposed_app -> {
                     xposedCheck {
                         val intent = Intent(context, ActivityAppXposedConfig::class.java)

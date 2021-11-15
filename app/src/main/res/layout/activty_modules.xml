@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/module_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_app_bar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:layout_height="50dp"
+            android:background="@drawable/filter_toolbar_bg">
+
+            <EditText
+                android:id="@+id/module_search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:imeOptions="actionSearch"
+                android:background="@android:color/transparent"
+                android:hint="在此输入模块名称(ID)进行搜索"
+                android:inputType="textFilter"
+                android:padding="8dp"
+                android:singleLine="true"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/module_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/list_view_bg"
+            android:divider="@null"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="8dp"
+            android:fastScrollAlwaysVisible="true"
+            android:fastScrollEnabled="true" />
+    </LinearLayout>
+</RelativeLayout>
