@@ -1,6 +1,7 @@
 package com.omarea.library.shell
 
 import android.content.Context
+import android.os.Build
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -361,7 +362,14 @@ class BatteryUtils {
 
     //快充是否支持修改充电速度设置
     fun qcSettingSupport(): Boolean {
-        return RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max")
+        return (
+            RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max") ||
+            (
+                // Xiaomi 11Pro/Ultra
+                (Build.DEVICE == "mars" || Build.DEVICE == "star") &&
+                RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current")
+            )
+        )
     }
 
     fun stepChargeSupport(): Boolean {
@@ -385,7 +393,12 @@ class BatteryUtils {
         var limit = if (useMainConstant == true) {
             KernelProrp.getProp("/sys/class/power_supply/main/constant_charge_current_max")
         } else {
-            KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
+            // Xiaomi 11Pro/Ultra
+            if ((Build.DEVICE == "mars" || Build.DEVICE == "star")) {
+                KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current")
+            } else {
+                KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
+            }
         }
         when {
             limit.length > 3 -> {

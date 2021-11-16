@@ -10,10 +10,17 @@ then
     limit_value=3000
 fi
 
+device=$(getprop ro.product.device)
+# Xiaomi 11Pro/Ultra
+if [[ "$device" == "mars" ]] || [[ "$device" == "star" ]]; then
+  echo "${1}000" > /sys/class/power_supply/battery/constant_charge_current
+  return
+fi
+
 paths=`ls /sys/class/power_supply/*/constant_charge_current_max`
 
 # 更改限制 change_limit ?mA
-function change_limit() {
+change_limit() {
     echo "更改限制值为：${1}mA"
     local limit="${1}000"
 
@@ -32,9 +39,8 @@ function change_limit() {
 }
 
 if [[ `getprop vtools.fastcharge` = "" ]]; then
-    ./fast_charge_run_once.sh
-
-    setprop vtools.fastcharge 1
+  ./fast_charge_run_once.sh
+  setprop vtools.fastcharge 1
 fi
 
 change_limit $limit_value
