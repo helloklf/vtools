@@ -409,7 +409,9 @@ class BatteryUtils {
 
     //快充是否支持电池保护
     fun bpSettingSupport(): Boolean {
-        return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
+        return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") ||
+                RootFile.itemExists("/sys/class/power_supply/battery/input_suspend") ||
+                RootFile.itemExists("/sys/class/qcom-battery/input_suspend")
     }
 
     // 设置充电速度限制

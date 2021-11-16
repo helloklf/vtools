@@ -167,7 +167,8 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout style="@style/ListCardItem"
+                android:id="@+id/settings_qc_panel">
 
                 <LinearLayout
                     android:layout_width="match_parent"

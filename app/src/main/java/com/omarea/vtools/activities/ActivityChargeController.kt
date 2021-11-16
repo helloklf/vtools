@@ -110,10 +110,8 @@ class ActivityChargeController : ActivityBase() {
         }, spf, settings_qc_limit_desc))
 
         if (!qcSettingSuupport) {
-            settings_qc.isEnabled = false
+            settings_qc_panel.visibility = View.GONE
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
-            settings_qc_limit.isEnabled = false
-            settings_qc_limit_current.visibility = View.GONE
         }
 
         if (!batteryUtils.bpSettingSupport()) {
