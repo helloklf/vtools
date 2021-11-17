@@ -153,7 +153,7 @@ class Scene : Application() {
         // 充电曲线
         EventBus.subscribe(ChargeCurve(this))
         // 耗电曲线
-        // EventBus.subscribe(PowerUtilizationCurve(this))
+        EventBus.subscribe(PowerUtilizationCurve(this))
 
         // 息屏自动关闭悬浮窗
         EventBus.subscribe(ScreenOffCleanup(context))

@@ -4,9 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import com.omarea.model.BatteryStatus
+import com.omarea.model.PowerHistory
 import com.omarea.store.BatteryHistoryStore
-import com.omarea.store.PowerUtilizationStore
 import com.omarea.vtools.R
 
 class PowerTimeView : View {
@@ -21,9 +20,9 @@ class PowerTimeView : View {
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
-            context,
-            attrs,
-            defStyle
+        context,
+        attrs,
+        defStyle
     ) {
         init(attrs, defStyle)
     }
@@ -165,7 +164,7 @@ class PowerTimeView : View {
             val endX = ((last.endTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
             var lastX = startX
             var lastY = startY - (first.capacity * ratioY)
-            var lastSampleTime = first.startTime
+            var lastSample = first
 
             paint.isAntiAlias = true
             paint.strokeWidth = 8f
@@ -183,16 +182,22 @@ class PowerTimeView : View {
                 val currentY = startY - (sample.capacity * ratioY)
 
                 // 数据样本时间间隔正常 显示实线，否则显示虚线
-                if ((sample.startTime - lastSampleTime) < 10000) {
+                if ((sample.startTime - lastSample.endTime) < 10000) {
                     paint.pathEffect = null
+                    // 亮屏状态的样本显示高亮色，否则显示灰色
+                    if (sample.screenOn) {
+                        paint.color = Color.parseColor("#1474e4")
+                    } else {
+                        paint.color = Color.parseColor("#80808080")
+                    }
                 } else {
                     paint.pathEffect = dashPathEffect
-                }
-                // 亮屏状态的样本显示高亮色，否则显示灰色
-                if (sample.screenOn) {
-                    paint.color = Color.parseColor("#1474e4")
-                } else {
-                    paint.color = Color.parseColor("#80808080")
+                    // 亮屏状态的样本显示高亮色，否则显示灰色
+                    if (lastSample.screenOn) {
+                        paint.color = Color.parseColor("#1474e4")
+                    } else {
+                        paint.color = Color.parseColor("#80808080")
+                    }
                 }
                 canvas.drawLine(
                     lastX,
@@ -203,7 +208,7 @@ class PowerTimeView : View {
                 )
                 lastX = currentX
                 lastY = currentY
-                lastSampleTime = sample.endTime
+                lastSample = sample
             }
             canvas.drawLine(
                 lastX,

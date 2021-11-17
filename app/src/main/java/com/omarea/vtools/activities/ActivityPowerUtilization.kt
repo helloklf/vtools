@@ -10,11 +10,8 @@ import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import com.omarea.data.GlobalStatus
-import com.omarea.data.customer.PowerUtilizationCurve
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
-import com.omarea.store.ChargeSpeedStore
-import com.omarea.store.PowerUtilizationStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.activity_power_utilization.*
@@ -24,7 +21,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ActivityPowerUtilization : ActivityBase() {
-    private lateinit var storage: PowerUtilizationStore
     private var timer: Timer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +28,6 @@ class ActivityPowerUtilization : ActivityBase() {
 
         setBackArrow()
 
-        storage = PowerUtilizationStore(this)
         electricity_adj_unit.setOnClickListener {
             DialogElectricityUnit().showDialog(this)
         }
@@ -59,7 +54,7 @@ class ActivityPowerUtilization : ActivityBase() {
                 override fun run() {
                     updateUI()
                 }
-            }, 0, 2000)
+            }, 0, 10000)
         }
     }
 
@@ -80,7 +75,22 @@ class ActivityPowerUtilization : ActivityBase() {
         hander.post {
             view_time.invalidate()
 
-            charge_state.text = (when (GlobalStatus.batteryStatus) {
+            if (kernelCapacity > -1) {
+                val str = "$kernelCapacity%"
+                val ss = SpannableString(str)
+                if (str.contains(".")) {
+                    val small = AbsoluteSizeSpan((battrystatus_level.textSize * 0.3).toInt(), false)
+                    ss.setSpan(small, str.indexOf("."), str.lastIndexOf("%"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val medium = AbsoluteSizeSpan((battrystatus_level.textSize * 0.5).toInt(), false)
+                    ss.setSpan(medium, str.indexOf("%"), str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                battrystatus_level.text = ss
+            } else {
+                battrystatus_level.text = "" + level + "%"
+            }
+
+            battery_size.text = batteryMAH
+            battery_status.text = getString(R.string.battery_temperature) + temp + "°C\n" + getString(R.string.battery_voltage) + voltage + "v\n" + (when (GlobalStatus.batteryStatus) {
                 BatteryManager.BATTERY_STATUS_DISCHARGING -> {
                     getString(R.string.battery_status_discharging)
                 }
@@ -98,23 +108,6 @@ class ActivityPowerUtilization : ActivityBase() {
                 }
                 else -> getString(R.string.battery_status_unknown)
             })
-
-            if (kernelCapacity > -1) {
-                val str = "" + kernelCapacity + "%"
-                val ss = SpannableString(str)
-                if (str.contains(".")) {
-                    val small = AbsoluteSizeSpan((battrystatus_level.textSize * 0.3).toInt(), false)
-                    ss.setSpan(small, str.indexOf("."), str.lastIndexOf("%"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val medium = AbsoluteSizeSpan((battrystatus_level.textSize * 0.5).toInt(), false)
-                    ss.setSpan(medium, str.indexOf("%"), str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                battrystatus_level.text = ss
-            } else {
-                battrystatus_level.text = "" + level + "%"
-            }
-
-            battery_size.text = batteryMAH
-            battrystatus.text = getString(R.string.battery_temperature) + temp + "°C\n" + getString(R.string.battery_voltage) + voltage + "v"
             battery_capacity_chart.setData(100f, 100f - level, temp.toFloat())
         }
     }

@@ -183,7 +183,7 @@ class AppSwitchHandler(private var context: AccessibilityScenceMode, override va
      */
     private fun updateModeNoitfy(saveLog: Boolean = false) {
         if (screenOn) {
-            notifyHelper.notify(saveLog)
+            notifyHelper.notify()
         }
     }
 

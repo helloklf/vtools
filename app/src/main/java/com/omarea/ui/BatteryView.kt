@@ -85,9 +85,9 @@ class BatteryView : View {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w
         mHeight = h
-        val mStrokeWidth = dp2px(context, 20f)
+        val mStrokeWidth = w / 6
         this.mStrokeWidth = mStrokeWidth.toFloat()
-        this.textSize = dp2px(context, 18f)
+        this.textSize = w / 7
         if (w > h) {
             this.mRadius = (h * 0.9 - mStrokeWidth).toInt().toFloat()
         } else {

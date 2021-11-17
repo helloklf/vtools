@@ -7,17 +7,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.BatteryManager
 import android.os.Build
-import android.os.SystemClock
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.omarea.Scene
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
-import com.omarea.library.basic.ScreenState
-import com.omarea.library.shell.BatteryUtils
-import com.omarea.model.BatteryStatus
-import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
@@ -33,7 +28,7 @@ internal class AlwaysNotification(
     }
 
     override fun onReceive(eventType: EventType, data: HashMap<String, Any>?) {
-        notify(false)
+        notify()
     }
 
     override fun onSubscribe() {
@@ -47,10 +42,7 @@ internal class AlwaysNotification(
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
-    private var batteryHistoryStore: BatteryHistoryStore? = null
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-    private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-    private val screenState = ScreenState(context)
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -72,7 +64,7 @@ internal class AlwaysNotification(
     }
 
     //显示通知
-    internal fun notify(saveLog: Boolean = false) {
+    internal fun notify() {
         try {
             var currentMode = getCurrentPowerMode()
             if (currentMode.length == 0) {
@@ -83,54 +75,15 @@ internal class AlwaysNotification(
             if (currentApp.isEmpty()) {
                 currentApp = "android"
 
-                notifyPowerModeChange(currentApp, currentMode, false)
+                notifyPowerModeChange(currentApp, currentMode)
             } else {
-                notifyPowerModeChange(currentApp, currentMode, saveLog)
+                notifyPowerModeChange(currentApp, currentMode)
             }
         } catch (ex: Exception) {
         }
     }
 
-    private fun updateBatteryStatus() {
-        // 电流
-        GlobalStatus.batteryCurrentNow = (
-                batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
-                        globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
-                )
-
-        // 电量
-        GlobalStatus.batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // 状态
-            val batteryStatus = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS)
-            if (batteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN) {
-                GlobalStatus.batteryStatus = batteryStatus;
-            }
-        }
-
-        GlobalStatus.updateBatteryTemperature() // 触发温度数据更新
-    }
-
-    private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
-        // 开机5分钟之内不统计耗电记录，避免刚开机时系统服务繁忙导致数据不准确
-        if (saveLog && SystemClock.elapsedRealtime() > 300000L) {
-            val status = BatteryStatus()
-            status.packageName = packageName
-            status.mode = mode
-            status.time = System.currentTimeMillis()
-            status.temperature = GlobalStatus.temperatureCurrent
-            status.status = GlobalStatus.batteryStatus
-            status.io = GlobalStatus.batteryCurrentNow.toInt()
-            status.screenOn = screenState.isScreenOn()
-            status.capacity = GlobalStatus.batteryCapacity
-
-            if (batteryHistoryStore == null) {
-                batteryHistoryStore = BatteryHistoryStore(context)
-            }
-            batteryHistoryStore!!.insertHistory(status)
-        }
-
+    private fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
         }
@@ -141,8 +94,6 @@ internal class AlwaysNotification(
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
 
         try {
-            updateBatteryStatus();
-
             batteryIO = "${GlobalStatus.batteryCurrentNow}mA"
             batteryTemp = "${GlobalStatus.temperatureCurrent}°C"
 

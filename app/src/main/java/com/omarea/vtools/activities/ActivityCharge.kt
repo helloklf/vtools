@@ -35,7 +35,7 @@ class ActivityCharge : ActivityBase() {
             DialogElectricityUnit().showDialog(this)
         }
         more_battery_stats.setOnClickListener {
-            val intent = Intent(context, ActivityBatteryStats::class.java)
+            val intent = Intent(context, ActivityPowerUtilization::class.java)
             startActivity(intent)
         }
         GlobalScope.launch(Dispatchers.Main) {

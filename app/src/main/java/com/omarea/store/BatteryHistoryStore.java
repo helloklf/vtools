@@ -83,6 +83,23 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         return 0;
     }
 
+    public int lastCapacity() {
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select TOP(1) capacity from battery_io order by time desc", new String[]{});
+            try {
+                if (cursor.moveToNext()) {
+                    return cursor.getInt(0);
+                }
+            } finally {
+                cursor.close();
+                sqLiteDatabase.close();
+            }
+        } catch (Exception ignored) {
+        }
+        return 0;
+    }
+
     public int getMaxIO(int batteryStatus) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
