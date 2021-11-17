@@ -80,7 +80,7 @@ class ChargeCurveView : View {
 
         paint.textAlign = Paint.Align.CENTER
         for (point in 0..101) {
-            if (point % 10 == 0) {
+            if (point % 20 == 0) {
                 paint.color = Color.parseColor("#888888")
                 val text = (point).toString() + "%"
                 canvas.drawText(
@@ -93,7 +93,7 @@ class ChargeCurveView : View {
             } else {
                 paint.strokeWidth = 1f
             }
-            if (point % 5 == 0) {
+            if (point % 10 == 0) {
                 paint.color = Color.parseColor("#40888888")
                 canvas.drawLine(
                         (point * ratioX).toInt() + innerPadding, innerPadding,
