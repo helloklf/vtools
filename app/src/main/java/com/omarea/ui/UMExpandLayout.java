@@ -86,8 +86,8 @@ public class UMExpandLayout extends RelativeLayout {
         heightAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float val = (float) animation.getAnimatedValue();
-                setViewHeight(layoutView, (int) val);
+            float val = (float) animation.getAnimatedValue();
+            setViewHeight(layoutView, (int) val);
             }
         });
 

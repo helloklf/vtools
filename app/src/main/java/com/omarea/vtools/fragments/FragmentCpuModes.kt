@@ -89,9 +89,9 @@ class FragmentCpuModes : Fragment() {
                 reStartService()
             }
         }
+        dynamic_control_opts2.initExpand(false)
         dynamic_control.setOnCheckedChangeListener { _, isChecked ->
             dynamic_control_opts.visibility = if (isChecked) View.VISIBLE else View.GONE
-            dynamic_control_opts2.initExpand(false)
         }
         dynamic_control_toggle.setOnClickListener {
             dynamic_control_opts2.toggleExpand()
@@ -392,7 +392,9 @@ class FragmentCpuModes : Fragment() {
             dynamic_control.isChecked = false
             reStartService()
         }
-        dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
+        dynamic_control_opts.postDelayed({
+            dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
+        }, 15)
         extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }
 
