@@ -53,7 +53,6 @@ class ChargeCurveView : View {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val samples = storage.statistics()
-        samples.sortBy { it.capacity }
 
         val potintRadius = 4f
         val paint = Paint()

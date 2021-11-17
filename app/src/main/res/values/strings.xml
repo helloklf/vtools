@@ -99,6 +99,7 @@
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">充电控制</string>
     <string name="menu_charge">充电统计</string>
+    <string name="menu_power_utilization">耗电统计</string>
     <string name="menu_custom_command">自定义命令</string>
     <string name="menu_processes">进程管理</string>
     <string name="menu_modules">Magisk模块</string>

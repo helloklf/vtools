@@ -285,6 +285,7 @@
                 android:layout_marginBottom="0dp">
 
                 <LinearLayout
+                    android:layout_marginBottom="6dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -324,10 +325,12 @@
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/dynamic_control_opts"
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <com.omarea.ui.UMExpandLayout
                         android:id="@+id/dynamic_control_opts2"
+                        android:layout_marginBottom="6dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -336,7 +339,6 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
                             android:background="@drawable/in_card_item_inactive"
                             android:orientation="vertical"
                             android:padding="10dp">
@@ -451,7 +453,6 @@
                     <ImageView
                         android:layout_below="@id/dynamic_control_opts2"
                         android:id="@+id/dynamic_control_toggle"
-                        android:layout_marginTop="6dp"
                         android:src="@drawable/arrow_down"
                         android:padding="4dp"
                         android:layout_width="match_parent"

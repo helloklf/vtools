@@ -48,7 +48,7 @@ class BatteryUtils {
                             }
                         } else if (info.startsWith("level")) {
                             if (!levelReaded) {
-                                batteryStatus.level = value.toInt()
+                                batteryStatus.capacity = value.toInt()
                                 levelReaded = true
                             } else continue
                         } else if (info.startsWith("temperature")) {
@@ -366,7 +366,7 @@ class BatteryUtils {
             RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max") ||
             (
                 // Xiaomi 11Pro/Ultra
-                (Build.DEVICE == "mars" || Build.DEVICE == "star") &&
+                mi11ProSeries &&
                 RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current")
             )
         )
@@ -384,6 +384,12 @@ class BatteryUtils {
         KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
 
+    // Xiaomi 11Pro/Ultra
+    private val mi11ProSeries : Boolean
+        get () {
+            return (Build.DEVICE == "mars" || Build.DEVICE == "star")
+        }
+
     private var useMainConstant: Boolean? = false // null
     fun getQcLimit(): String {
         if (useMainConstant == null) {
@@ -393,8 +399,7 @@ class BatteryUtils {
         var limit = if (useMainConstant == true) {
             KernelProrp.getProp("/sys/class/power_supply/main/constant_charge_current_max")
         } else {
-            // Xiaomi 11Pro/Ultra
-            if ((Build.DEVICE == "mars" || Build.DEVICE == "star")) {
+            if (mi11ProSeries) {
                 KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current")
             } else {
                 KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
@@ -449,7 +454,7 @@ class BatteryUtils {
                 }
 
                 return if (fastChargeScript.isNotEmpty()) {
-                    if (limit > 3000) {
+                    if (limit > 3000 && !mi11ProSeries) {
                         var current = 3000
                         while (current < (limit - 300) && current < 5000) {
                             if (KeepShellPublic.getInstance("setChargeInputLimit", true).doCmdSync("$fastChargeScript$current 1") == "error") {

@@ -93,6 +93,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
+                R.id.nav_power_utilization -> {
+                    val intent = Intent(context, ActivityPowerUtilization::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_img -> {
                     if (BackupRestoreUtils.isSupport()) {
                         val intent = Intent(context, ActivityImg::class.java)

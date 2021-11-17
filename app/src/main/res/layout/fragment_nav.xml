@@ -73,6 +73,12 @@
                 style="@style/nav_item_wrap"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_charge" />
+
+            <com.omarea.ui.NavItem
+                android:id="@+id/nav_power_utilization"
+                style="@style/nav_item_wrap_right"
+                app:drawable="@drawable/ic_bat_stats"
+                app:text="@string/menu_power_utilization" />
         </GridLayout>
 
 

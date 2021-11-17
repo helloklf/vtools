@@ -4,53 +4,56 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.BatteryManager;
 
 import com.omarea.model.BatteryAvgStatus;
 import com.omarea.model.BatteryStatus;
+import com.omarea.model.PowerHistory;
 
 import java.util.ArrayList;
 
 public class BatteryHistoryStore extends SQLiteOpenHelper {
     public BatteryHistoryStore(Context context) {
-        super(context, "battery-history", null, 2);
+        super(context, "battery-history3", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL(
-                    "create table battery_io(" +
-                            "time text primary key, " +
-                            "level int default(-1), " +
-                            "temperature REAL default(-1), " +
-                            "status int default(-1)," +
-                            "mode text," +
-                            "io int default(-1)," +
-                            "package text" +
-                            ")");
+                "create table battery_io(" +
+                    "time text primary key, " +
+                    "temperature REAL default(-1), " +
+                    "status int default(-1)," +
+                    "mode text," +
+                    "io int default(-1)," +
+                    "package text," +
+                    "screen_on INTEGER," +
+                    "capacity INTEGER" +
+                ")");
         } catch (Exception ignored) {
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1) {
-            db.delete("battery_io", " 1 = 1", new String[]{});
-        }
     }
 
     public boolean insertHistory(BatteryStatus batteryStatus) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("insert into battery_io(time, level, temperature, status, mode, io, package) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL(
+                "insert into battery_io(time, temperature, status, mode, io, package, screen_on, capacity) " +
+                    "values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     "" + batteryStatus.time,
-                    batteryStatus.level,
                     batteryStatus.temperature,
                     batteryStatus.status,
                     batteryStatus.mode,
                     batteryStatus.io,
-                    batteryStatus.packageName
+                    batteryStatus.packageName,
+                    batteryStatus.screenOn ? 1 : 0,
+                    batteryStatus.capacity
             });
             database.setTransactionSuccessful();
             return true;
@@ -126,7 +129,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             Cursor cursor = sqLiteDatabase.rawQuery(
                     "select * from (select avg(io) AS io, avg(temperature) as avg, min(temperature) as min, max(temperature) as max, package, mode, count(io) from battery_io where status = ? group by package, mode) r order by io",
                     new String[]{
-                            "" + batteryStatus
+                        "" + batteryStatus
                     });
             ArrayList<BatteryAvgStatus> data = new ArrayList<>();
             while (cursor.moveToNext()) {
@@ -145,6 +148,42 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         } catch (Exception ex) {
         }
         return new ArrayList<>();
+    }
+
+    public ArrayList<PowerHistory> getCurve() {
+        ArrayList<PowerHistory> histories = new ArrayList<>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery(
+                "select time, capacity, screen_on, status from battery_io",
+                new String[]{}
+            );
+            PowerHistory prev = null;
+            while (cursor.moveToNext()) {
+                PowerHistory row = new PowerHistory() {{
+                    startTime = cursor.getLong(0);
+                    endTime = startTime;
+                    capacity = cursor.getInt(1);
+                    screenOn = cursor.getInt(2) == 1;
+                    charging = cursor.getInt(3) != BatteryManager.BATTERY_STATUS_DISCHARGING;
+                }};
+                if (prev == null) {
+                    prev = row;
+                } else if (row.capacity != prev.capacity || row.screenOn != prev.screenOn) {
+                    histories.add(prev);
+                    prev = row;
+                } else {
+                    prev.endTime = row.endTime;
+                }
+            }
+            if (prev != null) {
+                histories.add(prev);
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+        }
+        return histories;
     }
 
     public boolean clearData() {

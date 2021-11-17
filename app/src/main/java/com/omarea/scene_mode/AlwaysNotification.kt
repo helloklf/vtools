@@ -14,6 +14,7 @@ import com.omarea.Scene
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
+import com.omarea.library.basic.ScreenState
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
@@ -49,7 +50,7 @@ internal class AlwaysNotification(
     private var batteryHistoryStore: BatteryHistoryStore? = null
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-    private val batteryUtils = BatteryUtils()
+    private val screenState = ScreenState(context)
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -121,6 +122,8 @@ internal class AlwaysNotification(
             status.temperature = GlobalStatus.temperatureCurrent
             status.status = GlobalStatus.batteryStatus
             status.io = GlobalStatus.batteryCurrentNow.toInt()
+            status.screenOn = screenState.isScreenOn()
+            status.capacity = GlobalStatus.batteryCapacity
 
             if (batteryHistoryStore == null) {
                 batteryHistoryStore = BatteryHistoryStore(context)

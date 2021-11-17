@@ -1,17 +1,16 @@
-package com.omarea.ui.charge
+package com.omarea.ui.power
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import com.omarea.store.ChargeSpeedStore
+import com.omarea.model.BatteryStatus
+import com.omarea.store.BatteryHistoryStore
+import com.omarea.store.PowerUtilizationStore
 import com.omarea.vtools.R
 
-class ChargeTimeView : View {
-    private lateinit var storage: ChargeSpeedStore
+class PowerTimeView : View {
+    private lateinit var storage: BatteryHistoryStore
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -31,7 +30,7 @@ class ChargeTimeView : View {
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         invalidateTextPaintAndMeasurements()
-        storage = ChargeSpeedStore(this.context)
+        storage = BatteryHistoryStore(this.context)
     }
 
     private fun invalidateTextPaintAndMeasurements() {}
@@ -65,13 +64,14 @@ class ChargeTimeView : View {
         return "" + minutes + "m"
     }
 
+    private val paint = Paint()
+    private val dashPathEffect = DashPathEffect(floatArrayOf(4f, 8f), 0f)
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val samples = storage.chargeTime()
-        samples.sortBy { it.capacity }
+        val samples = storage.curve
 
+        paint.reset()
         val pointRadius = 4f
-        val paint = Paint()
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
@@ -80,8 +80,8 @@ class ChargeTimeView : View {
         val startTime = samples.map { it.startTime }.min()
         val maxTime = samples.map { it.endTime }.max()
         var minutes: Int = if (startTime != null && maxTime != null) (((maxTime - startTime) / 60000).toInt()) else 30
-        if (minutes < 50) {
-            minutes = 50
+        if (minutes < 1) {
+            minutes = 1
         }
         if (minutes % 10 != 0) {
             minutes += (10 - (minutes % 10))
@@ -93,8 +93,6 @@ class ChargeTimeView : View {
         val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
         val startY = height - innerPadding
 
-        val pathFilterAlpha = Path()
-
         val textSize = dpSize * 8.5f
         paint.textSize = textSize
 
@@ -105,61 +103,41 @@ class ChargeTimeView : View {
             scaleX = 1.0
         }
 
+        paint.strokeWidth = 1f
+        paint.style = Paint.Style.FILL
         for (point in 0..20) {
-            val drawX = (point * scaleX * ratioX).toInt() + innerPadding
-            if (point % 2 == 0) {
+            if (point % 4 == 0) {
+                val drawX = (point * scaleX * ratioX).toInt() + innerPadding
                 paint.color = Color.parseColor("#888888")
                 if (point % 4 == 0) {
                     val text = minutes2Str((point * scaleX).toInt())
                     canvas.drawText(
-                            text,
-                            drawX,
-                            this.height - innerPadding + textSize + (dpSize * 2),
-                            paint
+                        text,
+                        drawX,
+                        this.height - innerPadding + textSize + (dpSize * 2),
+                        paint
                     )
                 }
-                canvas.drawCircle(
-                        drawX,
-                        this.height - innerPadding,
-                        pointRadius,
-                        paint
-                )
-                paint.strokeWidth = if (point == 0) pointRadius else 2f
-                if (point == 0) {
-                    paint.color = Color.parseColor("#888888")
-                } else {
-                    paint.color = Color.parseColor("#aa888888")
-                }
+                paint.color = Color.parseColor("#40888888")
                 canvas.drawLine(
-                        drawX, innerPadding,
-                        drawX, this.height - innerPadding, paint
-                )
-            } else {
-                paint.strokeWidth = 2f
-                paint.color = Color.parseColor("#aa888888")
-                canvas.drawLine(
-                        drawX, innerPadding,
-                        drawX, this.height - innerPadding, paint
+                    drawX, innerPadding,
+                    drawX, this.height - innerPadding, paint
                 )
             }
         }
 
+        paint.strokeWidth = 2f
+        paint.pathEffect = dashPathEffect
         paint.textAlign = Paint.Align.RIGHT
         for (point in 0..maxY) {
             paint.color = Color.parseColor("#888888")
-            if (point % 10 == 0) {
+            if (point % 25 == 0) {
                 if (point > 0) {
                     canvas.drawText(
-                            point.toString() + "%",
-                            innerPadding - dpSize * 4,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
-                            paint
-                    )
-                    canvas.drawCircle(
-                            innerPadding,
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
-                            pointRadius,
-                            paint
+                        point.toString() + "%",
+                        innerPadding - dpSize * 4,
+                        innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                        paint
                     )
                 }
                 paint.strokeWidth = if (point == 0) pointRadius else 2f
@@ -178,31 +156,62 @@ class ChargeTimeView : View {
             }
         }
 
+        paint.reset()
         paint.color = getColorAccent()
         if (startTime != null) {
             val first = samples.first()
             val last = samples.last()
             val startX = ((first.startTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
             val endX = ((last.endTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
-            pathFilterAlpha.moveTo(startX, startY - (first.capacity * ratioY))
+            var lastX = startX
+            var lastY = startY - (first.capacity * ratioY)
+            var lastSampleTime = first.startTime
+
+            paint.isAntiAlias = true
+            paint.strokeWidth = 8f
+            paint.style = Paint.Style.FILL
+            /*
+            val mShader: Shader = LinearGradient(
+                0f, 0f, 40f, 60f,
+                longArrayOf(Color.RED.toLong(), Color.GREEN.toLong(),
+                Color.BLUE.toLong()), null, Shader.TileMode.REPEAT
+            )
+            */
+            // paint.setShadowLayer(35f, 0f, 30f, Color.BLACK)
             for (sample in samples) {
                 val currentX = ((sample.startTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
-                pathFilterAlpha.lineTo(currentX, startY - (sample.capacity * ratioY))
+                val currentY = startY - (sample.capacity * ratioY)
+
+                // 数据样本时间间隔正常 显示实线，否则显示虚线
+                if ((sample.startTime - lastSampleTime) < 10000) {
+                    paint.pathEffect = null
+                } else {
+                    paint.pathEffect = dashPathEffect
+                }
+                // 亮屏状态的样本显示高亮色，否则显示灰色
+                if (sample.screenOn) {
+                    paint.color = Color.parseColor("#1474e4")
+                } else {
+                    paint.color = Color.parseColor("#80808080")
+                }
+                canvas.drawLine(
+                    lastX,
+                    lastY,
+                    currentX,
+                    currentY,
+                    paint
+                )
+                lastX = currentX
+                lastY = currentY
+                lastSampleTime = sample.endTime
             }
-            pathFilterAlpha.lineTo(endX, startY - (last.capacity * ratioY))
+            canvas.drawLine(
+                lastX,
+                lastY,
+                endX,
+                startY - (last.capacity * ratioY),
+                paint
+            )
         }
-
-        paint.reset()
-        paint.isAntiAlias = true
-        paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 4f
-
-        paint.color = Color.parseColor("#8BC34A")
-        canvas.drawPath(pathFilterAlpha, paint)
-
-        // paint.textSize = dpSize * 12f
-        // paint.textAlign = Paint.Align.RIGHT
-        // paint.style = Paint.Style.FILL
-        // canvas.drawText("电量/时间", width - innerPadding, innerPadding - (dpSize * 4f), paint)
     }
 }
