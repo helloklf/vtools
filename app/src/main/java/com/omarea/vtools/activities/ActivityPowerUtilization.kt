@@ -128,7 +128,6 @@ class ActivityPowerUtilization : ActivityBase() {
                 battrystatus_level.text = "" + level + "%"
             }
 
-            battery_size.text = batteryMAH
             battery_status.text = getString(R.string.battery_temperature) + temp + "°C\n" + getString(R.string.battery_voltage) + voltage + "v\n" + (when (GlobalStatus.batteryStatus) {
                 BatteryManager.BATTERY_STATUS_DISCHARGING -> {
                     getString(R.string.battery_status_discharging)
@@ -146,7 +145,7 @@ class ActivityPowerUtilization : ActivityBase() {
                     getString(R.string.battery_status_not_charging)
                 }
                 else -> getString(R.string.battery_status_unknown)
-            })
+            }) + "\n" + batteryMAH
             battery_capacity_chart.setData(100f, 100f - level, temp.toFloat())
         }
     }

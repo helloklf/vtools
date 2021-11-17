@@ -32,8 +32,8 @@
                 <com.omarea.ui.BatteryView
                     android:layout_margin="@dimen/activity_vertical_margin"
                     android:id="@+id/battery_capacity_chart"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_gravity="center" />
 
                 <TextView
@@ -41,30 +41,19 @@
                     android:layout_margin="@dimen/activity_vertical_margin"
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
-                    style="@style/textTitle"
-                    android:layout_width="70dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:alpha="0.7"
                     android:text="0%"
-                    android:textSize="13dp" />
+                    android:textSize="17dp" />
                 <TextView
-                    android:layout_marginTop="15dp"
+                    android:layout_centerVertical="true"
                     android:id="@+id/battery_status"
                     android:layout_toEndOf="@id/battery_capacity_chart"
-                    style="@style/textDefault"
-                    android:text="--\n--\n--"
+                    android:textSize="13dp"
+                    android:text="--\n--\n--\n--"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/battery_size"
-                    android:layout_toEndOf="@id/battery_capacity_chart"
-                    android:layout_below="@id/battery_status"
-                    style="@style/textDefault"
-                    android:text="--mAh"
-                    android:layout_gravity="start|bottom"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
@@ -86,7 +75,7 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/ListCardItemLast"
+                style="@style/ListCardItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -217,7 +206,7 @@
                         style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="应用使用记录" />
+                        android:text="应用记录" />
                     <com.omarea.ui.HelpIcon
                         android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
@@ -226,6 +215,7 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/battery_stats"
                     android:descendantFocusability="blocksDescendants"
                     android:nestedScrollingEnabled="false"
