@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -175,7 +176,8 @@ class SceneModeAdapter2(private val context: Context, apps: ArrayList<AppInfo>, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val convertView = View.inflate(context, R.layout.list_item_scene_app, null)
+        // val convertView = View.inflate(context, R.layout.list_item_scene_app, null)
+        val convertView = LayoutInflater.from(context).inflate(R.layout.list_item_scene_app, null)
         val viewHolder = ViewHolder(convertView)
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.summery = convertView.findViewById(R.id.ItemSummary)

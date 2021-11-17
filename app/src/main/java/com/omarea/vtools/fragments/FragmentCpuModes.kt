@@ -161,7 +161,7 @@ class FragmentCpuModes : Fragment() {
         config_author.setOnClickListener(sourceClick)
 
         nav_battery_stats.setOnClickListener {
-            val intent = Intent(context, ActivityBatteryStats::class.java)
+            val intent = Intent(context, ActivityPowerUtilization::class.java)
             startActivity(intent)
         }
         nav_app_scene.setOnClickListener {

@@ -108,7 +108,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
                 R.id.nav_battery_stats -> {
-                    val intent = Intent(context, ActivityBatteryStats::class.java)
+                    val intent = Intent(context, ActivityPowerUtilization::class.java)
                     startActivity(intent)
                     return
                 }

@@ -1,14 +1,13 @@
 package com.omarea.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.BatteryAvgStatus
 import com.omarea.scene_mode.ModeSwitcher
@@ -18,70 +17,74 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class AdapterBatteryStats(private var context: Context, private var list: List<BatteryAvgStatus>, private var timerRate: Int) : BaseAdapter() {
-    private var appInfoLoader: AppInfoLoader
-
-    init {
-        this.appInfoLoader = AppInfoLoader(context)
-    }
-
-    override fun getCount(): Int {
-        return list.size ?: 0
-    }
-
-    override fun getItem(position: Int): BatteryAvgStatus {
-        return list[position]
-    }
+class AdapterBatteryStats(
+    private var context: Context,
+    private var list: List<BatteryAvgStatus>,
+    private var timerRate: Int) : RecyclerView.Adapter<AdapterBatteryStats.ViewHolder>()
+{
+    private var appInfoLoader: AppInfoLoader = AppInfoLoader(context)
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    private var packageManager: PackageManager? = null
-
-    @SuppressLint("SetTextI18n")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertView = convertView
-        if (convertView == null) {
-            convertView = View.inflate(context, R.layout.list_item_battery_record, null)
-        }
-        val batteryStats = getItem(position)
-        val modeView = convertView!!.findViewById<TextView>(R.id.itemModeName)
-        modeView.text = ModeSwitcher.getModName(batteryStats.mode)
-
-        when (batteryStats.mode) {
-            ModeSwitcher.POWERSAVE -> {
-                modeView.setTextColor(Color.parseColor("#0091D5"))
-            }
-            ModeSwitcher.PERFORMANCE -> {
-                modeView.setTextColor(Color.parseColor("#6ECB00"))
-            }
-            ModeSwitcher.FAST -> {
-                modeView.setTextColor(Color.parseColor("#FF7E00"))
-            }
-            ModeSwitcher.IGONED -> {
-                modeView.setTextColor(Color.parseColor("#888888"))
-            }
-            ModeSwitcher.BALANCE -> {
-                modeView.setTextColor(Color.parseColor("#00B78A"))
-            }
-            else -> {
-                modeView.setTextColor(Color.parseColor("#00B78A"))
-            }
-        }
-        convertView.findViewById<TextView>(R.id.itemAvgIO).text = (abs(batteryStats.io)).toString() + "mA"
-        convertView.findViewById<TextView>(R.id.itemTemperature).text = "Avg:${batteryStats.avgTemperature}°C Max:${batteryStats.maxTemperature}°C"
-        val time = (batteryStats.count * timerRate / 60.0).toInt()
-        val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "🕓 ${time}分钟"
-
-        GlobalScope.launch(Dispatchers.Main) {
-            val icon = appInfoLoader.loadAppBasicInfo(batteryStats.packageName).await()
-
-            convertView.findViewById<TextView>(R.id.itemTitle).text = icon.appName
-            convertView.findViewById<ImageView>(R.id.itemIcon).setImageDrawable(icon.icon)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val convertView = LayoutInflater.from(context).inflate(R.layout.list_item_battery_record, null)
+        val viewHolder = ViewHolder(convertView).apply {
+            itemAvgIO = convertView.findViewById(R.id.itemAvgIO)
+            itemModeName = convertView.findViewById(R.id.itemModeName)
+            itemTemperature = convertView.findViewById(R.id.itemTemperature)
+            itemCounts = convertView.findViewById(R.id.itemCounts)
+            itemTitle = convertView.findViewById(R.id.itemTitle)
+            itemIcon = convertView.findViewById(R.id.itemIcon)
         }
 
-        return convertView
+        return viewHolder
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val batteryStats = list.get(position)
+        holder.apply {
+            itemModeName.text = ModeSwitcher.getModName(batteryStats.mode)
+
+            itemModeName.setTextColor(Color.parseColor(when (batteryStats.mode) {
+                ModeSwitcher.POWERSAVE -> "#0091D5"
+                ModeSwitcher.PERFORMANCE -> "#6ECB00"
+                ModeSwitcher.FAST -> "#FF7E00"
+                ModeSwitcher.IGONED -> "#888888"
+                ModeSwitcher.BALANCE -> "#00B78A"
+                else -> "#00B78A"
+            }))
+
+            itemAvgIO.text = (abs(batteryStats.io)).toString() + "mA"
+            itemTemperature.text = "Avg:${batteryStats.avgTemperature}°C Max:${batteryStats.maxTemperature}°C"
+            val time = (batteryStats.count * timerRate / 60.0).toInt()
+            itemCounts.text = "🕓 ${time}分钟"
+
+            val app = batteryStats.packageName
+            packageName = app
+
+            GlobalScope.launch(Dispatchers.Main) {
+                val icon = appInfoLoader.loadAppBasicInfo(app).await()
+                if (packageName == app) {
+                    itemTitle.text = icon.appName
+                    itemIcon.setImageDrawable(icon.icon)
+                }
+            }
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        internal lateinit var itemAvgIO: TextView
+        internal lateinit var itemModeName: TextView
+        internal lateinit var itemCounts: TextView
+        internal lateinit var itemTemperature: TextView
+        internal lateinit var itemTitle: TextView
+        internal lateinit var itemIcon: ImageView
+        internal lateinit var packageName: String
     }
 }
