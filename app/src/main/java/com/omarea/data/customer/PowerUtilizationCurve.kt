@@ -137,7 +137,7 @@ class PowerUtilizationCurve(context: Context) : IEventReceiver {
                 capacity = GlobalStatus.batteryCapacity
             }
             status.packageName = ModeSwitcher.getCurrentPowermodeApp()
-            status.mode = ModeSwitcher.getCurrentSourceName()
+            status.mode = ModeSwitcher.getCurrentPowerMode()
             storage.insertHistory(status)
         }
     }
