@@ -45,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:alpha="0.7"
+                    android:textColor="?android:textColorPrimary"
                     android:text="0%"
                     android:textSize="17dp" />
                 <TextView
@@ -56,38 +57,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
-
             <LinearLayout
                 style="@style/ListCardItem"
-                android:paddingEnd="0dp"
-                android:paddingBottom="4dp">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="电量/时间" />
-
-                <com.omarea.ui.power.PowerTimeView
-                    android:id="@+id/view_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/ListCardItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="0dp">
-
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="峰值统计" />
+                    android:text="峰值记录" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,6 +172,31 @@
                             android:textAlignment="center" />
                     </RelativeLayout>
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:paddingEnd="0dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="耗电记录" />
+
+                <com.omarea.ui.power.PowerTimeView
+                    android:id="@+id/view_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="0dp">
 
                 <LinearLayout
                     android:id="@+id/settings_step_charge"

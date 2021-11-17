@@ -60,11 +60,14 @@ class ChargeCurveView : View {
         val innerPadding = dpSize * 24f
 
         val maxIO = samples.map { it.io }.max()
-        val maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
-        val yScale = when{
-            maxAmpere < 2 -> 5
-            maxAmpere < 3 -> 4
-            maxAmpere < 6 -> 2
+        var maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
+        if (maxAmpere < 3) {
+            maxAmpere = 3
+        } else if (maxAmpere < 6) {
+            maxAmpere = 6
+        }
+        val yScale = when {
+            maxAmpere < 7 -> 2
             else -> 1
         }
 
@@ -108,7 +111,7 @@ class ChargeCurveView : View {
         for (point in 0..yPoints) {
             val valueY = (point / 1.0 / yScale)
             paint.color = Color.parseColor("#888888")
-            if (point > 0) {
+            if (point > 0 && point % 2 == 0L) {
                 canvas.drawText(
                         valueY.toString() + "A",
                         innerPadding - dpSize * 4,

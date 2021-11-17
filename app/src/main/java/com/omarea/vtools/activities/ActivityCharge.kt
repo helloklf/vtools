@@ -120,7 +120,16 @@ class ActivityCharge : ActivityBase() {
             }
 
             battery_size.text = batteryMAH
-            battrystatus.text = getString(R.string.battery_temperature) + temp + "°C\n" + getString(R.string.battery_voltage) + voltage + "v"
+            battery_status.text =
+                    getString(R.string.battery_temperature) + temp + "°C\n" +
+                    getString(R.string.battery_voltage) + voltage + "v\n" +
+                    getString(R.string.battery_electricity) + (
+                        (if (GlobalStatus.batteryCurrentNow > 0) {
+                            "+"
+                        } else {
+                            ""
+                        }) + GlobalStatus.batteryCurrentNow + "mA"
+                    )
             battery_capacity_chart.setData(100f, 100f - level, temp.toFloat())
         }
     }

@@ -62,19 +62,7 @@ class ActivityPowerUtilization : ActivityBase() {
     override fun onResume() {
         super.onResume()
         title = getString(R.string.menu_power_utilization)
-        timer = Timer().apply {
-            schedule(object : TimerTask() {
-                override fun run() {
-                    updateUI()
-                }
-            }, 0, 10000)
-        }
-    }
-
-    override fun onPause() {
-        timer?.cancel()
-        timer = null
-        super.onPause()
+        updateUI()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -95,7 +83,7 @@ class ActivityPowerUtilization : ActivityBase() {
     }
 
     private var batteryUtils = BatteryUtils()
-    private val hander = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     private fun updateUI() {
         val level = GlobalStatus.batteryCapacity
         val temp = GlobalStatus.updateBatteryTemperature()
@@ -106,7 +94,7 @@ class ActivityPowerUtilization : ActivityBase() {
         val data = storage.getAvgData(BatteryManager.BATTERY_STATUS_DISCHARGING)
         val sampleTime = 6
 
-        hander.post {
+        handler.post {
             battery_stats.adapter = AdapterBatteryStats(context, (data.filter {
                 // 仅显示运行时间超过2分钟的应用数据，避免误差过大
                 (it.count * sampleTime) > 120
@@ -169,7 +157,7 @@ class ActivityPowerUtilization : ActivityBase() {
             batteryTemperatureMax = maxTemperature
         }
 
-        hander.post {
+        handler.post {
             try {
                 battery_max_output.setData(batteryOutputMax.toFloat(), batteryOutputMax - maxOutput.toFloat())
                 battery_max_output_text.text = maxOutput.toString() + " mA"
