@@ -325,7 +325,7 @@
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/dynamic_control_opts"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <com.omarea.ui.UMExpandLayout
@@ -455,7 +455,9 @@
                         android:id="@+id/dynamic_control_toggle"
                         android:src="@drawable/arrow_down"
                         android:padding="4dp"
-                        android:layout_width="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="60dp"
+                        android:background="@drawable/in_card_item"
                         android:layout_height="24dp" />
                 </RelativeLayout>
 

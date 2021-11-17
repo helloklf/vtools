@@ -205,7 +205,7 @@
     <string name="schedule_app">应用策略</string>
     <string name="schedule_app_desc">为每个应用单独设置调度策略</string>
     <string name="schedule_unfinished">在安装有效的调度配置之前，你不能开启本功能~</string>
-    <string name="schedule_remove_outside">你正在使用其它作者提供的调度配置(位于/data/powercfg.sh)，切换到Scene自带的调度配置需将其删除。现在要删除它吗？\n\n* 删除后建议重启手机一次</string>
+    <string name="schedule_remove_outside">你已安装其它作者提供的调度配置(位于/data/powercfg.sh)，更改配置源需先将其删除。现在要删除它吗？\n\n* 删除后建议重启手机一次</string>
     <string name="schedule_unofficial">你正在使用其它作者提供的调度配置~</string>
     <string name="schedule_unsupported">Scene自带的调度配置尚未适配当前SOC~</string>
     <string name="schedule_dynamic_off">你未开启[动态响应]，Scene无法根据前台应用变化调节设备性能！</string>

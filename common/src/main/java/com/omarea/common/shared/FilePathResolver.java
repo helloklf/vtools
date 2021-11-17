@@ -5,10 +5,20 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import kotlin.text.Regex;
 
 public class FilePathResolver {
     /**
@@ -20,12 +30,8 @@ public class FilePathResolver {
      */
     @SuppressLint("NewApi")
     public String getPath(final Context context, final Uri uri) {
-
-        // check here to KITKAT or new version
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
         // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        if (DocumentsContract.isDocumentUri(context, uri)) {
 
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
@@ -40,13 +46,25 @@ public class FilePathResolver {
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
-
                 final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"),
-                        Long.valueOf(id));
+                if (new Regex("^[0-9]{1,}").matches(id)) {
+                    final Uri contentUri = ContentUris.withAppendedId(
+                            Uri.parse("content://downloads/public_downloads"),
+                            Long.parseLong(id));
+                    return getDataColumn(context, contentUri, null, null);
+                } else {
+                    // 拷贝到缓存目录并返回文件
+                    String fileName = getFileName(context, uri);
+                    File cacheDir = getDocumentCacheDir(context);
+                    File file = generateFileName(fileName, cacheDir);
+                    String destinationPath = null;
+                    if (file != null) {
+                        destinationPath = file.getAbsolutePath();
+                        saveFileFromUri(context, uri, destinationPath);
+                    }
 
-                return getDataColumn(context, contentUri, null, null);
+                    return destinationPath;
+                }
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -111,6 +129,7 @@ public class FilePathResolver {
                 final int index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(index);
             }
+        } catch (Exception ignored) {
         } finally {
             if (cursor != null)
                 cursor.close();
@@ -152,5 +171,107 @@ public class FilePathResolver {
     private boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri
                 .getAuthority());
+    }
+
+    public String getFileName(@NonNull Context context, Uri uri) {
+        String mimeType = context.getContentResolver().getType(uri);
+        String filename = null;
+        if (mimeType == null) {
+            String path = getPath(context, uri);
+            if (path == null) {
+                filename = getName(uri.toString());
+            } else {
+                File file = new File(path);
+                filename = file.getName();
+            }
+        } else {
+            Cursor returnCursor = context.getContentResolver().query(uri, null,
+                    null, null, null);
+            if (returnCursor != null) {
+                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                returnCursor.moveToFirst();
+                filename = returnCursor.getString(nameIndex);
+                returnCursor.close();
+            }
+        }
+
+        return filename;
+    }
+
+    public String getName(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = filename.lastIndexOf('/');
+        return filename.substring(index + 1);
+    }
+
+    public static File getDocumentCacheDir(@NonNull Context context) {
+        File dir = new File(context.getCacheDir(), "documents");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        return dir;
+    }
+
+    @Nullable
+    public static File generateFileName(@Nullable String name, File directory) {
+        if (name == null) {
+            return null;
+        }
+
+        File file = new File(directory, name);
+
+        if (file.exists()) {
+            String fileName = name;
+            String extension = "";
+            int dotIndex = name.lastIndexOf('.');
+            if (dotIndex > 0) {
+                fileName = name.substring(0, dotIndex);
+                extension = name.substring(dotIndex);
+            }
+
+            int index = 0;
+
+            while (file.exists()) {
+                index++;
+                name = fileName + '(' + index + ')' + extension;
+                file = new File(directory, name);
+            }
+        }
+
+        try {
+            if (!file.createNewFile()) {
+                return null;
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        return file;
+    }
+
+
+    private static void saveFileFromUri(Context context, Uri uri, String destinationPath) {
+        InputStream is = null;
+        BufferedOutputStream bos = null;
+        try {
+            is = context.getContentResolver().openInputStream(uri);
+            bos = new BufferedOutputStream(new FileOutputStream(destinationPath, false));
+            byte[] buf = new byte[1024];
+            is.read(buf);
+            do {
+                bos.write(buf);
+            } while (is.read(buf) != -1);
+        } catch (IOException ignored) {
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
