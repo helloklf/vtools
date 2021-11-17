@@ -27,10 +27,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.ui.AdapterProcessMini
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityBase
-import com.omarea.vtools.activities.ActivityCharge
-import com.omarea.vtools.activities.ActivityProcess
-import com.omarea.vtools.activities.ActivitySwap
+import com.omarea.vtools.activities.*
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.Dispatchers
@@ -191,7 +188,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
         // 点击电池信息
         home_battery.setOnClickListener {
-            startActivity(Intent(context, ActivityCharge::class.java))
+            if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+                startActivity(Intent(context, ActivityPowerUtilization::class.java))
+            } else {
+                startActivity(Intent(context, ActivityCharge::class.java))
+            }
         }
         // 点击CPU
         home_cpu.setOnClickListener {

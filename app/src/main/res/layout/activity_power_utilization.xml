@@ -21,42 +21,7 @@
             android:focusable="false"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
-            <RelativeLayout
-                android:id="@+id/battery_capacity_wrap"
-                style="@style/ListCardItem"
-                android:padding="0dp"
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="8dp">
 
-                <com.omarea.ui.BatteryView
-                    android:layout_margin="@dimen/activity_vertical_margin"
-                    android:id="@+id/battery_capacity_chart"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center" />
-
-                <TextView
-                    android:id="@+id/battrystatus_level"
-                    android:layout_margin="@dimen/activity_vertical_margin"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerInParent="true"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:alpha="0.7"
-                    android:textColor="?android:textColorPrimary"
-                    android:text="0%"
-                    android:textSize="17dp" />
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:id="@+id/battery_status"
-                    android:layout_toEndOf="@id/battery_capacity_chart"
-                    android:textSize="13dp"
-                    android:text="--\n--\n--\n--"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
             <LinearLayout
                 style="@style/ListCardItem"
                 android:orientation="vertical"
@@ -174,22 +139,103 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 style="@style/ListCardItem"
-                android:paddingEnd="0dp"
-                android:paddingBottom="4dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp">
 
                 <TextView
+                    android:id="@+id/view_time_title"
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="耗电记录" />
+                    android:text="使用记录" />
+
+                <TextView
+                    android:id="@+id/battery_capacity"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:alpha="0.7"
+                    android:textColor="?android:textColorPrimary"
+                    android:text="0.0%"
+                    android:textSize="17dp" />
 
                 <com.omarea.ui.power.PowerTimeView
+                    android:layout_below="@id/view_time_title"
                     android:id="@+id/view_time"
                     android:layout_width="match_parent"
                     android:layout_height="250dp" />
-            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="center_vertical"
+                    android:layout_below="@id/view_time"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/ic_capacity"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_size"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="0000mAh"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_temperature"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_temperature"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="00°C"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_voltage"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_voltage"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="3.75V"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_power_supply"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_status"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="--"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 style="@style/ListCardItem"
@@ -215,21 +261,23 @@
                         android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:text="这里统计的只是每个应用在前台显示时的整机耗电，而电流和温度显示的是所有检测记录的平均值。这意味着此数值数值会受其它后台应用耗电影响！\n\n此数据由Scene的场景模式后台运行过程中自行统计，如果你已经保持场景模式后台运行一段时间，却一直得不到数据，请检查概览界面的电流显示是否正确，如果错误请手动校准电流单位。" />
+                        app:text="此处统计的数据为：在每个应用前台显示期间的电池[电流|温度]平均值，并非指该[耗电|温度]均由此应用造成！\n\n你需要激活辅助服务，并让Scene保持后台运行，如果还是没有记录数据，请尝试校准电流单位！" />
                 </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:id="@+id/battery_stats"
-                    android:descendantFocusability="blocksDescendants"
-                    android:nestedScrollingEnabled="false"
-                    app:fastScrollEnabled="false"
-                    android:minHeight="200dp"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:overScrollMode="never"
-                    android:scrollbars="none" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/battery_stats"
+                        android:descendantFocusability="blocksDescendants"
+                        android:nestedScrollingEnabled="false"
+                        app:fastScrollEnabled="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:overScrollMode="never"
+                        android:scrollbars="none" />
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout

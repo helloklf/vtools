@@ -14,8 +14,6 @@ import com.omarea.vtools.R
 
 
 class BatteryView : View {
-    //-------------必须给的数据相关-------------
-    private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
 
@@ -176,9 +174,9 @@ class BatteryView : View {
         } else if (temperature > 41 || ratio < 31) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else if (temperature > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
+            cyclePaint!!.color = resources.getColor(R.color.colorAccent)
         } else {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+            cyclePaint!!.color = resources.getColor(R.color.color_load_none)
         }
 
         /*

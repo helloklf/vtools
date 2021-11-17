@@ -55,12 +55,12 @@
                     <TextView
                         android:id="@+id/battrystatus_level"
                         style="@style/textTitle"
-                        android:layout_width="match_parent"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_gravity="center"
                         android:alpha="0.7"
                         android:text="0%"
-                        android:textAlignment="center"
                         android:textSize="30dp" />
                 </FrameLayout>
 
@@ -85,7 +85,7 @@
 
                         <TextView
                             android:id="@+id/charge_state"
-                            style="@style/textTitle"
+                            style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="" />
@@ -96,6 +96,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_marginStart="0dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:layout_marginBottom="0dp"
                         android:layout_weight="1"
                         android:gravity="center_vertical"

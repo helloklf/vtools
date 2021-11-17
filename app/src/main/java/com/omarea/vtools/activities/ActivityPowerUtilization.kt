@@ -106,17 +106,17 @@ class ActivityPowerUtilization : ActivityBase() {
                 val str = "$kernelCapacity%"
                 val ss = SpannableString(str)
                 if (str.contains(".")) {
-                    val small = AbsoluteSizeSpan((battrystatus_level.textSize * 0.3).toInt(), false)
+                    val small = AbsoluteSizeSpan((battery_capacity.textSize * 0.45).toInt(), false)
                     ss.setSpan(small, str.indexOf("."), str.lastIndexOf("%"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    val medium = AbsoluteSizeSpan((battrystatus_level.textSize * 0.5).toInt(), false)
+                    val medium = AbsoluteSizeSpan((battery_capacity.textSize * 0.65).toInt(), false)
                     ss.setSpan(medium, str.indexOf("%"), str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
-                battrystatus_level.text = ss
+                battery_capacity.text = ss
             } else {
-                battrystatus_level.text = "" + level + "%"
+                battery_capacity.text = "" + level + "%"
             }
 
-            battery_status.text = getString(R.string.battery_temperature) + temp + "°C\n" + getString(R.string.battery_voltage) + voltage + "v\n" + (when (GlobalStatus.batteryStatus) {
+            battery_status.text = (when (GlobalStatus.batteryStatus) {
                 BatteryManager.BATTERY_STATUS_DISCHARGING -> {
                     getString(R.string.battery_status_discharging)
                 }
@@ -133,9 +133,13 @@ class ActivityPowerUtilization : ActivityBase() {
                     getString(R.string.battery_status_not_charging)
                 }
                 else -> getString(R.string.battery_status_unknown)
-            }) + "\n" + batteryMAH
-            battery_capacity_chart.setData(100f, 100f - level, temp.toFloat())
+            })
+            battery_voltage.text = "${voltage}v"
+            battery_temperature.text =  "$temp°C"
+            battery_size.text = batteryMAH
         }
+
+        updateMaxState()
     }
 
     private fun updateMaxState() {
