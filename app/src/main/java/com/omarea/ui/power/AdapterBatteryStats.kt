@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.omarea.data.customer.PowerUtilizationCurve.Companion.SAMPLING_INTERVAL
 import com.omarea.library.basic.AppInfoLoader
@@ -32,10 +31,10 @@ class AdapterBatteryStats(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val convertView = LayoutInflater.from(context).inflate(R.layout.list_item_battery_record, null)
         val viewHolder = ViewHolder(convertView).apply {
-            itemAvgIO = convertView.findViewById(R.id.itemAvgIO)
+            itemAvg = convertView.findViewById(R.id.itemAvgIO)
             itemModeName = convertView.findViewById(R.id.itemModeName)
-            itemTemperature = convertView.findViewById(R.id.itemTemperature)
-            itemCounts = convertView.findViewById(R.id.itemCounts)
+            itemMax = convertView.findViewById(R.id.itemTemperature)
+            itemTimes = convertView.findViewById(R.id.itemCounts)
             itemTitle = convertView.findViewById(R.id.itemTitle)
             itemIcon = convertView.findViewById(R.id.itemIcon)
         }
@@ -43,11 +42,23 @@ class AdapterBatteryStats(
         return viewHolder
     }
 
-    private val bgPowersave = ContextCompat.getDrawable(context, R.drawable.powercfg_powersave)
-    private val bgBalance = ContextCompat.getDrawable(context, R.drawable.powercfg_balance)
-    private val bgPerformance = ContextCompat.getDrawable(context, R.drawable.powercfg_performance)
-    private val bgFast = ContextCompat.getDrawable(context, R.drawable.powercfg_fast)
-    private val bgNone = ContextCompat.getDrawable(context, R.drawable.powercfg_none)
+    /*
+    private val bgPowersave = ContextCompat.getDrawable(context, R.drawable.powercfg_powersave)?.apply {
+        alpha = 128
+    }
+    private val bgBalance = ContextCompat.getDrawable(context, R.drawable.powercfg_balance)?.apply {
+        alpha = 128
+    }
+    private val bgPerformance = ContextCompat.getDrawable(context, R.drawable.powercfg_performance)?.apply {
+        alpha = 128
+    }
+    private val bgFast = ContextCompat.getDrawable(context, R.drawable.powercfg_fast)?.apply {
+        alpha = 128
+    }
+    private val bgNone = ContextCompat.getDrawable(context, R.drawable.powercfg_none)?.apply {
+        alpha = 128
+    }
+    */
     private val samplingInterval = (SAMPLING_INTERVAL / 1000) // 采样间隔（秒）
 
     private fun minutes2Str(minutes: Long): String {
@@ -66,6 +77,7 @@ class AdapterBatteryStats(
         holder.apply {
             itemModeName.text = ModeSwitcher.getModName(batteryStats.mode)
 
+            /*
             itemModeName.background = (when (batteryStats.mode) {
                 ModeSwitcher.POWERSAVE -> bgPowersave
                 ModeSwitcher.BALANCE -> bgBalance
@@ -73,10 +85,19 @@ class AdapterBatteryStats(
                 ModeSwitcher.FAST -> bgFast
                 else -> bgNone
             })
+            */
+            itemModeName.setTextColor(Color.parseColor(when (batteryStats.mode) {
+                ModeSwitcher.POWERSAVE -> "#0091D5"
+                ModeSwitcher.PERFORMANCE -> "#6ECB00"
+                ModeSwitcher.FAST -> "#FF7E00"
+                ModeSwitcher.IGONED -> "#888888"
+                ModeSwitcher.BALANCE -> "#00B78A"
+                else -> "#00B78A"
+            }))
 
-            itemAvgIO.text = String.format ("Avg: %dmA", abs(batteryStats.io))
-            itemTemperature.text = String.format ("Avg: %d°C  Max: %d°C", batteryStats.avgTemperature, batteryStats.maxTemperature)
-            itemCounts.text = minutes2Str(samplingInterval * batteryStats.count / 60)
+            itemAvg.text = String.format ("%dmA, %d°C", abs(batteryStats.io), batteryStats.avgTemperature)
+            itemMax.text = String.format ("%d°C", batteryStats.maxTemperature)
+            itemTimes.text = minutes2Str(samplingInterval * batteryStats.count / 60)
 
             val app = batteryStats.packageName
             packageName = app
@@ -96,12 +117,12 @@ class AdapterBatteryStats(
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        internal lateinit var itemAvgIO: TextView
-        internal lateinit var itemModeName: TextView
-        internal lateinit var itemCounts: TextView
-        internal lateinit var itemTemperature: TextView
         internal lateinit var itemTitle: TextView
         internal lateinit var itemIcon: ImageView
+        internal lateinit var itemAvg: TextView
+        internal lateinit var itemMax: TextView
+        internal lateinit var itemModeName: TextView
+        internal lateinit var itemTimes: TextView
         internal lateinit var packageName: String
     }
 }
