@@ -1,4 +1,4 @@
-package com.omarea.ui
+package com.omarea.ui.power
 
 import android.content.Context
 import android.graphics.Color
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.BatteryAvgStatus
@@ -18,9 +19,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class AdapterBatteryStats(
-    private var context: Context,
-    private var list: List<BatteryAvgStatus>,
-    private var timerRate: Int) : RecyclerView.Adapter<AdapterBatteryStats.ViewHolder>()
+        private var context: Context,
+        private var list: List<BatteryAvgStatus>) : RecyclerView.Adapter<AdapterBatteryStats.ViewHolder>()
 {
     private var appInfoLoader: AppInfoLoader = AppInfoLoader(context)
 
@@ -42,24 +42,27 @@ class AdapterBatteryStats(
         return viewHolder
     }
 
+    private val bgPowersave = ContextCompat.getDrawable(context, R.drawable.powercfg_powersave)
+    private val bgBalance = ContextCompat.getDrawable(context, R.drawable.powercfg_balance)
+    private val bgPerformance = ContextCompat.getDrawable(context, R.drawable.powercfg_performance)
+    private val bgFast = ContextCompat.getDrawable(context, R.drawable.powercfg_fast)
+    private val bgNone = ContextCompat.getDrawable(context, R.drawable.powercfg_none)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val batteryStats = list.get(position)
         holder.apply {
             itemModeName.text = ModeSwitcher.getModName(batteryStats.mode)
 
-            itemModeName.setTextColor(Color.parseColor(when (batteryStats.mode) {
-                ModeSwitcher.POWERSAVE -> "#0091D5"
-                ModeSwitcher.PERFORMANCE -> "#6ECB00"
-                ModeSwitcher.FAST -> "#FF7E00"
-                ModeSwitcher.IGONED -> "#888888"
-                ModeSwitcher.BALANCE -> "#00B78A"
-                else -> "#00B78A"
-            }))
+            itemModeName.background = (when (batteryStats.mode) {
+                ModeSwitcher.POWERSAVE -> bgPowersave
+                ModeSwitcher.BALANCE -> bgBalance
+                ModeSwitcher.PERFORMANCE -> bgPerformance
+                ModeSwitcher.FAST -> bgFast
+                else -> bgNone
+            })
 
-            itemAvgIO.text = (abs(batteryStats.io)).toString() + "mA"
-            itemTemperature.text = "Avg:${batteryStats.avgTemperature}°C Max:${batteryStats.maxTemperature}°C"
-            val time = (batteryStats.count * timerRate / 60.0).toInt()
-            itemCounts.text = "🕓 ${time}分钟"
+            itemAvgIO.text = String.format ("Avg: %dmA", abs(batteryStats.io))
+            itemTemperature.text = String.format ("Avg: %d°C  Max: %d°C", batteryStats.avgTemperature, batteryStats.maxTemperature)
+            itemCounts.text = "*" + batteryStats.count + ""
 
             val app = batteryStats.packageName
             packageName = app

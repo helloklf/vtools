@@ -18,13 +18,13 @@ import java.util.*
 /**
  * Created by Hello on 2018/01/26.
  */
-class FreezeAppAdapter(private val context: Context, private var apps: ArrayList<AppInfo>) : BaseAdapter(), Filterable {
+class AdapterFreezeApp(private val context: Context, private var apps: ArrayList<AppInfo>) : BaseAdapter(), Filterable {
     private val appIconLoader = AppInfoLoader(context)
     private var filter: Filter? = null
     internal var filterApps: ArrayList<AppInfo> = apps
     private val mLock = Any()
 
-    private class ArrayFilter(private var adapter: FreezeAppAdapter) : Filter() {
+    private class ArrayFilter(private var adapter: AdapterFreezeApp) : Filter() {
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             adapter.filterApps = results!!.values as ArrayList<AppInfo>

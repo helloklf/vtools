@@ -170,6 +170,7 @@ class AppListHelper(private val context: Context, private val getTags: Boolean =
         return getAppList(null, false)
     }
 
+    // 获取可启动应用
     fun getBootableApps(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<AppInfo> {
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -221,7 +222,8 @@ class AppListHelper(private val context: Context, private val getTags: Boolean =
         return (list)
     }
 
-    fun getBackupedAppList(): ArrayList<AppInfo> {
+    // 获取备份列表
+    fun getShadowAppList(): ArrayList<AppInfo> {
         val dirPath = CommonCmds.AbsBackUpDir
         val list = ArrayList<AppInfo>()
         val dir = File(dirPath)

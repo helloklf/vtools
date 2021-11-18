@@ -31,11 +31,14 @@ import com.omarea.scene_mode.LogoCacheManager
 import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.ui.FreezeAppAdapter
+import com.omarea.ui.AdapterFreezeApp
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_freeze_apps.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class ActivityFreezeApps : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
@@ -201,7 +204,7 @@ class ActivityFreezeApps : ActivityBase() {
                     startApp(appInfo)
                 } else {
                     toggleEnable(appInfo)
-                    (freeze_apps.adapter as FreezeAppAdapter).updateRow(position, freeze_apps, appInfo)
+                    (freeze_apps.adapter as AdapterFreezeApp).updateRow(position, freeze_apps, appInfo)
                 }
             } catch (ex: Exception) {
             }
@@ -288,7 +291,7 @@ class ActivityFreezeApps : ActivityBase() {
 
                 handler.post {
                     try {
-                        freeze_apps.adapter = FreezeAppAdapter(this.applicationContext, freezeAppsInfo)
+                        freeze_apps.adapter = AdapterFreezeApp(this.applicationContext, freezeAppsInfo)
                         processBarDialog.hideDialog()
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // 即时是Oreo也可能出现获取不到已添加的快捷方式的情况，例如换了第三方桌面
@@ -318,12 +321,12 @@ class ActivityFreezeApps : ActivityBase() {
                 getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName",
                 {
                     processBarDialog.showDialog(getString(R.string.please_wait))
-                    CreateShortcutThread(lostedShortcuts, context, Runnable {
+                    CreateShortcutThread(lostedShortcuts, context) {
                         handler.post {
                             loadData()
                             processBarDialog.hideDialog()
                         }
-                    }).start()
+                    }.start()
                 })
     }
 
@@ -375,9 +378,9 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     // TODO:替换公共方法
-    fun getUserId(context: Context): Int {
+    private fun getUserId(context: Context): Int {
         val um = context.getSystemService(Context.USER_SERVICE) as UserManager
-        val userHandle = android.os.Process.myUserHandle()
+        val userHandle = Process.myUserHandle()
 
         var value = 0
         try {
@@ -391,7 +394,7 @@ class ActivityFreezeApps : ActivityBase() {
     // 切换[图标置灰模式]
     private fun switchSuspendMode(enabled: Boolean) {
         processBarDialog.showDialog()
-        Thread {
+        GlobalScope.launch(Dispatchers.IO) {
             for (it in freezeApps) {
                 enableApp(it)
                 disableApp(it)
@@ -400,7 +403,7 @@ class ActivityFreezeApps : ActivityBase() {
                 processBarDialog.hideDialog()
                 loadData()
             }
-        }.start()
+        }
     }
 
     private fun removeAndUninstall(appInfo: AppInfo) {
@@ -417,7 +420,7 @@ class ActivityFreezeApps : ActivityBase() {
     }
 
     private fun disableApp(appInfo: AppInfo) {
-        disableApp(appInfo.packageName.toString())
+        disableApp(appInfo.packageName)
     }
 
     private fun disableApp(packageName: String) {
@@ -447,11 +450,11 @@ class ActivityFreezeApps : ActivityBase() {
             enableApp(appInfo)
             appInfo.enabled = true
             appInfo.suspended = false
-            (freeze_apps?.adapter as FreezeAppAdapter?)?.notifyDataSetChanged()
+            (freeze_apps?.adapter as AdapterFreezeApp?)?.notifyDataSetChanged()
         }
         SceneMode.getCurrentInstance()?.setFreezeAppLeaveTime(appInfo.packageName)
         try {
-            val intent = this.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
+            val intent = this.packageManager.getLaunchIntentForPackage(appInfo.packageName)
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
 
             // i.setFlags((i.getFlags() & ~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED) | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -462,7 +465,7 @@ class ActivityFreezeApps : ActivityBase() {
             // i.setFlags(0x10200000);
             // Log.d("getAppSwitchIntent", "" + i.getFlags());
             intent?.run {
-                setFlags(getFlags() and Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED.inv() or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                flags = getFlags() and Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED.inv() or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
                 addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
                 // setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -498,7 +501,7 @@ class ActivityFreezeApps : ActivityBase() {
                     KeepShellPublic.doCmdSync("pm enable ${appInfo.packageName}")
                 }
                 sleep(3000)
-                FreezeAppShortcutHelper().createShortcut(context, appInfo.packageName.toString())
+                FreezeAppShortcutHelper().createShortcut(context, appInfo.packageName)
             }
             onCompleted.run()
         }
@@ -525,20 +528,20 @@ class ActivityFreezeApps : ActivityBase() {
                             addFreezeApps(ArrayList(apps.map { it.packageName }))
                         }
                     })
-                    .setExcludeApps(arrayOf(
-                            context.packageName,
-                            "com.topjohnwu.magisk",
-                            "eu.chainfire.supersu",
-                            "com.android.settings"))
-                    .setAllowAllSelect(false)
-                    .show(supportFragmentManager, "freeze-app-add")
+                            .setExcludeApps(arrayOf(
+                                    context.packageName,
+                                    "com.topjohnwu.magisk",
+                                    "eu.chainfire.supersu",
+                                    "com.android.settings"))
+                            .setAllowAllSelect(false)
+                            .show(supportFragmentManager, "freeze-app-add")
                 } catch (ex: java.lang.Exception) {
                 }
             }
         }.start()
     }
 
-    private fun addFreezeApps(selectedItems: ArrayList<String>) {
+    private fun addFreezeApps(selectedItems: List<String>) {
         processBarDialog.showDialog(getString(R.string.please_wait))
         val next = Runnable {
             handler.post {
@@ -552,7 +555,12 @@ class ActivityFreezeApps : ActivityBase() {
         AddFreezeAppsThread(context, selectedItems, next, useSuspendMode).start()
     }
 
-    private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable, private val useSuspendMode: Boolean) : Thread() {
+    private class AddFreezeAppsThread(
+            private var context: Context,
+            private var selectedItems: List<String>,
+            private var onCompleted: Runnable,
+            private val useSuspendMode: Boolean
+    ) : Thread() {
         val packageManager: PackageManager = context.packageManager
         private fun disableApp(packageName: String) {
             if (useSuspendMode) {
@@ -584,7 +592,11 @@ class ActivityFreezeApps : ActivityBase() {
         }
 
         private fun getAppIcon(packageName: String): Drawable? {
-            return packageManager.getApplicationIcon(packageName)
+            try {
+                return packageManager.getApplicationIcon(packageName)
+            } catch (ex: java.lang.Exception) {
+                return null
+            }
         }
     }
 
@@ -639,21 +651,29 @@ class ActivityFreezeApps : ActivityBase() {
             dialog.dismiss()
             createShortcutAll()
         }
+        view.findViewById<View>(R.id.menu_auto_add).setOnClickListener { _ ->
+            dialog.dismiss()
+            autoAddList()
+        }
     }
 
     private fun createShortcutAll() {
         DialogHelper.confirm(this, getString(R.string.freeze_batch_add), getString(R.string.freeze_batch_add_wran), {
             processBarDialog.showDialog(getString(R.string.please_wait))
-            CreateShortcutAllThread(context, freezeApps, Runnable {
+            CreateShortcutAllThread(context, freezeApps) {
                 handler.post {
                     processBarDialog.hideDialog()
                     loadData()
                 }
-            }).start()
+            }.start()
         })
     }
 
-    private class CreateShortcutAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
+    private class CreateShortcutAllThread(
+            private var context: Context,
+            private var freezeApps: ArrayList<String>,
+            private var onCompleted: Runnable
+    ) : Thread() {
         override fun run() {
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
@@ -665,9 +685,12 @@ class ActivityFreezeApps : ActivityBase() {
         }
     }
 
-    private class RemoveAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
+    private class RemoveAllThread(
+            private var context: Context,
+            private var freezeApps: ArrayList<String>,
+            private var onCompleted: Runnable
+    ) : Thread() {
         override fun run() {
-
             val store = SceneConfigStore(context)
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
@@ -685,6 +708,37 @@ class ActivityFreezeApps : ActivityBase() {
             store.close()
 
             onCompleted.run()
+        }
+    }
+
+    // 自动筛选已冻结的普通应用，添加到应用偏见列表
+    private fun autoAddList() {
+        processBarDialog.showDialog(getString(R.string.please_wait))
+        GlobalScope.launch(Dispatchers.IO) {
+            val appListHelper = AppListHelper(context)
+            val frozenApp = appListHelper.getUserAppList().filter {
+                (!it.enabled || it.suspended) && !(freezeApps.contains(it.packageName) || appListHelper.isSystemApp(applicationInfo))
+            }
+            val pm = packageManager
+            val appList = frozenApp.filter {
+                val enabled = it.enabled
+                // 冻结状态获取不到启动Activity，先解冻
+                if (!enabled) {
+                    enableApp(it)
+                }
+                try {
+                    return@filter pm.getLaunchIntentForPackage(it.packageName) != null
+                } catch (ex: java.lang.Exception) {
+                } finally {
+                    if (!enabled) {
+                        disableApp(it)
+                    }
+                }
+                return@filter false
+            }.map { it.packageName }.toList()
+            handler.post {
+                addFreezeApps(appList)
+            }
         }
     }
 }

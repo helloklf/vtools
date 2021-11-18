@@ -15,7 +15,7 @@ import com.omarea.Scene
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.AppInfo
-import com.omarea.ui.AppListAdapter
+import com.omarea.ui.AdapterAppList
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
@@ -62,7 +62,7 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
     private fun getSelectedAppShowOptions(activity: Activity) {
         var adapter = app_list.adapter
         adapter = (adapter as HeaderViewListAdapter).wrappedAdapter
-        val selectedItems = (adapter as AppListAdapter).getSelectedItems()
+        val selectedItems = (adapter as AdapterAppList).getSelectedItems()
         if (selectedItems.size == 0) {
             Scene.toast(R.string.app_selected_none, Toast.LENGTH_SHORT)
             return
@@ -93,26 +93,26 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
             return
         myHandler.post {
             try {
-                val adapterObj = AppListAdapter(context!!, dl, keywords)
-                val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
+                val adapterObj = AdapterAppList(context!!, dl, keywords)
+                val adapterAppList: WeakReference<AdapterAppList> = WeakReference(adapterObj)
                 lv.adapter = adapterObj
                 lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
                     if (postion == 0) {
                         val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
                         checkBox.isChecked = !checkBox.isChecked
-                        if (adapter.get() != null) {
-                            adapter.get()!!.setSelecteStateAll(checkBox.isChecked)
-                            adapter.get()!!.notifyDataSetChanged()
+                        if (adapterAppList.get() != null) {
+                            adapterAppList.get()!!.setSelecteStateAll(checkBox.isChecked)
+                            adapterAppList.get()!!.notifyDataSetChanged()
                         }
                     } else {
                         val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
                         checkBox.isChecked = !checkBox.isChecked
                         val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                        if (adapter.get() != null) {
-                            all.isChecked = adapter.get()!!.getIsAllSelected()
+                        if (adapterAppList.get() != null) {
+                            all.isChecked = adapterAppList.get()!!.getIsAllSelected()
                         }
                     }
-                    fab_apps.visibility = if (adapter.get()?.hasSelected() == true) View.VISIBLE else View.GONE
+                    fab_apps.visibility = if (adapterAppList.get()?.hasSelected() == true) View.VISIBLE else View.GONE
                 }
                 val all = lv.findViewById<CheckBox>(R.id.select_state_all)
                 all.isChecked = false

@@ -17,7 +17,7 @@ import com.omarea.data.GlobalStatus
 import com.omarea.library.device.BatteryCapacity
 import com.omarea.library.shell.BatteryUtils
 import com.omarea.store.BatteryHistoryStore
-import com.omarea.ui.AdapterBatteryStats
+import com.omarea.ui.power.AdapterBatteryStats
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.activity_power_utilization.*
@@ -98,7 +98,7 @@ class ActivityPowerUtilization : ActivityBase() {
             battery_stats.adapter = AdapterBatteryStats(context, (data.filter {
                 // 仅显示运行时间超过2分钟的应用数据，避免误差过大
                 (it.count * sampleTime) > 120
-            }), sampleTime)
+            }))
 
             view_time.invalidate()
 

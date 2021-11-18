@@ -24,7 +24,7 @@ import kotlin.Comparator
  * Created by Hello on 2018/01/26.
  */
 
-class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
+class AdapterAppList(private val context: Context, apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<AppInfo>?
     private val appInfoLoader = AppInfoLoader(context)
 
@@ -33,7 +33,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<AppInfo>, pri
 
     //private val mImageCache: LruCache<String, Drawable> = LruCache(20)
 
-    private var viewHolder: AppListAdapter.ViewHolder? = null
+    private var viewHolder: AdapterAppList.ViewHolder? = null
 
     fun setSelecteStateAll(selected: Boolean = true) {
         for (item in states) {

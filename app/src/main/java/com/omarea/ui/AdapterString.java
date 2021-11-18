@@ -13,11 +13,11 @@ import com.omarea.vtools.R;
  * Created by Hello on 2018/02/01.
  */
 
-public class StringAdapter extends BaseAdapter {
+public class AdapterString extends BaseAdapter {
     private String[] arr;
     private Context context;
 
-    public StringAdapter(Context context, String[] arr) {
+    public AdapterString(Context context, String[] arr) {
         this.arr = arr;
         this.context = context;
     }

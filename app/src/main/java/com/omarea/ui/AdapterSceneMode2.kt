@@ -23,7 +23,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 /* 测试 */
-class SceneModeAdapter2(private val context: Context, apps: ArrayList<AppInfo>, private val firstMode: String) : RecyclerView.Adapter<SceneModeAdapter2.ViewHolder>() {
+class AdapterSceneMode2(private val context: Context, apps: ArrayList<AppInfo>, private val firstMode: String) : RecyclerView.Adapter<AdapterSceneMode2.ViewHolder>() {
     private var keywords: String = ""
     private val list: ArrayList<AppInfo>?
 
