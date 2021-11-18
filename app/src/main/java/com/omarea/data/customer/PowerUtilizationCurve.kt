@@ -20,6 +20,10 @@ class PowerUtilizationCurve(context: Context) : IEventReceiver {
     private var timer: Timer? = null
     private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
     private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    companion object {
+        // 采样间隔（毫秒）
+        public val SAMPLING_INTERVAL: Long = 3000
+    }
 
     override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
@@ -86,7 +90,7 @@ class PowerUtilizationCurve(context: Context) : IEventReceiver {
                         override fun run() {
                             saveLog()
                         }
-                    }, 0, 1000)
+                    }, 0, SAMPLING_INTERVAL)
                 }
             }
         }

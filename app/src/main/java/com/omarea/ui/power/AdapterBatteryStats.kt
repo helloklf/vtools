@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.omarea.data.customer.PowerUtilizationCurve.Companion.SAMPLING_INTERVAL
 import com.omarea.library.basic.AppInfoLoader
 import com.omarea.model.BatteryAvgStatus
 import com.omarea.scene_mode.ModeSwitcher
@@ -47,6 +48,19 @@ class AdapterBatteryStats(
     private val bgPerformance = ContextCompat.getDrawable(context, R.drawable.powercfg_performance)
     private val bgFast = ContextCompat.getDrawable(context, R.drawable.powercfg_fast)
     private val bgNone = ContextCompat.getDrawable(context, R.drawable.powercfg_none)
+    private val samplingInterval = (SAMPLING_INTERVAL / 1000) // 采样间隔（秒）
+
+    private fun minutes2Str(minutes: Long): String {
+        if (minutes >= 1140) {
+            return "" + (minutes / 1140) + "d" + ((minutes % 1140) / 60) + "h"
+        } else if (minutes > 60) {
+            return "" + (minutes / 60) + "h" + (minutes % 60) + "m"
+        } else if (minutes == 0L) {
+            return "0"
+        }
+        return "" + minutes + "m"
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val batteryStats = list.get(position)
         holder.apply {
@@ -62,7 +76,7 @@ class AdapterBatteryStats(
 
             itemAvgIO.text = String.format ("Avg: %dmA", abs(batteryStats.io))
             itemTemperature.text = String.format ("Avg: %d°C  Max: %d°C", batteryStats.avgTemperature, batteryStats.maxTemperature)
-            itemCounts.text = "*" + batteryStats.count + ""
+            itemCounts.text = minutes2Str(samplingInterval * batteryStats.count / 60)
 
             val app = batteryStats.packageName
             packageName = app
