@@ -9,6 +9,7 @@
     </declare-styleable>
     <declare-styleable name="NavItem">
         <attr name="text" format="string" />
+        <attr name="layout_res" format="integer" />
         <attr name="drawable" format="reference|integer" />
     </declare-styleable>
 </resources>

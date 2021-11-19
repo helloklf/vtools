@@ -187,7 +187,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
                 }};
                 if (prev == null) {
                     prev = row;
-                } else if (row.capacity != prev.capacity || row.screenOn != prev.screenOn) {
+                } else if (!(row.capacity == prev.capacity && row.screenOn == prev.screenOn && row.startTime - prev.endTime < 10000)) {
                     histories.add(prev);
                     prev = row;
                 } else {

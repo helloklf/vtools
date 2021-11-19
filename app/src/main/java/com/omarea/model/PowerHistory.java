@@ -7,4 +7,16 @@ public class PowerHistory {
     public long endTime;
     public boolean screenOn;
     public boolean charging;
+
+    @Override
+    public String toString() {
+        return "PowerHistory{" +
+                "io=" + io +
+                ", capacity=" + capacity +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", screenOn=" + screenOn +
+                ", charging=" + charging +
+                '}';
+    }
 }

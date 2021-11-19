@@ -29,7 +29,6 @@ import kotlin.math.abs
 
 class ActivityPowerUtilization : ActivityBase() {
     private lateinit var storage: BatteryHistoryStore
-    private var timer: Timer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_power_utilization)
@@ -56,6 +55,11 @@ class ActivityPowerUtilization : ActivityBase() {
         battery_stats.layoutManager = LinearLayoutManager(this).apply {
             orientation = LinearLayoutManager.VERTICAL
             isSmoothScrollbarEnabled = false
+        }
+
+        // 切换阶梯模式
+        view_time_title.setOnClickListener {
+            view_time.setLadder(!view_time.getLadder())
         }
     }
 
@@ -174,8 +178,6 @@ class ActivityPowerUtilization : ActivityBase() {
                 }
                 battery_max_temperature_text.text = maxTemperature.toString() + "°C"
             } catch (ex: Exception) {
-                timer?.cancel()
-                timer = null
             }
         }
     }

@@ -331,6 +331,22 @@ class DialogHelper {
             return openContinueAlert(context, R.layout.dialog_alert, title, message, onConfirm, null)
         }
 
+        fun alert(context: Context,
+                  title: String = "",
+                  message: String = "",
+                  contentView: View,
+                  onConfirm: Runnable? = null): DialogWrap {
+            val view = getCustomDialogView(context, R.layout.dialog_alert, title, message, contentView)
+
+            val dialog = customDialog(context, view)
+            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+                dialog.dismiss()
+                onConfirm?.run()
+            }
+
+            return dialog
+        }
+
         fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {
             val useBlur = (
                         context is Activity &&

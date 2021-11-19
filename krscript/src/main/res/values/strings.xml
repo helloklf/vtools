@@ -35,7 +35,7 @@
     <string name="kr_shortcut_create_fail">快捷方式创建失败</string>
     <string name="kr_shortcut_create_success">已发送创建快捷方式申请</string>
     <string name="kr_shortcut_create">添加快捷方式</string>
-    <string name="kr_shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
+    <string formatted="false" name="kr_shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
     <string name="kr_ushortcut_nsupported">该功能不支持添加快捷方式</string>
     <string name="kr_script_task_notification">后台任务通知</string>
     <string name="kr_bg_task_start">后台任务开始运行</string>
@@ -58,9 +58,9 @@
     <string name="kr_lock_message">此功能已被锁定</string>
     <string name="kr_sdk_too_low">系统版本过低</string>
     <string name="kr_sdk_overtop">系统版本过高</string>
-    <string name="kr_sdk_message">此功能只在SDK%d ~ %d的系统运行</string>
+    <string formatted="false" name="kr_sdk_message">此功能只在SDK%d ~ %d的系统运行</string>
     <string name="kr_sdk_discrepancy">系统版本不符</string>
-    <string name="kr_sdk_discrepancy_message">此功能只在SDK%d的系统运行</string>
+    <string formatted="false" name="kr_sdk_discrepancy_message">此功能只在SDK%d的系统运行</string>
     <string name="picker_not_item">暂无可用选项！</string>
     <string name="picker_select_none">未选中任何一项！</string>
 </resources>

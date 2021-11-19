@@ -63,8 +63,40 @@ class PowerTimeView : View {
         return "" + minutes + "m"
     }
 
+    private var ladder = false // 阶梯模式
     private val paint = Paint()
     private val dashPathEffect = DashPathEffect(floatArrayOf(4f, 8f), 0f)
+    private val perfectRange = intArrayOf(10, 25, 50, 75, 100, 150, 250, 300, 450, 600, 900, 1200, 1800, 2400)
+    private fun getPerfectXMax(value: Int): Int {
+        var lastPerfectValue = perfectRange.last()
+        if (value > lastPerfectValue) {
+            while (true) {
+                lastPerfectValue += 600
+                if (lastPerfectValue >= value) {
+                    return lastPerfectValue
+                }
+            }
+        } else {
+            for (it in perfectRange) {
+                if (value <= it) {
+                    return it
+                }
+            }
+        }
+        return value
+    }
+
+    public fun setLadder(ladder: Boolean) {
+        if (this.ladder != ladder) {
+            this.ladder = ladder
+            invalidate()
+        }
+    }
+
+    public fun getLadder(): Boolean {
+        return this.ladder
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val samples = storage.curve
@@ -79,12 +111,7 @@ class PowerTimeView : View {
         val startTime = samples.map { it.startTime }.min()
         val maxTime = samples.map { it.endTime }.max()
         var minutes: Int = if (startTime != null && maxTime != null) (((maxTime - startTime) / 60000).toInt()) else 30
-        if (minutes < 1) {
-            minutes = 1
-        }
-        if (minutes % 10 != 0) {
-            minutes += (10 - (minutes % 10))
-        }
+        minutes = getPerfectXMax(minutes)
 
         val maxY = 101
 
@@ -97,32 +124,25 @@ class PowerTimeView : View {
 
         paint.textAlign = Paint.Align.CENTER
 
-        var scaleX = (minutes / 20.0)
-        if (scaleX < 1) {
-            scaleX = 1.0
-        }
-
+        val columns = 5
+        var scaleX = (minutes / columns.toDouble())
         paint.strokeWidth = 1f
         paint.style = Paint.Style.FILL
-        for (point in 0..20) {
-            if (point % 4 == 0) {
-                val drawX = (point * scaleX * ratioX).toInt() + innerPadding
-                paint.color = Color.parseColor("#888888")
-                if (point % 4 == 0) {
-                    val text = minutes2Str((point * scaleX).toInt())
-                    canvas.drawText(
-                        text,
-                        drawX,
-                        this.height - innerPadding + textSize + (dpSize * 2),
-                        paint
-                    )
-                }
-                paint.color = Color.parseColor("#40888888")
-                canvas.drawLine(
+        for (point in 0..columns) {
+            val drawX = (point * scaleX * ratioX).toInt() + innerPadding
+            paint.color = Color.parseColor("#888888")
+            val text = minutes2Str((point * scaleX).toInt())
+            canvas.drawText(
+                    text,
+                    drawX,
+                    this.height - innerPadding + textSize + (dpSize * 2),
+                    paint
+            )
+            paint.color = Color.parseColor("#40888888")
+            canvas.drawLine(
                     drawX, innerPadding,
                     drawX, this.height - innerPadding, paint
-                )
-            }
+            )
         }
 
         paint.strokeWidth = 2f
@@ -177,12 +197,32 @@ class PowerTimeView : View {
             )
             */
             // paint.setShadowLayer(35f, 0f, 30f, Color.BLACK)
-            for (sample in samples) {
-                val currentX = ((sample.startTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
-                val currentY = startY - (sample.capacity * ratioY)
+            if (ladder) {
+                for (sample in samples) {
+                    // 如果样本数据间隔过长（补假数据：虚线）
+                    if ((sample.startTime - lastSample.endTime) > 10000) {
+                        paint.pathEffect = dashPathEffect
+                        val currentX = ((sample.startTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
+                        val currentY = startY - (sample.capacity * ratioY)
+                        // 亮屏状态的样本显示高亮色，否则显示灰色
+                        if (lastSample.screenOn && sample.screenOn) {
+                            paint.color = Color.parseColor("#1474e4")
+                        } else {
+                            paint.color = Color.parseColor("#80808080")
+                        }
+                        canvas.drawLine(
+                                lastX,
+                                lastY,
+                                currentX,
+                                currentY,
+                                paint
+                        )
+                        lastX = currentX
+                        lastY = currentY
+                    }
+                    val currentX = ((sample.endTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
+                    val currentY = startY - (sample.capacity * ratioY)
 
-                // 数据样本时间间隔正常 显示实线，否则显示虚线
-                if ((sample.startTime - lastSample.endTime) < 10000) {
                     paint.pathEffect = null
                     // 亮屏状态的样本显示高亮色，否则显示灰色
                     if (sample.screenOn) {
@@ -190,33 +230,76 @@ class PowerTimeView : View {
                     } else {
                         paint.color = Color.parseColor("#80808080")
                     }
-                } else {
-                    paint.pathEffect = dashPathEffect
-                    // 亮屏状态的样本显示高亮色，否则显示灰色
-                    if (lastSample.screenOn) {
-                        paint.color = Color.parseColor("#1474e4")
+
+                    canvas.drawLine(
+                            lastX,
+                            lastY,
+                            currentX,
+                            currentY,
+                            paint
+                    )
+                    lastX = currentX
+                    lastY = currentY
+                    lastSample = sample
+                }
+            } else {
+                for (sample in samples) {
+                    val currentX = ((sample.startTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
+                    val currentY = startY - (sample.capacity * ratioY)
+                    // 如果样本数据间隔过长
+                    if ((sample.startTime - lastSample.endTime) > 10000) {
+
+                        // 先绘线到上个sample的endTime位置
+                        paint.pathEffect = null
+                        if (lastSample.screenOn) {
+                            paint.color = Color.parseColor("#1474e4")
+                        } else {
+                            paint.color = Color.parseColor("#80808080")
+                        }
+                        val lastSampleX = ((lastSample.endTime - startTime) / 60000f * ratioX).toFloat() + innerPadding
+                        val lastSampleY = startY - (lastSample.capacity * ratioY)
+                        canvas.drawLine(lastX, lastY, lastSampleX, lastSampleY, paint)
+                        lastX = lastSampleX
+                        lastY = lastSampleY
+
+                        // 接下来是补假数据（显示虚线）
+                        paint.pathEffect = dashPathEffect
+                        // 亮屏状态的样本显示高亮色，否则显示灰色
+                        if (lastSample.screenOn) {
+                            paint.color = Color.parseColor("#1474e4")
+                        } else {
+                            paint.color = Color.parseColor("#80808080")
+                        }
                     } else {
-                        paint.color = Color.parseColor("#80808080")
+                        paint.pathEffect = null
+                        // 亮屏状态的样本显示高亮色，否则显示灰色
+                        if (lastSample.screenOn) {
+                            paint.color = Color.parseColor("#1474e4")
+                        } else {
+                            paint.color = Color.parseColor("#80808080")
+                        }
                     }
+
+                    canvas.drawLine(lastX, lastY, currentX, currentY, paint)
+                    lastX = currentX
+                    lastY = currentY
+                    lastSample = sample
+                }
+                paint.pathEffect = null
+                // 亮屏状态的样本显示高亮色，否则显示灰色
+                if (lastSample.screenOn) {
+                    paint.color = Color.parseColor("#1474e4")
+                } else {
+                    paint.color = Color.parseColor("#80808080")
                 }
                 canvas.drawLine(
                     lastX,
                     lastY,
-                    currentX,
-                    currentY,
+                    endX,
+                    startY - (last.capacity * ratioY),
                     paint
                 )
-                lastX = currentX
-                lastY = currentY
-                lastSample = sample
             }
-            canvas.drawLine(
-                lastX,
-                lastY,
-                endX,
-                startY - (last.capacity * ratioY),
-                paint
-            )
         }
     }
 }

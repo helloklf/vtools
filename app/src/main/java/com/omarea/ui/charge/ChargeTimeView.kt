@@ -63,6 +63,25 @@ class ChargeTimeView : View {
         return "" + minutes + "m"
     }
 
+    private val perfectRange = intArrayOf(45, 50, 75, 100, 150, 250, 300, 450, 600, 900, 1200, 1800, 2400)
+    private fun getPerfectXMax(value: Int): Int {
+        var lastPerfectValue = perfectRange.last()
+        if (value > lastPerfectValue) {
+            while (true) {
+                lastPerfectValue += 600
+                if (lastPerfectValue >= value) {
+                    return lastPerfectValue
+                }
+            }
+        } else {
+            for (it in perfectRange) {
+                if (value <= it) {
+                    return it
+                }
+            }
+        }
+        return value
+    }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         val samples = storage.chargeTime()
@@ -77,12 +96,7 @@ class ChargeTimeView : View {
         val startTime = samples.map { it.startTime }.min()
         val maxTime = samples.map { it.endTime }.max()
         var minutes: Int = if (startTime != null && maxTime != null) (((maxTime - startTime) / 60000).toInt()) else 30
-        if (minutes < 45) {
-            minutes = 45
-        }
-        if (minutes % 10 != 0) {
-            minutes += (10 - (minutes % 10))
-        }
+        minutes = getPerfectXMax(minutes)
 
         val maxY = 101
 
@@ -97,11 +111,8 @@ class ChargeTimeView : View {
 
         paint.textAlign = Paint.Align.CENTER
 
-        val columns = 15
+        val columns = 10
         var scaleX = (minutes / columns.toDouble())
-        if (scaleX < 1) {
-            scaleX = 1.0
-        }
 
         for (point in 0..columns) {
             val drawX = (point * scaleX * ratioX).toInt() + innerPadding

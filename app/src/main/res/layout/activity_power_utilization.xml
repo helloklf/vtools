@@ -147,9 +147,17 @@
                 <TextView
                     android:id="@+id/view_time_title"
                     style="@style/textTitle"
-                    android:layout_width="match_parent"
+                    android:paddingTop="2dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="使用记录" />
+                <com.omarea.ui.HelpIcon
+                    android:layout_marginStart="4dp"
+                    android:layout_toEndOf="@id/view_time_title"
+                    android:layout_alignParentTop="@id/view_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_res="@layout/dialog_power_legend" />
 
                 <TextView
                     android:id="@+id/battery_capacity"
@@ -232,7 +240,6 @@
                         android:layout_width="wrap_content"
                         android:text="--"
                         android:textSize="11dp"
-                        android:minWidth="40dp"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </RelativeLayout>
