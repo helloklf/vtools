@@ -62,7 +62,7 @@
     </group>
 
     <group title="系统更新"
-        visible="binary_exist update_engine_client">
+        visible-sh="binary_exist update_engine_client">
         <action
             interruptible="false"
             warn="不支持增量包更新。全量更新完之后，ROOT会丢失，需要自行重新获取ROOT权限。由于不正确操作或【意外】导致的损失，需自行承担！！！">

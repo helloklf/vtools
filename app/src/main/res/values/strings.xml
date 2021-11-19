@@ -3,7 +3,7 @@
 
     <integer name="opacity">0</integer>
 
-    <string formatted="false" name="format_hh_mm">%02d:%02d</string>
+    <string name="format_hh_mm">%02d:%02d</string>
     <string name="btn_cancel">取消</string>
     <string name="btn_not_now">回头再说</string>
     <string name="btn_delete">删除</string>
@@ -137,7 +137,7 @@
     <string name="battery_pd_active_unknown">未知</string>
     <string name="battery_uevent_title">$ bms/uevent</string>
     <string name="battery_usb_uevent_title">$ usb/uevent</string>
-    <string formatted="false" name="battery_night_mode_time">%02d:%02d</string>
+    <string name="battery_night_mode_time">%02d:%02d</string>
     <string name="battery_night_mode">动态充电速度</string>
     <string name="battery_night_mode_desc">在接近充满时调至缓慢充电\n\n并在夜间主动降低充电速度</string>
     <string name="battery_time_get_up">起床时间</string>
@@ -152,7 +152,7 @@
     <string name="battery_bp_desc">达到指定电量后停止充电\n\n注意：长期使用可能导致电量显示失准</string>
     <string name="battery_bp_level_desc">电量限制值（%）</string>
     <string name="battery_qc_charger">充电调速</string>
-    <string formatted="false" name="battery_bp_status">达到%d%停止充电，低于%d%恢复</string>
+    <string name="battery_bp_status">达到%d%%停止充电，低于%d%%恢复</string>
     <string name="battery_qc_charger_desc">调整充电速度限制。疯狂调高毫无意义，因为并不会取得实际效果，请在有效范围内调节数值\n\n注意：上限数值仅供参考，请以实际充电速度为准！</string>
     <string name="battery_charge_disabled">充电功能已禁止！</string>
     <string name="battery_charge_resumed">充电功能已恢复！</string>
@@ -290,9 +290,9 @@
     <string name="swap_outside_effect3">3.调整VM参数，提高ZRAM、Swapfile使用积极性</string>
     <string name="swap_module_install_desc">模块下载后，请自行在Magisk Manager中刷入,并重启手机！</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
-    <string formatted="false" name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率　　　：%s</string>
-    <string formatted="false" name="swap_zram_stat_format2">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n压缩率　　　：%s</string>
-    <string formatted="false" name="swap_zram_writback_stat">ZRAM Writeback\n回写块：%s\n已回写：%dMB\n总读取：%dMB\n总回写：%dMB</string>
+    <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率　　　：%s</string>
+    <string name="swap_zram_stat_format2">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n压缩率　　　：%s</string>
+    <string name="swap_zram_writback_stat">ZRAM Writeback\n回写块：%s\n已回写：%dMB\n总读取：%dMB\n总回写：%dMB</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="swap_state_undefined">未创建</string>
     <string name="swap_state_created">未启动</string>
@@ -300,7 +300,7 @@
     <string name="extra_free_kbytes">extra_free_kbytes(KB)</string>
     <string name="extra_free_kbytes_desc">此值指定Linux内核会额外保留多少物理内存，当内存不足时会立即开始压缩内存到SWAP/ZRAM，在可用内存回升到合理范围之前设备会明显变得缓慢\n\n简单地说extra_free_kbytes设置越大，则内存回收(swap或杀死进程)越积极，但不建议设置过大，以免浪费物理内存而加重磁盘/处理器负担！</string>
     <string name="watermark_scale_factor">watermark_scale_factor</string>
-    <string formatted="false" name="watermark_scale_factor_desc">数值范围为0~1000，其中1000表示10%，表示内存水位线low/min/high三个数值之间各相差(物理RAM容量的)10%。\n\n例如(我的手机)：\npageSize=4KB\nmanaged=1951743(pages)\nmin_free_kbytes=10900(KB)\nwatermark_scale_factor=500\n\n此时min值为\n10900(KB)/4(PageSize)=2725(pages)\nlow值大约是\n1951743*5%+2725≈100312(pages)\nhigh值大约是\n1951743*10%+2725≈197899(pages)\n注：最终的low、high值，可能受extra_free_kbytes影响而偏大\n\n这个例子中，\nmin=2725=10MB\nlow=100312≈392MB\nhigh=197899≈773MB\n\n意味着，内存低于392M便会开始回收内存，直到可用内存高于773MB~</string>
+    <string name="watermark_scale_factor_desc">数值范围为0~1000，其中1000表示10%，表示内存水位线low/min/high三个数值之间各相差(物理RAM容量的)10%。\n\n例如(我的手机)：\npageSize=4KB\nmanaged=1951743(pages)\nmin_free_kbytes=10900(KB)\nwatermark_scale_factor=500\n\n此时min值为\n10900(KB)/4(PageSize)=2725(pages)\nlow值大约是\n1951743*5%+2725≈100312(pages)\nhigh值大约是\n1951743*10%+2725≈197899(pages)\n注：最终的low、high值，可能受extra_free_kbytes影响而偏大\n\n这个例子中，\nmin=2725=10MB\nlow=100312≈392MB\nhigh=197899≈773MB\n\n意味着，内存低于392M便会开始回收内存，直到可用内存高于773MB~</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>
