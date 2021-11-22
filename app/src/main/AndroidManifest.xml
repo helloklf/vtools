@@ -159,7 +159,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <activity
-            android:name=".activities.ActivityHiddenApps"
+            android:name=".activities.ActivityAppRetrieve"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="[隐藏/卸载]的应用"

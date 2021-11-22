@@ -147,7 +147,7 @@
                 <TextView
                     android:id="@+id/view_time_title"
                     style="@style/textTitle"
-                    android:paddingTop="199dp"
+                    android:paddingTop="1dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="使用记录" />

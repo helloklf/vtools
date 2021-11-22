@@ -4,13 +4,15 @@ import android.content.Intent
 import android.os.*
 import android.provider.Settings
 import android.text.Editable
+import android.view.Menu
+import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper2
 import com.omarea.vtools.R
 import com.omarea.vtools.fragments.FragmentAppBackup
-import com.omarea.vtools.fragments.FragmentAppHelp
 import com.omarea.vtools.fragments.FragmentAppSystem
 import com.omarea.vtools.fragments.FragmentAppUser
 import kotlinx.android.synthetic.main.activity_applictions.*
@@ -33,6 +35,20 @@ class ActivityApplistions : ActivityBase() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_app_retrieve, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_retrieve) {
+            val intent = Intent(context, ActivityAppRetrieve::class.java)
+            startActivity(intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_applictions)
@@ -40,10 +56,9 @@ class ActivityApplistions : ActivityBase() {
         setBackArrow()
 
         TabIconHelper2(tab_list, tab_content, this, supportFragmentManager).run {
-            newTabSpec("第三方", getDrawable(R.drawable.tab_app)!!, fragmentAppUser)
-            newTabSpec("系统", getDrawable(R.drawable.tab_security)!!, fragmentAppSystem)
-            newTabSpec("备份的", getDrawable(R.drawable.tab_package)!!, fragmentAppBackup)
-            newTabSpec("帮助", getDrawable(R.drawable.tab_help)!!, FragmentAppHelp())
+            newTabSpec("Installed", ContextCompat.getDrawable(context, R.drawable.tab_app)!!, fragmentAppUser)
+            newTabSpec("System", ContextCompat.getDrawable(context, R.drawable.tab_security)!!, fragmentAppSystem)
+            newTabSpec("Backups", ContextCompat.getDrawable(context, R.drawable.tab_package)!!, fragmentAppBackup)
             tab_content.adapter = this.adapter
         }
 

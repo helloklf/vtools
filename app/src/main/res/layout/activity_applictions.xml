@@ -23,7 +23,6 @@
             android:imeOptions="actionSearch"
             android:background="@drawable/filter_toolbar_bg"
             android:hint="搜索 应用名或PackageName"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:inputType="textFilter"
             android:singleLine="true"
             android:textSize="16dp" />

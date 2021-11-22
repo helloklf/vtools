@@ -5,7 +5,7 @@
     android:padding="6dp">
 
     <CheckBox
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:id="@+id/select_state_all"
         android:layout_width="40dp"
         android:layout_height="30dp"
@@ -16,5 +16,5 @@
         android:focusable="false"
         android:focusableInTouchMode="false" />
 
-    <TextView android:text="全选" />
+    <TextView android:text="All" />
 </GridLayout>

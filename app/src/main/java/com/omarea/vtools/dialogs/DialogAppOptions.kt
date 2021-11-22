@@ -13,7 +13,6 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.shell.KeepShell
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.AppInfo
 import com.omarea.utils.CommonCmds
@@ -112,7 +111,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         view.findViewById<View>(R.id.app_install).run {
             setOnClickListener {
                 dialog.dismiss()
-                restoreAll(apk = true, data = false)
+                restoreAll(apk = true)
             }
         }
 
@@ -124,14 +123,14 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
                 dialog.dismiss()
-                restoreAll(apk = true, data = true)
+                restoreAll(apk = true)
             }
         }
         view.findViewById<View>(R.id.app_restore_data).run {
             visibility = if (dataExists) View.VISIBLE else View.GONE
             setOnClickListener {
                 dialog.dismiss()
-                restoreAll(apk = false, data = true)
+                restoreAll(apk = false)
             }
         }
         view.findViewById<View>(R.id.app_delete_backup).setOnClickListener {
@@ -139,11 +138,6 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             deleteBackupAll()
         }
 
-    }
-
-    private fun checkRestoreData(): Boolean {
-        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName}\necho `toybox ls -ld|cut -f3 -d ' '`\n echo `ls -ld|cut -f3 -d ' '`\n")
-        return r != "error" && r.trim().isNotEmpty()
     }
 
     protected fun isMagisk(): Boolean {
@@ -169,9 +163,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
     }
 
-    open class ProgressHandler(dialog: View, protected var alert: DialogHelper.DialogWrap, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
+    open class ProgressHandler(dialog: View, private var alert: DialogHelper.DialogWrap, protected var handler: Handler) : Handler(Looper.getMainLooper()) {
         private var textView: TextView = (dialog.findViewById(R.id.dialog_text) as TextView)
-        var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
+        private var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
         private var error = java.lang.StringBuilder()
 
         override fun handleMessage(msg: Message) {
@@ -259,24 +253,17 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         view.findViewById<TextView>(R.id.confirm_message).text = "备份选中的 ${apps.size} 个应用和数据？"
 
         val dialog = DialogHelper.customDialog(context, view)
-        val includeData = view.findViewById<CompoundButton>(R.id.backup_include_data)
-
-        // 检测数据备份功能兼容性
-        if (Build.VERSION.SDK_INT >= 30 || !checkRestoreData()) {
-            includeData.isEnabled = false
-            includeData.isChecked = false
-        }
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
             dialog.dismiss()
-            _backupAll(true, includeData.isChecked)
+            _backupAll()
         }
     }
 
-    private fun _backupAll(apk: Boolean = true, data: Boolean = true) {
+    private fun _backupAll() {
         checkPigz()
 
         val date = Date().time.toString()
@@ -293,26 +280,11 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             val packageName = item.packageName.toString()
             val path = item.path.toString()
 
-            if (apk) {
-                sb.append("rm -f \${backup_path}$packageName.apk\n")
-                sb.append("\n")
-                sb.append("echo '[copy $packageName.apk]'\n")
-                sb.append("busybox cp -f $path \${backup_path}$packageName.apk\n")
-                sb.append("\n")
-            }
-            if (data) {
-                sb.append(
-                        "killall -9 $packageName 2> /dev/null\n" +
-                                "am kill-all $packageName 2> /dev/null\n" +
-                                "am force-stop $packageName 2> /dev/null\n")
-                sb.append("cd $userdataPath/$packageName\n")
-                sb.append("echo '[backup ${item.appName}]'\n")
-                if (allowPigz)
-                    sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz\n")
-                else
-                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude ./cache --exclude ./lib\n")
-                sb.append("\n")
-            }
+            sb.append("rm -f \${backup_path}$packageName.apk\n")
+            sb.append("\n")
+            sb.append("echo '[copy $packageName.apk]'\n")
+            sb.append("busybox cp -f $path \${backup_path}$packageName.apk\n")
+            sb.append("\n")
         }
         sb.append("cd \${backup_path}\n")
         sb.append("chown sdcard_rw:sdcard_rw *\n")
@@ -325,21 +297,9 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     /**
      * 还原选中的应用
      */
-    protected fun restoreAll(apk: Boolean = true, data: Boolean = true) {
-        if (data) {
-            if (!checkRestoreData()) {
-                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
-                return
-            }
-            confirm("还原应用和数据",
-                    "还原选中的 ${apps.size} 个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）"
-            ) {
-                _restoreAll(apk, data)
-            }
-        } else {
-            confirm("还原应用", "还原选中的 ${apps.size} 个应用和数据？") {
-                _restoreAll(apk, data)
-            }
+    protected fun restoreAll(apk: Boolean = true) {
+        confirm("还原应用", "还原选中的 ${apps.size} 个应用和数据？") {
+            _restoreAll(apk)
         }
     }
 
@@ -347,7 +307,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         return File("$backupPath$packageName.tar.gz").exists()
     }
 
-    private fun _restoreAll(apk: Boolean = true, data: Boolean = true) {
+    private fun _restoreAll(apk: Boolean = true) {
         val installApkTemp = FileWrite.getPrivateFilePath(context, "app_install_cache.apk")
         checkPigz()
 
@@ -355,47 +315,20 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         sb.append("chown -R sdcard_rw:sdcard_rw \"$backupPath\" 2>/dev/null\n")
         sb.append("chmod -R 777 \"$backupPath\" 2>/dev/null\n")
         for (item in apps) {
-            val packageName = item.packageName.toString()
+            val packageName = item.packageName
             val apkPath = item.path.toString()
             if (apk && File(apkPath).exists()) {
                 sb.append("echo '[install ${item.appName}]'\n")
-                // sb.append("pm install -r \"$apkPath\" 1> /dev/null\n")
-
                 sb.append("rm -f $installApkTemp\n")
                 sb.append("cp \"$apkPath\" $installApkTemp\n")
                 sb.append("pm install -r $installApkTemp 1> /dev/null\n")
                 sb.append("rm -f $installApkTemp\n")
             } else if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install ${item.appName}]'\n")
-                // sb.append("pm install -r $backupPath$packageName.apk\n")
-
                 sb.append("rm -f $installApkTemp\n")
                 sb.append("cp \"$backupPath$packageName.apk\" $installApkTemp\n")
                 sb.append("pm install -r $installApkTemp 1> /dev/null\n")
                 sb.append("rm -f $installApkTemp\n")
-            }
-            if (data && backupDataExists(packageName)) {
-                sb.append("if [ -d $userdataPath/$packageName ]\n")
-                sb.append(" then ")
-                sb.append("echo '[restore ${item.appName}]'\n")
-                //sb.append("pm clear $packageName\n")
-                sb.append("sync\n")
-                sb.append("cd $userdataPath/$packageName\n")
-                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
-                sb.append("install_group=`toybox ls -ld|cut -f3 -d ' '`\n")
-                sb.append("install_own=`toybox ls -ld|cut -f4 -d ' '`\n")
-                sb.append("for item in *\ndo\n")
-                sb.append(
-                        "if [[ ! \"\$item\" = \"lib\" ]] && [[ ! \"\$item\" = \"lib64\" ]]\n" +
-                                "then\n" +
-                                "chown -R \$install_group:\$install_own ./\$item\n" +
-                                "fi\n" +
-                                "done\n")
-                //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
-                sb.append(" else ")
-                sb.append("echo '[skip ${item.appName}]'\n")
-                sb.append("sleep 1\n")
-                sb.append("fi\n")
             }
         }
         sb.append("sync\n")
@@ -439,7 +372,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         val androidP = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.packageName.toString()
+            val packageName = item.packageName
             if (suspend) {
                 if (!item.suspended) {
                     sb.append("echo '[suspend ${item.appName}]'\n")
@@ -499,7 +432,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
         sb.append(CommonCmds.MountSystemRW)
         var useMagisk = false
         for (item in apps) {
-            val packageName = item.packageName.toString()
+            val packageName = item.packageName
             // 先禁用再删除，避免老弹停止运行
             sb.append("echo '[disable ${item.appName}]'\n")
             sb.append("pm disable $packageName\n")
@@ -528,15 +461,15 @@ open class DialogAppOptions(protected final var context: Activity, protected var
      * 删除备份
      */
     protected fun deleteBackupAll() {
-        confirm("删除备份", "永久删除这些备份文件？", Runnable {
+        confirm("删除备份", "永久删除这些备份文件？") {
             _deleteBackupAll()
-        })
+        }
     }
 
     private fun _deleteBackupAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.packageName.toString()
+            val packageName = item.packageName
             sb.append("echo '[delete ${item.appName}]'\n")
 
             if (item.path != null) {
@@ -669,7 +602,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
             val sb = StringBuilder()
 
             for (item in apps) {
-                val packageName = item.packageName.toString()
+                val packageName = item.packageName
                 sb.append("echo '[uninstall ${item.appName}]'\n")
 
                 if (keepData) {
@@ -687,7 +620,7 @@ open class DialogAppOptions(protected final var context: Activity, protected var
     private fun _uninstallAllOnlyUser(uid: Long, keepData: Boolean) {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.packageName.toString()
+            val packageName = item.packageName
             sb.append("echo '[uninstall ${item.appName}]'\n")
 
             if (keepData) {

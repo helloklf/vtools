@@ -70,17 +70,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="备份应用数据" />
+                            android:text="备份APK" />
                         <TextView
                             style="@style/textSecondary"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="同时备份应用数据\n注意：此功能并不非常可靠，你可能会遇到无法还原或还原后数据损坏等问题！！！" />
+                            android:text="将会提取APK文件到/sdcard/backups目录下" />
                     </LinearLayout>
 
                     <Switch
-                        android:id="@+id/backup_include_data"
+                        android:enabled="false"
+                        android:checked="true"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_width="wrap_content"

@@ -211,7 +211,6 @@
     <string name="schedule_dynamic_off">你未开启[动态响应]，Scene无法根据前台应用变化调节设备性能！</string>
     <string name="schedule_uperf_fast">Uperf调度仅提供了[卡顿/均衡/费电]三种模式，分别于Scene的[省电/均衡/性能]对应。\n而在Scene里选择[极速]模式时，实际生效为[费电]，即与选择 [性能]模式相同</string>
 
-    <string name="applist_warn">目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n应用备份文件在 /sdcard/backups/apps（Android 11+系统不支持备份功能）</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容【应用变量】模块的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>

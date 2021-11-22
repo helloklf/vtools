@@ -10,16 +10,32 @@
     <TextView
         android:layout_marginTop="?android:actionBarSize"
         android:id="@+id/tip"
-        android:padding="10dp"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:paddingVertical="10dp"
+        style="@style/textSmall"
         android:textColor="?android:colorAccent"
         android:text="如果应用无法恢复，可尝试在Recovery(TWRP)模式备份并删除 /data/system/users/0/package-restrictions.xml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <com.omarea.common.ui.OverScrollListView
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:background="@drawable/list_view_bg"
         android:layout_below="@id/tip"
         android:id="@+id/hidden_app"
+        android:divider="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="35dp"
+        android:src="@drawable/check" />
 
     <include
         layout="@layout/layout_app_bar"
