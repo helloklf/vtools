@@ -64,7 +64,7 @@ class ChargeTimeView : View {
     }
 
     private val perfectRange = intArrayOf(45, 50, 75, 100, 150, 250, 300, 450, 600, 900, 1200, 1800, 2400)
-    private fun getPerfectXMax(value: Int): Int {
+    private fun getPerfectXMax(value: Double): Int {
         var lastPerfectValue = perfectRange.last()
         if (value > lastPerfectValue) {
             while (true) {
@@ -80,7 +80,7 @@ class ChargeTimeView : View {
                 }
             }
         }
-        return value
+        return value.toInt()
     }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -95,8 +95,13 @@ class ChargeTimeView : View {
 
         val startTime = samples.map { it.startTime }.min()
         val maxTime = samples.map { it.endTime }.max()
-        var minutes: Int = if (startTime != null && maxTime != null) (((maxTime - startTime) / 60000).toInt()) else 30
-        minutes = getPerfectXMax(minutes)
+
+        val maxTimeMinutes:Double = (if (startTime != null && maxTime != null) {
+            (maxTime - startTime) / 60000.0
+        } else {
+            30.0
+        })
+        var minutes: Int = getPerfectXMax(maxTimeMinutes)
 
         val maxY = 101
 

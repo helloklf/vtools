@@ -67,7 +67,7 @@ class PowerTimeView : View {
     private val paint = Paint()
     private val dashPathEffect = DashPathEffect(floatArrayOf(4f, 8f), 0f)
     private val perfectRange = intArrayOf(10, 25, 50, 75, 100, 150, 250, 300, 450, 600, 900, 1200, 1800, 2400)
-    private fun getPerfectXMax(value: Int): Int {
+    private fun getPerfectXMax(value: Double): Int {
         var lastPerfectValue = perfectRange.last()
         if (value > lastPerfectValue) {
             while (true) {
@@ -83,7 +83,7 @@ class PowerTimeView : View {
                 }
             }
         }
-        return value
+        return value.toInt()
     }
 
     public fun setLadder(ladder: Boolean) {
@@ -110,8 +110,8 @@ class PowerTimeView : View {
 
         val startTime = samples.map { it.startTime }.min()
         val maxTime = samples.map { it.endTime }.max()
-        var minutes: Int = if (startTime != null && maxTime != null) (((maxTime - startTime) / 60000).toInt()) else 30
-        minutes = getPerfectXMax(minutes)
+        val maxTimeMinutes = (if (startTime != null && maxTime != null) ((maxTime - startTime) / 60000.0).toDouble() else 30.0)
+        val minutes = getPerfectXMax(maxTimeMinutes)
 
         val maxY = 101
 
@@ -125,7 +125,7 @@ class PowerTimeView : View {
         paint.textAlign = Paint.Align.CENTER
 
         val columns = 5
-        var scaleX = (minutes / columns.toDouble())
+        val scaleX = (minutes / columns.toDouble())
         paint.strokeWidth = 1f
         paint.style = Paint.Style.FILL
         for (point in 0..columns) {

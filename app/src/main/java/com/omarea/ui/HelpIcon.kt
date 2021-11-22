@@ -38,9 +38,9 @@ class HelpIcon : RelativeLayout {
                 } else if (attrName == "layout_res") { // attrValue 因为Layout资源id，例如 app:layout_res="@layout/dialog_power_legend"
                     val attrValue = getAttributeValue(i)
                     view.findViewById<ImageButton>(android.R.id.button1).setOnClickListener {
-                        DialogHelper.alert(
+                        DialogHelper.helpInfo(
                                 context!!,
-                                "",
+                                context.getString(R.string.help_title),
                                 "",
                                 LayoutInflater.from(context).inflate(
                                     attrValue.replace("@", "").toInt(),
