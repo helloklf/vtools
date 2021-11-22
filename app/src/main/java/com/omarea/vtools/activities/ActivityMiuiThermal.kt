@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -43,26 +44,21 @@ class ActivityMiuiThermal : ActivityBase() {
 
 
     private fun openDir() {
-        try {
-            val options = applicationContext.resources.getTextArray(R.array.start_dir_options)
-            var currentIndex = 0
-            DialogHelper.animDialog(
-                    AlertDialog.Builder(this)
-                            .setTitle("选择配置来源目录")
-                            .setSingleChoiceItems(options, currentIndex) { _, index ->
-                                currentIndex = index
-                            }.setPositiveButton("浏览选定目录") { _, _ ->
-                                if (currentIndex > -1) {
-                                    val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
-                                    intent.putExtra("extension", "conf")
-                                    intent.putExtra("start", options.get(currentIndex))
-                                    startActivityForResult(intent, REQUEST_CFG_FILE)
-                                }
-                            })
-        } catch (ex: Exception) {
-            Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
-        }
-        // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        val options = applicationContext.resources.getTextArray(R.array.start_dir_options)
+        var currentIndex = 0
+        DialogHelper.animDialog(
+                AlertDialog.Builder(this)
+                        .setTitle("选择配置来源目录")
+                        .setSingleChoiceItems(options, currentIndex) { _, index ->
+                            currentIndex = index
+                        }.setPositiveButton("浏览选定目录") { _, _ ->
+                            if (currentIndex > -1) {
+                                val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
+                                intent.putExtra("extension", "conf")
+                                intent.putExtra("start", options.get(currentIndex))
+                                startActivityForResult(intent, REQUEST_CFG_FILE)
+                            }
+                        })
     }
 
     @SuppressLint("RestrictedApi")

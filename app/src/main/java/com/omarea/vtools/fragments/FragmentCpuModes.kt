@@ -393,7 +393,7 @@ class FragmentCpuModes : Fragment() {
             reStartService()
         }
         dynamic_control_opts.postDelayed({
-            dynamic_control_opts.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
+            dynamic_control_opts?.visibility = if (dynamic_control.isChecked) View.VISIBLE else View.GONE
         }, 15)
         extreme_performance_on.isChecked = ThermalDisguise().isDisabled()
     }

@@ -90,8 +90,8 @@
     </style>
 
     <style name="AppThemeWhite" parent="AppThemeLight">
-        <item name="android:navigationBarColor">?android:windowBackground</item>
-        <item name="android:statusBarColor">?android:windowBackground</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -100,8 +100,8 @@
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeWhite">
-        <item name="android:navigationBarColor">?android:windowBackground</item>
-        <item name="android:statusBarColor">?android:windowBackground</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="cardBg">#c0ffffff</item>
         <item name="android:windowBackground">@android:color/transparent</item>
