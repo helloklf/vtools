@@ -21,7 +21,7 @@ class DialogElectricityUnit {
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-        val currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        var currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         val defaultUnit = if (Build.MANUFACTURER.toUpperCase() == "XIAOMI") {
             SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT
         } else {
@@ -92,7 +92,7 @@ class DialogElectricityUnit {
             schedule(object : TimerTask() {
                 override fun run() {
                     handler.post {
-                        batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+                        currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
                         try {
                             val currentMA = currentNow / unit
                             electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")

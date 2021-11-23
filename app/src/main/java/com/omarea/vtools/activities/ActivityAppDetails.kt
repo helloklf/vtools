@@ -174,8 +174,8 @@ class ActivityAppDetails : ActivityBase() {
         }
 
         app_details_hidenav.setOnClickListener {
-            if (!WriteSettings().getPermission(this)) {
-                WriteSettings().setPermission(this)
+            if (!WriteSettings().checkPermission(this)) {
+                WriteSettings().requestPermission(this)
                 Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = !(it as Switch).isChecked
                 return@setOnClickListener
@@ -190,10 +190,10 @@ class ActivityAppDetails : ActivityBase() {
             }
         }
         app_details_hidestatus.setOnClickListener {
-            if (!WriteSettings().getPermission(this)) {
-                WriteSettings().setPermission(this)
+            if (!WriteSettings().checkPermission(this)) {
+                WriteSettings().requestPermission(this)
                 Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
-                (it as Switch).isChecked = !(it as Switch).isChecked
+                (it as Switch).isChecked = !it.isChecked
                 return@setOnClickListener
             }
             val isSelected = (it as Switch).isChecked
@@ -239,8 +239,8 @@ class ActivityAppDetails : ActivityBase() {
             }).show()
         }
         app_details_aloowlight.setOnClickListener {
-            if (!WriteSettings().getPermission(this)) {
-                WriteSettings().setPermission(this)
+            if (!WriteSettings().checkPermission(this)) {
+                WriteSettings().requestPermission(this)
                 Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = false
                 return@setOnClickListener
