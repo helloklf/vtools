@@ -228,7 +228,6 @@ class ActivityMain : ActivityBase() {
                 else -> {
                     excludeFromRecent()
                     super.onBackPressed()
-                    this.finishActivity(0)
                 }
             }
         } catch (ex: Exception) {

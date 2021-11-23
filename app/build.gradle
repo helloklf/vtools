@@ -102,6 +102,8 @@ dependencies {
     //        }
     //    }
     // implementation files('libs/crimson.jar')
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }
 repositories {
     mavenCentral()

@@ -21,6 +21,9 @@ import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.fragment_app_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fragment() {
@@ -77,15 +80,13 @@ class FragmentAppUser(private val myHandler: Handler) : androidx.fragment.app.Fr
 
     private fun setList() {
         processBarDialog.showDialog()
-        Thread {
+        GlobalScope.launch(Dispatchers.Main) {
             appList = appListHelper.getUserAppList()
-            myHandler.post {
-                processBarDialog.hideDialog()
-            }
+            processBarDialog.hideDialog()
             app_list?.run {
                 setListData(appList, this)
             }
-        }.start()
+        }
     }
 
     private fun setListData(dl: ArrayList<AppInfo>?, lv: OverScrollListView) {
