@@ -255,6 +255,7 @@
     <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频，会略微降低体验。需要重启！</string>
     <string name="addin_continue">继续</string>
 
+    <string name="swap_shell_01">所有回环设备都已被占用，无法完成挂载！</string>
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="swap_current_state">当前状态：</string>
     <string name="swap_memory_info">Memory Info</string>
@@ -492,6 +493,20 @@
     <string name="app_home">概览</string>
     <string name="app_tuner">调节</string>
 
+    <string name="home_cache_cleared">缓存已清理</string>
+    <string name="home_core_switch">开关CPU核心</string>
+    <string name="home_core_required">至少应该开启一个核心</string>
+    <string name="home_utilization">负载：</string>
+    <string name="home_browser_error">未能启动浏览器！</string>
+    <string name="home_shell_begin">开始回收少量内存(长按回收更多~)</string>
+    <string name="home_shell_01">搞不定，你这内核不支持！</string>
+    <string name="home_shell_02">空闲SWAP不足以完成自动回收~</string>
+    <string name="home_shell_03">不要同时执行多次内存回收操作~</string>
+    <string name="home_shell_04">好咯，内存回收结束~</string>
+    <string name="home_shell_05">操作失败，计算容量出错!</string>
+    <string name="home_shell_06">内存充足，不需要清理！</string>
+    <string name="home_shell_07">已通过ZRAM回写释放足够的内存</string>
+
     <string name="system_scene_next_task">下一个任务</string>
     <string name="system_scene_resume_charge">恢复充电</string>
     <string name="system_scene_battery_left">电量低于</string>
@@ -500,7 +515,6 @@
     <string name="system_scene_task_canceled">任务已取消</string>
     <string name="system_scene_timing_task">我的定时任务</string>
     <string name="system_scene_trigger">我的触发器</string>
-
 
     <string-array name="process_sort_modes">
         <item>按CPU</item>

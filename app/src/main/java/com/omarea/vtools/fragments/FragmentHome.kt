@@ -16,6 +16,7 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.model.SelectItem
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.ShellTranslation
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.DialogItemChooser
 import com.omarea.data.GlobalStatus
@@ -58,7 +59,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private suspend fun forceKSWAPD(mode: Int): String {
         return withContext(Dispatchers.Default) {
-            SwapUtils(context!!).forceKswapd(mode)
+            ShellTranslation(context!!).resolveRow(SwapUtils(context!!).forceKswapd(mode))
         }
     }
 
@@ -85,14 +86,14 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             home_raminfo_text.text = getString(R.string.please_wait)
             GlobalScope.launch(Dispatchers.Main) {
                 dropCaches()
-                Scene.toast("缓存已清理...", Toast.LENGTH_SHORT)
+                Scene.toast(getString(R.string.home_cache_cleared), Toast.LENGTH_SHORT)
             }
         }
 
         home_memory_compact.setOnClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
+            Toast.makeText(context!!, R.string.home_shell_begin, Toast.LENGTH_SHORT).show()
             GlobalScope.launch(Dispatchers.Main) {
-                Scene.toast("开始回收少量内存(长按回收更多~)", Toast.LENGTH_SHORT)
                 val result = forceKSWAPD(1)
                 Scene.toast(result, Toast.LENGTH_SHORT)
             }
@@ -110,10 +111,10 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         home_help.setOnClickListener {
             try {
                 startActivity(
-                        Intent(Intent.ACTION_VIEW, Uri.parse("http://vtools.omarea.com/"))
+                    Intent(Intent.ACTION_VIEW, Uri.parse("http://vtools.omarea.com/"))
                 )
             } catch (ex: Exception) {
-                Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context!!, R.string.home_browser_error, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -132,7 +133,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                     msg.append(param.value)
                     msg.append("\n")
                 }
-                DialogHelper.helpInfo(activity!!, "调度器参数", msg.toString())
+                DialogHelper.helpInfo(activity!!, "Governor Params", msg.toString())
             }
         }
 
@@ -200,7 +201,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         if (isDetached) {
@@ -255,7 +255,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             if (swapInfo.contains("Swap")) {
                 try {
                     val swapInfos = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
-                    if (Regex("[\\d]+[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
+                    if (Regex("[\\d]+[\\s]+[\\d]+").matches(swapInfos)) {
                         swapTotal = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
                         swapUsed = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                     }
@@ -363,12 +363,12 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 home_battery_temperature.text = "${temperature}°C"
 
                 home_gpu_freq.text = gpuFreq
-                home_gpu_load.text = "负载：$gpuLoad%"
+                home_gpu_load.text = getString(R.string.home_utilization) + "$gpuLoad%"
                 if (gpuLoad > -1) {
                     home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 }
                 if (loads.containsKey(-1)) {
-                    cpu_core_total_load.text = "负载：" + loads[-1]!!.toInt().toString() + "%"
+                    cpu_core_total_load.text = getString(R.string.home_utilization) + loads[-1]!!.toInt().toString() + "%"
                     home_cpu_chat.setData(100.toFloat(), (100 - loads[-1]!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
@@ -433,11 +433,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                             updateInfo()
                         }
                     } else {
-                        Toast.makeText(activity, "至少应该开启一个核心", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity,  getString(R.string.home_core_required), Toast.LENGTH_SHORT).show()
                     }
                 }
             }, true)
-            .setTitle("开关CPU核心")
+            .setTitle(getString(R.string.home_core_switch))
             .show(activity.supportFragmentManager, "home-cpu-control")
         }
     }

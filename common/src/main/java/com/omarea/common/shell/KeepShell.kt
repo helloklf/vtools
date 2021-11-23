@@ -187,4 +187,14 @@ public class KeepShell(private var rootMode: Boolean = true) {
             currentIsIdle = true
         }
     }
+
+    // 执行脚本，并对结果进行ResourceID翻译
+    public fun doCmdSync(shellCommand: String, shellTranslation: ShellTranslation): String {
+        val rows = doCmdSync(shellCommand).split("\n")
+        if (rows.isNotEmpty()) {
+            return shellTranslation.resolveRows(rows)
+        } else {
+            return ""
+        }
+    }
 }

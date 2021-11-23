@@ -7,6 +7,10 @@ swapsize="$4"   # SWAP大小MB
 loop_save="vtools.swap.loop"
 next_loop_path=""
 
+resource () {
+  echo @string/$1
+}
+
 # 获取下一个可用的loop设备
 get_next_loop() {
   local current_loop=`getprop $loop_save`
@@ -48,7 +52,7 @@ if [[ "$use_loop" == "1" ]]; then
   if [[ "$next_loop_path" != "" ]]; then
     swap_mount=$next_loop_path
   else
-    echo '所有回环设备都已被占用，无法完成挂载！'
+    resource swap_shell_01
     return
   fi
 else

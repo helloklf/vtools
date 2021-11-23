@@ -1,5 +1,14 @@
 level="$1" # 清理级别（0:极微, 1：轻微，2：更重，3：极端）
 
+# Messages
+kernel_unsupported="@string:home_shell_01"
+swap_too_low="@string:home_shell_02"
+prohibit_parallel="@string:home_shell_03"
+reclaim_completed="@string:home_shell_04"
+calculation_error="@string:home_shell_05"
+memory_enough="@string:home_shell_06"
+write_back_completed="@string:home_shell_05"
+
 # 级别0用在实时加速中，一般处于内存负载较高的状态下，此时缓存占用本就不高，无需再清理
 if [[ "$level" != "0" ]]; then
   echo 3 > /proc/sys/vm/drop_caches
@@ -14,7 +23,7 @@ if [[ -f '/proc/sys/vm/extra_free_kbytes' ]]; then
 elif [[ -f '/proc/sys/vm/min_free_kbytes' ]]; then
   modify_path='/proc/sys/vm/min_free_kbytes'
 else
-  echo '搞不定，你这内核不支持！'
+  echo $kernel_unsupported
   return 1
 fi
 
@@ -88,7 +97,7 @@ force_reclaim() {
   if [[ $SwapFree -lt $SwapRequire ]]; then
     # 模式0优先保证性能，SWAP不足时强制回收有风险，因此不执行
     if [[ "$level" == "0" ]]; then
-      echo '空闲SWAP不足以完成自动回收~'
+      echo $swap_too_low
       return 5
     fi
     RecyclingSize=$(($SwapFree / 100 * 50))
@@ -101,7 +110,7 @@ force_reclaim() {
     running_tag=`getprop vtools.state.force_compact`
     # 状态记录，避免同时执行多次
     if [[ "$running_tag" == "1" ]]; then
-      echo '不要同时执行多次内存回收操作~'
+      echo $prohibit_parallel
       return 0
     else
       setprop vtools.state.force_compact 1
@@ -145,23 +154,23 @@ force_reclaim() {
 
     # 还原原始设置
     echo $min_free_kbytes > $modify_path
-    echo '好咯，内存回收结束~'
+    echo $reclaim_completed
 
     # 清除执行状态标记
     setprop vtools.state.force_compact 0
   else
-    echo '操作失败，计算容量出错!'
+    echo $calculation_error
   fi
 }
 
 # 如果可用内存大于目标可用内存大小，则不需要回收了
 if [[ $MemMemFree -gt $TargetRecycle ]]; then
-  echo '内存充足，不需要操作！'
+  echo $memory_enough
 else
   zram_writback
 
   if [[ "$?" == '1' ]]; then
-    echo '已通过ZRAM回写释放足够的内存'
+    echo $write_back_completed
   else
     force_reclaim
   fi

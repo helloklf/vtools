@@ -3,10 +3,7 @@ package com.omarea.library.shell
 import android.content.Context
 import android.util.Log
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShell
-import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
+import com.omarea.common.shell.*
 import com.omarea.model.ZramWriteBackStat
 import java.io.File
 
@@ -91,7 +88,9 @@ class SwapUtils(private val context: Context) {
             sb.append(priority)
         }
 
-        return keepShell.doCmdSync(sb.toString())
+        return ShellTranslation(context).resolveRow(
+            keepShell.doCmdSync(sb.toString())
+        )
     }
 
     // 启动swap
@@ -118,8 +117,7 @@ class SwapUtils(private val context: Context) {
         }
 
         val keepShell = KeepShell()
-        val r =keepShell.doCmdSync(sb.toString())
-        Log.d("xx", r)
+        keepShell.doCmdSync(sb.toString())
         keepShell.tryExit()
     }
 
