@@ -95,7 +95,7 @@ class ActivityPowerUtilization : ActivityBase() {
         val batteryMAH = BatteryCapacity().getBatteryCapacity(this).toInt().toString() + "mAh" + "   "
         val voltage = GlobalStatus.batteryVoltage
 
-        val data = storage.getAvgData(BatteryManager.BATTERY_STATUS_DISCHARGING)
+        val data = storage.getAvgData()
         val sampleTime = 6
 
         handler.post {

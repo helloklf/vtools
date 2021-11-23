@@ -106,7 +106,7 @@ class ActivityCharge : ActivityBase() {
             }) + sumInfo
 
             if (kernelCapacity > -1) {
-                val str = "" + kernelCapacity + "%"
+                val str = "$kernelCapacity%"
                 val ss = SpannableString(str)
                 if (str.contains(".")) {
                     val small = AbsoluteSizeSpan((battrystatus_level.textSize * 0.3).toInt(), false)
