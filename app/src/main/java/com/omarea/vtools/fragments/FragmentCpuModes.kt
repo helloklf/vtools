@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -419,14 +420,18 @@ class FragmentCpuModes : Fragment() {
 
     private val REQUEST_POWERCFG_FILE = 1
     private val REQUEST_POWERCFG_ONLINE = 2
+    // 是否使用内置的文件选择器
+    private var useInnerFileChooser = false
     private fun chooseLocalConfig() {
         val action = REQUEST_POWERCFG_FILE
-        if (Build.VERSION.SDK_INT >= 30) {
+        if (Build.VERSION.SDK_INT >= 30 && !Environment.isExternalStorageManager()) {
+            useInnerFileChooser = false
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "*/*"
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             startActivityForResult(intent, action)
         } else {
+            useInnerFileChooser = true
             try {
                 val intent = Intent(this.context, ActivityFileSelector::class.java)
                 intent.putExtra("extension", "sh")
@@ -441,7 +446,8 @@ class FragmentCpuModes : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_POWERCFG_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                if (Build.VERSION.SDK_INT >= 30) {
+                // 安卓原生文件选择器
+                if (Build.VERSION.SDK_INT >= 30 && !useInnerFileChooser) {
                     val absPath = FilePathResolver().getPath(this.activity, data.data)
                     if (absPath != null) {
                         if (absPath.endsWith(".sh")) {
@@ -452,7 +458,7 @@ class FragmentCpuModes : Fragment() {
                     } else {
                         Toast.makeText(context, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
                     }
-                } else {
+                } else { // Scene内置文件选择器
                     if (data.extras?.containsKey("file") != true) {
                         return
                     }
