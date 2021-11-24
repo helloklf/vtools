@@ -388,14 +388,6 @@
         <item>受限后台</item>
         <item>回收内存</item>
     </string-array>
-    <string-array name="cgroup_mem_values">
-        <item></item>
-        <item>scene_lock</item>
-        <item>scene_perf</item>
-        <item>scene_fg</item>
-        <item>scene_bg</item>
-        <item>scene_cache</item>
-    </string-array>
 
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>
@@ -530,16 +522,6 @@
         <item>所有类型</item>
     </string-array>
 
-    <string-array name="start_dir_options">
-        <!--<item>/data/adb/modules/scene_systemless/vendor/etc</item>
-        <item>/data/thermal/config</item>
-        <item>/data/vendor/thermal/config</item>
-        <item>/data/adb/modules</item>-->
-        <item>/sdcard</item>
-        <item>/system/etc</item>
-        <item>/vendor/etc</item>
-    </string-array>
-
     <!--配置源-->
     <string name="source_uperf">外部来源(Uperf)</string>
     <string name="source_outside">外部来源</string>
@@ -550,12 +532,6 @@
     <string name="source_author">配置源/作者：</string>
     <string name="notification_filter">通知过滤服务</string>
 
-    <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
-    <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
-    <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>
-    <string name="power_fastboot_cmd">sync;reboot bootloader;</string>
-    <string name="power_recovery_cmd">sync;reboot recovery;</string>
-    <string name="power_emergency_cmd">sync;reboot edl;</string>
     <string name="miui_thermal_desc">点击右上角的菜单，选择并编辑温控文件，编辑完成后点击保存~\n\n注意：随着安卓系统不断更新，要修改系统分区变得越来越困难，可能修改无法成功保存，或重启后即被自动还原，建议使用magisk模块来完成温控修改！\n\n温控文件一般是在/system/etc或/vendor/etc目录下，名称以“thermal”开头，后缀为“.conf”</string>
     <string name="monitor_process_unsupported">进程管理器暂未兼容你的手机！</string>
 </resources>

@@ -196,6 +196,31 @@
         <item>com.baidu.tieba:id/splash_ad_btn_skip</item>
     </string-array>
 
+    <string-array name="start_dir_options">
+        <!--<item>/data/adb/modules/scene_systemless/vendor/etc</item>
+        <item>/data/thermal/config</item>
+        <item>/data/vendor/thermal/config</item>
+        <item>/data/adb/modules</item>-->
+        <item>/sdcard</item>
+        <item>/system/etc</item>
+        <item>/vendor/etc</item>
+    </string-array>
+    <string-array name="cgroup_mem_values">
+        <item></item>
+        <item>scene_lock</item>
+        <item>scene_perf</item>
+        <item>scene_fg</item>
+        <item>scene_bg</item>
+        <item>scene_cache</item>
+    </string-array>
+
+    <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
+    <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
+    <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>
+    <string name="power_fastboot_cmd">sync;reboot bootloader;</string>
+    <string name="power_recovery_cmd">sync;reboot recovery;</string>
+    <string name="power_emergency_cmd">sync;reboot edl;</string>
+
     <string name="swap_module_target_version">3204</string>
     <string name="swap_module_download_url">https://vtools.oss-cn-beijing.aliyuncs.com/addin/swap-controller-3.2.4.zip</string>
 </resources>
