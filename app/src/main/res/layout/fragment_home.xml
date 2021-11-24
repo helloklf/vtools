@@ -237,6 +237,7 @@
                     <TextView
                         android:layout_marginTop="4dp"
                         style="@style/textSmall"
+                        android:fontFamily="sans-serif-condensed-light"
                         android:textSize="10dp"
                         android:id="@+id/home_gpu_info_text"
                         android:layout_width="match_parent"

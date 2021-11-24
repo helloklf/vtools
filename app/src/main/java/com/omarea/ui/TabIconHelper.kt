@@ -9,6 +9,17 @@ import android.widget.TabHost
 import android.widget.TextView
 import com.omarea.vtools.R
 
+/*
+
+        val tabHost = freeze_tabhost
+        tabHost.setup()
+        val tabIconHelper = TabIconHelper(tabHost, this)
+        tabIconHelper.newTabSpec("应用", getDrawable(R.drawable.tab_app)!!, R.id.tab_freeze_apps)
+        tabIconHelper.newTabSpec("设置", getDrawable(R.drawable.tab_settings)!!, R.id.tab_freeze_settings)
+        tabHost.setOnTabChangedListener { _ ->
+            tabIconHelper.updateHighlight()
+        }
+*/
 class TabIconHelper(private var tabHost: TabHost, private var activity: Activity, private var layout: Int = R.layout.list_item_tab) {
     private var views = ArrayList<View>()
 

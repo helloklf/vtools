@@ -122,12 +122,8 @@ class AdapterSceneMode2(private val context: Context, apps: ArrayList<AppInfo>, 
     fun updateRow(position: Int, viewHolder: ViewHolder) {
         val item = getItem(position)
 
-        viewHolder.itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-        if (item.icon == null) {
-            loadIcon(viewHolder, item)
-        } else {
-            viewHolder.imgView?.setImageDrawable(item.icon)
-        }
+        viewHolder.itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName)
+        loadIcon(viewHolder, item)
         if (item.stateTags != null) {
             viewHolder.summery?.run {
                 val mode = item.stateTags.toString()

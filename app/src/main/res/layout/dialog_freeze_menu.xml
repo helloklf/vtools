@@ -1,219 +1,370 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
-
+    android:layout_height="match_parent">
     <LinearLayout
-        android:id="@+id/menu_freeze"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:minHeight="70dp"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="#33b5e5"
-            android:src="@drawable/app_options_freeze"
-            app:tint="@android:color/white" />
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/menu_freeze"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:gravity="center_vertical"
+            android:minHeight="70dp"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#33b5e5"
+                android:src="@drawable/app_options_freeze"
+                app:tint="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="冻结全部" />
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/textSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="将偏见列表中的所有应用设为冻结状态" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="冻结全部" />
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="将偏见列表中的所有应用设为冻结状态" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/menu_unfreeze"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:minHeight="70dp"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="#7CB342"
-            android:src="@drawable/app_options_freeze"
-            app:tint="@android:color/white" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/menu_unfreeze"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:gravity="center_vertical"
+            android:minHeight="70dp"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#7CB342"
+                android:src="@drawable/app_options_freeze"
+                app:tint="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="解冻全部" />
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/textSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="将偏见列表中的所有应用解冻，置于可启动状态" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="解冻全部" />
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="将偏见列表中的所有应用解冻，置于可启动状态" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/menu_shortcut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:minHeight="70dp"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="#B3CA6E"
-            android:padding="8dp"
-            android:src="@drawable/app_options_shortcut"
-            app:tint="@android:color/white" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/menu_shortcut"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:gravity="center_vertical"
+            android:minHeight="70dp"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#B3CA6E"
+                android:padding="8dp"
+                android:src="@drawable/app_options_shortcut"
+                app:tint="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="添加快捷方式" />
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/textSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="向桌面批量添加快捷方式" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="添加快捷方式" />
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="向桌面批量添加快捷方式" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/menu_remove"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:minHeight="70dp"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="#FB8C00"
-            android:src="@drawable/app_options_clear2"
-            app:tint="@android:color/white" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/menu_remove"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:gravity="center_vertical"
+            android:minHeight="70dp"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#FB8C00"
+                android:src="@drawable/app_options_clear2"
+                app:tint="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="清空列表" />
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/textSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="解冻所有应用，并清空应用偏见列表" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="清空列表" />
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="解冻所有应用，并清空应用偏见列表" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/menu_auto_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@drawable/krscript_item_ripple"
-        android:gravity="center_vertical"
-        android:minHeight="70dp"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/dialog_icon_bg"
-            android:backgroundTint="#00ACC1"
-            android:src="@drawable/app_options_restore"
-            app:tint="@android:color/white" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/menu_auto_add"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:gravity="center_vertical"
+            android:minHeight="70dp"
+            android:orientation="horizontal"
+            android:padding="6dp">
 
-            <TextView
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@drawable/dialog_icon_bg"
+                android:backgroundTint="#00ACC1"
+                android:src="@drawable/app_options_restore"
+                app:tint="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="自动添加" />
+                android:orientation="vertical">
 
-            <TextView
-                style="@style/textSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="添加已冻结的普通应用，到应用偏见列表" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="自动添加" />
+
+                <TextView
+                    style="@style/textSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="添加已冻结的普通应用，到应用偏见列表" />
+            </LinearLayout>
         </LinearLayout>
+
+        <com.omarea.ui.UMExpandLayout
+            android:id="@+id/freeze_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginHorizontal="0dp"
+                style="@style/ListCardItem"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
+
+                    <Switch
+                        android:id="@+id/freeze_suspend_mode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="保留应用图标" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n一加桌面、一加Hydrogen桌面、一加氢桌面\nLawnchair测试版、Lawnchair魔趣版\nMIUI桌面、POCO桌面、MIUI全局搜索\nLineageOS Trebuchet\n系统设置、Pixel 启动器\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
+
+                    <Switch
+                        android:id="@+id/freeze_any_unfreeze"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Xposed授权通融" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:text="离开应用界面超过此时间后冻结，0表示不限制。锁屏1分钟后自动冻结所有偏见应用，不受此设置影响！" />
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="活动时间限制（分钟）" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <SeekBar
+                        android:id="@+id/freeze_time_limit"
+                        style="@style/SceneSeekBar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="10"
+                        android:min="0"
+                        android:progress="2" />
+
+                    <TextView
+                        android:id="@+id/freeze_time_limit_text"
+                        style="@style/textDefault"
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
+
+                    <Switch
+                        android:id="@+id/freeze_shortcut_suggest"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="提示创建快捷方式" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.omarea.ui.HelpIcon
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:text="在桌面显示“应用偏见”管理界面快捷入口" />
+
+                    <Switch
+                        android:id="@+id/freeze_quick_entry"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="桌面快捷入口" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.omarea.ui.UMExpandLayout>
+        <ImageView
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:id="@+id/freeze_options_switch"
+            android:src="@drawable/arrow_down"
+            android:padding="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="60dp"
+            android:background="@drawable/in_card_item"
+            android:layout_height="24dp" />
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

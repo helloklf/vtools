@@ -28,6 +28,7 @@
         <ImageButton
             android:alpha="0.7"
             android:id="@+id/action_graph"
+            style="?android:buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
@@ -40,6 +41,7 @@
         <ImageButton
             android:alpha="0.7"
             android:id="@+id/action_power"
+            style="?android:buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
@@ -52,6 +54,7 @@
         <ImageButton
             android:alpha="0.7"
             android:id="@+id/action_settings"
+            style="?android:buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"

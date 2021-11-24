@@ -38,19 +38,15 @@ class DialogSingleAppOptions(context: Activity, var app: AppInfo, handler: Handl
     }
 
     private fun loadAppIcon(app: AppInfo): Drawable? {
-        if (app.icon != null) {
-            return app.icon
-        } else {
-            var icon: Drawable? = null
-            try {
-                val installInfo = context.packageManager.getPackageInfo(app.packageName.toString(), 0)
-                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-                return icon
-            } catch (ex: Exception) {
-            } finally {
-            }
-            return null
+        var icon: Drawable? = null
+        try {
+            val installInfo = context.packageManager.getPackageInfo(app.packageName.toString(), 0)
+            icon = installInfo.applicationInfo.loadIcon(context.packageManager)
+            return icon
+        } catch (ex: Exception) {
+        } finally {
         }
+        return null
     }
 
     /**

@@ -137,19 +137,15 @@ class AdapterSceneMode(private val context: Context, apps: ArrayList<AppInfo>, p
             summery = convertView.findViewById(R.id.ItemSummary)
             itemDesc = convertView.findViewById(R.id.ItemDesc)
             imgView = convertView.findViewById(R.id.ItemIcon)
-            itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-            if (item.icon == null) {
-                val id = item.path
-                this.appPath = id
-                GlobalScope.launch(Dispatchers.Main) {
-                    val icon = appIconLoader.loadIcon(item).await()
-                    val imgView = imgView!!
-                    if (icon != null && appPath == id) {
-                        imgView.setImageDrawable(icon)
-                    }
+            itemTitle?.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName)
+            val id = item.path
+            this.appPath = id
+            GlobalScope.launch(Dispatchers.Main) {
+                val icon = appIconLoader.loadIcon(item).await()
+                val imgView = imgView!!
+                if (icon != null && appPath == id) {
+                    imgView.setImageDrawable(icon)
                 }
-            } else {
-                imgView!!.setImageDrawable(item.icon)
             }
 
             if (item.stateTags != null) {

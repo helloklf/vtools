@@ -10,7 +10,6 @@ import com.omarea.common.ui.AdapterAppChooser;
  */
 
 public class AppInfo extends AdapterAppChooser.AppInfo {
-    public Drawable icon = null;
     public CharSequence stateTags = "";
     public CharSequence path = "";
     public CharSequence dir = "";

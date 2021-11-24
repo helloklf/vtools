@@ -26,12 +26,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
     private var freezList = ArrayList<FreezeAppHistory>()
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-    // 偏见应用解冻数量限制
-    private val freezeAppLimit: Int
-        get() {
-            return config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
-        }
-
     // 偏见应用后台超时时间
     private val freezeAppTimeLimit: Int
         get() {
@@ -163,7 +157,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
         history.packageName = packageName
 
         freezList.add(history)
-        clearFreezeAppCountLimit()
     }
 
     fun setFreezeAppStartTime(packageName: String) {
@@ -175,7 +168,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
         history.packageName = packageName
 
         freezList.add(history)
-        clearFreezeAppCountLimit()
     }
 
     fun removeFreezeAppHistory(packageName: String): FreezeAppHistory? {
@@ -186,19 +178,6 @@ class SceneMode private constructor(private val context: AccessibilityScenceMode
             }
         }
         return null
-    }
-
-    // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
-    fun clearFreezeAppCountLimit() {
-        if (freezeAppLimit > 0 && freezList.size > freezeAppLimit) {
-            val foregroundApps = context.getForegroundApps()
-            while (freezList.size > freezeAppLimit) {
-                val app = freezList.first()
-                if (!foregroundApps.contains(app.packageName)) {
-                    freezeApp(app)
-                }
-            }
-        }
     }
 
     // 冻结已经后台超时的偏见应用

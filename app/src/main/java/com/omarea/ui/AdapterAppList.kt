@@ -160,18 +160,14 @@ class AdapterAppList(private val context: Context, apps: ArrayList<AppInfo>, pri
             itemTitle?.text = keywordHightLight(item.appName)
             itemText?.text = keywordHightLight(item.packageName)
 
-            if (item.icon == null) {
-                val id = item.path
-                this.appPath = id
-                GlobalScope.launch(Dispatchers.Main) {
-                    val icon = appInfoLoader.loadIcon(item).await()
-                    val imgView = imgView!!
-                    if (icon != null && appPath == id) {
-                        imgView.setImageDrawable(icon)
-                    }
+            val id = item.path
+            this.appPath = id
+            GlobalScope.launch(Dispatchers.Main) {
+                val icon = appInfoLoader.loadIcon(item).await()
+                val imgView = imgView!!
+                if (icon != null && appPath == id) {
+                    imgView.setImageDrawable(icon)
                 }
-            } else {
-                imgView!!.setImageDrawable(item.icon)
             }
 
             enabledStateText?.run {

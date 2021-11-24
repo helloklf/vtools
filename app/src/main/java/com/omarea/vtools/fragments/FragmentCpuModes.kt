@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.omarea.Scene
 import com.omarea.common.shared.FilePathResolver
@@ -97,9 +98,9 @@ class FragmentCpuModes : Fragment() {
         dynamic_control_toggle.setOnClickListener {
             dynamic_control_opts2.toggleExpand()
             if (dynamic_control_opts2.isExpand) {
-                (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_up))
+                (it as ImageView).setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.arrow_up))
             } else {
-                (it as ImageView).setImageDrawable(context!!.getDrawable(R.drawable.arrow_down))
+                (it as ImageView).setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.arrow_down))
             }
         }
 
@@ -219,10 +220,15 @@ class FragmentCpuModes : Fragment() {
                 startActivity(intent)
             }
             nav_freeze.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setClassName(
-                        "com.omarea.vtools", "com.omarea.vtools.activities.ActivityFreezeApps2")
-                startActivity(intent)
+                if (AccessibleServiceHelper().serviceRunning(context!!)) {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setClassName(
+                        "com.omarea.vtools", "com.omarea.vtools.activities.ActivityFreezeApps2"
+                    )
+                    startActivity(intent)
+                } else {
+                    startService()
+                }
             }
         }
 

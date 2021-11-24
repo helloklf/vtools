@@ -47,7 +47,6 @@
     <style name="textSmall">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:breakStrategy">simple</item>
     </style>
 
