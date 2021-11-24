@@ -231,6 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
+                    android:id="@+id/freeze_suspend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
@@ -250,6 +251,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/freeze_suspend_xposed"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"

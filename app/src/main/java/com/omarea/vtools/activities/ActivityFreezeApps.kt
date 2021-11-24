@@ -33,6 +33,7 @@ import com.omarea.ui.AdapterFreezeApp
 import com.omarea.ui.UMExpandLayout
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
+import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_freeze_apps.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -494,25 +495,30 @@ class ActivityFreezeApps : ActivityBase() {
         }
 
         useSuspendMode = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        val freeze_suspend_mode = view.findViewById<CompoundButton>(R.id.freeze_suspend_mode)
-        val freeze_any_unfreeze = view.findViewById<CompoundButton>(R.id.freeze_any_unfreeze)
-        freeze_suspend_mode.run {
-            isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-            isChecked = useSuspendMode
-            setOnClickListener {
-                val checked = (it as CompoundButton).isChecked
-                switchSuspendMode()
+        val launcherHook = view.findViewById<CompoundButton>(R.id.freeze_any_unfreeze)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val freeze_suspend_mode = view.findViewById<CompoundButton>(R.id.freeze_suspend_mode)
+            freeze_suspend_mode.run {
+                isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                isChecked = useSuspendMode
+                setOnClickListener {
+                    val checked = (it as CompoundButton).isChecked
+                    switchSuspendMode()
 
-                useSuspendMode = checked
-                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply()
+                    useSuspendMode = checked
+                    config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply()
 
-                freeze_any_unfreeze.isEnabled = checked
+                    launcherHook.isEnabled = checked && XposedCheck.xposedIsRunning()
+                }
             }
+        } else {
+            view.findViewById<View>(R.id.freeze_suspend).visibility = View.GONE
+            view.findViewById<View>(R.id.freeze_suspend_xposed).visibility = View.GONE
         }
 
-        freeze_any_unfreeze.run {
-            isEnabled = useSuspendMode
-            isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, false)
+        launcherHook.run {
+            isEnabled = useSuspendMode && XposedCheck.xposedIsRunning()
+            isChecked = XposedCheck.xposedIsRunning() && config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, false)
             setOnClickListener {
                 config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, (it as CompoundButton).isChecked).apply()
             }
