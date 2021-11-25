@@ -12,8 +12,25 @@ import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 
-class SceneFreezeProvider : ContentProvider() {
+class SceneUnfreezeProvider : ContentProvider() {
+    // 冻结 Test: adb shell content delete --uri content://com.omarea.vtools.SceneUnfreezeProvider --where "id in ('com.estrongs.android.pop')"
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        // Log.d("SceneUnfreezeProvider", "" + selection)
+        // Log.d("SceneUnfreezeProvider", "" + selectionArgs?.joinToString { "," })
+        if (selection != null) {
+            val store = SceneConfigStore(context)
+            val apps = store.queryAppConfig(selection, selectionArgs)
+            var count = 0
+            for (app in apps) {
+                if (app.freeze) {
+                    SceneMode.freezeApp(app.packageName)
+                    count ++
+                }
+            }
+            store.close()
+            // Log.d("SceneFreezeProvider", ">" + count)
+            return count
+        }
         return 0
     }
 

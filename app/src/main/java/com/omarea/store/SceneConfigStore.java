@@ -10,6 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 6;
@@ -84,29 +85,55 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         }
     }
 
-    public SceneConfigInfo getAppConfig(String app) {
-        SceneConfigInfo sceneConfigInfo = new SceneConfigInfo();
-        sceneConfigInfo.packageName = app;
+    public ArrayList<SceneConfigInfo> queryAppConfig(String selection, String[] selectionArgs) {
+        ArrayList<SceneConfigInfo> configInfoList = new ArrayList<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where id = ?", new String[]{app});
-            if (cursor.moveToNext()) {
-                sceneConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
-                sceneConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
-                sceneConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
-                sceneConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
-                sceneConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
-                sceneConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
-                sceneConfigInfo.screenOrientation = cursor.getInt(cursor.getColumnIndex("screen_orientation"));
-                sceneConfigInfo.fgCGroupMem = cursor.getString(cursor.getColumnIndex("fg_cgroup_mem"));
-                sceneConfigInfo.bgCGroupMem = cursor.getString(cursor.getColumnIndex("bg_cgroup_mem"));
-                sceneConfigInfo.dynamicBoostMem = cursor.getInt(cursor.getColumnIndex("dynamic_boost_mem")) == 1;
-                sceneConfigInfo.showMonitor = cursor.getInt(cursor.getColumnIndex("show_monitor")) == 1;
+            Cursor cursor = sqLiteDatabase.query(
+                "scene_config3", new String[]{ "*" }, selection, selectionArgs, null, null, null
+            );
+            while (cursor.moveToNext()) {
+                configInfoList.add(getAppConfig(cursor));
             }
             cursor.close();
             sqLiteDatabase.close();
         } catch (Exception ignored) {
+        }
+        return configInfoList;
+    }
 
+
+    public SceneConfigInfo getAppConfig(Cursor cursor) {
+        SceneConfigInfo sceneConfigInfo = new SceneConfigInfo();
+        sceneConfigInfo.packageName = cursor.getString(cursor.getColumnIndex("id"));
+        sceneConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
+        sceneConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
+        sceneConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
+        sceneConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
+        sceneConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
+        sceneConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
+        sceneConfigInfo.screenOrientation = cursor.getInt(cursor.getColumnIndex("screen_orientation"));
+        sceneConfigInfo.fgCGroupMem = cursor.getString(cursor.getColumnIndex("fg_cgroup_mem"));
+        sceneConfigInfo.bgCGroupMem = cursor.getString(cursor.getColumnIndex("bg_cgroup_mem"));
+        sceneConfigInfo.dynamicBoostMem = cursor.getInt(cursor.getColumnIndex("dynamic_boost_mem")) == 1;
+        sceneConfigInfo.showMonitor = cursor.getInt(cursor.getColumnIndex("show_monitor")) == 1;
+
+        return sceneConfigInfo;
+    }
+
+    public SceneConfigInfo getAppConfig(String app) {
+        SceneConfigInfo sceneConfigInfo = null;
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where id = ?", new String[]{app});
+            if (cursor.moveToNext()) {
+                sceneConfigInfo = getAppConfig(cursor);
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+            sceneConfigInfo = new SceneConfigInfo();
+            sceneConfigInfo.packageName = app;
         }
         return sceneConfigInfo;
     }

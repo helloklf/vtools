@@ -52,6 +52,11 @@
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <provider
+            android:name=".SceneUnfreezeProvider"
+            android:enabled="true"
+            android:exported="false"
+            android:authorities="com.omarea.vtools.SceneUnfreezeProvider" />
+        <provider
             android:name=".SceneFreezeProvider"
             android:enabled="true"
             android:exported="true"
