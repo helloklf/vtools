@@ -1,0 +1,53 @@
+
+name: Android CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r23b
+        add-to-path: false
+
+    - name: set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      # run: ./gradlew build
+      run: ./gradlew assembleRelease
+
+    - name: Upload GitHub Actions artifact of vcpkg build
+      uses: actions/upload-artifact@v2
+      with:
+        name: scene-dev
+        path: ${{ github.workspace }}/app/build/outputs/apk/release/app-release.apk
+
+    - name: Deploy
+      env: 
+        GITHUB_REPO: github.com/helloklf/vtools-dev-apks.git
+      run: |
+        cd ${{ github.workspace }}/app/build/outputs/apk/release/
+        git init
+        git config user.name "helloklf"
+        git config user.email "helloklf@outlook.com"
+        git add .
+        git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
+        git push --force --quiet "https://${{ secrets.ACCESS_TOKEN }}@$GITHUB_REPO" master:master
