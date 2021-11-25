@@ -3,6 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def fileName = "Scene" + "_${defaultConfig.versionName}_${defaultConfig.versionCode}_" + variant.name + ".apk"
+            outputFileName = fileName
+        }
+    }
     dataBinding {
         enabled =true
     }
