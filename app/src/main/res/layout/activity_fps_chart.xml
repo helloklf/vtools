@@ -129,9 +129,8 @@
             </RelativeLayout>
 
             <RelativeLayout
-                style="@style/ListCardItem"
-                android:paddingStart="16dp"
-                android:paddingEnd="0dp">
+                android:id="@+id/chart_session_detail"
+                style="@style/ListCardItem">
 
                 <TextView
                     android:id="@+id/chart_session_name"
@@ -142,7 +141,6 @@
 
                 <TextView
                     android:id="@+id/chart_session_time"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:layout_width="wrap_content"

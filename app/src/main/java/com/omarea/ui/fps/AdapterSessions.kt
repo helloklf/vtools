@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.omarea.model.FpsWatchSession
@@ -56,19 +57,21 @@ class AdapterSessions(private val context: Context, private val list: ArrayList<
         val item = getItem(position)
 
         viewHolder.itemTitle?.text = keywordHighLight(item.appName)
+        viewHolder.itemIcon?.setImageDrawable(item.appIcon)
 
         if (viewHolder.itemDesc != null)
             viewHolder.itemDesc?.text = dateFormat.format(Date(item.beginTime))
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        internal var itemIcon: ImageView? = null
         internal var itemTitle: TextView? = null
         internal var itemDesc: TextView? = null
         internal var itemButton: ImageButton? = null
     }
 
     interface OnItemClickListener {
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(position: Int)
     }
 
     override fun getItemCount(): Int {
@@ -86,10 +89,16 @@ class AdapterSessions(private val context: Context, private val list: ArrayList<
         this.onItemDeleteClickListener = onItemClickListener
     }
 
+    fun removeItem(position: Int) {
+        this.list.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // val convertView = View.inflate(context, R.layout.list_item_fps, null)
         val convertView = LayoutInflater.from(context).inflate(R.layout.list_item_fps, parent, false)
         val viewHolder = ViewHolder(convertView)
+        viewHolder.itemIcon = convertView.findViewById(R.id.ItemIcon)
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
         viewHolder.itemButton = convertView.findViewById(R.id.download)
@@ -100,12 +109,12 @@ class AdapterSessions(private val context: Context, private val list: ArrayList<
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.run {
             setOnClickListener {
-                onItemClickListener?.onItemClick(this, position)
+                onItemClickListener?.onItemClick(position)
             }
         }
         holder.itemButton?.run {
             setOnClickListener {
-                onItemDeleteClickListener?.onItemClick(this, position)
+                onItemDeleteClickListener?.onItemClick(position)
             }
         }
 

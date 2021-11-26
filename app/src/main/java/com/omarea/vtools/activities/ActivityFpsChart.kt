@@ -1,21 +1,15 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.omarea.Scene
+import com.omarea.common.ui.DialogHelper
 import com.omarea.library.basic.AppInfoLoader
-import com.omarea.library.calculator.Flags
 import com.omarea.library.shell.PlatformUtils
-import com.omarea.model.FpsWatchSession
 import com.omarea.store.FpsWatchStore
 import com.omarea.ui.fps.AdapterSessions
 import com.omarea.vtools.R
@@ -24,8 +18,6 @@ import kotlinx.android.synthetic.main.activity_fps_chart.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
@@ -33,6 +25,7 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
+        setTitle(R.string.menu_fps_chart)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -85,16 +78,19 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
                 it.appIcon = appInfo.icon
             }
             if (sessions.size > 0) {
+                chart_session_detail?.visibility = View.VISIBLE
                 chart_sessions_empty?.visibility = View.GONE
                 chart_sessions?.adapter = AdapterSessions(context, sessions).apply {
                     setOnItemClickListener(this@ActivityFpsChart)
                     setOnItemDeleteClickListener(object : AdapterSessions.OnItemClickListener {
-                        override fun onItemClick(view: View, position: Int) {
+                        override fun onItemClick(position: Int) {
                             onSessionDeleteClick(position)
                         }
                     })
                 }
+                onItemClick(sessions.size - 1)
             } else {
+                chart_session_detail?.visibility = View.GONE
                 chart_sessions_empty?.visibility = View.VISIBLE
             }
         }
@@ -102,12 +98,12 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
         chart_add.setOnClickListener {
             if (FloatFpsWatch.show != true) {
                 FloatFpsWatch(context).showPopupWindow()
+                DialogHelper.helpInfo(this@ActivityFpsChart, "请进入需要记录帧率的应用，并点击屏幕右上方[绿色]小按钮开始记录帧率！")
                 /*
                 val serviceState = AccessibleServiceHelper().serviceRunning(context)
                 if (serviceState) {
                     FloatFpsWatch(context).showPopupWindow()
                 } else {
-                    Scene.toast("请在系统设置里激活[Scene - 场景模式]辅助服务", Toast.LENGTH_SHORT)
                 }
                 */
             } else {
@@ -122,9 +118,7 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
         val item = adapter.getItem(position)
 
         fpsWatchStore.deleteSession(item.sessionId)
-        // TODO:重新加载会话列表
-        adapter.notifyItemRemoved(position)
-        // adapter.notifyDataSetChanged()
+        adapter.removeItem(position)
     }
 
     override fun onDestroy() {
@@ -135,7 +129,7 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
         super.onPause()
     }
 
-    override fun onItemClick(view: View, position: Int) {
+    override fun onItemClick(position: Int) {
         val item = (chart_sessions.adapter as AdapterSessions).getItem(position)
         val sessionId = item.sessionId
         val fpsData = fpsWatchStore.sessionFpsData(sessionId)
