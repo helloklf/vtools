@@ -20,10 +20,6 @@ import java.util.ArrayList
 import java.util.HashMap
 import kotlin.Comparator
 
-/**
- * Created by Hello on 2018/01/26.
- */
-
 class AdapterAppList(private val context: Context, apps: ArrayList<AppInfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<AppInfo>?
     private val appInfoLoader = AppInfoLoader(context)

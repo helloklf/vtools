@@ -19,10 +19,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-/**
- * Created by Hello on 2018/01/26.
- */
-
 class XposedAppsAdapter(private val context: Context, apps: ArrayList<AppInfo>) : BaseAdapter() {
     private val appIconLoader = AppInfoLoader(context)
     private var keywords: String = ""

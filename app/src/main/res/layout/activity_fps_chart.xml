@@ -1,18 +1,392 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
-    android:keepScreenOn="false"
-    tools:openDrawer="start">
+    android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/vtools_online"
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:src="@drawable/add"
+        android:id="@+id/chart_add"
+        android:layout_marginTop="173dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.omarea.common.ui.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Platform"
+                        style="@style/textXSmall"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <ImageView
+                        android:src="@drawable/icon_chart_cpu"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                    <TextView
+                        android:id="@+id/chart_platform"
+                        android:text="SOC"
+                        android:layout_marginTop="8dp"
+                        style="@style/textDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Model"
+                        style="@style/textXSmall"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <ImageView
+                        android:src="@drawable/icon_chart_phone"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                    <TextView
+                        android:id="@+id/chart_phone"
+                        android:text="MobilePhone"
+                        android:layout_marginTop="8dp"
+                        style="@style/textDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="OS"
+                        style="@style/textXSmall"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <ImageView
+                        android:src="@drawable/icon_chart_android"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+                    <TextView
+                        android:id="@+id/chart_os"
+                        android:text="Android X"
+                        android:layout_marginTop="8dp"
+                        style="@style/textDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                style="@style/ListCardItem"
+                android:paddingBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/chart_sessions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp"
+                    android:text="无帧率记录"
+                    android:id="@+id/chart_sessions_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                style="@style/ListCardItem"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp">
+
+                <TextView
+                    android:id="@+id/chart_session_name"
+                    style="@style/textDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="未选择记录" />
+
+                <TextView
+                    android:id="@+id/chart_session_time"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/textXSmall"
+                    android:fontFamily="sans-serif-condensed-light" />
+
+                <LinearLayout
+                    android:id="@+id/chart_fps_overview"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_below="@id/chart_session_name"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="MAX"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/chart_fps_max"
+                            android:textSize="20dp"
+                            android:text="0.0"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="FPS"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="MIN"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/chart_fps_min"
+                            android:textSize="20dp"
+                            android:text="0.0"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="FPS"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="AVG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/chart_fps_avg"
+                            android:textSize="20dp"
+                            android:text="0.0"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="FPS"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/chart_other_overview"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_below="@id/chart_fps_overview"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="≥45FPS"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textSize="20dp"
+                            android:id="@+id/chart_smooth_ratio"
+                            android:text="0.0%"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="Smooth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="＞46°C"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textSize="20dp"
+                            android:id="@+id/chart_fever_ratio"
+                            android:text="0.0%"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="Temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="AVG"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:textSize="20dp"
+                            android:id="@+id/chart_temp_max"
+                            android:text="0.0°C"
+                            android:textColor="?colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/textXSmall"
+                            android:text="Temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <com.omarea.ui.fps.FpsTemperatureView
+                    android:layout_below="@id/chart_other_overview"
+                    android:id="@+id/chart_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="center_vertical"
+                    android:layout_below="@id/chart_session"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/ic_capacity"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_size"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:text="0000mAh"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_temperature"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_temperature"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="4"
+                        android:text="00°C"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_voltage"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_voltage"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="4"
+                        android:text="3.75V"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:src="@drawable/ic_power_supply"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#808080" />
+                    <TextView
+                        android:id="@+id/battery_status"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="wrap_content"
+                        android:text="--"
+                        android:textSize="11dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </com.omarea.common.ui.OverScrollView>
+
+</RelativeLayout>

@@ -148,6 +148,12 @@
         <item name="android:textSize">11dp</item>
     </style>
 
+    <style name="textXSmall">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">9dp</item>
+        <item name="fontFamily">sans-serif-condensed-light</item>
+    </style>
+
     <style name="textSecondary">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>

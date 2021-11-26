@@ -14,9 +14,7 @@ import java.util.ArrayList;
 
 /**
  * 管理应用的Shortcut
- * Created by Hello on 2018/03/20.
  */
-
 public class AppShortcutManager {
     private Context context;
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/in_card_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="8dp"
+    android:padding="6dp">
+
+    <ImageView
+        android:id="@+id/ItemIcon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center_vertical"
+        android:maxWidth="45dp"
+        android:maxHeight="45dp"
+        android:minWidth="45dp"
+        android:minHeight="45dp"
+        android:padding="8dp"
+        android:src="@drawable/process_android" />
+
+    <LinearLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal|center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="7dp">
+
+        <TextView
+            android:id="@+id/ItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text=""
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ItemDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:lines="1"
+            android:text=""
+            android:textColor="#8888"
+            android:textSize="11dp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:src="@drawable/delete"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:tint="@android:color/white"
+        style="@style/SceneButton"
+        android:id="@+id/download"
+        android:layout_gravity="center_vertical"
+        android:text="@string/download" />
+</LinearLayout>

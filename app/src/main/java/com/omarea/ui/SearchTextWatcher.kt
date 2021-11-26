@@ -5,12 +5,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 
-/**
- * 监听文本变化的简单SearchTextWatcher
- * Created by Hello on 2018/03/04.
- */
-
-
 public class SearchTextWatcher(private var onChange: Runnable) : TextWatcher {
     private val myHandler = Handler(Looper.getMainLooper())
     var lastInput = 0L

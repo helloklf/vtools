@@ -14,9 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-/**
- * Created by Hello on 2018/01/26.
- */
 class AdapterFreezeApp(private val context: Context, private var apps: ArrayList<AppInfo>) : BaseAdapter(), Filterable {
     private val appIconLoader = AppInfoLoader(context)
     private var filter: Filter? = null

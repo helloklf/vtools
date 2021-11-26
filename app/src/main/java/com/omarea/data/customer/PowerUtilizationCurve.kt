@@ -120,19 +120,19 @@ class PowerUtilizationCurve(context: Context) : IEventReceiver {
     }
 
     private fun saveLog() {
-        // 开机5分钟之内不统计耗电记录，避免刚开机时系统服务繁忙导致数据不准确
-        if (SystemClock.elapsedRealtime() > 300000L) {
-            if(GlobalStatus.batteryCapacity < 1 || GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_UNKNOWN) {
-                updateBatteryStatus()
-            } else {
-                // 电流
-                GlobalStatus.batteryCurrentNow = (
-                    batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
-                    globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
-                )
-                // batteryManager.getIntProperty(BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE)
-            }
+        if(GlobalStatus.batteryCapacity < 1 || GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_UNKNOWN) {
+            updateBatteryStatus()
+        } else {
+            // 电流
+            GlobalStatus.batteryCurrentNow = (
+                batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
+                globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
+            )
+            // batteryManager.getIntProperty(BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE)
+        }
 
+        // 开机5分钟之内不统计耗电记录，避免刚开机时系统服务繁忙导致数据不准确
+        // if (SystemClock.elapsedRealtime() > 300000L) {
             val status = BatteryStatus().apply {
                 time = System.currentTimeMillis()
                 temperature = GlobalStatus.temperatureCurrent
@@ -144,7 +144,7 @@ class PowerUtilizationCurve(context: Context) : IEventReceiver {
             status.packageName = ModeSwitcher.getCurrentPowermodeApp()
             status.mode = ModeSwitcher.getCurrentPowerMode()
             storage.insertHistory(status)
-        }
+        // }
     }
 
     private fun cancelUpdate() {

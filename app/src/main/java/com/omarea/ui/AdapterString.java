@@ -8,11 +8,6 @@ import android.widget.TextView;
 
 import com.omarea.vtools.R;
 
-/**
- * 显示简单文本内容的Adapter
- * Created by Hello on 2018/02/01.
- */
-
 public class AdapterString extends BaseAdapter {
     private String[] arr;
     private Context context;

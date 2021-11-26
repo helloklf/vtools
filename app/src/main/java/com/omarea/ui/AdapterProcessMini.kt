@@ -18,10 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-/**
- * Created by Hello on 2018/01/26.
- */
-
 class AdapterProcessMini(private val context: Context,
                          private var processes: ArrayList<ProcessInfo> = ArrayList(),
                          private var keywords: String = "",
