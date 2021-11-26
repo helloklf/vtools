@@ -315,7 +315,7 @@ class ActivityAppConfig2 : ActivityBase() {
 
     private fun setAppRowDesc(item: AppInfo) {
         item.selected = false
-        val packageName = item.packageName.toString()
+        val packageName = item.packageName
         item.stateTags = spfPowercfg.getString(packageName, "")
         val configInfo = sceneConfigStore.getAppConfig(packageName)
         item.sceneConfigInfo = configInfo
