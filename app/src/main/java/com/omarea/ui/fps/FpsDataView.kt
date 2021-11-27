@@ -152,7 +152,7 @@ class FpsDataView : View {
             )
             paint.color = Color.parseColor("#40888888")
             canvas.drawLine(
-                    drawX, innerPadding,
+                    drawX, paddingTop,
                     drawX, this.height - innerPadding, paint
             )
         }
