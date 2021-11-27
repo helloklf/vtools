@@ -217,8 +217,8 @@ public class FloatFpsWatch(private val mContext: Context) {
             fpsWatchStore.addHistory(
                 sessionId,
                 fps,
-                gpuLoad.toDouble(),
                 cpuLoad,
+                gpuLoad.toDouble(),
                 GlobalStatus.batteryCapacity,
                 GlobalStatus.temperatureCurrent,
                 ModeSwitcher.DEFAULT

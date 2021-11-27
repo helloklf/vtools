@@ -12,11 +12,10 @@ import com.omarea.vtools.R
 
 class FpsDataView : View {
     private lateinit var storage: FpsWatchStore
-    enum class dimension {
-        temperature, // 温度
-        load, // 负载
-        capacity, // 电量
-
+    enum class DIMENSION {
+        TEMPERATURE, // 温度
+        LOAD, // 负载
+        CAPACITY, // 电量
     }
 
     constructor(context: Context) : super(context) {
@@ -76,7 +75,7 @@ class FpsDataView : View {
 
     private val paint = Paint()
     private val dashPathEffect = DashPathEffect(floatArrayOf(4f, 8f), 0f)
-    private var rightDimension = dimension.values().first()
+    private var rightDimension = DIMENSION.values().first()
     private var sessionId:Long = 0L
 
     public fun setSessionId(sessionId: Long) {
@@ -90,14 +89,14 @@ class FpsDataView : View {
         return this.sessionId
     }
 
-    public fun setRightDimension(rightDimension: dimension) {
-        if (this.rightDimension != rightDimension) {
-            this.rightDimension = rightDimension
+    public fun setRightDimension(rightDIMENSION: DIMENSION) {
+        if (this.rightDimension != rightDIMENSION) {
+            this.rightDimension = rightDIMENSION
             invalidate()
         }
     }
 
-    public fun getRightDimension(): dimension {
+    public fun getRightDimension(): DIMENSION {
         return this.rightDimension
     }
 
@@ -340,9 +339,9 @@ class FpsDataView : View {
     }
 
     private fun drawDimensionLoad(canvas: Canvas) {
-        val samplesGpu = storage.sessionGpuLoadData(this.sessionId)
         val samplesCpu = storage.sessionCpuLoadData(this.sessionId)
-        if (samplesGpu.size < 1 || samplesCpu.size < 1) {
+        val samplesGpu = storage.sessionGpuLoadData(this.sessionId)
+        if (samplesCpu.size < 1 || samplesGpu.size < 1) {
             return
         }
 
@@ -353,7 +352,7 @@ class FpsDataView : View {
         val dpSize = dp2px(this.context, 1f)
         val innerPadding = dpSize * 24f
 
-        val minutes = samplesGpu.size / 60.0
+        val minutes = samplesCpu.size / 60.0
 
         val maxY = 100
 
@@ -397,7 +396,7 @@ class FpsDataView : View {
 
         paint.reset()
         paint.color = getColorAccent()
-        samplesGpu.run {
+        samplesCpu.run {
             val last = last()
             val first = first()
             val startX = innerPadding
@@ -411,7 +410,7 @@ class FpsDataView : View {
             var index = 0
 
             paint.pathEffect = null
-            paint.color = Color.parseColor("#8087d3ff")
+            paint.color = Color.parseColor("#80fc6bc5")
             for (sample in this) {
                 val currentX = (index / 60f * ratioX).toFloat() + innerPadding
                 val currentY = startY - (sample * ratioY)
@@ -436,7 +435,7 @@ class FpsDataView : View {
                     paint
             )
         }
-        samplesCpu.run {
+        samplesGpu.run {
             val last = last()
             val first = first()
             val startX = innerPadding
@@ -450,7 +449,7 @@ class FpsDataView : View {
             var index = 0
 
             paint.pathEffect = null
-            paint.color = Color.parseColor("#80fc6bc5")
+            paint.color = Color.parseColor("#8087d3ff")
             for (sample in this) {
                 val currentX = (index / 60f * ratioX).toFloat() + innerPadding
                 val currentY = startY - (sample * ratioY)
@@ -577,9 +576,9 @@ class FpsDataView : View {
 
     private fun drawRight(canvas: Canvas) {
         when (rightDimension) {
-            dimension.temperature -> drawDimensionTemperature(canvas)
-            dimension.capacity -> drawDimensionCapacity(canvas)
-            dimension.load -> drawDimensionLoad(canvas)
+            DIMENSION.TEMPERATURE -> drawDimensionTemperature(canvas)
+            DIMENSION.CAPACITY -> drawDimensionCapacity(canvas)
+            DIMENSION.LOAD -> drawDimensionLoad(canvas)
             else -> {}
         }
     }

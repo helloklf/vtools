@@ -11,7 +11,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.webkit.*
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.omarea.common.ui.DialogHelper
 import com.omarea.library.basic.AppInfoLoader
@@ -122,14 +121,14 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
 
         val chart_right_click = object : View.OnClickListener {
             override fun onClick(v: View?) {
-                val values = FpsDataView.dimension.values()
+                val values = FpsDataView.DIMENSION.values()
                 val count = values.size
                 val nextIndex = (values.indexOf(chart_session.getRightDimension()) + 1) % count
                 chart_session.setRightDimension(values.get(nextIndex))
                 chart_right.text = when (chart_session.getRightDimension()) {
-                    FpsDataView.dimension.temperature -> "Temperature(°C)"
-                    FpsDataView.dimension.capacity -> "Battery(%)"
-                    FpsDataView.dimension.load -> {
+                    FpsDataView.DIMENSION.TEMPERATURE -> "Temperature(°C)"
+                    FpsDataView.DIMENSION.CAPACITY -> "Battery(%)"
+                    FpsDataView.DIMENSION.LOAD -> {
                         val colorSpanGpu = ForegroundColorSpan(Color.parseColor("#8087d3ff"))
                         val colorSpanCpu = ForegroundColorSpan(Color.parseColor("#80fc6bc5"))
                         val bold = StyleSpan(Typeface.BOLD)

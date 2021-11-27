@@ -313,16 +313,11 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <com.omarea.ui.fps.FpsDataView
-                    android:layout_below="@id/chart_other_overview"
-                    android:id="@+id/chart_session"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp" />
-
                 <LinearLayout
-                    android:layout_marginTop="-4dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:id="@+id/chart_dimension"
+                    android:layout_below="@id/chart_other_overview"
                     android:gravity="center_vertical"
-                    android:layout_below="@id/chart_session"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -353,6 +348,13 @@
                         android:layout_height="15dp"
                         app:tint="#87d3ff" />
                 </LinearLayout>
+
+                <com.omarea.ui.fps.FpsDataView
+                    android:layout_below="@id/chart_dimension"
+                    android:id="@+id/chart_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+
             </RelativeLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
