@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -22,10 +23,15 @@ import com.omarea.data.EventBus
 import com.omarea.data.EventType
 import com.omarea.data.GlobalStatus
 import com.omarea.data.IEventReceiver
+import com.omarea.library.shell.CpuFrequencyUtils
+import com.omarea.library.shell.CpuLoadUtils
 import com.omarea.library.shell.FpsUtils
+import com.omarea.library.shell.GpuUtils
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.FpsWatchStore
 import com.omarea.vtools.R
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 public class FloatFpsWatch(private val mContext: Context) {
@@ -106,6 +112,10 @@ public class FloatFpsWatch(private val mContext: Context) {
 
         startTimer()
         EventBus.subscribe(appWatch)
+        GlobalScope.launch {
+            coreCount = CpuFrequencyUtils().coreCount
+            clusters = CpuFrequencyUtils().clusterInfo
+        }
 
         return true
     }
@@ -160,13 +170,56 @@ public class FloatFpsWatch(private val mContext: Context) {
     private var myHandler = Handler(Looper.getMainLooper())
 
     private val fpsUtils = FpsUtils(KeepShellPublic.getInstance("fps-recorder", true))
+    private val cpu = CpuLoadUtils()
+    private var coreCount = -1
+    private var clusters = ArrayList<Array<String>>()
 
     private fun updateInfo() {
         val fps = fpsUtils.fps
+        val gpuLoad = GpuUtils.getGpuLoad()
+        if (coreCount < 1) {
+            coreCount = CpuFrequencyUtils().coreCount
+            clusters = CpuFrequencyUtils().clusterInfo
+        }
+        // val cpuLoad = (cpu.cpuLoad.getValue(-1)?: -1.0).toFloat()
+
+        // 尝试获得大核心的最高负载
+        val loads = cpu.cpuLoad
+        var cpuLoad = (loads.getValue(-1)?: -1.0).toDouble()
+        // 一般BigLittle架构的处理器，后面几个核心都是大核，游戏主要依赖大核性能。而小核负载一般来源于后台进程，因此不需要分析小核负载
+        val centerIndex = coreCount / 2
+        var bigCoreLoadMax = 0.0
+        if (centerIndex >= 2) {
+            try {
+                for (i in centerIndex until coreCount) {
+                    val coreLoad = loads[i]!!
+                    if (coreLoad > bigCoreLoadMax) {
+                        bigCoreLoadMax = coreLoad
+                    }
+                }
+                // 如果某个大核负载超过70%，则将CPU负载显示为此大核的负载
+                // 因为迷你监视器更主要的作用是分析CPU负载对游戏性能的影响
+                // 通常单核满载会直接导致游戏卡顿，因此单核高负载时，优先显示单核负载而非多核平均负载
+                // 以便使用者知晓，此时CPU压力过高可能导致卡顿
+                if (bigCoreLoadMax > 70 && bigCoreLoadMax > cpuLoad) {
+                    cpuLoad = bigCoreLoadMax
+                }
+            } catch (ex: java.lang.Exception) {
+                Log.e("", "" + ex.message)
+            }
+        }
+
+        if (cpuLoad < 0) {
+            cpuLoad = 0.toDouble()
+        }
+
         if (sessionId > 0) {
             fpsWatchStore.addHistory(
                 sessionId,
                 fps,
+                gpuLoad.toDouble(),
+                cpuLoad,
+                GlobalStatus.batteryCapacity,
                 GlobalStatus.temperatureCurrent,
                 ModeSwitcher.DEFAULT
             )

@@ -10,8 +10,14 @@ import android.view.View
 import com.omarea.store.FpsWatchStore
 import com.omarea.vtools.R
 
-class FpsTemperatureView : View {
+class FpsDataView : View {
     private lateinit var storage: FpsWatchStore
+    enum class dimension {
+        temperature, // 温度
+        load, // 负载
+        capacity, // 电量
+
+    }
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -70,26 +76,7 @@ class FpsTemperatureView : View {
 
     private val paint = Paint()
     private val dashPathEffect = DashPathEffect(floatArrayOf(4f, 8f), 0f)
-    private val perfectRange = intArrayOf(10, 25, 50, 75, 100, 150, 250, 300, 450, 600, 900, 1200, 1800, 2400)
-    private fun getPerfectXMax(value: Double): Int {
-        var lastPerfectValue = perfectRange.last()
-        if (value > lastPerfectValue) {
-            while (true) {
-                lastPerfectValue += 600
-                if (lastPerfectValue >= value) {
-                    return lastPerfectValue
-                }
-            }
-        } else {
-            for (it in perfectRange) {
-                if (value <= it) {
-                    return it
-                }
-            }
-        }
-        return value.toInt()
-    }
-
+    private var rightDimension = dimension.values().first()
     private var sessionId:Long = 0L
 
     public fun setSessionId(sessionId: Long) {
@@ -99,12 +86,26 @@ class FpsTemperatureView : View {
         }
     }
 
-    public fun geSessionId(): Long {
+    public fun getSessionId(): Long {
         return this.sessionId
+    }
+
+    public fun setRightDimension(rightDimension: dimension) {
+        if (this.rightDimension != rightDimension) {
+            this.rightDimension = rightDimension
+            invalidate()
+        }
+    }
+
+    public fun getRightDimension(): dimension {
+        return this.rightDimension
     }
 
     private fun drawLeft(canvas: Canvas) {
         val samples = storage.sessionFpsData(this.sessionId)
+        if (samples.size < 1) {
+            return
+        }
 
         paint.reset()
         val pointRadius = 4f
@@ -235,8 +236,11 @@ class FpsTemperatureView : View {
         )
     }
 
-    private fun drawRight(canvas: Canvas) {
+    private fun drawDimensionTemperature(canvas: Canvas) {
         val samples = storage.sessionTemperatureData(this.sessionId)
+        if (samples.size < 1) {
+            return
+        }
 
         paint.reset()
         val pointRadius = 4f
@@ -268,7 +272,7 @@ class FpsTemperatureView : View {
         paint.pathEffect = dashPathEffect
         paint.textAlign = Paint.Align.LEFT
         val keyValue = arrayListOf(35, 40, 45, 50, 55, 60)
-        paint.color = Color.parseColor("#40fc8a1b")
+        paint.color = Color.parseColor("#4087d3ff")
         for (point in 0..maxY) {
             if (keyValue.contains(point)) {
                 paint.color = Color.parseColor("#808080")
@@ -282,7 +286,7 @@ class FpsTemperatureView : View {
                 }
                 if (point != maxY) {
                     paint.strokeWidth = if (point == 0) pointRadius else 2f
-                    paint.color = Color.parseColor("#40fc8a1b")
+                    paint.color = Color.parseColor("#4087d3ff")
                     canvas.drawLine(
                             innerPadding,
                             innerPadding + ((maxY - point) * ratioY).toInt(),
@@ -309,7 +313,7 @@ class FpsTemperatureView : View {
         var index = 0
 
         paint.pathEffect = null
-        paint.color = Color.parseColor("#80fc8a1b")
+        paint.color = Color.parseColor("#8087d3ff")
         for (sample in samples) {
             val currentX = (index / 60f * ratioX).toFloat() + innerPadding
             val currentY = startY - (sample * ratioY)
@@ -333,6 +337,251 @@ class FpsTemperatureView : View {
                 startY - (last * ratioY),
                 paint
         )
+    }
+
+    private fun drawDimensionLoad(canvas: Canvas) {
+        val samplesGpu = storage.sessionGpuLoadData(this.sessionId)
+        val samplesCpu = storage.sessionCpuLoadData(this.sessionId)
+        if (samplesGpu.size < 1 || samplesCpu.size < 1) {
+            return
+        }
+
+        paint.reset()
+        val pointRadius = 4f
+        paint.strokeWidth = 2f
+
+        val dpSize = dp2px(this.context, 1f)
+        val innerPadding = dpSize * 24f
+
+        val minutes = samplesGpu.size / 60.0
+
+        val maxY = 100
+
+        val width = this.width
+        val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
+        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val startY = height - innerPadding
+
+        val textSize = dpSize * 8.5f
+        paint.textSize = textSize
+
+        paint.strokeWidth = 2f
+        paint.pathEffect = dashPathEffect
+        paint.textAlign = Paint.Align.LEFT
+        val keyValue = arrayListOf(50, 75, 90, 100)
+        paint.color = Color.parseColor("#4087d3ff")
+        for (point in 0..maxY) {
+            if (keyValue.contains(point)) {
+                paint.color = Color.parseColor("#808080")
+                if (point > 0) {
+                    canvas.drawText(
+                            if (point == maxY) { point.toString() + "%" } else point.toString(),
+                            width - innerPadding + 8,
+                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paint
+                    )
+                }
+                if (point != maxY) {
+                    paint.strokeWidth = if (point == 0) pointRadius else 2f
+                    paint.color = Color.parseColor("#4087d3ff")
+                    canvas.drawLine(
+                            innerPadding,
+                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            (this.width - innerPadding),
+                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paint
+                    )
+                }
+            }
+        }
+
+        paint.reset()
+        paint.color = getColorAccent()
+        samplesGpu.run {
+            val last = last()
+            val first = first()
+            val startX = innerPadding
+            val endX = ((size / 60f) * ratioX).toFloat() + innerPadding
+            var lastX = startX
+            var lastY = startY - (first * ratioY)
+
+            paint.isAntiAlias = true
+            paint.strokeWidth = 8f
+            paint.style = Paint.Style.FILL
+            var index = 0
+
+            paint.pathEffect = null
+            paint.color = Color.parseColor("#8087d3ff")
+            for (sample in this) {
+                val currentX = (index / 60f * ratioX).toFloat() + innerPadding
+                val currentY = startY - (sample * ratioY)
+
+                canvas.drawLine(
+                        lastX,
+                        lastY,
+                        currentX,
+                        currentY,
+                        paint
+                )
+                lastX = currentX
+                lastY = currentY
+                index ++
+            }
+
+            canvas.drawLine(
+                    lastX,
+                    lastY,
+                    endX,
+                    startY - (last * ratioY),
+                    paint
+            )
+        }
+        samplesCpu.run {
+            val last = last()
+            val first = first()
+            val startX = innerPadding
+            val endX = ((size / 60f) * ratioX).toFloat() + innerPadding
+            var lastX = startX
+            var lastY = startY - (first * ratioY)
+
+            paint.isAntiAlias = true
+            paint.strokeWidth = 8f
+            paint.style = Paint.Style.FILL
+            var index = 0
+
+            paint.pathEffect = null
+            paint.color = Color.parseColor("#80fc6bc5")
+            for (sample in this) {
+                val currentX = (index / 60f * ratioX).toFloat() + innerPadding
+                val currentY = startY - (sample * ratioY)
+
+                canvas.drawLine(
+                        lastX,
+                        lastY,
+                        currentX,
+                        currentY,
+                        paint
+                )
+                lastX = currentX
+                lastY = currentY
+                index ++
+            }
+
+            canvas.drawLine(
+                    lastX,
+                    lastY,
+                    endX,
+                    startY - (last * ratioY),
+                    paint
+            )
+        }
+    }
+
+    private fun drawDimensionCapacity(canvas: Canvas) {
+        val samples = storage.sessionCapacityData(this.sessionId)
+        if (samples.size < 1) {
+            return
+        }
+
+        paint.reset()
+        val pointRadius = 4f
+        paint.strokeWidth = 2f
+
+        val dpSize = dp2px(this.context, 1f)
+        val innerPadding = dpSize * 24f
+
+        val minutes = samples.size / 60.0
+
+        val maxY = 100
+
+        val width = this.width
+        val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
+        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val startY = height - innerPadding
+
+        val textSize = dpSize * 8.5f
+        paint.textSize = textSize
+
+        paint.strokeWidth = 2f
+        paint.pathEffect = dashPathEffect
+        paint.textAlign = Paint.Align.LEFT
+        val keyValue = arrayListOf(50, 75, 90, 100)
+        paint.color = Color.parseColor("#4087d3ff")
+        for (point in 0..maxY) {
+            if (keyValue.contains(point)) {
+                paint.color = Color.parseColor("#808080")
+                if (point > 0) {
+                    canvas.drawText(
+                            if (point == maxY) { point.toString() + "%" } else point.toString(),
+                            width - innerPadding + 8,
+                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paint
+                    )
+                }
+                if (point != maxY) {
+                    paint.strokeWidth = if (point == 0) pointRadius else 2f
+                    paint.color = Color.parseColor("#4087d3ff")
+                    canvas.drawLine(
+                            innerPadding,
+                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            (this.width - innerPadding),
+                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paint
+                    )
+                }
+            }
+        }
+
+        paint.reset()
+        paint.color = getColorAccent()
+        samples.run {
+            val last = last()
+            val first = first()
+            val startX = innerPadding
+            val endX = ((size / 60f) * ratioX).toFloat() + innerPadding
+            var lastX = startX
+            var lastY = startY - (first * ratioY)
+
+            paint.isAntiAlias = true
+            paint.strokeWidth = 8f
+            paint.style = Paint.Style.FILL
+            var index = 0
+
+            paint.pathEffect = null
+            paint.color = Color.parseColor("#8087d3ff")
+            for (sample in this) {
+                val currentX = (index / 60f * ratioX).toFloat() + innerPadding
+                val currentY = startY - (sample * ratioY)
+
+                canvas.drawLine(
+                        lastX,
+                        lastY,
+                        currentX,
+                        currentY,
+                        paint
+                )
+                lastX = currentX
+                lastY = currentY
+                index ++
+            }
+
+            canvas.drawLine(
+                    lastX,
+                    lastY,
+                    endX,
+                    startY - (last * ratioY),
+                    paint
+            )
+        }
+    }
+
+    private fun drawRight(canvas: Canvas) {
+        when (rightDimension) {
+            dimension.temperature -> drawDimensionTemperature(canvas)
+            dimension.capacity -> drawDimensionCapacity(canvas)
+            dimension.load -> drawDimensionLoad(canvas)
+            else -> {}
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

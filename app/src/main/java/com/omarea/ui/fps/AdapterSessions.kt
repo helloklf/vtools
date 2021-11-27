@@ -91,7 +91,8 @@ class AdapterSessions(private val context: Context, private val list: ArrayList<
 
     fun removeItem(position: Int) {
         this.list.removeAt(position)
-        notifyItemRemoved(position)
+        // notifyItemRemoved(position)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

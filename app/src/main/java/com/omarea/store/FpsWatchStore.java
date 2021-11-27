@@ -13,7 +13,7 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     public FpsWatchStore(Context context) {
-        super(context, "fps_watch_log", null, DB_VERSION);
+        super(context, "fps_watch_log2", null, DB_VERSION);
     }
 
     @Override
@@ -30,6 +30,9 @@ public class FpsWatchStore extends SQLiteOpenHelper {
                     "time INTEGER," +
                     "session INTEGER," +
                     "fps REAL," +
+                    "cpu_load REAL," +
+                    "gpu_load REAL," +
+                    "capacity INTEGER," +
                     "temperature REAL," +
                     "power_mode text" +
                     ")");
@@ -97,12 +100,70 @@ public class FpsWatchStore extends SQLiteOpenHelper {
         }
         return histories;
     }
+
     // 获取会话的详情（温度）
     public ArrayList<Float> sessionTemperatureData(long sessionId) {
         ArrayList<Float> histories = new ArrayList<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             final Cursor cursor = sqLiteDatabase.rawQuery("select temperature from fps_history where session = ?", new String[]{
+                    "" + sessionId
+            });
+            while (cursor.moveToNext()) {
+                histories.add(cursor.getFloat(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return histories;
+    }
+
+    // 获取会话的详情（CPU 负载）
+    public ArrayList<Float> sessionCpuLoadData(long sessionId) {
+        ArrayList<Float> histories = new ArrayList<>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select cpu_load from fps_history where session = ?", new String[]{
+                    "" + sessionId
+            });
+            while (cursor.moveToNext()) {
+                histories.add(cursor.getFloat(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return histories;
+    }
+
+    // 获取会话的详情（GPU 负载）
+    public ArrayList<Float> sessionGpuLoadData(long sessionId) {
+        ArrayList<Float> histories = new ArrayList<>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select gpu_load from fps_history where session = ?", new String[]{
+                    "" + sessionId
+            });
+            while (cursor.moveToNext()) {
+                histories.add(cursor.getFloat(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return histories;
+    }
+
+    // 获取会话的详情（电量）
+    public ArrayList<Float> sessionCapacityData(long sessionId) {
+        ArrayList<Float> histories = new ArrayList<>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select capacity from fps_history where session = ?", new String[]{
                     "" + sessionId
             });
             while (cursor.moveToNext()) {
@@ -194,16 +255,19 @@ public class FpsWatchStore extends SQLiteOpenHelper {
     }
 
     // 添加记录
-    public boolean addHistory(long session, float fps, double temperature, String powerMode) {
+    public boolean addHistory(long session, float fps, double cpuLoad, double gpuLoad, int capacity, double temperature, String powerMode) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("insert into fps_history(time, session, fps, temperature, power_mode) values (?, ?, ?, ?, ?)", new Object[]{
-                    System.currentTimeMillis(),
-                    session,
-                    fps,
-                    temperature,
-                    powerMode
+            database.execSQL("insert into fps_history(time, session, fps, cpu_load, gpu_load, capacity, temperature, power_mode) values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
+                System.currentTimeMillis(),
+                session,
+                fps,
+                cpuLoad,
+                gpuLoad,
+                capacity,
+                temperature,
+                powerMode
             });
             database.setTransactionSuccessful();
             return true;
@@ -231,10 +295,10 @@ public class FpsWatchStore extends SQLiteOpenHelper {
         try {
             SQLiteDatabase database = getWritableDatabase();
             database.execSQL("delete from session where id = ?", new Object[]{
-                    sessionId
+                sessionId
             });
             database.execSQL("delete from fps_history where session = ?", new Object[]{
-                    sessionId
+                sessionId
             });
             return true;
         } catch (Exception ex) {

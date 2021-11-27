@@ -1,8 +1,14 @@
 package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.webkit.*
 import android.widget.Toast
@@ -12,6 +18,7 @@ import com.omarea.library.basic.AppInfoLoader
 import com.omarea.library.shell.PlatformUtils
 import com.omarea.store.FpsWatchStore
 import com.omarea.ui.fps.AdapterSessions
+import com.omarea.ui.fps.FpsDataView
 import com.omarea.vtools.R
 import com.omarea.vtools.popup.FloatFpsWatch
 import kotlinx.android.synthetic.main.activity_fps_chart.*
@@ -97,6 +104,7 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
 
         chart_add.setOnClickListener {
             if (FloatFpsWatch.show != true) {
+                it.rotation = 45f
                 FloatFpsWatch(context).showPopupWindow()
                 DialogHelper.helpInfo(this@ActivityFpsChart, "请进入需要记录帧率的应用，并点击屏幕右上方[绿色]小按钮开始记录帧率！")
                 /*
@@ -107,9 +115,39 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
                 }
                 */
             } else {
+                it.rotation = 0f
                 FloatFpsWatch(context).hidePopupWindow()
             }
         }
+
+        val chart_right_click = object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val values = FpsDataView.dimension.values()
+                val count = values.size
+                val nextIndex = (values.indexOf(chart_session.getRightDimension()) + 1) % count
+                chart_session.setRightDimension(values.get(nextIndex))
+                chart_right.text = when (chart_session.getRightDimension()) {
+                    FpsDataView.dimension.temperature -> "Temperature(°C)"
+                    FpsDataView.dimension.capacity -> "Battery(%)"
+                    FpsDataView.dimension.load -> {
+                        val colorSpanGpu = ForegroundColorSpan(Color.parseColor("#8087d3ff"))
+                        val colorSpanCpu = ForegroundColorSpan(Color.parseColor("#80fc6bc5"))
+                        val bold = StyleSpan(Typeface.BOLD)
+
+                        SpannableString("CPU/GPU Load(%)").apply {
+                            setSpan(colorSpanCpu, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            setSpan(bold, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            setSpan(colorSpanGpu, 4, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            setSpan(bold, 4, 8, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                    }
+                    else -> ""
+                }
+            }
+        }
+        // 切换右侧坐标轴数据
+        chart_right.setOnClickListener(chart_right_click)
+        chart_right_icon.setOnClickListener(chart_right_click)
     }
 
     // 删除会话
@@ -127,6 +165,11 @@ class ActivityFpsChart : ActivityBase(), AdapterSessions.OnItemClickListener {
 
     public override fun onPause() {
         super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        chart_add.rotation = if (FloatFpsWatch.show == true) 45f else 0f
     }
 
     override fun onItemClick(position: Int) {
