@@ -111,7 +111,8 @@ class FpsDataView : View {
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
-        val innerPadding = dpSize * 24f
+        val innerPadding = dpSize * 18f
+        val paddingTop = dpSize * 4f
 
         val minutes = samples.size / 60.0
 
@@ -127,7 +128,7 @@ class FpsDataView : View {
         }
 
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val ratioY = ((this.height - innerPadding - paddingTop) * 1.0 / maxY).toFloat() // 纵向比率
         val startY = height - innerPadding
 
         val textSize = dpSize * 8.5f
@@ -174,7 +175,7 @@ class FpsDataView : View {
                     canvas.drawText(
                             point.toString(),
                             innerPadding - dpSize * 4,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paddingTop + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
                             paint
                     )
                 }
@@ -186,9 +187,9 @@ class FpsDataView : View {
                 }
                 canvas.drawLine(
                         innerPadding,
-                        innerPadding + ((maxY - point) * ratioY).toInt(),
+                        paddingTop + ((maxY - point) * ratioY).toInt(),
                         (this.width - innerPadding),
-                        innerPadding + ((maxY - point) * ratioY).toInt(),
+                        paddingTop + ((maxY - point) * ratioY).toInt(),
                         paint
                 )
             }
@@ -246,7 +247,8 @@ class FpsDataView : View {
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
-        val innerPadding = dpSize * 24f
+        val innerPadding = dpSize * 18f
+        val paddingTop = dpSize * 4f
 
         val minutes = samples.size / 60.0
 
@@ -261,7 +263,7 @@ class FpsDataView : View {
 
         val width = this.width
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val ratioY = ((this.height - innerPadding - paddingTop) * 1.0 / maxY).toFloat() // 纵向比率
         val startY = height - innerPadding
 
         val textSize = dpSize * 8.5f
@@ -277,9 +279,9 @@ class FpsDataView : View {
                 paint.color = Color.parseColor("#808080")
                 if (point > 0) {
                     canvas.drawText(
-                            if (point == maxY) { point.toString() + "°C" } else point.toString(),
+                            if (point == maxY) { point.toString() } else point.toString(),
                             width - innerPadding + 8,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paddingTop + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
                             paint
                     )
                 }
@@ -288,9 +290,9 @@ class FpsDataView : View {
                     paint.color = Color.parseColor("#4087d3ff")
                     canvas.drawLine(
                             innerPadding,
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             (this.width - innerPadding),
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             paint
                     )
                 }
@@ -350,7 +352,8 @@ class FpsDataView : View {
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
-        val innerPadding = dpSize * 24f
+        val innerPadding = dpSize * 18f
+        val paddingTop = dpSize * 4f
 
         val minutes = samplesCpu.size / 60.0
 
@@ -358,7 +361,7 @@ class FpsDataView : View {
 
         val width = this.width
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val ratioY = ((this.height - innerPadding - paddingTop) * 1.0 / maxY).toFloat() // 纵向比率
         val startY = height - innerPadding
 
         val textSize = dpSize * 8.5f
@@ -374,9 +377,9 @@ class FpsDataView : View {
                 paint.color = Color.parseColor("#808080")
                 if (point > 0) {
                     canvas.drawText(
-                            if (point == maxY) { point.toString() + "%" } else point.toString(),
+                            if (point == maxY) { point.toString() } else point.toString(),
                             width - innerPadding + 8,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paddingTop + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
                             paint
                     )
                 }
@@ -385,9 +388,9 @@ class FpsDataView : View {
                     paint.color = Color.parseColor("#4087d3ff")
                     canvas.drawLine(
                             innerPadding,
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             (this.width - innerPadding),
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             paint
                     )
                 }
@@ -487,7 +490,8 @@ class FpsDataView : View {
         paint.strokeWidth = 2f
 
         val dpSize = dp2px(this.context, 1f)
-        val innerPadding = dpSize * 24f
+        val innerPadding = dpSize * 18f
+        val paddingTop = dpSize * 4f
 
         val minutes = samples.size / 60.0
 
@@ -495,7 +499,7 @@ class FpsDataView : View {
 
         val width = this.width
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / minutes // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
+        val ratioY = ((this.height - innerPadding - paddingTop) * 1.0 / maxY).toFloat() // 纵向比率
         val startY = height - innerPadding
 
         val textSize = dpSize * 8.5f
@@ -511,9 +515,9 @@ class FpsDataView : View {
                 paint.color = Color.parseColor("#808080")
                 if (point > 0) {
                     canvas.drawText(
-                            if (point == maxY) { point.toString() + "%" } else point.toString(),
+                            if (point == maxY) { point.toString() } else point.toString(),
                             width - innerPadding + 8,
-                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paddingTop + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
                             paint
                     )
                 }
@@ -522,9 +526,9 @@ class FpsDataView : View {
                     paint.color = Color.parseColor("#4087d3ff")
                     canvas.drawLine(
                             innerPadding,
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             (this.width - innerPadding),
-                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            paddingTop + ((maxY - point) * ratioY).toInt(),
                             paint
                     )
                 }

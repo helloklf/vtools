@@ -350,6 +350,7 @@
                 </LinearLayout>
 
                 <com.omarea.ui.fps.FpsDataView
+                    android:layout_marginTop="4dp"
                     android:layout_below="@id/chart_dimension"
                     android:id="@+id/chart_session"
                     android:layout_width="match_parent"
