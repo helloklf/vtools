@@ -42,6 +42,7 @@ class PageConfigReader {
     constructor(context: Context, pageConfigStream: InputStream) {
         this.context = context
         this.pageConfigStream = pageConfigStream
+        resourceStringResolver = ResourceStringResolver(context)
     }
 
     fun readConfigXml(): ArrayList<NodeInfoBase>? {
