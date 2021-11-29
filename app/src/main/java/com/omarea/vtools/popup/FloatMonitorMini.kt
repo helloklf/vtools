@@ -29,7 +29,7 @@ import java.util.*
 public class FloatMonitorMini(private val mContext: Context) {
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
-    private var CpuFrequencyUtil = CpuFrequencyUtils()
+    private var cpuFrequencyUtils = CpuFrequencyUtils()
 
     private val globalSPF = mContext.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -140,8 +140,8 @@ public class FloatMonitorMini(private val mContext: Context) {
         pollingPhase %= 4
 
         if (coreCount < 1) {
-            coreCount = CpuFrequencyUtil.coreCount
-            clusters = CpuFrequencyUtil.clusterInfo
+            coreCount = cpuFrequencyUtils.coreCount
+            clusters = cpuFrequencyUtils.clusterInfo
         }
         val gpuLoad = GpuUtils.getGpuLoad()
 

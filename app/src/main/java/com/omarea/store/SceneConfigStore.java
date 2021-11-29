@@ -132,8 +132,11 @@ public class SceneConfigStore extends SQLiteOpenHelper {
             cursor.close();
             sqLiteDatabase.close();
         } catch (Exception ignored) {
-            sceneConfigInfo = new SceneConfigInfo();
-            sceneConfigInfo.packageName = app;
+        } finally {
+            if (sceneConfigInfo == null) {
+                sceneConfigInfo = new SceneConfigInfo();
+                sceneConfigInfo.packageName = app;
+            }
         }
         return sceneConfigInfo;
     }

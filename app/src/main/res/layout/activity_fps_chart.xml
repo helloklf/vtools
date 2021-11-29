@@ -129,9 +129,9 @@
             </RelativeLayout>
 
             <RelativeLayout
-                style="@style/ListCardItem"
-                android:paddingStart="16dp"
-                android:paddingEnd="0dp">
+                android:id="@+id/chart_session_detail"
+                android:paddingBottom="6dp"
+                style="@style/ListCardItem">
 
                 <TextView
                     android:id="@+id/chart_session_name"
@@ -142,7 +142,6 @@
 
                 <TextView
                     android:id="@+id/chart_session_time"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:layout_width="wrap_content"
@@ -314,77 +313,49 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <com.omarea.ui.fps.FpsTemperatureView
-                    android:layout_below="@id/chart_other_overview"
-                    android:id="@+id/chart_session"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp" />
-
                 <LinearLayout
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:id="@+id/chart_dimension"
+                    android:layout_below="@id/chart_other_overview"
                     android:gravity="center_vertical"
-                    android:layout_below="@id/chart_session"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:src="@drawable/ic_capacity"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        app:tint="#808080" />
                     <TextView
-                        android:id="@+id/battery_size"
                         android:layout_marginStart="2dp"
                         android:layout_width="0dp"
                         android:layout_weight="5"
-                        android:text="0000mAh"
+                        android:text="FPS"
                         android:textSize="11dp"
                         android:layout_height="wrap_content" />
 
-                    <ImageView
-                        android:src="@drawable/ic_temperature"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        app:tint="#808080" />
                     <TextView
-                        android:id="@+id/battery_temperature"
-                        android:layout_marginStart="2dp"
-                        android:layout_width="0dp"
-                        android:layout_weight="4"
-                        android:text="00°C"
-                        android:textSize="11dp"
-                        android:layout_height="wrap_content" />
-
-                    <ImageView
-                        android:src="@drawable/ic_voltage"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        app:tint="#808080" />
-                    <TextView
-                        android:id="@+id/battery_voltage"
-                        android:layout_marginStart="2dp"
-                        android:layout_width="0dp"
-                        android:layout_weight="4"
-                        android:text="3.75V"
-                        android:textSize="11dp"
-                        android:layout_height="wrap_content" />
-
-                    <ImageView
-                        android:src="@drawable/ic_power_supply"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        app:tint="#808080" />
-                    <TextView
-                        android:id="@+id/battery_status"
-                        android:layout_marginStart="2dp"
+                        style="?actionButtonStyle"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:layout_marginTop="0dp"
+                        android:id="@+id/chart_right"
+                        android:layout_marginEnd="2dp"
                         android:layout_width="wrap_content"
-                        android:text="--"
+                        android:text="Temperature"
                         android:textSize="11dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="30dp" />
+                    <ImageView
+                        android:id="@+id/chart_right_icon"
+                        android:src="@drawable/source_switch"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:tint="#87d3ff" />
                 </LinearLayout>
+
+                <com.omarea.ui.fps.FpsDataView
+                    android:layout_marginTop="4dp"
+                    android:layout_below="@id/chart_dimension"
+                    android:id="@+id/chart_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+
             </RelativeLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
