@@ -21,6 +21,9 @@ import com.omarea.model.AppInfo
 import com.omarea.ui.AdapterAppList
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_app_retrieve.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 class ActivityAppRetrieve : ActivityBase() {
@@ -66,16 +69,16 @@ class ActivityAppRetrieve : ActivityBase() {
     private fun loadData() {
         progressBarDialog.showDialog("正在获取应用状态")
 
-        Thread {
+        GlobalScope.launch(Dispatchers.Main) {
             // 获得已卸载的应用（包括：隐藏的、卸载的）
-            val uninstalledApp = UninstalledApp().getUninstalledApp(this)
+            val uninstalledApp = UninstalledApp().getUninstalledApp(context)
             val appList = ArrayList<AppInfo>()
             uninstalledApp.forEach {
                 // spf.edit().putString(it.packageName, it.loadLabel(pm).toString())
                 appList.add(getAppInfo(it))
             }
-            handler.post {
-                progressBarDialog.hideDialog()
+            progressBarDialog.hideDialog()
+            if (hidden_app != null) {
                 val adapterObj = AdapterAppList(context, appList)
                 hidden_app.adapter = adapterObj
                 adapterAppList = WeakReference(adapterObj)
