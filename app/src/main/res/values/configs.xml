@@ -196,6 +196,6 @@
         <item>com.baidu.tieba:id/splash_ad_btn_skip</item>
     </string-array>
 
-    <string name="swap_module_target_version">3302</string>
-    <string name="swap_module_download_url">https://vtools.oss-cn-beijing.aliyuncs.com/addin/swap-controller-3.3.2.zip</string>
+    <string name="swap_module_target_version">3303</string>
+    <string name="swap_module_download_url">https://vtools.oss-cn-beijing.aliyuncs.com/addin/swap-controller-3.3.3.zip</string>
 </resources>

@@ -608,7 +608,7 @@ yuan_shen_opt_run() {
              taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            "UnityGfxDevice"*|"UnityMultiRende"*)
-             taskset -p "70" "$tid" > /dev/null 2>&1
+             taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            "AudioTrack"|"Audio"*|"tp_schedule"*|"MIHOYO_NETWORK"|"FMOD"*|"NativeThread"|"UnityChoreograp"|"UnityPreload")
              taskset -p "F" "$tid" > /dev/null 2>&1
@@ -632,9 +632,12 @@ yuan_shen_opt_run() {
            "UnityMain")
              taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
+           "Worker Thread")
+             taskset -p "F0" "$tid" > /dev/null 2>&1
+           ;;
            # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
            "UnityGfxDevice"*|"UnityMultiRende"*)
-             taskset -p "70" "$tid" > /dev/null 2>&1
+             taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            *)
              taskset -p "7F" "$tid" > /dev/null 2>&1

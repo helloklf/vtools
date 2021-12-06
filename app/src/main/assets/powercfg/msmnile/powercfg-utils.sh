@@ -515,12 +515,12 @@ yuan_shen_opt_run() {
              taskset -p "F" "$tid" > /dev/null 2>&1
            ;;
            "UnityMain")
-             taskset -p "F0" "$tid" > /dev/null 2>&1
-             taskset -p "80" "$tid" > /dev/null 2>&1
+             taskset -p "80" "$tid" > /dev/null 2>&1 || taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            # "UnityGfxDevice"*|"UnityMultiRende"*|"NativeThread"*|"UnityChoreograp"*)
            "UnityGfxDevice"*|"UnityMultiRende"*)
-             taskset -p "70" "$tid" > /dev/null 2>&1
+             # taskset -p "70" "$tid" > /dev/null 2>&1
+             taskset -p "F0" "$tid" > /dev/null 2>&1
            ;;
            *)
              taskset -p "7F" "$tid" > /dev/null 2>&1

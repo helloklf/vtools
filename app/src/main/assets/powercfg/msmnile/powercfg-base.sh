@@ -125,8 +125,12 @@ process_opt(){
   set_task_affinity `pgrep com.miui.home` 11110000
 }
 
-set_value 40000000 /proc/sys/kernel/sched_latency_ns
-set_value 1000000 /proc/sys/kernel/sched_min_granularity_ns
+# Default By Xiaomi
+# set_value 10000000 /proc/sys/kernel/sched_latency_ns
+# set_value 3000000 /proc/sys/kernel/sched_min_granularity_ns
+
+set_value 10000000 /proc/sys/kernel/sched_latency_ns
+set_value 2000000 /proc/sys/kernel/sched_min_granularity_ns
 
 process_opt &
 
